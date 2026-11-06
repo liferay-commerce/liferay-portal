@@ -7,7 +7,7 @@ import ClayAutocomplete from '@clayui/autocomplete';
 import {FieldBase} from 'frontend-js-components-web';
 import React, {useEffect, useRef, useState} from 'react';
 
-import {Recipient} from './types';
+import {Recipient, RecipientBadgeText} from './types';
 
 interface Props {
 	error?: string;
@@ -15,6 +15,7 @@ interface Props {
 	id: string;
 	label: string;
 	onSelectUser: (user: Recipient) => void;
+	recipientBadgeText?: RecipientBadgeText;
 	searchUsers: (keywords: string) => Promise<Recipient[]>;
 	value?: string;
 }
@@ -25,6 +26,7 @@ const RecipientUserAutocomplete = ({
 	id,
 	label,
 	onSelectUser,
+	recipientBadgeText,
 	searchUsers,
 	value = '',
 }: Props) => {
@@ -115,20 +117,33 @@ const RecipientUserAutocomplete = ({
 				placeholder={Liferay.Language.get('search-for')}
 				value={query}
 			>
-				{(user: Recipient) => (
-					<ClayAutocomplete.Item
-						key={user.userId}
-						onClick={() => {
-							selectedEmailAddressRef.current = user.emailAddress;
+				{(user: Recipient) => {
+					const badgeText = recipientBadgeText?.(user);
 
-							setQuery(user.emailAddress);
-							onSelectUser(user);
-						}}
-						textValue={user.emailAddress}
-					>
-						<div>{`${user.name} (${user.emailAddress})`}</div>
-					</ClayAutocomplete.Item>
-				)}
+					return (
+						<ClayAutocomplete.Item
+							key={user.userId}
+							onClick={() => {
+								selectedEmailAddressRef.current =
+									user.emailAddress;
+
+								setQuery(user.emailAddress);
+								onSelectUser(user);
+							}}
+							textValue={user.emailAddress}
+						>
+							<div>
+								{`${user.name} (${user.emailAddress})`}
+
+								{badgeText && (
+									<span className="ml-2 text-secondary">
+										{badgeText}
+									</span>
+								)}
+							</div>
+						</ClayAutocomplete.Item>
+					);
+				}}
 			</ClayAutocomplete>
 		</FieldBase>
 	);

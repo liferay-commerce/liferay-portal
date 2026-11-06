@@ -34,7 +34,12 @@ const ReviewField = ({
 	</div>
 );
 
-function ReviewStep({expirationEnabled, values}: StepProps) {
+function ReviewStep({
+	envelopeNameEnabled,
+	expirationEnabled,
+	recipientBadgeText,
+	values,
+}: StepProps) {
 	return (
 		<div className="digital-signature-review">
 			<ReviewField label={Liferay.Language.get('documents')}>
@@ -47,17 +52,29 @@ function ReviewStep({expirationEnabled, values}: StepProps) {
 
 			<ReviewField label={Liferay.Language.get('recipients')}>
 				<RecipientList sequential={values.sequential}>
-					{values.recipients.map((recipient, index) => (
-						<li key={index}>
-							{`${recipient.name} (${recipient.emailAddress})`}
-						</li>
-					))}
+					{values.recipients.map((recipient, index) => {
+						const badgeText = recipientBadgeText?.(recipient);
+
+						return (
+							<li key={index}>
+								{`${recipient.name} (${recipient.emailAddress})`}
+
+								{badgeText && (
+									<span className="ml-2 text-secondary">
+										{badgeText}
+									</span>
+								)}
+							</li>
+						);
+					})}
 				</RecipientList>
 			</ReviewField>
 
-			<ReviewField label={Liferay.Language.get('envelope-name')}>
-				{values.envelopeName}
-			</ReviewField>
+			{envelopeNameEnabled && (
+				<ReviewField label={Liferay.Language.get('envelope-name')}>
+					{values.envelopeName}
+				</ReviewField>
+			)}
 
 			<ReviewField label={Liferay.Language.get('email-subject')}>
 				{values.emailSubject}

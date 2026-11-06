@@ -8,6 +8,7 @@ export type {
 	DigitalSignatureRequestValues,
 	FileEntry,
 	Recipient,
+	RecipientBadgeText,
 	SearchUsers,
 	SelectFileEntry,
 } from './types';

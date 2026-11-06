@@ -10,6 +10,7 @@ import Input from '../Input';
 import {
 	DigitalSignatureRequestErrors,
 	DigitalSignatureRequestValues,
+	StepConfig,
 	StepProps,
 } from '../types';
 import {maxLength, required, validate} from '../validation';
@@ -19,7 +20,8 @@ const MAX_LENGTH = {
 };
 
 export function validateMessageStep(
-	values: DigitalSignatureRequestValues
+	values: DigitalSignatureRequestValues,
+	{envelopeNameEnabled}: StepConfig
 ): DigitalSignatureRequestErrors {
 	return validate(
 		{
@@ -27,13 +29,19 @@ export function validateMessageStep(
 				(value) => maxLength(value, MAX_LENGTH.EMAIL_MESSAGE),
 			],
 			emailSubject: [(value) => maxLength(value, 100), required],
-			envelopeName: [(value: string) => maxLength(value, 100), required],
+			...(envelopeNameEnabled && {
+				envelopeName: [
+					(value: string) => maxLength(value, 100),
+					required,
+				],
+			}),
 		},
 		values
 	);
 }
 
 function MessageStep({
+	envelopeNameEnabled,
 	errors,
 	expirationEnabled,
 	handleChange,
@@ -42,15 +50,17 @@ function MessageStep({
 }: StepProps) {
 	return (
 		<>
-			<Input
-				error={showErrors ? errors.envelopeName : undefined}
-				label={Liferay.Language.get('envelope-name')}
-				name="envelopeName"
-				onChange={handleChange}
-				placeholder={Liferay.Language.get('my-envelope-name')}
-				required
-				value={values.envelopeName}
-			/>
+			{envelopeNameEnabled && (
+				<Input
+					error={showErrors ? errors.envelopeName : undefined}
+					label={Liferay.Language.get('envelope-name')}
+					name="envelopeName"
+					onChange={handleChange}
+					placeholder={Liferay.Language.get('my-envelope-name')}
+					required
+					value={values.envelopeName}
+				/>
+			)}
 
 			<Input
 				error={showErrors ? errors.emailSubject : undefined}
