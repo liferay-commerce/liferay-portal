@@ -101,6 +101,7 @@ function RecipientsStep({
 	errors,
 	maxFileEntries,
 	maxRecipients,
+	recipientBadgeText,
 	searchUsers,
 	selectFileEntry,
 	setFieldValue,
@@ -277,7 +278,13 @@ function RecipientsStep({
 										onSelectUser={(user) =>
 											onChangeRecipient(index, user)
 										}
-										searchUsers={searchUsers}
+										recipientBadgeText={recipientBadgeText}
+										searchUsers={(keywords) =>
+											searchUsers(
+												keywords,
+												otherRecipients
+											)
+										}
 										value={recipient.emailAddress}
 									/>
 								) : (

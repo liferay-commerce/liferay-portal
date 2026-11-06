@@ -172,6 +172,7 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 				<ClayCard.Body className="m-2">
 					<DigitalSignatureRequestForm
 						allowedFileExtensions={allowedFileExtensions}
+						envelopeNameEnabled
 						expirationEnabled={embeddedViewEnabled}
 						fileEntries={fileEntries}
 						maxFileEntries={MAX_LENGTH.ATTACHMENTS}
