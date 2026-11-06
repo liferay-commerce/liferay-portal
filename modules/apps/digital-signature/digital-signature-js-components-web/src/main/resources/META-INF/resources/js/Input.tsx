@@ -6,7 +6,25 @@
 import {ClayInput} from '@clayui/form';
 import classNames from 'classnames';
 import {FieldBase} from 'frontend-js-components-web';
-import React from 'react';
+import React, {ChangeEvent} from 'react';
+
+interface Props {
+	className?: string;
+	disabled?: boolean;
+	error?: string;
+	feedbackMessage?: string;
+	label: string;
+	maxLength?: number;
+	min?: string;
+	name: string;
+	onChange: (
+		event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => void;
+	placeholder?: string;
+	required?: boolean;
+	type?: 'number' | 'text' | 'textarea';
+	value: number | string;
+}
 
 const Input = ({
 	className,
@@ -18,7 +36,7 @@ const Input = ({
 	required,
 	type = 'text',
 	...otherProps
-}) => (
+}: Props) => (
 	<FieldBase
 		className={classNames('w-100', className)}
 		disabled={disabled}

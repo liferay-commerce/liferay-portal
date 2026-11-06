@@ -9,21 +9,29 @@ import ClayIcon from '@clayui/icon';
 import {openToast} from 'frontend-js-components-web';
 import React from 'react';
 
-import Input from '../../form/FormBase';
+import FileEntryList from '../FileEntryList';
+import Input from '../Input';
+import RecipientUserAutocomplete from '../RecipientUserAutocomplete';
+import {
+	DigitalSignatureRequestErrors,
+	DigitalSignatureRequestValues,
+	FileEntry,
+	Recipient,
+	RecipientErrors,
+	StepConfig,
+	StepProps,
+} from '../types';
 import {
 	isEmail,
 	maxLength,
 	required,
 	validate,
 	withInvalidExtensions,
-} from '../../form/FormValidation';
-import FileEntryList from '../FileEntryList';
-import FileSelector from '../FileSelector';
-import RecipientUserAutocomplete from '../RecipientUserAutocomplete';
+} from '../validation';
 
 const validateFileEntries = (
-	fileEntries,
-	{allowedFileExtensions, maxFileEntries}
+	fileEntries: FileEntry[],
+	{allowedFileExtensions, maxFileEntries}: StepConfig
 ) => {
 	const invalidFileEntries = allowedFileExtensions
 		? withInvalidExtensions(fileEntries, allowedFileExtensions)
@@ -41,8 +49,8 @@ const validateFileEntries = (
 	}
 };
 
-const validateRecipient = (recipient, {searchUsers}) => {
-	const errors = searchUsers
+const validateRecipient = (recipient: Recipient, {searchUsers}: StepConfig) => {
+	const errors: RecipientErrors = searchUsers
 		? {
 				emailAddress: recipient.userId
 					? undefined
@@ -57,7 +65,7 @@ const validateRecipient = (recipient, {searchUsers}) => {
 					],
 					name: [required],
 				},
-				{...recipient}
+				recipient
 			);
 
 	if (errors.emailAddress || errors.name) {
@@ -65,8 +73,11 @@ const validateRecipient = (recipient, {searchUsers}) => {
 	}
 };
 
-export function validateRecipientsStep(values, config) {
-	const errors = {};
+export function validateRecipientsStep(
+	values: DigitalSignatureRequestValues,
+	config: StepConfig
+): DigitalSignatureRequestErrors {
+	const errors: DigitalSignatureRequestErrors = {};
 
 	const fileEntryErrors = validateFileEntries(values.fileEntries, config);
 
@@ -86,18 +97,26 @@ export function validateRecipientsStep(values, config) {
 }
 
 function RecipientsStep({
+	createRecipient,
 	errors,
 	maxFileEntries,
 	maxRecipients,
 	searchUsers,
+	selectFileEntry,
 	setFieldValue,
 	showErrors,
 	values,
-}) {
+}: StepProps) {
 	const canAddMoreRecipients =
 		!maxRecipients || values.recipients.length < maxRecipients;
 
-	const onAddFileEntry = (fileEntry) => {
+	const onAddFileEntry = async () => {
+		const fileEntry = await selectFileEntry?.();
+
+		if (!fileEntry) {
+			return;
+		}
+
 		if (
 			values.fileEntries.some(
 				({fileEntryId}) => fileEntryId === fileEntry.fileEntryId
@@ -119,21 +138,26 @@ function RecipientsStep({
 		if (canAddMoreRecipients) {
 			setFieldValue('recipients', [
 				...values.recipients,
-				{emailAddress: '', name: ''},
+				createRecipient(),
 			]);
 		}
 	};
 
-	const onChangeRecipient = (recipientIndex, recipient) => {
+	const onChangeRecipient = (
+		recipientIndex: number,
+		recipient: Recipient
+	) => {
 		setFieldValue(
 			'recipients',
 			values.recipients.map((currentRecipient, index) =>
-				index === recipientIndex ? recipient : currentRecipient
+				index === recipientIndex
+					? {...recipient, rowKey: currentRecipient.rowKey}
+					: currentRecipient
 			)
 		);
 	};
 
-	const onMoveRecipient = (recipientIndex, offset) => {
+	const onMoveRecipient = (recipientIndex: number, offset: number) => {
 		const recipients = [...values.recipients];
 
 		[recipients[recipientIndex], recipients[recipientIndex + offset]] = [
@@ -144,7 +168,7 @@ function RecipientsStep({
 		setFieldValue('recipients', recipients);
 	};
 
-	const onRemoveRecipient = (recipientIndex) => {
+	const onRemoveRecipient = (recipientIndex: number) => {
 		setFieldValue(
 			'recipients',
 			values.recipients.filter((_, index) => index !== recipientIndex)
@@ -153,15 +177,20 @@ function RecipientsStep({
 
 	return (
 		<>
-			<FileSelector
-				disabled={
-					!!maxFileEntries &&
-					values.fileEntries.length >= maxFileEntries
-				}
-				onChange={(_, fileEntry) =>
-					onAddFileEntry(JSON.parse(fileEntry))
-				}
-			/>
+			{selectFileEntry && (
+				<div className="document-library-form mb-4">
+					<ClayButton
+						disabled={
+							!!maxFileEntries &&
+							values.fileEntries.length >= maxFileEntries
+						}
+						displayType="secondary"
+						onClick={onAddFileEntry}
+					>
+						{Liferay.Language.get('add-document')}
+					</ClayButton>
+				</div>
+			)}
 
 			{showErrors && !values.fileEntries.length && (
 				<ClayForm.FeedbackGroup className="has-error mb-4">
@@ -178,14 +207,18 @@ function RecipientsStep({
 			<FileEntryList
 				errors={errors.fileEntries}
 				fileEntries={values.fileEntries}
-				onRemove={(fileEntry) =>
-					setFieldValue(
-						'fileEntries',
-						values.fileEntries.filter(
-							({fileEntryId}) =>
-								fileEntryId !== fileEntry.fileEntryId
-						)
-					)
+				onRemove={
+					selectFileEntry
+						? (fileEntry) =>
+								setFieldValue(
+									'fileEntries',
+									values.fileEntries.filter(
+										({fileEntryId}) =>
+											fileEntryId !==
+											fileEntry.fileEntryId
+									)
+								)
+						: undefined
 				}
 			/>
 
@@ -199,7 +232,10 @@ function RecipientsStep({
 				);
 
 				return (
-					<ClayForm.Group className="recipient" key={index}>
+					<ClayForm.Group
+						className="recipient"
+						key={recipient.rowKey}
+					>
 						<ClayInput.Group>
 							<ClayInput.GroupItem>
 								<Input
@@ -230,7 +266,10 @@ function RecipientsStep({
 										error={error?.emailAddress}
 										excludedUserIds={otherRecipients
 											.map(({userId}) => userId)
-											.filter((userId) => !!userId)}
+											.filter(
+												(userId): userId is number =>
+													!!userId
+											)}
 										id={`recipients[${index}].emailAddress`}
 										label={Liferay.Language.get(
 											'recipient-email'

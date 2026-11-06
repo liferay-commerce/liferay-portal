@@ -3,16 +3,30 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import React from 'react';
+import React, {ReactNode} from 'react';
 
-const RecipientList = ({children, sequential}) =>
+import {StepProps} from '../types';
+
+const RecipientList = ({
+	children,
+	sequential,
+}: {
+	children: ReactNode;
+	sequential: boolean;
+}) =>
 	sequential ? (
 		<ol className="mb-0 pl-3">{children}</ol>
 	) : (
 		<ul className="list-unstyled mb-0">{children}</ul>
 	);
 
-const ReviewField = ({children, label}) => (
+const ReviewField = ({
+	children,
+	label,
+}: {
+	children: ReactNode;
+	label: string;
+}) => (
 	<div className="review-field">
 		<label>{label}</label>
 
@@ -20,13 +34,9 @@ const ReviewField = ({children, label}) => (
 	</div>
 );
 
-function ReviewStep({expirationEnabled, values}) {
+function ReviewStep({expirationEnabled, values}: StepProps) {
 	return (
 		<div className="digital-signature-review">
-			<ReviewField label={Liferay.Language.get('envelope-name')}>
-				{values.envelopeName}
-			</ReviewField>
-
 			<ReviewField label={Liferay.Language.get('documents')}>
 				<ul className="list-unstyled mb-0">
 					{values.fileEntries.map(({fileEntryId, title}) => (
@@ -43,6 +53,10 @@ function ReviewStep({expirationEnabled, values}) {
 						</li>
 					))}
 				</RecipientList>
+			</ReviewField>
+
+			<ReviewField label={Liferay.Language.get('envelope-name')}>
+				{values.envelopeName}
 			</ReviewField>
 
 			<ReviewField label={Liferay.Language.get('email-subject')}>

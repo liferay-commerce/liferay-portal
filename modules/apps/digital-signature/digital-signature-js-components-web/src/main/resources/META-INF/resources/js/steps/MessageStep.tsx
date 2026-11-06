@@ -6,23 +6,30 @@
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
-import Input from '../../form/FormBase';
-import {maxLength, required, validate} from '../../form/FormValidation';
+import Input from '../Input';
+import {
+	DigitalSignatureRequestErrors,
+	DigitalSignatureRequestValues,
+	StepProps,
+} from '../types';
+import {maxLength, required, validate} from '../validation';
 
 const MAX_LENGTH = {
 	EMAIL_MESSAGE: 10000,
 };
 
-export function validateMessageStep(values) {
+export function validateMessageStep(
+	values: DigitalSignatureRequestValues
+): DigitalSignatureRequestErrors {
 	return validate(
 		{
 			emailMessage: [
 				(value) => maxLength(value, MAX_LENGTH.EMAIL_MESSAGE),
 			],
 			emailSubject: [(value) => maxLength(value, 100), required],
-			envelopeName: [(value) => maxLength(value, 100), required],
+			envelopeName: [(value: string) => maxLength(value, 100), required],
 		},
-		{...values}
+		values
 	);
 }
 
@@ -32,7 +39,7 @@ function MessageStep({
 	handleChange,
 	showErrors,
 	values,
-}) {
+}: StepProps) {
 	return (
 		<>
 			<Input

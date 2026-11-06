@@ -5,8 +5,10 @@
 
 import ClayCard from '@clayui/card';
 import ClayLayout from '@clayui/layout';
-import {openToast} from 'frontend-js-components-web';
+import {DigitalSignatureRequestForm} from '@liferay/digital-signature-js-components-web';
+import {openSelectionModal, openToast} from 'frontend-js-components-web';
 import {
+	createPortletURL,
 	createResourceURL,
 	fetch,
 	navigate as liferayNavigate,
@@ -15,11 +17,33 @@ import {
 import React, {useContext} from 'react';
 
 import {AppContext} from '../../AppContext';
-import DigitalSignatureFormBase from './DigitalSignatureFormBase';
 
 const MAX_LENGTH = {
 	ATTACHMENTS: 10,
 	RECIPIENTS: 10,
+};
+
+const getDocumentLibrarySelectorURL = (portletNamespace) => {
+	const criterionJSON = {
+		desiredItemSelectorReturnTypes:
+			'com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType,com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType',
+	};
+
+	const documentLibrarySelectorParameters = {
+		'0_json': JSON.stringify(criterionJSON),
+		'criteria': 'file',
+		'itemSelectedEventName': `${portletNamespace}selectDocumentLibrary`,
+		'p_p_id': Liferay.PortletKeys.ITEM_SELECTOR,
+		'p_p_state': 'pop_up',
+		'refererGroupId': Liferay.ThemeDisplay.getSiteGroupId(),
+	};
+
+	const documentLibrarySelectorURL = createPortletURL(
+		themeDisplay.getLayoutRelativeControlPanelURL(),
+		documentLibrarySelectorParameters
+	);
+
+	return documentLibrarySelectorURL.toString();
 };
 
 const searchUsers = (keywords) => {
@@ -114,6 +138,26 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 		onGoBack();
 	};
 
+	const selectFileEntry = () =>
+		new Promise((resolve) =>
+			openSelectionModal({
+				onClose: () => resolve(null),
+				onSelect: (selectedItem) =>
+					resolve(
+						selectedItem?.value
+							? JSON.parse(selectedItem.value, (key, value) =>
+									key === 'fileEntryId'
+										? Number(value)
+										: value
+								)
+							: null
+					),
+				selectEventName: `${portletNamespace}selectDocumentLibrary`,
+				title: Liferay.Language.get('select-document'),
+				url: getDocumentLibrarySelectorURL(portletNamespace),
+			})
+		);
+
 	return (
 		<ClayLayout.Container className="collect-digital-signature">
 			<ClayCard>
@@ -126,7 +170,7 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 				<hr />
 
 				<ClayCard.Body className="m-2">
-					<DigitalSignatureFormBase
+					<DigitalSignatureRequestForm
 						allowedFileExtensions={allowedFileExtensions}
 						expirationEnabled={embeddedViewEnabled}
 						fileEntries={fileEntries}
@@ -137,6 +181,7 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 						searchUsers={
 							embeddedViewEnabled ? searchUsers : undefined
 						}
+						selectFileEntry={selectFileEntry}
 					/>
 				</ClayCard.Body>
 			</ClayCard>
