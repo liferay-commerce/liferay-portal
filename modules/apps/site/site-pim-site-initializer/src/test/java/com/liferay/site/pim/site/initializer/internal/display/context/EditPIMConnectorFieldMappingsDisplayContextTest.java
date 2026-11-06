@@ -217,9 +217,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		EditPIMConnectorFieldMappingsDisplayContext
 			editPIMConnectorFieldMappingsDisplayContext =
 				new EditPIMConnectorFieldMappingsDisplayContext(
-					_httpServletRequest, _objectDefinitionService,
-					_objectEntryLocalService, _objectFieldLocalService,
-					_pimConnectorRegistry);
+					_httpServletRequest, _objectDefinitionLocalService,
+					_objectDefinitionService, _objectEntryLocalService,
+					_objectFieldLocalService, _pimConnectorRegistry);
 
 		Map<String, Object> reactData =
 			editPIMConnectorFieldMappingsDisplayContext.getReactData();
@@ -304,9 +304,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectDefinitionService,
-				_objectEntryLocalService, _objectFieldLocalService,
-				_pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionLocalService,
+				_objectDefinitionService, _objectEntryLocalService,
+				_objectFieldLocalService, _pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -342,9 +342,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectDefinitionService,
-				_objectEntryLocalService, _objectFieldLocalService,
-				_pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionLocalService,
+				_objectDefinitionService, _objectEntryLocalService,
+				_objectFieldLocalService, _pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -364,9 +364,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectDefinitionService,
-				_objectEntryLocalService, _objectFieldLocalService,
-				_pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionLocalService,
+				_objectDefinitionService, _objectEntryLocalService,
+				_objectFieldLocalService, _pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -389,9 +389,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectDefinitionService,
-				_objectEntryLocalService, _objectFieldLocalService,
-				_pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionLocalService,
+				_objectDefinitionService, _objectEntryLocalService,
+				_objectFieldLocalService, _pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -405,9 +405,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectDefinitionService,
-				_objectEntryLocalService, _objectFieldLocalService,
-				_pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionLocalService,
+				_objectDefinitionService, _objectEntryLocalService,
+				_objectFieldLocalService, _pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
