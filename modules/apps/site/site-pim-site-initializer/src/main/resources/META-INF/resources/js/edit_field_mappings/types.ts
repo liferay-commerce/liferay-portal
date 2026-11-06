@@ -30,9 +30,17 @@ export interface IObjectDefinition {
 	className: string;
 	label: string;
 	objectFields: IObjectField[];
+	repeatableGroups?: IRepeatableGroup[];
 }
 
 export interface IObjectField {
 	label: string;
 	name: string;
+}
+
+export interface IRepeatableGroup {
+	label: string;
+	name: string;
+	objectFields: IObjectField[];
+	repeatableGroups?: IRepeatableGroup[];
 }
