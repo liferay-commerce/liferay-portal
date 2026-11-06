@@ -16,6 +16,7 @@ export class EditFieldMappingsPage {
 	readonly mappingRulesHeading: Locator;
 	readonly mappingRulesNavItem: Locator;
 	readonly page: Page;
+	readonly repeatableGroup: (label: string) => Locator;
 	readonly saveButton: Locator;
 	readonly source: (index: number) => Locator;
 	readonly sourceAttribute: (index: number) => Locator;
@@ -40,6 +41,8 @@ export class EditFieldMappingsPage {
 			name: 'Mapping Rules',
 		});
 		this.page = page;
+		this.repeatableGroup = (label) =>
+			page.getByLabel(label, {exact: true}).last();
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.source = (index) =>
 			page.getByLabel('Source', {exact: true}).nth(index);
@@ -53,6 +56,22 @@ export class EditFieldMappingsPage {
 	async mapToSourceAttribute(sourceAttributeLabel: string, index = 0) {
 		await this.sourceAttribute(index).selectOption({
 			label: sourceAttributeLabel,
+		});
+	}
+
+	async mapToRepeatableGroupField({
+		index = 0,
+		objectFieldLabel,
+		repeatableGroupLabel,
+	}: {
+		index?: number;
+		objectFieldLabel: string;
+		repeatableGroupLabel: string;
+	}) {
+		await this.mapToSourceAttribute(repeatableGroupLabel, index);
+
+		await this.repeatableGroup(repeatableGroupLabel).selectOption({
+			label: objectFieldLabel,
 		});
 	}
 
