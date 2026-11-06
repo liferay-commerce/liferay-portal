@@ -5,10 +5,17 @@
 
 import {ClayButtonWithIcon} from '@clayui/button';
 import ClayList from '@clayui/list';
-import classNames from 'classnames';
 import React from 'react';
 
-const FileEntryList = ({errors = [], fileEntries, onRemove}) => {
+import {FileEntry} from './types';
+
+interface Props {
+	errors?: FileEntry[];
+	fileEntries: FileEntry[];
+	onRemove?: (fileEntry: FileEntry) => void;
+}
+
+const FileEntryList = ({errors = [], fileEntries, onRemove}: Props) => {
 	if (!fileEntries.length) {
 		return null;
 	}
@@ -26,11 +33,7 @@ const FileEntryList = ({errors = [], fileEntries, onRemove}) => {
 					);
 
 					return (
-						<ClayList.Item
-							className={classNames({'has-error': hasError})}
-							flex
-							key={fileEntry.fileEntryId}
-						>
+						<ClayList.Item flex key={fileEntry.fileEntryId}>
 							<ClayList.ItemField expand>
 								<ClayList.ItemTitle>
 									{fileEntry.title}

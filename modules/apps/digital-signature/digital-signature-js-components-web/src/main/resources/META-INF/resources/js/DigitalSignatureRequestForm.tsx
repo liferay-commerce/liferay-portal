@@ -7,13 +7,37 @@ import ClayButton from '@clayui/button';
 import ClayForm from '@clayui/form';
 import {useFormik} from 'formik';
 import {sub} from 'frontend-js-web';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 
 import MessageStep, {validateMessageStep} from './steps/MessageStep';
 import RecipientsStep, {validateRecipientsStep} from './steps/RecipientsStep';
 import ReviewStep from './steps/ReviewStep';
+import {
+	DigitalSignatureRequestErrors,
+	DigitalSignatureRequestValues,
+	FileEntry,
+	Recipient,
+	SearchUsers,
+	SelectFileEntry,
+	Step,
+} from './types';
 
-function DigitalSignatureFormBase({
+import './DigitalSignatureRequestForm.scss';
+
+interface Props {
+	allowedFileExtensions?: string[];
+	expirationEnabled?: boolean;
+	fileEntries?: FileEntry[];
+	maxFileEntries?: number;
+	maxRecipients?: number;
+	onCancel: () => void;
+	onSubmit: (values: DigitalSignatureRequestValues) => Promise<void> | void;
+	recipients?: Recipient[];
+	searchUsers?: SearchUsers;
+	selectFileEntry?: SelectFileEntry;
+}
+
+function DigitalSignatureRequestForm({
 	allowedFileExtensions,
 	expirationEnabled = false,
 	fileEntries = [],
@@ -23,11 +47,25 @@ function DigitalSignatureFormBase({
 	onSubmit,
 	recipients = [{emailAddress: '', name: ''}],
 	searchUsers,
-}) {
+	selectFileEntry,
+}: Props) {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [showErrors, setShowErrors] = useState(false);
 
-	const steps = [
+	const rowKeyRef = useRef(0);
+
+	const createRecipient = (
+		recipient: Recipient = {emailAddress: '', name: ''}
+	): Recipient => ({
+		...recipient,
+		rowKey: rowKeyRef.current++,
+	});
+
+	const [initialRecipients] = useState(() =>
+		recipients.map((recipient) => createRecipient(recipient))
+	);
+
+	const steps: Step[] = [
 		{
 			Component: RecipientsStep,
 			title: Liferay.Language.get('recipients'),
@@ -44,7 +82,7 @@ function DigitalSignatureFormBase({
 		},
 	];
 
-	const validateStep = (step, values) =>
+	const validateStep = (step: Step, values: DigitalSignatureRequestValues) =>
 		step.validate
 			? step.validate(values, {
 					allowedFileExtensions,
@@ -53,17 +91,17 @@ function DigitalSignatureFormBase({
 				})
 			: {};
 
-	const formik = useFormik({
+	const formik = useFormik<DigitalSignatureRequestValues>({
 		initialValues: {
 			emailMessage: '',
 			emailSubject: '',
 			envelopeName: '',
 			expireAfter: 120,
 			fileEntries,
-			recipients,
+			recipients: initialRecipients,
 			sequential: true,
 		},
-		onSubmit: (values) => onSubmit(values),
+		onSubmit,
 		validate: (values) =>
 			Object.assign(
 				{},
@@ -72,8 +110,8 @@ function DigitalSignatureFormBase({
 		validateOnMount: true,
 	});
 
-	const isLastStep = currentStep === steps.length - 1;
 	const ActiveStep = steps[currentStep].Component;
+	const isLastStep = currentStep === steps.length - 1;
 
 	const onNextStep = () => {
 		if (
@@ -90,7 +128,7 @@ function DigitalSignatureFormBase({
 
 	const onPreviousStep = () => {
 		setShowErrors(false);
-		setCurrentStep((step) => Math.max(step - 1, 0));
+		setCurrentStep((step) => step - 1);
 	};
 
 	return (
@@ -113,12 +151,14 @@ function DigitalSignatureFormBase({
 			</div>
 
 			<ActiveStep
-				errors={formik.errors}
+				createRecipient={createRecipient}
+				errors={formik.errors as DigitalSignatureRequestErrors}
 				expirationEnabled={expirationEnabled}
 				handleChange={formik.handleChange}
 				maxFileEntries={maxFileEntries}
 				maxRecipients={maxRecipients}
 				searchUsers={searchUsers}
+				selectFileEntry={selectFileEntry}
 				setFieldValue={formik.setFieldValue}
 				showErrors={showErrors}
 				values={formik.values}
@@ -160,4 +200,4 @@ function DigitalSignatureFormBase({
 	);
 }
 
-export default DigitalSignatureFormBase;
+export default DigitalSignatureRequestForm;
