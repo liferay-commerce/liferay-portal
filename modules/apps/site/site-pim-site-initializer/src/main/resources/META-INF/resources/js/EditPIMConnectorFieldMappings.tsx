@@ -10,8 +10,11 @@ import React, {useEffect, useState} from 'react';
 
 import PIMFieldMappingRulesSection from './edit_field_mappings/PIMFieldMappingRulesSection';
 import PIMFieldMappingsSection from './edit_field_mappings/PIMFieldMappingsSection';
-import getObjectFields from './edit_field_mappings/getObjectFields';
 import newFieldMapping from './edit_field_mappings/newFieldMapping';
+import {
+	SOURCE_FIELD_NAME_MAX_LENGTH,
+	resolveSourceFieldPath,
+} from './edit_field_mappings/sourceFieldPath';
 import {
 	IFieldMapping,
 	IMappingRule,
@@ -48,9 +51,16 @@ interface IProps {
 	useFirstNonemptySourceSupported: boolean;
 }
 
-function isComplete({sourceFieldName, type, value}: IFieldMapping) {
+function isComplete(
+	{sourceClassName, sourceFieldName, type, value}: IFieldMapping,
+	objectDefinitions: IObjectDefinition[]
+) {
 	if (type === TYPE_DYNAMIC_VALUE) {
-		return Boolean(sourceFieldName);
+		return resolveSourceFieldPath(
+			objectDefinitions,
+			sourceClassName,
+			sourceFieldName
+		).complete;
 	}
 
 	if (type === TYPE_FIXED_VALUE) {
@@ -100,10 +110,11 @@ export default function EditPIMConnectorFieldMappings({
 			.filter(
 				(fieldMapping) =>
 					fieldMapping.type !== TYPE_DYNAMIC_VALUE ||
-					getObjectFields(
+					resolveSourceFieldPath(
 						objectDefinitions,
-						fieldMapping.sourceClassName
-					).some(({name}) => name === fieldMapping.sourceFieldName)
+						fieldMapping.sourceClassName,
+						fieldMapping.sourceFieldName
+					).complete
 			)
 			.map((fieldMapping) => ({
 				...fieldMapping,
@@ -157,7 +168,28 @@ export default function EditPIMConnectorFieldMappings({
 	};
 
 	const handleSave = async () => {
-		const nextFieldMappings = fieldMappings.filter(isComplete);
+		const nextFieldMappings = fieldMappings.filter((fieldMapping) =>
+			isComplete(fieldMapping, objectDefinitions)
+		);
+
+		if (
+			nextFieldMappings.some(
+				({sourceFieldName}) =>
+					sourceFieldName.length > SOURCE_FIELD_NAME_MAX_LENGTH
+			)
+		) {
+			Liferay.Util.openToast({
+				message: sub(
+					Liferay.Language.get(
+						'source-attribute-path-cannot-exceed-x-characters'
+					),
+					SOURCE_FIELD_NAME_MAX_LENGTH
+				),
+				type: 'danger',
+			});
+
+			return;
+		}
 
 		if (!nextFieldMappings.length && !isEmpty(mappingRule)) {
 			Liferay.Util.openToast({

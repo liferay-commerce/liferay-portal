@@ -8,7 +8,14 @@ import {ClayInput, ClaySelect} from '@clayui/form';
 import {RequiredMark} from '@liferay/site-cms-site-initializer';
 import React from 'react';
 
+import RepeatableGroupPanel from './RepeatableGroupPanel';
 import getObjectFields from './getObjectFields';
+import {
+	getRepeatableGroups,
+	joinSourceFieldPath,
+	parseSourceFieldPath,
+	resolveSourceFieldPath,
+} from './sourceFieldPath';
 import {
 	IFieldMapping,
 	IObjectDefinition,
@@ -47,6 +54,29 @@ export default function PIMFieldMappingRow({
 		objectDefinitions,
 		fieldMapping.sourceClassName
 	);
+
+	const repeatableGroups = getRepeatableGroups(
+		objectDefinitions,
+		fieldMapping.sourceClassName
+	);
+
+	const segments = parseSourceFieldPath(fieldMapping.sourceFieldName);
+
+	const resolvedSourceFieldPath = resolveSourceFieldPath(
+		objectDefinitions,
+		fieldMapping.sourceClassName,
+		fieldMapping.sourceFieldName
+	);
+
+	const handleRepeatableGroupChange = (level: number, value: string) =>
+		onChange(index, {
+			...fieldMapping,
+			sourceFieldName: joinSourceFieldPath(
+				value
+					? [...segments.slice(0, level + 1), value]
+					: segments.slice(0, level + 1)
+			),
+		});
 
 	const handleSourceFieldNameChange = (value: string) => {
 		const type = [TYPE_CATEGORIES, TYPE_FIXED_VALUE, TYPE_TAGS].includes(
@@ -136,7 +166,7 @@ export default function PIMFieldMappingRow({
 						}
 						value={
 							fieldMapping.type === TYPE_DYNAMIC_VALUE
-								? fieldMapping.sourceFieldName
+								? segments[0] ?? ''
 								: fieldMapping.type
 						}
 					>
@@ -152,6 +182,22 @@ export default function PIMFieldMappingRow({
 								value={objectField.name}
 							/>
 						))}
+
+						{!!repeatableGroups.length && (
+							<ClaySelect.OptGroup
+								label={Liferay.Language.get(
+									'repeatable-groups'
+								)}
+							>
+								{repeatableGroups.map((repeatableGroup) => (
+									<ClaySelect.Option
+										key={repeatableGroup.name}
+										label={repeatableGroup.label}
+										value={repeatableGroup.name}
+									/>
+								))}
+							</ClaySelect.OptGroup>
+						)}
 
 						{channelFieldAdditionalFieldMappingTypes.includes(
 							TYPE_CATEGORIES
@@ -178,6 +224,20 @@ export default function PIMFieldMappingRow({
 					</ClaySelect>
 				</ClayInput.GroupItem>
 			</ClayInput.Group>
+
+			{fieldMapping.type === TYPE_DYNAMIC_VALUE &&
+				resolvedSourceFieldPath.repeatableGroups.map(
+					(repeatableGroup, level) => (
+						<RepeatableGroupPanel
+							key={`${level}-${repeatableGroup.name}`}
+							onChange={(value) =>
+								handleRepeatableGroupChange(level, value)
+							}
+							repeatableGroup={repeatableGroup}
+							value={segments[level + 1] ?? ''}
+						/>
+					)
+				)}
 
 			{fixedValue && (
 				<ClayInput.Group>
