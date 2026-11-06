@@ -8,6 +8,7 @@ export type {
 	DigitalSignatureRequestFormValues,
 	FileEntry,
 	Recipient,
+	RecipientBadgeText,
 	RecipientUser,
 	SearchUsers,
 	SelectFileEntry,

@@ -173,6 +173,7 @@ const DigitalSignatureForm = ({fileEntries = [], navigate}) => {
 					<DigitalSignatureRequestForm
 						allowedFileExtensions={allowedFileExtensions}
 						embeddedViewEnabled={embeddedViewEnabled}
+						envelopeNameEnabled
 						fileEntries={fileEntries}
 						maxFileEntries={MAX_LENGTH.ATTACHMENTS}
 						maxRecipients={MAX_LENGTH.RECIPIENTS}
