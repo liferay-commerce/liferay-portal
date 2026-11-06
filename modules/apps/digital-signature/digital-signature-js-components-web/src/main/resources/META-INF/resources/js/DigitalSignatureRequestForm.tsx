@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayForm from '@clayui/form';
+import ClayModal from '@clayui/modal';
 import {useFormik} from 'formik';
 import {sub} from 'frontend-js-web';
 import React, {useRef, useState} from 'react';
@@ -17,6 +18,7 @@ import {
 	DigitalSignatureRequestFormValues,
 	FileEntry,
 	Recipient,
+	RecipientBadgeText,
 	SearchUsers,
 	SelectFileEntry,
 	Step,
@@ -27,13 +29,16 @@ import './DigitalSignatureRequestForm.scss';
 interface Props {
 	allowedFileExtensions?: string[];
 	embeddedViewEnabled?: boolean;
+	envelopeNameEnabled?: boolean;
 	fileEntries?: FileEntry[];
 	maxFileEntries?: number;
 	maxRecipients?: number;
+	modal?: boolean;
 	onCancel: () => void;
 	onSubmit: (
 		values: DigitalSignatureRequestFormValues
 	) => Promise<void> | void;
+	recipientBadgeText?: RecipientBadgeText;
 	recipients?: Recipient[];
 	searchUsers?: SearchUsers;
 	selectFileEntry?: SelectFileEntry;
@@ -41,12 +46,15 @@ interface Props {
 
 function DigitalSignatureRequestForm({
 	allowedFileExtensions,
+	envelopeNameEnabled = false,
 	embeddedViewEnabled = false,
 	fileEntries = [],
 	maxFileEntries,
 	maxRecipients,
+	modal = false,
 	onCancel,
 	onSubmit,
+	recipientBadgeText,
 	recipients = [{emailAddress: '', name: ''}],
 	searchUsers,
 	selectFileEntry,
@@ -91,6 +99,7 @@ function DigitalSignatureRequestForm({
 		step.validate
 			? step.validate(values, {
 					allowedFileExtensions,
+					envelopeNameEnabled,
 					maxFileEntries,
 					searchUsers,
 				})
@@ -136,11 +145,18 @@ function DigitalSignatureRequestForm({
 		setCurrentStep((step) => step - 1);
 	};
 
-	return (
-		<ClayForm
-			className="digital-signature-request-form"
-			onSubmit={(event) => event.preventDefault()}
+	const cancelButton = (
+		<ClayButton
+			disabled={formik.isSubmitting}
+			displayType="secondary"
+			onClick={onCancel}
 		>
+			{Liferay.Language.get('cancel')}
+		</ClayButton>
+	);
+
+	const content = (
+		<>
 			<div className="mb-4">
 				<div className="mb-1 text-secondary">
 					{sub(
@@ -158,49 +174,77 @@ function DigitalSignatureRequestForm({
 			<ActiveStep
 				createRecipient={createRecipient}
 				embeddedViewEnabled={embeddedViewEnabled}
+				envelopeNameEnabled={envelopeNameEnabled}
 				errors={formik.errors as DigitalSignatureRequestFormErrors}
 				handleChange={formik.handleChange}
 				maxFileEntries={maxFileEntries}
 				maxRecipients={maxRecipients}
+				recipientBadgeText={recipientBadgeText}
 				searchUsers={searchUsers}
 				selectFileEntry={selectFileEntry}
 				setFieldValue={formik.setFieldValue}
 				showErrors={showErrors}
 				values={formik.values}
 			/>
+		</>
+	);
 
-			<ClayButton.Group className="mt-4" spaced>
+	const stepButtons = (
+		<>
+			{currentStep > 0 && (
 				<ClayButton
 					disabled={formik.isSubmitting}
 					displayType="secondary"
-					onClick={onCancel}
+					onClick={onPreviousStep}
 				>
-					{Liferay.Language.get('cancel')}
+					{Liferay.Language.get('previous')}
 				</ClayButton>
+			)}
 
-				{currentStep > 0 && (
-					<ClayButton
-						disabled={formik.isSubmitting}
-						displayType="secondary"
-						onClick={onPreviousStep}
-					>
-						{Liferay.Language.get('previous')}
-					</ClayButton>
-				)}
+			{isLastStep ? (
+				<ClayButton
+					disabled={!formik.isValid || formik.isSubmitting}
+					onClick={() => formik.handleSubmit()}
+				>
+					{Liferay.Language.get('send')}
+				</ClayButton>
+			) : (
+				<ClayButton onClick={onNextStep}>
+					{Liferay.Language.get('next')}
+				</ClayButton>
+			)}
+		</>
+	);
 
-				{isLastStep ? (
-					<ClayButton
-						disabled={!formik.isValid || formik.isSubmitting}
-						onClick={() => formik.handleSubmit()}
-					>
-						{Liferay.Language.get('send')}
-					</ClayButton>
-				) : (
-					<ClayButton onClick={onNextStep}>
-						{Liferay.Language.get('next')}
-					</ClayButton>
-				)}
-			</ClayButton.Group>
+	return (
+		<ClayForm
+			className="digital-signature-request-form"
+			onSubmit={(event) => event.preventDefault()}
+		>
+			{modal ? (
+				<>
+					<ClayModal.Body scrollable>{content}</ClayModal.Body>
+
+					<ClayModal.Footer
+						first={cancelButton}
+						last={
+							<ClayButton.Group spaced>
+								{stepButtons}
+							</ClayButton.Group>
+						}
+					/>
+				</>
+			) : (
+				<>
+					{content}
+
+					<ClayButton.Group className="mt-4" spaced>
+						{cancelButton}
+
+						{stepButtons}
+					</ClayButton.Group>
+				</>
+			)}
 		</ClayForm>
 	);
 }

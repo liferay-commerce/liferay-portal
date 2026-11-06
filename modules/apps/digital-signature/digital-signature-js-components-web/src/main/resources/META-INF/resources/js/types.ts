@@ -45,7 +45,12 @@ export interface DigitalSignatureRequestFormErrors {
 	recipients?: Array<RecipientErrors | undefined>;
 }
 
-export type SearchUsers = (keywords: string) => Promise<RecipientUser[]>;
+export type RecipientBadgeText = (recipient: Recipient) => string | null;
+
+export type SearchUsers = (
+	keywords: string,
+	recipients: Recipient[]
+) => Promise<RecipientUser[]>;
 
 export type SelectFileEntry = () => Promise<FileEntry | null | undefined>;
 
@@ -57,6 +62,7 @@ export interface Step {
 
 export interface StepConfig {
 	allowedFileExtensions?: string[];
+	envelopeNameEnabled: boolean;
 	maxFileEntries?: number;
 	searchUsers?: SearchUsers;
 }
@@ -64,10 +70,12 @@ export interface StepConfig {
 export interface StepProps {
 	createRecipient: (recipient?: Recipient) => Recipient;
 	embeddedViewEnabled: boolean;
+	envelopeNameEnabled: boolean;
 	errors: DigitalSignatureRequestFormErrors;
 	handleChange: (event: ChangeEvent) => void;
 	maxFileEntries?: number;
 	maxRecipients?: number;
+	recipientBadgeText?: RecipientBadgeText;
 	searchUsers?: SearchUsers;
 	selectFileEntry?: SelectFileEntry;
 	setFieldValue: (field: string, value: unknown) => void;
