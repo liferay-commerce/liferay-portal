@@ -216,8 +216,9 @@ public class CommerceInventoryTestUtil {
 
 		if (country == null) {
 			country = CountryLocalServiceUtil.addCountry(
-				null, "ZZ", "ZZZ", true, true, null,
-				RandomTestUtil.randomString(), "000",
+				null, CountryTestUtil.randomA2(serviceContext.getCompanyId()),
+				CountryTestUtil.randomA3(serviceContext.getCompanyId()), true,
+				true, null, RandomTestUtil.randomString(), "000",
 				RandomTestUtil.randomDouble(), true, false, false,
 				serviceContext);
 		}
