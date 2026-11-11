@@ -22,6 +22,9 @@ import performLogin, {
 	performLogout,
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
+import getFragmentDefinition from '../../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
+import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
+import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {
 	createAccountWithBuyerUser,
 	miniCartCheckoutSetUp,
@@ -931,96 +934,286 @@ test('LPD-52731 Product shows in catalog after updating Account Group Visibility
 });
 
 test(
-	'If AccountGroupFilter is enabled and the relationship is deleted, product should not show',
-	{tag: '@LPD-65844'},
+	'Product publisher and collection display show products by account group',
+	{tag: ['@LPD-65844', '@LPD-112709']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelsPage,
 		page,
 		productPublisherPage,
 		site,
-		widgetPagePage,
 	}) => {
-		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
-			title: getRandomString(),
-		});
+		let collectionLayoutURL: string;
+		let product1;
+		let product2;
+		let product3;
+		let productPublisherLayoutURL: string;
 
-		const channel =
-			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				siteGroupId: site.id,
-			});
+		await test.step('Add products restricted to an account group, restricted to the guest account group and unrestricted', async () => {
+			const channel =
+				await apiHelpers.headlessCommerceAdminChannel.postChannel({
+					siteGroupId: site.id,
+				});
 
-		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
-			channel.name,
-			'B2B'
-		);
-
-		const catalog =
-			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
-				name: getRandomString(),
-			});
-
-		const account = await apiHelpers.headlessAdminUser.postAccount({
-			name: getRandomString(),
-			type: 'business',
-		});
-
-		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-			account.id,
-			['test@liferay.com']
-		);
-
-		const accountGroup =
-			await apiHelpers.headlessAdminUser.postAccountGroup({
-				name: getRandomString(),
-			});
-
-		apiHelpers.data.push({id: accountGroup.id, type: 'accountGroup'});
-
-		await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
-			account.externalReferenceCode,
-			accountGroup.externalReferenceCode
-		);
-
-		const product =
-			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
-				catalogId: catalog.id,
-				name: {en_US: getRandomString()},
-				productAccountGroupFilter: true,
-				productAccountGroups: [
-					{accountGroupId: accountGroup.id, id: 0},
-				],
-			});
-
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-		await widgetPagePage.addPortlet('Product Publisher');
-
-		await expect(
-			productPublisherPage.productCard(product.name.en_US)
-		).toBeVisible();
-
-		await page.goto(`/web/${site.name}`);
-
-		await expect(
-			productPublisherPage.productCard(product.name.en_US)
-		).toBeVisible();
-
-		const productAccountGroups =
-			await apiHelpers.headlessCommerceAdminCatalog.getProductAccountGroups(
-				product.productId
+			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+				channel.name,
+				'B2B'
 			);
 
-		await apiHelpers.headlessCommerceAdminCatalog.deleteProductAccountGroup(
-			productAccountGroups.items[0].id
-		);
+			const catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+					name: getRandomString(),
+				});
 
-		await page.goto(`/web/${site.name}`);
+			const account = await apiHelpers.headlessAdminUser.postAccount({
+				name: getRandomString(),
+				type: 'business',
+			});
 
-		await expect(
-			productPublisherPage.productCard(product.name.en_US)
-		).not.toBeVisible();
+			await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+				account.id,
+				['test@liferay.com']
+			);
+
+			const accountGroup1 =
+				await apiHelpers.headlessAdminUser.postAccountGroup({
+					name: getRandomString(),
+				});
+
+			apiHelpers.data.push({id: accountGroup1.id, type: 'accountGroup'});
+
+			await apiHelpers.headlessAdminUser.assignAccountToAccountGroup(
+				account.externalReferenceCode,
+				accountGroup1.externalReferenceCode
+			);
+
+			product1 =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: getRandomString()},
+					productAccountGroupFilter: true,
+					productAccountGroups: [
+						{accountGroupId: accountGroup1.id, id: 0},
+					],
+				});
+
+			const company =
+				await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+					'liferay.com'
+				);
+
+			const accountGroups =
+				await apiHelpers.jsonWebServicesAccountGroup.getAccountGroupsByAccountEntryId(
+					-1
+				);
+
+			const accountGroup2 = accountGroups.find(
+				(accountGroup) => accountGroup.companyId === company.companyId
+			);
+
+			product2 =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: getRandomString()},
+					productAccountGroupFilter: true,
+					productAccountGroups: [
+						{
+							accountGroupId: Number(
+								accountGroup2.accountGroupId
+							),
+							id: 0,
+						},
+					],
+				});
+
+			product3 =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: getRandomString()},
+				});
+		});
+
+		await test.step('Add a product publisher', async () => {
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getWidgetDefinition({
+						id: getRandomString(),
+						widgetName:
+							'com_liferay_commerce_product_content_web_internal_portlet_CPPublisherPortlet',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			productPublisherLayoutURL = `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
+		});
+
+		await test.step('Add a collection display of products', async () => {
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					{
+						definition: {
+							collectionConfig: {
+								collectionReference: {
+									className:
+										'com.liferay.commerce.product.content.web.internal.info.collection.provider.CPDefinitionInfoCollectionProvider',
+								},
+								collectionType: 'CollectionProvider',
+							},
+							displayAllItems: true,
+							listStyle: '',
+							numberOfColumns: 1,
+							numberOfItems: 50,
+						},
+						id: getRandomString(),
+						pageElements: [
+							{
+								id: getRandomString(),
+								pageElements: [
+									getFragmentDefinition({
+										fragmentFields: [
+											{
+												id: 'element-text',
+												value: {
+													text: {
+														mapping: {
+															fieldKey: 'name',
+															itemReference: {
+																contextSource:
+																	'CollectionItem',
+															},
+														},
+													},
+												},
+											},
+										],
+										id: getRandomString(),
+										key: 'BASIC_COMPONENT-heading',
+									}),
+								],
+								type: 'CollectionItem',
+							},
+						],
+						type: 'Collection',
+					},
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			collectionLayoutURL = `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
+		});
+
+		await test.step('Accounts in the account group see the product in the product publisher', async () => {
+			await page.goto(productPublisherLayoutURL);
+
+			await expect(
+				productPublisherPage.productCard(product1.name.en_US)
+			).toBeVisible();
+			await expect(
+				productPublisherPage.productCard(product2.name.en_US)
+			).toBeHidden();
+			await expect(
+				productPublisherPage.productCard(product3.name.en_US)
+			).toBeVisible();
+		});
+
+		await test.step('Accounts in the account group see the product in the collection display', async () => {
+			await page.goto(collectionLayoutURL);
+
+			await expect(
+				page.getByRole('heading', {
+					exact: true,
+					name: product1.name.en_US,
+				})
+			).toBeVisible();
+			await expect(
+				page.getByRole('heading', {
+					exact: true,
+					name: product2.name.en_US,
+				})
+			).toBeHidden();
+			await expect(
+				page.getByRole('heading', {
+					exact: true,
+					name: product3.name.en_US,
+				})
+			).toBeVisible();
+		});
+
+		await test.step('Guests see the guest account group product in the collection display', async () => {
+			await performLogout(page);
+
+			await page.goto(collectionLayoutURL);
+
+			await expect(
+				page.getByRole('heading', {
+					exact: true,
+					name: product1.name.en_US,
+				})
+			).toBeHidden();
+			await expect(
+				page.getByRole('heading', {
+					exact: true,
+					name: product2.name.en_US,
+				})
+			).toBeVisible();
+			await expect(
+				page.getByRole('heading', {
+					exact: true,
+					name: product3.name.en_US,
+				})
+			).toBeVisible();
+
+			await performLoginViaApi({page, screenName: 'test'});
+		});
+
+		await test.step('Delete the account group relationship', async () => {
+			const productAccountGroups =
+				await apiHelpers.headlessCommerceAdminCatalog.getProductAccountGroups(
+					product1.productId
+				);
+
+			await apiHelpers.headlessCommerceAdminCatalog.deleteProductAccountGroup(
+				productAccountGroups.items[0].id
+			);
+		});
+
+		await test.step('Accounts no longer see the product in the product publisher and in the collection display', async () => {
+			await page.goto(productPublisherLayoutURL);
+
+			await expect(
+				productPublisherPage.productCard(product1.name.en_US)
+			).toBeHidden();
+			await expect(
+				productPublisherPage.productCard(product2.name.en_US)
+			).toBeHidden();
+			await expect(
+				productPublisherPage.productCard(product3.name.en_US)
+			).toBeVisible();
+
+			await page.goto(collectionLayoutURL);
+
+			await expect(
+				page.getByRole('heading', {
+					exact: true,
+					name: product1.name.en_US,
+				})
+			).toBeHidden();
+			await expect(
+				page.getByRole('heading', {
+					exact: true,
+					name: product2.name.en_US,
+				})
+			).toBeHidden();
+			await expect(
+				page.getByRole('heading', {
+					exact: true,
+					name: product3.name.en_US,
+				})
+			).toBeVisible();
+		});
 	}
 );
 
