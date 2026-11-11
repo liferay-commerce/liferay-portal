@@ -1985,6 +1985,12 @@ components:
                     items:
                         $ref: "#/components/schemas/ProductAccountGroup"
                     type: array
+                productAccounts:
+                    description:
+                        Specific accounts allowed to see this product when `productAccountGroupFilter` is enabled, in addition to the accounts of the groups in `productAccountGroups`; a missing field leaves them unchanged and an array replaces them. Null and ignored while the feature is disabled.
+                    items:
+                        $ref: "#/components/schemas/ProductAccount"
+                    type: array
                 productChannelFilter:
                     description:
                         When true, the product's visibility is filtered by the associated commerce channels in `productChannels`.
@@ -2118,6 +2124,51 @@ components:
                 -   active
                 -   name
                 -   productType
+            type: object
+        ProductAccount:
+            description:
+                Association between a product and an account; admin catalog write view used to manage which specific accounts can see a product when `productAccountGroupFilter` is enabled on the parent product, in addition to the accounts of the groups in `productAccountGroups`.
+            properties:
+                accountExternalReferenceCode:
+                    description:
+                        External reference code of the account; when set, it is resolved first and `accountId` is ignored.
+                    example: DAB-34098-789-N
+                    type: string
+                accountId:
+                    description:
+                        Identifier of the account; used when `accountExternalReferenceCode` is not set.
+                    example: 30324
+                    format: int64
+                    minimum: 0
+                    type: integer
+                accountType:
+                    description:
+                        Type of the account named by `accountExternalReferenceCode`. An import needs it to create the account as an empty stub when the account does not exist yet, because the type cannot be changed after an account is created.
+                    enum:
+                        -   business
+                        -   guest
+                        -   person
+                        -   supplier
+                    type: string
+                externalReferenceCode:
+                    description:
+                        External reference code of the row that links the product to the account; unique within the company.
+                    example: AB-34098-789-N
+                    type: string
+                id:
+                    description:
+                        Primary key of the row that links the product to the account; read-only.
+                    example: 31130
+                    format: int64
+                    minimum: 0
+                    readOnly: true
+                    type: integer
+                name:
+                    description:
+                        Display name of the associated account; read-only.
+                    example: Alessio Antonio Rendina
+                    readOnly: true
+                    type: string
             type: object
         ProductAccountGroup:
             description:
@@ -8264,6 +8315,106 @@ paths:
             summary: Gets a related product by ID.
             tags:
                 -   ProductAccountGroup
+    /product-accounts/{id}:
+        delete:
+            description:
+                Removes the account assignment identified by ID from its product. Returns 404 when the record is not found. Side effects -- Removes the account <-> product association.
+            operationId: deleteProductAccount
+            parameters:
+                -   $ref: "#/components/parameters/idPathParam"
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this product account.
+            summary: Deletes a product account by ID.
+            tags:
+                -   ProductAccount
+            x-feature-flag: LPD-112683
+        get:
+            description:
+                Fetches the product/account association identified by ID. Returns 404 when the ID is not found.
+            operationId: getProductAccount
+            parameters:
+                -   $ref: "#/components/parameters/idPathParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/ProductAccount"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/ProductAccount"
+                    description:
+                        Successful operation
+                400:
+                    description:
+                        Invalid input
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this product account.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a product account by ID.
+            tags:
+                -   ProductAccount
+            x-feature-flag: LPD-112683
     /product-channels/{id}:
         delete:
             description:
@@ -15482,6 +15633,64 @@ paths:
             summary: Gets a list of channel related to a product.
             tags:
                 -   ProductAccountGroup
+    /products/by-externalReferenceCode/{externalReferenceCode}/product-accounts:
+        get:
+            description:
+                Lists the account assignments of the product identified by external reference code. Validation -- Returns empty page when product ERC not found (no exception).
+            operationId: getProductByExternalReferenceCodeProductAccountsPage
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+                -   $ref: "#/components/parameters/pageQueryParam"
+                -   $ref: "#/components/parameters/pageSizeQueryParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ProductAccount"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ProductAccount"
+                                type: array
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets the accounts of a product by external reference code.
+            tags:
+                -   ProductAccount
+            x-feature-flag: LPD-112683
     /products/by-externalReferenceCode/{externalReferenceCode}/product-channels:
         get:
             description:
@@ -18815,6 +19024,64 @@ paths:
             summary: Gets a list of channel related to a product.
             tags:
                 -   ProductAccountGroup
+    /products/{id}/product-accounts:
+        get:
+            description:
+                Lists the account assignments of the product identified by product ID. Validation -- Returns empty page when product ID not found (no exception).
+            operationId: getProductIdProductAccountsPage
+            parameters:
+                -   $ref: "#/components/parameters/idPathParam"
+                -   $ref: "#/components/parameters/pageQueryParam"
+                -   $ref: "#/components/parameters/pageSizeQueryParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ProductAccount"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ProductAccount"
+                                type: array
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets the accounts of a product by ID.
+            tags:
+                -   ProductAccount
+            x-feature-flag: LPD-112683
     /products/{id}/product-channels:
         get:
             description:
@@ -22579,6 +22846,9 @@ tags:
     -   description:
             Products — the core catalog entity that aggregates SKUs, options, attachments, categories, specifications, and channel bindings.
         name: Product
+    -   description:
+            Account bindings that restrict product visibility to a specific set of accounts, in addition to the account groups.
+        name: ProductAccount
     -   description:
             Account-group bindings that restrict product visibility to a specific set of account groups.
         name: ProductAccountGroup
