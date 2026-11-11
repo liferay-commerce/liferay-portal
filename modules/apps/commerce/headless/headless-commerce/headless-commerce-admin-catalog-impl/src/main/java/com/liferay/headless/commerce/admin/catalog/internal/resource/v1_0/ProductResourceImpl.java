@@ -5,7 +5,9 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroup;
+import com.liferay.account.service.AccountEntryService;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.account.service.AccountGroupRelService;
 import com.liferay.account.service.AccountGroupService;
@@ -30,12 +32,14 @@ import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.CPDefinitionGroupIdException;
 import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
+import com.liferay.commerce.product.exception.CPDefinitionVisibilityRelClassPKException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
+import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -47,6 +51,7 @@ import com.liferay.commerce.product.service.CPDefinitionOptionRelService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelService;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelService;
 import com.liferay.commerce.product.service.CPInstanceService;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureService;
 import com.liferay.commerce.product.service.CPOptionCategoryService;
@@ -89,6 +94,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.GroupedProduct;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.MappedProduct;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Pin;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductAccount;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductAccountGroup;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductChannel;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
@@ -136,7 +142,9 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.change.tracking.CTAware;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -1057,6 +1065,50 @@ public class ProductResourceImpl
 			catalogExternalReferenceCode, null, commerceCurrency.getCode());
 	}
 
+	private long _getAccountEntryId(ProductAccount productAccount)
+		throws Exception {
+
+		String accountExternalReferenceCode =
+			productAccount.getAccountExternalReferenceCode();
+
+		if (Validator.isNull(accountExternalReferenceCode)) {
+			AccountEntry accountEntry = _accountEntryService.fetchAccountEntry(
+				GetterUtil.getLong(productAccount.getAccountId()));
+
+			if (accountEntry == null) {
+				throw new CPDefinitionVisibilityRelClassPKException(
+					"Unable to find account with ID " +
+						productAccount.getAccountId());
+			}
+
+			return accountEntry.getAccountEntryId();
+		}
+
+		AccountEntry accountEntry = null;
+		ProductAccount.AccountType accountType =
+			productAccount.getAccountType();
+
+		if (LazyReferencingThreadLocal.isEnabled() && (accountType != null)) {
+			accountEntry = _accountEntryService.getOrAddEmptyAccountEntry(
+				accountExternalReferenceCode, accountExternalReferenceCode,
+				accountType.getValue());
+		}
+		else {
+			accountEntry =
+				_accountEntryService.fetchAccountEntryByExternalReferenceCode(
+					accountExternalReferenceCode,
+					contextCompany.getCompanyId());
+		}
+
+		if (accountEntry == null) {
+			throw new CPDefinitionVisibilityRelClassPKException(
+				"Unable to find account with external reference code " +
+					accountExternalReferenceCode);
+		}
+
+		return accountEntry.getAccountEntryId();
+	}
+
 	private Map<String, Map<String, String>> _getActions(
 		CPDefinition cpDefinition) {
 
@@ -1785,6 +1837,63 @@ public class ProductResourceImpl
 			}
 		}
 
+		// Product accounts visibility
+
+		ProductAccount[] productAccounts = product.getProductAccounts();
+
+		if ((productAccounts != null) &&
+			FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-112683")) {
+
+			long[] accountEntryIds = unsafeTransformToLongArray(
+				productAccounts, this::_getAccountEntryId);
+
+			Map<Long, CPDefinitionVisibilityRel> cpDefinitionVisibilityRelsMap =
+				new HashMap<>();
+
+			for (CPDefinitionVisibilityRel cpDefinitionVisibilityRel :
+					_cpDefinitionVisibilityRelService.
+						getCPDefinitionVisibilityRels(
+							cpDefinition.getCPDefinitionId(),
+							AccountEntry.class.getName(), QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS, null)) {
+
+				cpDefinitionVisibilityRelsMap.put(
+					cpDefinitionVisibilityRel.getClassPK(),
+					cpDefinitionVisibilityRel);
+			}
+
+			boolean[] unchanged = new boolean[productAccounts.length];
+
+			for (int i = 0; i < productAccounts.length; i++) {
+				unchanged[i] =
+					cpDefinitionVisibilityRelsMap.remove(accountEntryIds[i]) !=
+						null;
+			}
+
+			for (CPDefinitionVisibilityRel cpDefinitionVisibilityRel :
+					cpDefinitionVisibilityRelsMap.values()) {
+
+				_cpDefinitionVisibilityRelService.
+					deleteCPDefinitionVisibilityRel(
+						cpDefinitionVisibilityRel.
+							getCPDefinitionVisibilityRelId());
+			}
+
+			for (int i = 0; i < productAccounts.length; i++) {
+				if (unchanged[i]) {
+					continue;
+				}
+
+				ProductAccount productAccount = productAccounts[i];
+
+				_cpDefinitionVisibilityRelService.addCPDefinitionVisibilityRel(
+					productAccount.getExternalReferenceCode(),
+					cpDefinition.getCPDefinitionId(),
+					AccountEntry.class.getName(), accountEntryIds[i]);
+			}
+		}
+
 		// Product groups
 
 		ProductProductGroup[] productProductGroups = product.getProductGroups();
@@ -2166,6 +2275,9 @@ public class ProductResourceImpl
 		ProductResourceImpl.class);
 
 	@Reference
+	private AccountEntryService _accountEntryService;
+
+	@Reference
 	private AccountGroupRelLocalService _accountGroupRelLocalService;
 
 	@Reference
@@ -2272,6 +2384,9 @@ public class ProductResourceImpl
 	@Reference
 	private CPDefinitionVirtualSettingService
 		_cpDefinitionVirtualSettingService;
+
+	@Reference
+	private CPDefinitionVisibilityRelService _cpDefinitionVisibilityRelService;
 
 	@Reference
 	private CPInstanceService _cpInstanceService;
