@@ -5,14 +5,17 @@
 
 package com.liferay.commerce.product.internal.permission;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
@@ -155,6 +158,22 @@ public class CommerceProductViewPermissionImpl
 			}
 		}
 
+		if (!FeatureFlagManagerUtil.isEnabled(
+				cpDefinition.getCompanyId(), "LPD-112683")) {
+
+			return false;
+		}
+
+		CPDefinitionVisibilityRel cpDefinitionVisibilityRel =
+			_cpDefinitionVisibilityRelLocalService.
+				fetchCPDefinitionVisibilityRel(
+					cpDefinition.getCPDefinitionId(),
+					AccountEntry.class.getName(), commerceAccountId);
+
+		if (cpDefinitionVisibilityRel != null) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -237,6 +256,10 @@ public class CommerceProductViewPermissionImpl
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Reference
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

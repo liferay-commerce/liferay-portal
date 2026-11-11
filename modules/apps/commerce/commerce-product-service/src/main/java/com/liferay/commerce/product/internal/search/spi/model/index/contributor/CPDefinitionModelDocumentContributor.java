@@ -6,6 +6,7 @@
 package com.liferay.commerce.product.internal.search.spi.model.index.contributor;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
@@ -21,6 +22,7 @@ import com.liferay.commerce.product.model.CPDefinitionLink;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
+import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CPSpecificationOption;
@@ -30,6 +32,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPDefinitionLinkLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
@@ -341,6 +344,15 @@ public class CPDefinitionModelDocumentContributor
 						cpDefinition.getCPDefinitionId(), QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS, null),
 					AccountGroupRel::getAccountGroupId));
+			document.addNumber(
+				"commerceAccountIds",
+				TransformUtil.transformToLongArray(
+					_cpDefinitionVisibilityRelLocalService.
+						getCPDefinitionVisibilityRels(
+							cpDefinition.getCPDefinitionId(),
+							AccountEntry.class.getName(), QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS, null),
+					CPDefinitionVisibilityRel::getClassPK));
 
 			CommerceCatalog commerceCatalog = cpDefinition.getCommerceCatalog();
 
@@ -708,6 +720,10 @@ public class CPDefinitionModelDocumentContributor
 	@Reference
 	private CPDefinitionSpecificationOptionValueLocalService
 		_cpDefinitionSpecificationOptionValueLocalService;
+
+	@Reference
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
 
 	@Reference
 	private CPInstanceLocalService _cpInstanceLocalService;
