@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.product.service;
 
+import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 
 /**
@@ -26,6 +27,55 @@ public class CPDefinitionVisibilityRelServiceWrapper
 		CPDefinitionVisibilityRelService cpDefinitionVisibilityRelService) {
 
 		_cpDefinitionVisibilityRelService = cpDefinitionVisibilityRelService;
+	}
+
+	@Override
+	public CPDefinitionVisibilityRel addCPDefinitionVisibilityRel(
+			String externalReferenceCode, long cpDefinitionId, String className,
+			long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionVisibilityRelService.addCPDefinitionVisibilityRel(
+			externalReferenceCode, cpDefinitionId, className, classPK);
+	}
+
+	@Override
+	public void deleteCPDefinitionVisibilityRel(
+			long cpDefinitionVisibilityRelId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_cpDefinitionVisibilityRelService.deleteCPDefinitionVisibilityRel(
+			cpDefinitionVisibilityRelId);
+	}
+
+	@Override
+	public CPDefinitionVisibilityRel getCPDefinitionVisibilityRel(
+			long cpDefinitionVisibilityRelId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionVisibilityRelService.getCPDefinitionVisibilityRel(
+			cpDefinitionVisibilityRelId);
+	}
+
+	@Override
+	public java.util.List<CPDefinitionVisibilityRel>
+			getCPDefinitionVisibilityRels(
+				long cpDefinitionId, String className, int start, int end,
+				com.liferay.portal.kernel.util.OrderByComparator
+					<CPDefinitionVisibilityRel> orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionVisibilityRelService.getCPDefinitionVisibilityRels(
+			cpDefinitionId, className, start, end, orderByComparator);
+	}
+
+	@Override
+	public int getCPDefinitionVisibilityRelsCount(
+			long cpDefinitionId, String className)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionVisibilityRelService.
+			getCPDefinitionVisibilityRelsCount(cpDefinitionId, className);
 	}
 
 	/**
@@ -53,4 +103,4 @@ public class CPDefinitionVisibilityRelServiceWrapper
 	private CPDefinitionVisibilityRelService _cpDefinitionVisibilityRelService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:751045697
+// LIFERAY-SERVICE-BUILDER-HASH:63692066

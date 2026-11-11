@@ -16,12 +16,14 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -73,6 +75,11 @@ public interface CPDefinitionVisibilityRelLocalService
 	public CPDefinitionVisibilityRel addCPDefinitionVisibilityRel(
 		CPDefinitionVisibilityRel cpDefinitionVisibilityRel);
 
+	public CPDefinitionVisibilityRel addCPDefinitionVisibilityRel(
+			String externalReferenceCode, long userId, long cpDefinitionId,
+			String className, long classPK)
+		throws PortalException;
+
 	/**
 	 * Creates a new cp definition visibility rel with the primary key. Does not add the cp definition visibility rel to the database.
 	 *
@@ -98,10 +105,13 @@ public interface CPDefinitionVisibilityRelLocalService
 	 *
 	 * @param cpDefinitionVisibilityRel the cp definition visibility rel
 	 * @return the cp definition visibility rel that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public CPDefinitionVisibilityRel deleteCPDefinitionVisibilityRel(
-		CPDefinitionVisibilityRel cpDefinitionVisibilityRel);
+			CPDefinitionVisibilityRel cpDefinitionVisibilityRel)
+		throws PortalException;
 
 	/**
 	 * Deletes the cp definition visibility rel with the primary key from the database. Also notifies the appropriate model listeners.
@@ -117,6 +127,9 @@ public interface CPDefinitionVisibilityRelLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public CPDefinitionVisibilityRel deleteCPDefinitionVisibilityRel(
 			long CPDefinitionVisibilityRelId)
+		throws PortalException;
+
+	public void deleteCPDefinitionVisibilityRels(String className, long classPK)
 		throws PortalException;
 
 	/**
@@ -203,6 +216,10 @@ public interface CPDefinitionVisibilityRelLocalService
 		long CPDefinitionVisibilityRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionVisibilityRel fetchCPDefinitionVisibilityRel(
+		long cpDefinitionId, String className, long classPK);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public CPDefinitionVisibilityRel
 		fetchCPDefinitionVisibilityRelByExternalReferenceCode(
 			String externalReferenceCode, long companyId);
@@ -242,6 +259,11 @@ public interface CPDefinitionVisibilityRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CPDefinitionVisibilityRel> getCPDefinitionVisibilityRels(
 		int start, int end);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CPDefinitionVisibilityRel> getCPDefinitionVisibilityRels(
+		long cpDefinitionId, String className, int start, int end,
+		OrderByComparator<CPDefinitionVisibilityRel> orderByComparator);
 
 	/**
 	 * Returns the number of cp definition visibility rels.
@@ -299,4 +321,4 @@ public interface CPDefinitionVisibilityRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:307240033
+// LIFERAY-SERVICE-BUILDER-HASH:-73854690

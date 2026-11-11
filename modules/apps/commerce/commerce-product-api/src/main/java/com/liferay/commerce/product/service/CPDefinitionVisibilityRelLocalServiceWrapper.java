@@ -52,6 +52,18 @@ public class CPDefinitionVisibilityRelLocalServiceWrapper
 			addCPDefinitionVisibilityRel(cpDefinitionVisibilityRel);
 	}
 
+	@Override
+	public CPDefinitionVisibilityRel addCPDefinitionVisibilityRel(
+			String externalReferenceCode, long userId, long cpDefinitionId,
+			String className, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionVisibilityRelLocalService.
+			addCPDefinitionVisibilityRel(
+				externalReferenceCode, userId, cpDefinitionId, className,
+				classPK);
+	}
+
 	/**
 	 * Creates a new cp definition visibility rel with the primary key. Does not add the cp definition visibility rel to the database.
 	 *
@@ -87,10 +99,12 @@ public class CPDefinitionVisibilityRelLocalServiceWrapper
 	 *
 	 * @param cpDefinitionVisibilityRel the cp definition visibility rel
 	 * @return the cp definition visibility rel that was removed
+	 * @throws PortalException
 	 */
 	@Override
 	public CPDefinitionVisibilityRel deleteCPDefinitionVisibilityRel(
-		CPDefinitionVisibilityRel cpDefinitionVisibilityRel) {
+			CPDefinitionVisibilityRel cpDefinitionVisibilityRel)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _cpDefinitionVisibilityRelLocalService.
 			deleteCPDefinitionVisibilityRel(cpDefinitionVisibilityRel);
@@ -114,6 +128,14 @@ public class CPDefinitionVisibilityRelLocalServiceWrapper
 
 		return _cpDefinitionVisibilityRelLocalService.
 			deleteCPDefinitionVisibilityRel(CPDefinitionVisibilityRelId);
+	}
+
+	@Override
+	public void deleteCPDefinitionVisibilityRels(String className, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_cpDefinitionVisibilityRelLocalService.deleteCPDefinitionVisibilityRels(
+			className, classPK);
 	}
 
 	/**
@@ -242,6 +264,14 @@ public class CPDefinitionVisibilityRelLocalServiceWrapper
 	}
 
 	@Override
+	public CPDefinitionVisibilityRel fetchCPDefinitionVisibilityRel(
+		long cpDefinitionId, String className, long classPK) {
+
+		return _cpDefinitionVisibilityRelLocalService.
+			fetchCPDefinitionVisibilityRel(cpDefinitionId, className, classPK);
+	}
+
+	@Override
 	public CPDefinitionVisibilityRel
 		fetchCPDefinitionVisibilityRelByExternalReferenceCode(
 			String externalReferenceCode, long companyId) {
@@ -303,6 +333,18 @@ public class CPDefinitionVisibilityRelLocalServiceWrapper
 
 		return _cpDefinitionVisibilityRelLocalService.
 			getCPDefinitionVisibilityRels(start, end);
+	}
+
+	@Override
+	public java.util.List<CPDefinitionVisibilityRel>
+		getCPDefinitionVisibilityRels(
+			long cpDefinitionId, String className, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<CPDefinitionVisibilityRel> orderByComparator) {
+
+		return _cpDefinitionVisibilityRelLocalService.
+			getCPDefinitionVisibilityRels(
+				cpDefinitionId, className, start, end, orderByComparator);
 	}
 
 	/**
@@ -408,4 +450,4 @@ public class CPDefinitionVisibilityRelLocalServiceWrapper
 		_cpDefinitionVisibilityRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:719252777
+// LIFERAY-SERVICE-BUILDER-HASH:820393015
