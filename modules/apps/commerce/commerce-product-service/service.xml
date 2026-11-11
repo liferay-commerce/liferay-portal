@@ -881,6 +881,51 @@
 			<finder-column name="key" />
 		</finder>
 	</entity>
+	<entity external-reference-code="company" local-service="true" name="CPDefinitionVisibilityRel" remote-service="true">
+
+		<!-- PK fields -->
+
+		<column name="CPDefinitionVisibilityRelId" primary="true" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="CPDefinitionId" type="long" />
+		<column name="classNameId" type="long" />
+		<column name="classPK" type="long" />
+
+		<!-- Order -->
+
+		<order by="desc">
+			<order-column name="createDate" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="CPDefinitionId" return-type="Collection">
+			<finder-column name="CPDefinitionId" />
+		</finder>
+		<finder name="CPD_C" return-type="Collection">
+			<finder-column name="CPDefinitionId" />
+			<finder-column name="classNameId" />
+		</finder>
+		<finder name="C_C" return-type="Collection">
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+		<finder name="CPD_C_C" return-type="CPDefinitionVisibilityRel" unique="true">
+			<finder-column name="CPDefinitionId" />
+			<finder-column name="classNameId" />
+			<finder-column name="classPK" />
+		</finder>
+	</entity>
 	<entity local-service="true" name="CPDisplayLayout" remote-service="true" uuid="true">
 
 		<!-- PK fields -->
@@ -1494,6 +1539,8 @@
 		<exception>CPDefinitionProductTypeName</exception>
 		<exception>CPDefinitionSpecificationOptionValueKey</exception>
 		<exception>CPDefinitionSubscriptionLength</exception>
+		<exception>CPDefinitionVisibilityRelClassNameId</exception>
+		<exception>CPDefinitionVisibilityRelClassPK</exception>
 		<exception>CPDisplayLayoutEntry</exception>
 		<exception>CPDisplayLayoutEntryUuid</exception>
 		<exception>CPInstanceCost</exception>
@@ -1539,6 +1586,7 @@
 		<exception>DuplicateCPConfigurationListRel</exception>
 		<exception>DuplicateCPDefinitionOptionRelKey</exception>
 		<exception>DuplicateCPDefinitionOptionValueRelKey</exception>
+		<exception>DuplicateCPDefinitionVisibilityRel</exception>
 		<exception>DuplicateCPInstance</exception>
 		<exception>DuplicateCPInstanceUnitOfMeasureKey</exception>
 		<exception>DuplicateCPMeasurementUnitExternalReferenceCode</exception>
