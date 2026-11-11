@@ -10,6 +10,7 @@ import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelCons
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
@@ -185,6 +186,16 @@ public class AccountEntryModelListener extends BaseModelListener<AccountEntry> {
 		catch (PortalException portalException) {
 			_log.error(portalException);
 		}
+
+		try {
+			_cpDefinitionVisibilityRelLocalService.
+				deleteCPDefinitionVisibilityRels(
+					AccountEntry.class.getName(),
+					accountEntry.getAccountEntryId());
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
@@ -199,5 +210,9 @@ public class AccountEntryModelListener extends BaseModelListener<AccountEntry> {
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
 
 }
