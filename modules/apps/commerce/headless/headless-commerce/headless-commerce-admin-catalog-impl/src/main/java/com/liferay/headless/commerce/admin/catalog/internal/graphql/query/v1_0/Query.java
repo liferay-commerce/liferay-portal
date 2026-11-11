@@ -20,6 +20,7 @@ import com.liferay.headless.commerce.admin.catalog.dto.v1_0.OptionCategory;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.OptionValue;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Pin;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductAccount;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductAccountGroup;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductChannel;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductConfiguration;
@@ -61,6 +62,7 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.OptionResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.OptionValueResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.PinResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductAccountGroupResource;
+import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductAccountResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductChannelResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductConfigurationListAccountGroupResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductConfigurationListAccountResource;
@@ -237,6 +239,14 @@ public class Query {
 
 		_productResourceComponentServiceObjects =
 			productResourceComponentServiceObjects;
+	}
+
+	public static void setProductAccountResourceComponentServiceObjects(
+		ComponentServiceObjects<ProductAccountResource>
+			productAccountResourceComponentServiceObjects) {
+
+		_productAccountResourceComponentServiceObjects =
+			productAccountResourceComponentServiceObjects;
 	}
 
 	public static void setProductAccountGroupResourceComponentServiceObjects(
@@ -1340,7 +1350,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {product(id: ___){actions, active, attachments, catalog, catalogCurrencyCode, catalogCurrencyExternalReferenceCode, catalogExternalReferenceCode, catalogId, categories, createDate, creator, customFields, dateCreated, dateModified, defaultSku, description, diagram, displayDate, expando, expirationDate, externalReferenceCode, groupedProducts, id, images, linkedProducts, mappedProducts, metaDescription, metaKeyword, metaTitle, modifiedDate, name, neverExpire, pins, productAccountGroupFilter, productAccountGroups, productChannelFilter, productChannels, productConfiguration, productGroups, productId, productOptions, productSpecifications, productStatus, productType, productTypeI18n, productVirtualSettings, relatedProducts, shippingConfiguration, shortDescription, skuFormatted, skus, subscriptionConfiguration, tags, taxConfiguration, thumbnail, urls, version, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {product(id: ___){actions, active, attachments, catalog, catalogCurrencyCode, catalogCurrencyExternalReferenceCode, catalogExternalReferenceCode, catalogId, categories, createDate, creator, customFields, dateCreated, dateModified, defaultSku, description, diagram, displayDate, expando, expirationDate, externalReferenceCode, groupedProducts, id, images, linkedProducts, mappedProducts, metaDescription, metaKeyword, metaTitle, modifiedDate, name, neverExpire, pins, productAccountGroupFilter, productAccountGroups, productAccounts, productChannelFilter, productChannels, productConfiguration, productGroups, productId, productOptions, productSpecifications, productStatus, productType, productTypeI18n, productVirtualSettings, relatedProducts, shippingConfiguration, shortDescription, skuFormatted, skus, subscriptionConfiguration, tags, taxConfiguration, thumbnail, urls, version, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetches the latest published version of the product identified by product ID. Returns 404 when the product ID is not found."
@@ -1355,7 +1365,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCode(externalReferenceCode: ___){actions, active, attachments, catalog, catalogCurrencyCode, catalogCurrencyExternalReferenceCode, catalogExternalReferenceCode, catalogId, categories, createDate, creator, customFields, dateCreated, dateModified, defaultSku, description, diagram, displayDate, expando, expirationDate, externalReferenceCode, groupedProducts, id, images, linkedProducts, mappedProducts, metaDescription, metaKeyword, metaTitle, modifiedDate, name, neverExpire, pins, productAccountGroupFilter, productAccountGroups, productChannelFilter, productChannels, productConfiguration, productGroups, productId, productOptions, productSpecifications, productStatus, productType, productTypeI18n, productVirtualSettings, relatedProducts, shippingConfiguration, shortDescription, skuFormatted, skus, subscriptionConfiguration, tags, taxConfiguration, thumbnail, urls, version, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCode(externalReferenceCode: ___){actions, active, attachments, catalog, catalogCurrencyCode, catalogCurrencyExternalReferenceCode, catalogExternalReferenceCode, catalogId, categories, createDate, creator, customFields, dateCreated, dateModified, defaultSku, description, diagram, displayDate, expando, expirationDate, externalReferenceCode, groupedProducts, id, images, linkedProducts, mappedProducts, metaDescription, metaKeyword, metaTitle, modifiedDate, name, neverExpire, pins, productAccountGroupFilter, productAccountGroups, productAccounts, productChannelFilter, productChannels, productConfiguration, productGroups, productId, productOptions, productSpecifications, productStatus, productType, productTypeI18n, productVirtualSettings, relatedProducts, shippingConfiguration, shortDescription, skuFormatted, skus, subscriptionConfiguration, tags, taxConfiguration, thumbnail, urls, version, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetches the latest published version of the product identified by external reference code. Returns 404 when the external reference code is not found."
@@ -1375,7 +1385,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCodeByVersion(externalReferenceCode: ___, version: ___){actions, active, attachments, catalog, catalogCurrencyCode, catalogCurrencyExternalReferenceCode, catalogExternalReferenceCode, catalogId, categories, createDate, creator, customFields, dateCreated, dateModified, defaultSku, description, diagram, displayDate, expando, expirationDate, externalReferenceCode, groupedProducts, id, images, linkedProducts, mappedProducts, metaDescription, metaKeyword, metaTitle, modifiedDate, name, neverExpire, pins, productAccountGroupFilter, productAccountGroups, productChannelFilter, productChannels, productConfiguration, productGroups, productId, productOptions, productSpecifications, productStatus, productType, productTypeI18n, productVirtualSettings, relatedProducts, shippingConfiguration, shortDescription, skuFormatted, skus, subscriptionConfiguration, tags, taxConfiguration, thumbnail, urls, version, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCodeByVersion(externalReferenceCode: ___, version: ___){actions, active, attachments, catalog, catalogCurrencyCode, catalogCurrencyExternalReferenceCode, catalogExternalReferenceCode, catalogId, categories, createDate, creator, customFields, dateCreated, dateModified, defaultSku, description, diagram, displayDate, expando, expirationDate, externalReferenceCode, groupedProducts, id, images, linkedProducts, mappedProducts, metaDescription, metaKeyword, metaTitle, modifiedDate, name, neverExpire, pins, productAccountGroupFilter, productAccountGroups, productAccounts, productChannelFilter, productChannels, productConfiguration, productGroups, productId, productOptions, productSpecifications, productStatus, productType, productTypeI18n, productVirtualSettings, relatedProducts, shippingConfiguration, shortDescription, skuFormatted, skus, subscriptionConfiguration, tags, taxConfiguration, thumbnail, urls, version, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetches a specific historical version of the product identified by external reference code. Returns 404 when the external reference code or version is not found."
@@ -1396,7 +1406,7 @@ public class Query {
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByVersion(id: ___, version: ___){actions, active, attachments, catalog, catalogCurrencyCode, catalogCurrencyExternalReferenceCode, catalogExternalReferenceCode, catalogId, categories, createDate, creator, customFields, dateCreated, dateModified, defaultSku, description, diagram, displayDate, expando, expirationDate, externalReferenceCode, groupedProducts, id, images, linkedProducts, mappedProducts, metaDescription, metaKeyword, metaTitle, modifiedDate, name, neverExpire, pins, productAccountGroupFilter, productAccountGroups, productChannelFilter, productChannels, productConfiguration, productGroups, productId, productOptions, productSpecifications, productStatus, productType, productTypeI18n, productVirtualSettings, relatedProducts, shippingConfiguration, shortDescription, skuFormatted, skus, subscriptionConfiguration, tags, taxConfiguration, thumbnail, urls, version, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByVersion(id: ___, version: ___){actions, active, attachments, catalog, catalogCurrencyCode, catalogCurrencyExternalReferenceCode, catalogExternalReferenceCode, catalogId, categories, createDate, creator, customFields, dateCreated, dateModified, defaultSku, description, diagram, displayDate, expando, expirationDate, externalReferenceCode, groupedProducts, id, images, linkedProducts, mappedProducts, metaDescription, metaKeyword, metaTitle, modifiedDate, name, neverExpire, pins, productAccountGroupFilter, productAccountGroups, productAccounts, productChannelFilter, productChannels, productConfiguration, productGroups, productId, productOptions, productSpecifications, productStatus, productType, productTypeI18n, productVirtualSettings, relatedProducts, shippingConfiguration, shortDescription, skuFormatted, skus, subscriptionConfiguration, tags, taxConfiguration, thumbnail, urls, version, workflowStatusInfo}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
 		description = "Fetches a specific historical version of the product identified by product ID. Returns 404 when the product ID or version is not found."
@@ -1437,6 +1447,71 @@ public class Query {
 					_filterBiFunction.apply(productResource, filterString),
 					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(productResource, sortsString))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productAccount(id: ___){accountExternalReferenceCode, accountId, accountType, externalReferenceCode, id, name}}"}' -u 'test@liferay.com:test'
+	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-112683")
+	@GraphQLField(
+		description = "Fetches the product/account association identified by ID. Returns 404 when the ID is not found."
+	)
+	public ProductAccount productAccount(@GraphQLName("id") Long id)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productAccountResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productAccountResource -> productAccountResource.getProductAccount(
+				id));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productByExternalReferenceCodeProductAccounts(externalReferenceCode: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-112683")
+	@GraphQLField(
+		description = "Lists the account assignments of the product identified by external reference code. Validation -- Returns empty page when product ERC not found (no exception)."
+	)
+	public ProductAccountPage productByExternalReferenceCodeProductAccounts(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productAccountResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productAccountResource -> new ProductAccountPage(
+				productAccountResource.
+					getProductByExternalReferenceCodeProductAccountsPage(
+						externalReferenceCode, Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {productIdProductAccounts(id: ___, page: ___, pageSize: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-112683")
+	@GraphQLField(
+		description = "Lists the account assignments of the product identified by product ID. Validation -- Returns empty page when product ID not found (no exception)."
+	)
+	public ProductAccountPage productIdProductAccounts(
+			@GraphQLName("id") Long id, @GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productAccountResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productAccountResource -> new ProductAccountPage(
+				productAccountResource.getProductIdProductAccountsPage(
+					id, Pagination.of(page, pageSize))));
 	}
 
 	/**
@@ -3729,6 +3804,39 @@ public class Query {
 
 	@GraphQLTypeExtension(Attachment.class)
 	public class
+		GetProductByExternalReferenceCodeProductAccountsPageTypeExtension {
+
+		public GetProductByExternalReferenceCodeProductAccountsPageTypeExtension(
+			Attachment attachment) {
+
+			_attachment = attachment;
+		}
+
+		@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-112683")
+		@GraphQLField(
+			description = "Lists the account assignments of the product identified by external reference code. Validation -- Returns empty page when product ERC not found (no exception)."
+		)
+		public ProductAccountPage productByExternalReferenceCodeProductAccounts(
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page)
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_productAccountResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				productAccountResource -> new ProductAccountPage(
+					productAccountResource.
+						getProductByExternalReferenceCodeProductAccountsPage(
+							_attachment.getExternalReferenceCode(),
+							Pagination.of(page, pageSize))));
+		}
+
+		private Attachment _attachment;
+
+	}
+
+	@GraphQLTypeExtension(Attachment.class)
+	public class
 		GetProductByExternalReferenceCodeProductAccountGroupsPageTypeExtension {
 
 		public GetProductByExternalReferenceCodeProductAccountGroupsPageTypeExtension(
@@ -4965,6 +5073,39 @@ public class Query {
 
 	}
 
+	@GraphQLName("ProductAccountPage")
+	public class ProductAccountPage {
+
+		public ProductAccountPage(Page productAccountPage) {
+			actions = productAccountPage.getActions();
+
+			items = productAccountPage.getItems();
+			lastPage = productAccountPage.getLastPage();
+			page = productAccountPage.getPage();
+			pageSize = productAccountPage.getPageSize();
+			totalCount = productAccountPage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map<String, String>> actions;
+
+		@GraphQLField
+		protected java.util.Collection<ProductAccount> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
 	@GraphQLName("ProductAccountGroupPage")
 	public class ProductAccountGroupPage {
 
@@ -6134,6 +6275,26 @@ public class Query {
 	}
 
 	private void _populateResourceContext(
+			ProductAccountResource productAccountResource)
+		throws Exception {
+
+		productAccountResource.setContextAcceptLanguage(_acceptLanguage);
+		productAccountResource.setContextCompany(_company);
+		productAccountResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		productAccountResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		productAccountResource.setContextUriInfo(_uriInfo);
+		productAccountResource.setContextUser(_user);
+		productAccountResource.setGroupLocalService(_groupLocalService);
+		productAccountResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		productAccountResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
+		productAccountResource.setRoleLocalService(_roleLocalService);
+	}
+
+	private void _populateResourceContext(
 			ProductAccountGroupResource productAccountGroupResource)
 		throws Exception {
 
@@ -6719,6 +6880,8 @@ public class Query {
 		_pinResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ProductResource>
 		_productResourceComponentServiceObjects;
+	private static ComponentServiceObjects<ProductAccountResource>
+		_productAccountResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ProductAccountGroupResource>
 		_productAccountGroupResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ProductChannelResource>
@@ -6795,4 +6958,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1326021357
+// LIFERAY-REST-BUILDER-HASH:-727543073

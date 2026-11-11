@@ -1704,6 +1704,53 @@ public class Product implements Serializable {
 	private Supplier<ProductAccountGroup[]> _productAccountGroupsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Specific accounts allowed to see this product when `productAccountGroupFilter` is enabled, in addition to the accounts of the groups in `productAccountGroups`; a missing field leaves them unchanged and an array replaces them. Null and ignored while the feature is disabled."
+	)
+	@Valid
+	public ProductAccount[] getProductAccounts() {
+		if (_productAccountsSupplier != null) {
+			productAccounts = _productAccountsSupplier.get();
+
+			_productAccountsSupplier = null;
+		}
+
+		return productAccounts;
+	}
+
+	public void setProductAccounts(ProductAccount[] productAccounts) {
+		this.productAccounts = productAccounts;
+
+		_productAccountsSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setProductAccounts(
+		UnsafeSupplier<ProductAccount[], Exception>
+			productAccountsUnsafeSupplier) {
+
+		_productAccountsSupplier = () -> {
+			try {
+				return productAccountsUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Specific accounts allowed to see this product when `productAccountGroupFilter` is enabled, in addition to the accounts of the groups in `productAccountGroups`; a missing field leaves them unchanged and an array replaces them. Null and ignored while the feature is disabled."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ProductAccount[] productAccounts;
+
+	@JsonIgnore
+	private Supplier<ProductAccount[]> _productAccountsSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "When true, the product's visibility is filtered by the associated commerce channels in `productChannels`.",
 		example = "true"
 	)
@@ -3350,6 +3397,28 @@ public class Product implements Serializable {
 			sb.append("]");
 		}
 
+		ProductAccount[] productAccounts = getProductAccounts();
+
+		if (productAccounts != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productAccounts\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < productAccounts.length; i++) {
+				sb.append(String.valueOf(productAccounts[i]));
+
+				if ((i + 1) < productAccounts.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		Boolean productChannelFilter = getProductChannelFilter();
 
 		if (productChannelFilter != null) {
@@ -3842,4 +3911,4 @@ public class Product implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1563309769
+// LIFERAY-REST-BUILDER-HASH:-227241570

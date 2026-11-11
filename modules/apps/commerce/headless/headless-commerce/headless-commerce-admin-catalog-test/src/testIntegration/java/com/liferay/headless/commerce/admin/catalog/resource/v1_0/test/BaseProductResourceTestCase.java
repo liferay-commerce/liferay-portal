@@ -2578,6 +2578,14 @@ public abstract class BaseProductResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("productAccounts", additionalAssertFieldName)) {
+				if (product.getProductAccounts() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"productChannelFilter", additionalAssertFieldName)) {
 
@@ -3268,6 +3276,17 @@ public abstract class BaseProductResourceTestCase {
 				if (!Objects.deepEquals(
 						product1.getProductAccountGroups(),
 						product2.getProductAccountGroups())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productAccounts", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						product1.getProductAccounts(),
+						product2.getProductAccounts())) {
 
 					return false;
 				}
@@ -4164,6 +4183,11 @@ public abstract class BaseProductResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("productAccounts")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("productChannelFilter")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -4795,4 +4819,4 @@ public abstract class BaseProductResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1588111285
+// LIFERAY-REST-BUILDER-HASH:1919163760
