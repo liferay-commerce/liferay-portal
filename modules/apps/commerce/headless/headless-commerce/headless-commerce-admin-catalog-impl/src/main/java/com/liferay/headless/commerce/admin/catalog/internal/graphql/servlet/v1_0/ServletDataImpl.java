@@ -22,6 +22,7 @@ import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.Option
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.OptionValueResourceImpl;
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.PinResourceImpl;
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductAccountGroupResourceImpl;
+import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductAccountResourceImpl;
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductChannelResourceImpl;
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductConfigurationListAccountGroupResourceImpl;
 import com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0.ProductConfigurationListAccountResourceImpl;
@@ -63,6 +64,7 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.OptionResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.OptionValueResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.PinResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductAccountGroupResource;
+import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductAccountResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductChannelResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductConfigurationListAccountGroupResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductConfigurationListAccountResource;
@@ -142,6 +144,8 @@ public class ServletDataImpl implements ServletData {
 			_pinResourceComponentServiceObjects);
 		Mutation.setProductResourceComponentServiceObjects(
 			_productResourceComponentServiceObjects);
+		Mutation.setProductAccountResourceComponentServiceObjects(
+			_productAccountResourceComponentServiceObjects);
 		Mutation.setProductAccountGroupResourceComponentServiceObjects(
 			_productAccountGroupResourceComponentServiceObjects);
 		Mutation.setProductChannelResourceComponentServiceObjects(
@@ -223,6 +227,8 @@ public class ServletDataImpl implements ServletData {
 			_pinResourceComponentServiceObjects);
 		Query.setProductResourceComponentServiceObjects(
 			_productResourceComponentServiceObjects);
+		Query.setProductAccountResourceComponentServiceObjects(
+			_productAccountResourceComponentServiceObjects);
 		Query.setProductAccountGroupResourceComponentServiceObjects(
 			_productAccountGroupResourceComponentServiceObjects);
 		Query.setProductChannelResourceComponentServiceObjects(
@@ -814,6 +820,16 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ProductResourceImpl.class,
 							"putProductByExternalReferenceCode"));
+					put(
+						"mutation#deleteProductAccount",
+						new ObjectValuePair<>(
+							ProductAccountResourceImpl.class,
+							"deleteProductAccount"));
+					put(
+						"mutation#deleteProductAccountBatch",
+						new ObjectValuePair<>(
+							ProductAccountResourceImpl.class,
+							"deleteProductAccountBatch"));
 					put(
 						"mutation#deleteProductAccountGroup",
 						new ObjectValuePair<>(
@@ -1627,6 +1643,21 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ProductResourceImpl.class, "getProductsPage"));
 					put(
+						"query#productAccount",
+						new ObjectValuePair<>(
+							ProductAccountResourceImpl.class,
+							"getProductAccount"));
+					put(
+						"query#productByExternalReferenceCodeProductAccounts",
+						new ObjectValuePair<>(
+							ProductAccountResourceImpl.class,
+							"getProductByExternalReferenceCodeProductAccountsPage"));
+					put(
+						"query#productIdProductAccounts",
+						new ObjectValuePair<>(
+							ProductAccountResourceImpl.class,
+							"getProductIdProductAccountsPage"));
+					put(
 						"query#productAccountGroup",
 						new ObjectValuePair<>(
 							ProductAccountGroupResourceImpl.class,
@@ -2089,6 +2120,11 @@ public class ServletDataImpl implements ServletData {
 							PinResourceImpl.class,
 							"getProductByExternalReferenceCodePinsPage"));
 					put(
+						"query#Attachment.productByExternalReferenceCodeProductAccounts",
+						new ObjectValuePair<>(
+							ProductAccountResourceImpl.class,
+							"getProductByExternalReferenceCodeProductAccountsPage"));
+					put(
 						"query#Attachment.productByExternalReferenceCodeProductAccountGroups",
 						new ObjectValuePair<>(
 							ProductAccountGroupResourceImpl.class,
@@ -2264,6 +2300,10 @@ public class ServletDataImpl implements ServletData {
 		_productResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<ProductAccountResource>
+		_productAccountResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<ProductAccountGroupResource>
 		_productAccountGroupResourceComponentServiceObjects;
 
@@ -2373,4 +2413,4 @@ public class ServletDataImpl implements ServletData {
 		_skuVirtualSettingsResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1746370363
+// LIFERAY-REST-BUILDER-HASH:-1265978256
