@@ -791,6 +791,28 @@ public class Product implements Cloneable, Serializable {
 
 	protected ProductAccountGroup[] productAccountGroups;
 
+	public ProductAccount[] getProductAccounts() {
+		return productAccounts;
+	}
+
+	public void setProductAccounts(ProductAccount[] productAccounts) {
+		this.productAccounts = productAccounts;
+	}
+
+	public void setProductAccounts(
+		UnsafeSupplier<ProductAccount[], Exception>
+			productAccountsUnsafeSupplier) {
+
+		try {
+			productAccounts = productAccountsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ProductAccount[] productAccounts;
+
 	public Boolean getProductChannelFilter() {
 		return productChannelFilter;
 	}
@@ -1326,4 +1348,4 @@ public class Product implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-636597727
+// LIFERAY-REST-BUILDER-HASH:1055950301
