@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.product.service;
 
+import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -12,7 +13,11 @@ import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
 import com.liferay.portal.kernel.transaction.Isolation;
+import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
+import com.liferay.portal.kernel.util.OrderByComparator;
+
+import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -40,6 +45,30 @@ public interface CPDefinitionVisibilityRelService extends BaseService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.commerce.product.service.impl.CPDefinitionVisibilityRelServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the cp definition visibility rel remote service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link CPDefinitionVisibilityRelServiceUtil} if injection and service tracking are not available.
 	 */
+	public CPDefinitionVisibilityRel addCPDefinitionVisibilityRel(
+			String externalReferenceCode, long cpDefinitionId, String className,
+			long classPK)
+		throws PortalException;
+
+	public void deleteCPDefinitionVisibilityRel(
+			long cpDefinitionVisibilityRelId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public CPDefinitionVisibilityRel getCPDefinitionVisibilityRel(
+			long cpDefinitionVisibilityRelId)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<CPDefinitionVisibilityRel> getCPDefinitionVisibilityRels(
+			long cpDefinitionId, String className, int start, int end,
+			OrderByComparator<CPDefinitionVisibilityRel> orderByComparator)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCPDefinitionVisibilityRelsCount(
+			long cpDefinitionId, String className)
+		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -49,4 +78,4 @@ public interface CPDefinitionVisibilityRelService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1692841952
+// LIFERAY-SERVICE-BUILDER-HASH:1899845640

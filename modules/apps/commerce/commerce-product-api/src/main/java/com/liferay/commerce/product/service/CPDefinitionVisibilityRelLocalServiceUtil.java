@@ -54,6 +54,15 @@ public class CPDefinitionVisibilityRelLocalServiceUtil {
 			cpDefinitionVisibilityRel);
 	}
 
+	public static CPDefinitionVisibilityRel addCPDefinitionVisibilityRel(
+			String externalReferenceCode, long userId, long cpDefinitionId,
+			String className, long classPK)
+		throws PortalException {
+
+		return getService().addCPDefinitionVisibilityRel(
+			externalReferenceCode, userId, cpDefinitionId, className, classPK);
+	}
+
 	/**
 	 * Creates a new cp definition visibility rel with the primary key. Does not add the cp definition visibility rel to the database.
 	 *
@@ -86,9 +95,11 @@ public class CPDefinitionVisibilityRelLocalServiceUtil {
 	 *
 	 * @param cpDefinitionVisibilityRel the cp definition visibility rel
 	 * @return the cp definition visibility rel that was removed
+	 * @throws PortalException
 	 */
 	public static CPDefinitionVisibilityRel deleteCPDefinitionVisibilityRel(
-		CPDefinitionVisibilityRel cpDefinitionVisibilityRel) {
+			CPDefinitionVisibilityRel cpDefinitionVisibilityRel)
+		throws PortalException {
 
 		return getService().deleteCPDefinitionVisibilityRel(
 			cpDefinitionVisibilityRel);
@@ -111,6 +122,13 @@ public class CPDefinitionVisibilityRelLocalServiceUtil {
 
 		return getService().deleteCPDefinitionVisibilityRel(
 			CPDefinitionVisibilityRelId);
+	}
+
+	public static void deleteCPDefinitionVisibilityRels(
+			String className, long classPK)
+		throws PortalException {
+
+		getService().deleteCPDefinitionVisibilityRels(className, classPK);
 	}
 
 	/**
@@ -215,6 +233,13 @@ public class CPDefinitionVisibilityRelLocalServiceUtil {
 			CPDefinitionVisibilityRelId);
 	}
 
+	public static CPDefinitionVisibilityRel fetchCPDefinitionVisibilityRel(
+		long cpDefinitionId, String className, long classPK) {
+
+		return getService().fetchCPDefinitionVisibilityRel(
+			cpDefinitionId, className, classPK);
+	}
+
 	public static CPDefinitionVisibilityRel
 		fetchCPDefinitionVisibilityRelByExternalReferenceCode(
 			String externalReferenceCode, long companyId) {
@@ -269,6 +294,14 @@ public class CPDefinitionVisibilityRelLocalServiceUtil {
 		int start, int end) {
 
 		return getService().getCPDefinitionVisibilityRels(start, end);
+	}
+
+	public static List<CPDefinitionVisibilityRel> getCPDefinitionVisibilityRels(
+		long cpDefinitionId, String className, int start, int end,
+		OrderByComparator<CPDefinitionVisibilityRel> orderByComparator) {
+
+		return getService().getCPDefinitionVisibilityRels(
+			cpDefinitionId, className, start, end, orderByComparator);
 	}
 
 	/**
@@ -332,4 +365,4 @@ public class CPDefinitionVisibilityRelLocalServiceUtil {
 			CPDefinitionVisibilityRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-841188974
+// LIFERAY-SERVICE-BUILDER-HASH:-1441384480

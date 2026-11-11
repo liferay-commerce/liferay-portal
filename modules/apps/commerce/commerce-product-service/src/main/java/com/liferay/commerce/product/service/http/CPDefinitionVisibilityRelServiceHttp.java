@@ -5,13 +5,21 @@
 
 package com.liferay.commerce.product.service.http;
 
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelServiceUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.HttpPrincipal;
+import com.liferay.portal.kernel.service.http.TunnelUtil;
+import com.liferay.portal.kernel.util.MethodHandler;
+import com.liferay.portal.kernel.util.MethodKey;
+
 /**
  * Provides the HTTP utility for the
- * <code>com.liferay.commerce.product.service.CPDefinitionVisibilityRelServiceUtil</code> service
+ * <code>CPDefinitionVisibilityRelServiceUtil</code> service
  * utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it requires an additional
- * <code>com.liferay.portal.kernel.security.auth.HttpPrincipal</code> parameter.
+ * <code>HttpPrincipal</code> parameter.
  *
  * <p>
  * The benefits of using the HTTP utility is that it is fast and allows for
@@ -32,5 +40,245 @@ package com.liferay.commerce.product.service.http;
  * @generated
  */
 public class CPDefinitionVisibilityRelServiceHttp {
+
+	public static com.liferay.commerce.product.model.CPDefinitionVisibilityRel
+			addCPDefinitionVisibilityRel(
+				HttpPrincipal httpPrincipal, String externalReferenceCode,
+				long cpDefinitionId, String className, long classPK)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPDefinitionVisibilityRelServiceUtil.class,
+				"addCPDefinitionVisibilityRel",
+				_addCPDefinitionVisibilityRelParameterTypes0);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, externalReferenceCode, cpDefinitionId, className,
+				classPK);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.product.model.
+				CPDefinitionVisibilityRel)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static void deleteCPDefinitionVisibilityRel(
+			HttpPrincipal httpPrincipal, long cpDefinitionVisibilityRelId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPDefinitionVisibilityRelServiceUtil.class,
+				"deleteCPDefinitionVisibilityRel",
+				_deleteCPDefinitionVisibilityRelParameterTypes1);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, cpDefinitionVisibilityRelId);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static com.liferay.commerce.product.model.CPDefinitionVisibilityRel
+			getCPDefinitionVisibilityRel(
+				HttpPrincipal httpPrincipal, long cpDefinitionVisibilityRelId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPDefinitionVisibilityRelServiceUtil.class,
+				"getCPDefinitionVisibilityRel",
+				_getCPDefinitionVisibilityRelParameterTypes2);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, cpDefinitionVisibilityRelId);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (com.liferay.commerce.product.model.
+				CPDefinitionVisibilityRel)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static java.util.List
+		<com.liferay.commerce.product.model.CPDefinitionVisibilityRel>
+				getCPDefinitionVisibilityRels(
+					HttpPrincipal httpPrincipal, long cpDefinitionId,
+					String className, int start, int end,
+					com.liferay.portal.kernel.util.OrderByComparator
+						<com.liferay.commerce.product.model.
+							CPDefinitionVisibilityRel> orderByComparator)
+			throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPDefinitionVisibilityRelServiceUtil.class,
+				"getCPDefinitionVisibilityRels",
+				_getCPDefinitionVisibilityRelsParameterTypes3);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, cpDefinitionId, className, start, end,
+				orderByComparator);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return (java.util.List
+				<com.liferay.commerce.product.model.CPDefinitionVisibilityRel>)
+					returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	public static int getCPDefinitionVisibilityRelsCount(
+			HttpPrincipal httpPrincipal, long cpDefinitionId, String className)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				CPDefinitionVisibilityRelServiceUtil.class,
+				"getCPDefinitionVisibilityRelsCount",
+				_getCPDefinitionVisibilityRelsCountParameterTypes4);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, cpDefinitionId, className);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+
+			return ((Integer)returnObj).intValue();
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
+	private static Log _log = LogFactoryUtil.getLog(
+		CPDefinitionVisibilityRelServiceHttp.class);
+
+	private static final Class<?>[]
+		_addCPDefinitionVisibilityRelParameterTypes0 = new Class[] {
+			String.class, long.class, String.class, long.class
+		};
+	private static final Class<?>[]
+		_deleteCPDefinitionVisibilityRelParameterTypes1 = new Class[] {
+			long.class
+		};
+	private static final Class<?>[]
+		_getCPDefinitionVisibilityRelParameterTypes2 = new Class[] {long.class};
+	private static final Class<?>[]
+		_getCPDefinitionVisibilityRelsParameterTypes3 = new Class[] {
+			long.class, String.class, int.class, int.class,
+			com.liferay.portal.kernel.util.OrderByComparator.class
+		};
+	private static final Class<?>[]
+		_getCPDefinitionVisibilityRelsCountParameterTypes4 = new Class[] {
+			long.class, String.class
+		};
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1649463151
+// LIFERAY-SERVICE-BUILDER-HASH:-1196851915
