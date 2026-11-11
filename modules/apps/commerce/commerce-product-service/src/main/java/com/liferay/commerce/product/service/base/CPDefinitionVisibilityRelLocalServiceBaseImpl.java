@@ -135,11 +135,13 @@ public abstract class CPDefinitionVisibilityRelLocalServiceBaseImpl
 	 *
 	 * @param cpDefinitionVisibilityRel the cp definition visibility rel
 	 * @return the cp definition visibility rel that was removed
+	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public CPDefinitionVisibilityRel deleteCPDefinitionVisibilityRel(
-		CPDefinitionVisibilityRel cpDefinitionVisibilityRel) {
+			CPDefinitionVisibilityRel cpDefinitionVisibilityRel)
+		throws PortalException {
 
 		return cpDefinitionVisibilityRelPersistence.remove(
 			cpDefinitionVisibilityRel);
@@ -524,4 +526,4 @@ public abstract class CPDefinitionVisibilityRelLocalServiceBaseImpl
 		CPDefinitionVisibilityRelLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1279919573
+// LIFERAY-SERVICE-BUILDER-HASH:-1431361925
