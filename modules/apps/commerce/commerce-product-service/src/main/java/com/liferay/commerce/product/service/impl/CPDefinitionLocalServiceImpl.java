@@ -46,6 +46,7 @@ import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.model.CPDefinitionTable;
+import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.commerce.product.model.CPDisplayLayout;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceOptionValueRel;
@@ -61,6 +62,7 @@ import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLinkLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CPDisplayLayoutLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPInstanceOptionValueRelLocalService;
@@ -77,6 +79,7 @@ import com.liferay.commerce.product.service.persistence.CPDefinitionLinkPersiste
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionValueRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPDefinitionSpecificationOptionValuePersistence;
+import com.liferay.commerce.product.service.persistence.CPDefinitionVisibilityRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPDisplayLayoutPersistence;
 import com.liferay.commerce.product.service.persistence.CPInstanceOptionValueRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPInstancePersistence;
@@ -896,6 +899,16 @@ public class CPDefinitionLocalServiceImpl
 				newCPDefinition.getModelClassName(), newCPDefinitionId);
 		}
 
+		for (CPDefinitionVisibilityRel cpDefinitionVisibilityRel :
+				_cpDefinitionVisibilityRelPersistence.findByCPDefinitionId(
+					cpDefinitionId)) {
+
+			_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+				null, userId, newCPDefinitionId,
+				cpDefinitionVisibilityRel.getClassName(),
+				cpDefinitionVisibilityRel.getClassPK());
+		}
+
 		List<CPVersionContributor> cpVersionContributors =
 			CPVersionContributorRegistryUtil.getCPVersionContributors();
 
@@ -1286,6 +1299,16 @@ public class CPDefinitionLocalServiceImpl
 				targetCPDefinition.getModelClassName(), newCPDefinitionId);
 		}
 
+		for (CPDefinitionVisibilityRel cpDefinitionVisibilityRel :
+				_cpDefinitionVisibilityRelPersistence.findByCPDefinitionId(
+					sourceCPDefinitionId)) {
+
+			_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+				null, serviceContext.getUserId(), newCPDefinitionId,
+				cpDefinitionVisibilityRel.getClassName(),
+				cpDefinitionVisibilityRel.getClassPK());
+		}
+
 		List<CPVersionContributor> cpVersionContributors =
 			CPVersionContributorRegistryUtil.getCPVersionContributors();
 
@@ -1446,6 +1469,14 @@ public class CPDefinitionLocalServiceImpl
 		// Commerce product definition
 
 		cpDefinitionPersistence.remove(cpDefinition);
+
+		for (CPDefinitionVisibilityRel cpDefinitionVisibilityRel :
+				_cpDefinitionVisibilityRelPersistence.findByCPDefinitionId(
+					cpDefinition.getCPDefinitionId())) {
+
+			_cpDefinitionVisibilityRelLocalService.
+				deleteCPDefinitionVisibilityRel(cpDefinitionVisibilityRel);
+		}
 
 		// Asset
 
@@ -3881,6 +3912,14 @@ public class CPDefinitionLocalServiceImpl
 	@Reference
 	private CPDefinitionSpecificationOptionValuePersistence
 		_cpDefinitionSpecificationOptionValuePersistence;
+
+	@Reference
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
+
+	@Reference
+	private CPDefinitionVisibilityRelPersistence
+		_cpDefinitionVisibilityRelPersistence;
 
 	@Reference
 	private CPDisplayLayoutLocalService _cpDisplayLayoutLocalService;
