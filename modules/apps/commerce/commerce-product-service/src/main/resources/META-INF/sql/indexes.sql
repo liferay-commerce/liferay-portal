@@ -70,6 +70,10 @@ create unique index IX_63E24FAC on CPDefinitionOptionValueRel (externalReference
 create index IX_2434CAD7 on CPDefinitionOptionValueRel (key_[$COLUMN_LENGTH:75$]);
 create unique index IX_52855B17 on CPDefinitionOptionValueRel (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
+create unique index IX_790B45AF on CPDefinitionVisibilityRel (CPDefinitionId, classNameId, classPK, ctCollectionId);
+create index IX_5FC00302 on CPDefinitionVisibilityRel (classNameId, classPK);
+create unique index IX_1B4B3A56 on CPDefinitionVisibilityRel (externalReferenceCode[$COLUMN_LENGTH:75$], companyId, ctCollectionId);
+
 create index IX_290BF7BA on CPDisplayLayout (classNameId, classPK);
 create unique index IX_7F728A18 on CPDisplayLayout (groupId, classNameId, classPK, ctCollectionId);
 create index IX_965CA8C5 on CPDisplayLayout (groupId, layoutPageTemplateEntryUuid[$COLUMN_LENGTH:75$]);
