@@ -60,6 +60,8 @@ public class SaveCompanyConfigurationMVCActionCommand
 
 		boolean embeddedViewEnabled = ParamUtil.getBoolean(
 			actionRequest, "embeddedViewEnabled");
+		boolean remindersEnabled = ParamUtil.getBoolean(
+			actionRequest, "remindersEnabled");
 
 		if (!FeatureFlagManagerUtil.isEnabled(
 				themeDisplay.getCompanyId(), "LPD-69290")) {
@@ -71,6 +73,7 @@ public class SaveCompanyConfigurationMVCActionCommand
 
 			embeddedViewEnabled =
 				digitalSignatureConfiguration.embeddedViewEnabled();
+			remindersEnabled = digitalSignatureConfiguration.remindersEnabled();
 		}
 
 		_configurationProvider.saveCompanyConfiguration(
@@ -92,6 +95,8 @@ public class SaveCompanyConfigurationMVCActionCommand
 			).put(
 				"integrationKey",
 				ParamUtil.getString(actionRequest, "integrationKey")
+			).put(
+				"remindersEnabled", remindersEnabled
 			).put(
 				"rsaPrivateKey",
 				ParamUtil.getString(actionRequest, "rsaPrivateKey")
