@@ -102,6 +102,11 @@ public class PIMConnectorFieldMappingRulesUtilTest {
 				null));
 	}
 
+	// PR-NOTE: Covers null (an unknown channel field: not supported) and a
+	// TEXT channel field (supported). The non-TEXT case is already covered by
+	// EditPIMConnectorFieldMappingsDisplayContextTest.testGetReactData, where
+	// a LONG_INTEGER channel field gets no mappingRule, so it is not repeated.
+
 	@Test
 	public void testIsMappingRulesSupported() {
 		Assert.assertFalse(
@@ -113,6 +118,12 @@ public class PIMConnectorFieldMappingRulesUtilTest {
 					true, RandomTestUtil.randomString(), false,
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT)));
 	}
+
+	// PR-NOTE: Covers every branch: null -> false, single-valued -> true,
+	// multivalued without Tags or Categories -> false, and multivalued that
+	// takes Categories -> true. The Tags variant takes the same || branch and
+	// is covered end to end by LiferayCommercePIMConnectorTest.
+	// _testExecuteWithTags.
 
 	@Test
 	public void testIsUseFirstNonemptySourceSupported() {

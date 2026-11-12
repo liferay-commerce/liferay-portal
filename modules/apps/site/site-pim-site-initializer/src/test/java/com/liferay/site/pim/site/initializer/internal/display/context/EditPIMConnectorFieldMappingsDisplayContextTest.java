@@ -350,6 +350,13 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
 		Assert.assertNull(reactData.get("mappingRule"));
+
+		// PR-NOTE: testGetReactData, changed part. A multivalued channel field
+		// without Tags or Categories gets useFirstNonemptySourceSupported =
+		// false (this replaces the old channelFieldMultiple = true assert). The
+		// next block declares [categories] on the channel field and checks that
+		// it is passed as channelFieldAllowedFieldMappingTypes.
+
 		Assert.assertEquals(
 			Boolean.FALSE, reactData.get("useFirstNonemptySourceSupported"));
 
@@ -411,6 +418,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 				_pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
+
+		// PR-NOTE: A channel field the connector does not know falls back to
+		// attribute + fixed value in channelFieldAllowedFieldMappingTypes.
 
 		Assert.assertEquals(
 			Arrays.asList("dynamicValue", "fixedValue"),

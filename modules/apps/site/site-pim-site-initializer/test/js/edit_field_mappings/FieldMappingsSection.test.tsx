@@ -53,6 +53,9 @@ function fixedValue(value = '') {
 	};
 }
 
+// PR-NOTE: The wrapper takes allowedFieldMappingTypes, with attribute + fixed
+// value as the default value, so the existing tests are unchanged.
+
 function FieldMappingsSectionWrapper({
 	allowedFieldMappingTypes = ['dynamicValue', 'fixedValue'],
 	initialFieldMappings,
@@ -89,6 +92,11 @@ describe('FieldMappingsSection', () => {
 			screen.getByRole('option', {name: 'Title (title)'})
 		).toBeInTheDocument();
 	});
+
+	// PR-NOTE: Covers the filtering in FieldMappingRow: with
+	// allowedFieldMappingTypes = ['categories'], the dropdown offers only
+	// Categories, and the attributes ('SKU (sku)'), Fixed Value, and Tags are
+	// not rendered.
 
 	it('offers only the allowed field mapping types of the channel field', () => {
 		render(

@@ -94,6 +94,12 @@ public class LiferayCommercePIMConnectorTest {
 				invocationOnMock.getArgument(0, String.class))
 		);
 
+		// PR-NOTE: Setup for the Topic ERC. normalizeWithPeriodsAndSlashes
+		// lowercases the value and turns "." and "/" into "-", which is enough
+		// for the test to predict the ERC. ModelHintsUtil.getMaxLength returns
+		// 75 for AssetCategory.externalReferenceCode, so a 76-character value
+		// takes the UUID path.
+
 		Mockito.when(
 			_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
 				Mockito.anyString())
@@ -121,6 +127,9 @@ public class LiferayCommercePIMConnectorTest {
 		LanguageUtil languageUtil = new LanguageUtil();
 
 		languageUtil.setLanguage(_language);
+
+		// PR-NOTE: Injects the mocked asset and group services into the
+		// connector, the same way as the existing references.
 
 		ReflectionTestUtil.setFieldValue(
 			_liferayCommercePIMConnector, "_assetCategoryLocalService",
@@ -186,6 +195,11 @@ public class LiferayCommercePIMConnectorTest {
 		_testExecute();
 		_testExecuteWithBooleanProductType();
 		_testExecuteWithCatalogs();
+
+		// PR-NOTE: Registers the three new subtests (_testExecuteWith
+		// Categories, _testExecuteWithTags, _testExecuteWithTopicCategories),
+		// in alphabetical order.
+
 		_testExecuteWithCategories();
 		_testExecuteWithErrors();
 		_testExecuteWithFieldMappingRules();
@@ -225,6 +239,15 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals(
 			pimConnectorChannelFields.toString(), 16,
 			pimConnectorChannelFields.size());
+
+		// PR-NOTE: testGetPIMConnectorChannelFields, changed part. Covers the
+		// new "categories" channel field (label, name, TEXT type, multivalued)
+		// in the asserts below. This assert covers the declared allowed field
+		// mapping types: only "categories" and "tags" differ from
+		// [dynamicValue, fixedValue], so only they are listed, and a new field
+		// with other types would show up here. It moved to the top because
+		// getAllowedFieldMappingTypes sorts first (review rename).
+
 		Assert.assertEquals(
 			Arrays.asList(
 				"categories=[categories, dynamicValue, fixedValue]",
@@ -400,6 +423,9 @@ public class LiferayCommercePIMConnectorTest {
 		return jsonArray.getJSONObject(0);
 	}
 
+	// PR-NOTE: Helper. Returns the JSON body of the request sent to a given
+	// location; used to assert the vocabulary and category PUT bodies.
+
 	private JSONObject _getRequestBodyJSONObject(String location)
 		throws Exception {
 
@@ -444,6 +470,11 @@ public class LiferayCommercePIMConnectorTest {
 		return jsonArray.getJSONObject(index);
 	}
 
+	// PR-NOTE: Helper. Lists the taxonomy requests in order, as
+	// "METHOD /taxonomy-...". The tests use it to assert which vocabularies
+	// and categories were sent and in what order: parents before children,
+	// and no taxonomy request at all when there is nothing to sync.
+
 	private List<String> _getTaxonomyRequests() {
 		return TransformUtil.transform(
 			_options,
@@ -461,6 +492,14 @@ public class LiferayCommercePIMConnectorTest {
 					location.substring(index));
 			});
 	}
+
+	// PR-NOTE: Helpers _mockAssetCategories, _mockAssetCategory, _mockAssetTags,
+	// and _mockAssetVocabulary. They mock the categories or tags assigned to a
+	// PIM product entry, a category with its ancestors (parent first, like
+	// AssetCategory.getAncestors; getParentCategory and isRootCategory follow
+	// from them, since the connector now reads those), and a vocabulary with a
+	// given visibility, which is also registered in
+	// _assetVocabularyLocalService.getVocabulary.
 
 	private void _mockAssetCategories(
 		ObjectEntry pimProductObjectEntry, AssetCategory... assetCategories) {
@@ -624,6 +663,13 @@ public class LiferayCommercePIMConnectorTest {
 				String location = options.getLocation();
 				Http.Response response = options.getResponse();
 
+				// PR-NOTE: Helper change. _mockHttp now matches its keys
+				// against "METHOD location" instead of the location alone.
+				// _testExecuteWithTopicCategories needs it to make only the
+				// Topic GET (hasSiteTaxonomyVocabulary) return 404, and not the
+				// PUT to the same URL. The existing callers match a path
+				// fragment, so they work as before.
+
 				String request = StringBundler.concat(
 					options.getMethod(), StringPool.SPACE, location);
 
@@ -763,6 +809,11 @@ public class LiferayCommercePIMConnectorTest {
 			_CATALOG_EXTERNAL_REFERENCE_CODE_1,
 			jsonObject.getString("catalogExternalReferenceCode"));
 		Assert.assertFalse(jsonObject.has("catalogId"));
+
+		// PR-NOTE: _testExecute. An unmapped "categories" channel field leaves
+		// the key out of the product, so the import keeps the categories of the
+		// remote product (the null branch of getChannelFieldJSONArray).
+
 		Assert.assertFalse(jsonObject.toString(), jsonObject.has("categories"));
 		Assert.assertEquals(
 			"SKU-1", jsonObject.getString("externalReferenceCode"));
@@ -943,6 +994,25 @@ public class LiferayCommercePIMConnectorTest {
 
 		Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
 	}
+
+	// PR-NOTE: Covers the Categories source:
+	// - only the primary SKU entry (entry 1 of SKU-1) is read, and the
+	//   category of entry 2 is not exported (Q1);
+	// - the category of an internal vocabulary is skipped (Q9);
+	// - only the assigned leaf (grandchild) is in the product, with its
+	//   vocabulary ERC (Q7);
+	// - the taxonomy sync sends exactly the vocabulary PUT, then root, child,
+	//   and grandchild in this order (parents first), and nothing for the
+	//   internal vocabulary;
+	// - the vocabulary body: multiValued, name, viewableBy Anyone,
+	//   visibilityType PUBLIC;
+	// - the root body: name, parentTaxonomyCategory.id = 0,
+	//   parentTaxonomyVocabulary ERC, viewableBy Anyone;
+	// - the child and the grandchild reference their direct parent by ERC.
+	// The child mock now has the root as ancestor, because the parent comes
+	// from getParentCategory() instead of the grandchild's ancestor list.
+	// Last block: a product with no categories exports "categories": [], so
+	// removals reach the remote instance, and sends no taxonomy request.
 
 	private void _testExecuteWithCategories() throws Exception {
 		AssetVocabulary assetVocabulary = _mockAssetVocabulary(
@@ -1215,6 +1285,12 @@ public class LiferayCommercePIMConnectorTest {
 		jsonArray = jsonObject.getJSONArray("log");
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
+
+		// PR-NOTE: _testExecuteWithErrors, new block. When a category PUT fails
+		// on the remote instance, execute throws PIMConnectorException
+		// ("the-remote-instance-returned-an-error") and the import task is
+		// never posted. The taxonomy sync runs before the import, so a failed
+		// sync cannot leave products with unresolved categories.
 
 		_mockHttp(
 			HashMapBuilder.put(
@@ -1732,6 +1808,16 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals("Color", labelJSONObject.getString("en_US"));
 	}
 
+	// PR-NOTE: Covers:
+	// - an attribute mapping, then a Tags mapping: the values are merged in
+	//   priority order and deduplicated (name1 comes from both but appears
+	//   once); only the primary SKU's tags are read, and entry 2's tag is not
+	//   exported;
+	// - with the fallback rule, only the first nonempty source (the
+	//   attribute) is exported;
+	// - a product with no tags exports "tags": [] instead of leaving the key
+	//   out, so tags removed in PIM are removed remotely too.
+
 	private void _testExecuteWithTags() throws Exception {
 		String name1 = RandomTestUtil.randomString();
 		String sourceFieldName = RandomTestUtil.randomString();
@@ -1805,6 +1891,24 @@ public class LiferayCommercePIMConnectorTest {
 
 		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
 	}
+
+	// PR-NOTE: Covers the attribute and fixed value sources on "categories"
+	// (Topic):
+	// - an attribute value with a "/" becomes a Topic ERC through the
+	//   normalizer;
+	// - a 76-character fixed value becomes a name-based UUID ERC;
+	// - a real category mapped after them is still exported, in priority
+	//   order;
+	// - the transformation rule (textCase upper) changes the Topic category
+	//   name, and the ERC is normalized from the transformed value (the
+	//   mocked normalizer lowercases it);
+	// - the Topic category body: parentTaxonomyCategory.id = 0, vocabulary
+	//   L_TOPIC, viewableBy Anyone;
+	// - when L_TOPIC exists remotely (GET 200), no Topic vocabulary PUT is
+	//   sent (Q10).
+	// Second block: when the GET returns 404, the Topic vocabulary is PUT;
+	// with the fallback rule and an empty attribute, only the fixed value is
+	// exported.
 
 	private void _testExecuteWithTopicCategories() throws Exception {
 		String sourceFieldName = RandomTestUtil.randomString();

@@ -123,6 +123,21 @@ public class PIMConnectorFieldMappingsUtil {
 		return "/o" + objectDefinition.getRESTContextPath();
 	}
 
+	// PR-NOTE: The shared loop of the multivalued tags and categories export,
+	// used by LiferayCommercePIMConnector._createCategoriesJSONArray and
+	// _createTagsJSONArray.
+	// - It returns null when the channel field has no mapping for the
+	//   product's structure, so JSONUtil.put leaves the key out and the remote
+	//   value is kept.
+	// - Otherwise it walks the mappings in priority order and asks
+	//   unsafeFunction for each mapping's values as a key -> value map, where
+	//   the key is the dedup key (the tag name or the category ERC).
+	// - It keeps the first occurrence of each key (putIfAbsent).
+	// - With the fallback rule, it stops after the first mapping that
+	//   produced values.
+	// - It returns a JSON array, which is empty when the mappings produced
+	//   nothing, so tags or categories removed in PIM are removed remotely.
+
 	public static JSONArray getChannelFieldJSONArray(
 			ObjectDefinition objectDefinition,
 			PIMConnectorChannelField pimConnectorChannelField,
@@ -219,6 +234,10 @@ public class PIMConnectorFieldMappingsUtil {
 		if (Objects.equals(type, ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
 			String value = channelFieldValues.get(0);
 
+			// PR-NOTE: Refactor. The inline null check plus MapUtil.getBoolean
+			// became the shared PIMConnectorFieldMappingRulesUtil.
+			// isUseFirstNonemptySource. There is no behavior change.
+
 			if (!PIMConnectorFieldMappingRulesUtil.isUseFirstNonemptySource(
 					pimFieldMappingRuleObjectEntry)) {
 
@@ -296,6 +315,10 @@ public class PIMConnectorFieldMappingsUtil {
 			MapUtil.getString(objectEntry.getValues(), "sourceFieldName"));
 	}
 
+	// PR-NOTE: Type checks for the two new sources (isCategories and isTags),
+	// next to the existing isFixedValue. Used by the connector (which source
+	// to read), the FDS data provider (the label in the table), and _isMapped.
+
 	public static boolean isCategories(ObjectEntry objectEntry) {
 		return Objects.equals(
 			MapUtil.getString(objectEntry.getValues(), "type"),
@@ -365,6 +388,10 @@ public class PIMConnectorFieldMappingsUtil {
 	}
 
 	private static boolean _isMapped(ObjectEntry objectEntry) {
+		// PR-NOTE: A Tags or Categories mapping needs no attribute and no
+		// value, so it always counts as mapped. This feeds the "Mapped" status
+		// on the Field Mappings page and isMappingComplete.
+
 		if (isCategories(objectEntry) || isTags(objectEntry)) {
 			return true;
 		}

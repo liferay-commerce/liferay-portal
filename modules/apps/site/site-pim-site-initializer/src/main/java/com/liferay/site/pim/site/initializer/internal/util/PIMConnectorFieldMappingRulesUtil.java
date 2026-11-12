@@ -106,6 +106,16 @@ public class PIMConnectorFieldMappingRulesUtil {
 		return objectEntriesMap;
 	}
 
+	// PR-NOTE: Whether a channel field can have transformation rules: it must
+	// exist and be TEXT. Renamed from isSupported (review); "Supported"
+	// matches the existing UI message "mapping-rules-are-not-supported-for-
+	// this-field-type" and isUseFirstNonemptySourceSupported below. The same
+	// check used to be copied in ObjectEntryModelListener and
+	// EditPIMConnectorFieldMappingsDisplayContext; both call this now.
+	// "categories" is a TEXT channel field (user decision), so its Topic values
+	// get the rules, and the single check keeps the validator and the edit
+	// page in sync.
+
 	public static boolean isMappingRulesSupported(
 		PIMConnectorChannelField pimConnectorChannelField) {
 
@@ -120,6 +130,11 @@ public class PIMConnectorFieldMappingRulesUtil {
 		return false;
 	}
 
+	// PR-NOTE: Reads "useFirstNonemptySource" from a rule entry, and returns
+	// false when there is no rule entry. Used by PIMConnectorFieldMappingsUtil.
+	// getChannelFieldValue (it replaces the inline null check there) and by
+	// the new getChannelFieldJSONArray.
+
 	public static boolean isUseFirstNonemptySource(ObjectEntry objectEntry) {
 		if (objectEntry == null) {
 			return false;
@@ -128,6 +143,18 @@ public class PIMConnectorFieldMappingRulesUtil {
 		return MapUtil.getBoolean(
 			objectEntry.getValues(), "useFirstNonemptySource");
 	}
+
+	// PR-NOTE: Whether the "first nonempty source" fallback rule is allowed on
+	// a channel field.
+	// - Single-valued fields: yes, as before.
+	// - Multivalued fields: only those that accept Tags or Categories. For
+	//   them, the fallback means "export only the values of the first source
+	//   that has any", for example the product tags, or a fixed tag when the
+	//   product has none.
+	// - productOptions and productSpecifications: still not allowed, as before
+	//   (isMultiple() was the old check).
+	// Used by the listener (rule validation) and the display context
+	// ("useFirstNonemptySourceSupported").
 
 	public static boolean isUseFirstNonemptySourceSupported(
 		PIMConnectorChannelField pimConnectorChannelField) {

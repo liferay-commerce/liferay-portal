@@ -68,6 +68,11 @@ export default function FieldMappingsSection({
 
 					{fieldMappings.map((fieldMapping, index) => (
 						<FieldMappingRow
+
+							// PR-NOTE: Pass-through of the allowed field
+							// mapping types (renamed from sourceTypes, review)
+							// from EditPIMConnectorFieldMappings to each row.
+
 							allowedFieldMappingTypes={allowedFieldMappingTypes}
 							deletable={fieldMappings.length > 1}
 							fieldMapping={fieldMapping}

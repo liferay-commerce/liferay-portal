@@ -149,6 +149,9 @@ public class ObjectEntryModelListenerTest {
 		_testOnBeforeCreateWithDuplicatePIMConnectorFieldMappingRule();
 		_testOnBeforeCreateWithDuplicatePIMLinkException();
 		_testOnBeforeCreateWithInvalidExternalReferenceCode();
+
+		// PR-NOTE: Registers the new subtest, in alphabetical order.
+
 		_testOnBeforeCreateWithInvalidPIMConnectorFieldMapping();
 		_testOnBeforeCreateWithInvalidPIMConnectorFieldMappingRule();
 	}
@@ -179,6 +182,12 @@ public class ObjectEntryModelListenerTest {
 				).build(),
 				ServiceContextTestUtil.getServiceContext()));
 
+		// PR-NOTE: testOnBeforeUpdate, new block. Covers rule 1 of
+		// _validatePIMConnectorFieldMappingObjectEntry: a field mapping cannot
+		// be moved to another connector on update ("r_pimConnectorToPIM
+		// ConnectorFieldMappings_l_pimConnectorId" is invalid). The same check
+		// for rule entries is just above in this test.
+
 		String objectFieldName =
 			"r_pimConnectorToPIMConnectorFieldMappings_l_pimConnectorId";
 		ObjectEntry pimConnectorFieldMappingObjectEntry =
@@ -204,6 +213,11 @@ public class ObjectEntryModelListenerTest {
 		_objectEntryLocalService.deleteObjectEntry(
 			pimConnectorObjectEntry1.getObjectEntryId());
 	}
+
+	// PR-NOTE: Helper. Adds a real field mapping entry through
+	// ObjectEntryLocalService, so the model listener runs. Used by
+	// testOnBeforeUpdate and _testOnBeforeCreateWithInvalidPIMConnector
+	// FieldMapping.
 
 	private ObjectEntry _addPIMConnectorFieldMappingObjectEntry(
 			String channelFieldName, ObjectEntry pimConnectorObjectEntry,
@@ -490,6 +504,17 @@ public class ObjectEntryModelListenerTest {
 				RandomTestUtil.randomString()));
 	}
 
+	// PR-NOTE: Called from testOnBeforeCreate. Covers rules 2 and 3 of
+	// _validatePIMConnectorFieldMappingObjectEntry on create:
+	// - "catalogId", a channel field the Liferay Commerce connector does not
+	//   have, is rejected ("channelFieldName" is invalid);
+	// - "tags" on "name" is rejected ("type" is invalid), because "name" takes
+	//   only an attribute or a fixed value;
+	// - "categories" on "categories" is accepted: the positive control that
+	//   the new field mapping type is allowed where it is declared.
+	// The connector is deleted at the end, because its cascade to the field
+	// mappings cannot run in DataGuard's teardown (no permission checker).
+
 	private void _testOnBeforeCreateWithInvalidPIMConnectorFieldMapping()
 		throws Exception {
 
@@ -531,6 +556,10 @@ public class ObjectEntryModelListenerTest {
 			() -> _addPIMConnectorFieldMappingRuleObjectEntry(
 				"name", "textCase", RandomTestUtil.randomString(),
 				pimConnectorObjectEntry));
+		// PR-NOTE: Changed: "tags" became "productOptions". "tags" now allows
+		// the fallback rule (it takes the Tags source), so the negative case
+		// moved to a multivalued field that still does not allow it.
+
 		_assertInvalidObjectField(
 			"\"useFirstNonemptySource\" is invalid",
 			() -> _addPIMConnectorFieldMappingRuleObjectEntry(
@@ -549,6 +578,10 @@ public class ObjectEntryModelListenerTest {
 					"truncateLength", 50
 				).toString(),
 				"pim/connector-field-mapping-rules", Http.Method.POST));
+
+		// PR-NOTE: The positive control of isUseFirstNonemptySourceSupported: a
+		// multivalued channel field that takes Categories accepts the fallback
+		// rule. The connector is then deleted for the cascade cleanup.
 
 		_addPIMConnectorFieldMappingRuleObjectEntry(
 			"categories", "useFirstNonemptySource", true,

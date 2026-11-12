@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+// PR-NOTE: Frontend copies of PIMConnectorFieldMappingConstants.TYPE_CATEGORIES
+// and TYPE_TAGS. FieldMappingRow uses them for the dropdown options and the
+// type mapping, and EditPIMConnectorFieldMappings for isComplete and the save
+// body.
+
 export const TYPE_CATEGORIES = 'categories';
 
 export const TYPE_DYNAMIC_VALUE = 'dynamicValue';

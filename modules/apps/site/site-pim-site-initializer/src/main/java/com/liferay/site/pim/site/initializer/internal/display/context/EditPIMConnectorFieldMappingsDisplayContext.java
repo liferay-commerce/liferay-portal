@@ -85,6 +85,18 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 		).put(
 			"channelField", _channelField
 		).put(
+
+			// PR-NOTE: Replaces "channelFieldMultiple", which was used only to
+			// hide the fallback rule (now "useFirstNonemptySourceSupported"
+			// below). Renamed from "channelFieldSourceTypes" (review), so it
+			// moved before "channelFieldLabel".
+			// EditPIMConnectorFieldMappings.tsx passes it through
+			// FieldMappingsSection to FieldMappingRow (prop
+			// allowedFieldMappingTypes), which renders only these options in
+			// the source dropdown. A channel field the connector does not know
+			// falls back to attribute + fixed value, which is what the page
+			// offered before.
+
 			"channelFieldAllowedFieldMappingTypes",
 			() -> {
 				if (pimConnectorChannelField == null) {
@@ -147,6 +159,12 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 					_httpServletRequest, "edit-x", _channelField, false);
 			}
 		).put(
+
+			// PR-NOTE: Whether MappingRulesSection.tsx shows the fallback logic
+			// select. The rule is the same as the server-side validation in
+			// ObjectEntryModelListener, so the page never offers a rule that
+			// the save would reject.
+
 			"useFirstNonemptySourceSupported",
 			PIMConnectorFieldMappingRulesUtil.isUseFirstNonemptySourceSupported(
 				pimConnectorChannelField)
@@ -219,6 +237,10 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 			ObjectEntry objectEntry,
 			PIMConnectorChannelField pimConnectorChannelField)
 		throws Exception {
+
+		// PR-NOTE: Refactor. This is the same TEXT check as before, now shared
+		// with the listener through PIMConnectorFieldMappingRulesUtil.
+		// isMappingRulesSupported (renamed from isSupported, review).
 
 		if (!PIMConnectorFieldMappingRulesUtil.isMappingRulesSupported(
 				pimConnectorChannelField)) {

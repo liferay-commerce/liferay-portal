@@ -68,6 +68,14 @@ public class LiferayCommercePIMClient {
 		return _logJSONArray;
 	}
 
+	// PR-NOTE: GET .../sites/L_GLOBAL/taxonomy-vocabularies/by-external-
+	// reference-code/{erc} on the remote instance. A 404 returns false and a
+	// 2xx returns true; any other error throws PIMConnectorException through
+	// _validateResponse. Only LiferayCommercePIMConnector._putTaxonomy
+	// Vocabularies calls it, for L_TOPIC: Topic is created only when it is
+	// missing remotely, so an admin's settings there are kept (Q10). Every
+	// other vocabulary is always PUT (Q8).
+
 	public boolean hasSiteTaxonomyVocabulary(String externalReferenceCode)
 		throws Exception {
 
@@ -110,6 +118,10 @@ public class LiferayCommercePIMClient {
 			String externalReferenceCode, JSONObject jsonObject)
 		throws Exception {
 
+		// PR-NOTE: Refactor only. The content type and the body moved into
+		// _createOptions (review), and this method still calls _invoke and
+		// _validateResponse itself. Options behave as before.
+
 		Http.Options options = _createOptions(
 			jsonObject, Http.Method.PUT,
 			StringBundler.concat(
@@ -121,6 +133,15 @@ public class LiferayCommercePIMClient {
 
 		_validateResponse(options.getResponse());
 	}
+
+	// PR-NOTE: Upserts a category in the Global site of the remote instance
+	// (PUT .../sites/L_GLOBAL/taxonomy-categories/by-external-reference-code/
+	// {erc}). LiferayCommercePIMConnector._putTaxonomyCategories calls it for
+	// every category of the tree (assigned categories and all their
+	// ancestors) and for every Topic category made from an attribute or a
+	// fixed value. The Commerce product import resolves "categories" by ERC,
+	// so they have to exist remotely before the import task is posted. PUT by
+	// ERC keeps the export idempotent.
 
 	public void putSiteTaxonomyCategoryByExternalReferenceCode(
 			String externalReferenceCode, JSONObject jsonObject)
@@ -138,6 +159,12 @@ public class LiferayCommercePIMClient {
 		_validateResponse(options.getResponse());
 	}
 
+	// PR-NOTE: Upserts a vocabulary in the Global site of the remote instance
+	// (PUT .../sites/L_GLOBAL/taxonomy-vocabularies/by-external-reference-
+	// code/{erc}). Used by LiferayCommercePIMConnector._putTaxonomyVocabularies.
+	// A category PUT names its vocabulary by ERC (parentTaxonomyVocabulary),
+	// so the vocabulary has to exist first.
+
 	public void putSiteTaxonomyVocabularyByExternalReferenceCode(
 			String externalReferenceCode, JSONObject jsonObject)
 		throws Exception {
@@ -153,6 +180,14 @@ public class LiferayCommercePIMClient {
 
 		_validateResponse(options.getResponse());
 	}
+
+	// PR-NOTE: Replaces the old _createOptions(String path) and the removed
+	// _put (review). Every caller passes its HTTP method, and a non-null body
+	// also sets the JSON content type and the body: the three PUTs pass their
+	// JSONObject, postImportTask its JSONArray (setPost(true) was the same as
+	// Http.Method.POST), and hasSiteTaxonomyVocabulary passes null for its
+	// GET. The callers still call _invoke and _validateResponse themselves.
+	// authenticate builds its own options (form parts, no bearer token).
 
 	private Http.Options _createOptions(
 		Object body, Http.Method method, String path) {

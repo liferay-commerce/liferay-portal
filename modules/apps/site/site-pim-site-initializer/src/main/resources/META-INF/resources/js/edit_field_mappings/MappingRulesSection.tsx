@@ -160,6 +160,11 @@ export default function MappingRulesSection({
 						</ClaySelect>
 					</div>
 
+					{/* PR-NOTE: The fallback select is shown when the server
+					says the channel field supports it. Before, it was hidden for
+					every multivalued field (!channelFieldMultiple); now it also
+					shows on "tags" and "categories". */}
+
 					{useFirstNonemptySourceSupported && (
 						<div className="c-gap-1 d-flex flex-column">
 							<label>

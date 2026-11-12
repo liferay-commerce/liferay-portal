@@ -76,6 +76,11 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 	public List<PIMConnectorChannelField> getPIMConnectorChannelFields() {
 		return ListUtil.fromArray(
 			_PIM_CONNECTOR_CHANNEL_FIELD_CATALOG_EXTERNAL_REFERENCE_CODE,
+
+			// PR-NOTE: Registers the new "categories" channel field. The list
+			// stays in the alphabetical order of the label keys, which is also
+			// the row order on the Field Mappings page.
+
 			_PIM_CONNECTOR_CHANNEL_FIELD_CATEGORIES,
 			_PIM_CONNECTOR_CHANNEL_FIELD_DEPTH,
 			_PIM_CONNECTOR_CHANNEL_FIELD_DESCRIPTION,
@@ -125,6 +130,17 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 
 			throw new PIMConnectorException("enter-a-valid-url");
 		}
+
+		// PR-NOTE: Two maps are collected while the product JSON is built and
+		// used after the loop for the taxonomy sync:
+		// - assetCategoriesMap: every non-internal category assigned to an
+		//   exported primary SKU, by ERC, deduplicated across products;
+		// - topicTaxonomyCategoryNamesMap (renamed from topicCategoryNamesMap,
+		//   review): ERC -> name of every category that an attribute or a fixed
+		//   value becomes in the remote Topic vocabulary. These are not local
+		//   AssetCategory entities, only the remote TaxonomyCategory items to
+		//   create, hence "TaxonomyCategory" in the name.
+		// They are TreeMaps so that the PUT order is deterministic.
 
 		Map<String, AssetCategory> assetCategoriesMap = new TreeMap<>();
 		Map<String, JSONObject> optionJSONObjectsMap = new TreeMap<>();
@@ -185,6 +201,14 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 					entry.getKey(), entry.getValue());
 			}
 
+			// PR-NOTE: Syncs the taxonomy to the Global site of the remote
+			// instance: vocabularies first, then categories, because a
+			// category PUT references its vocabulary by ERC. It runs after
+			// the options and before postImportTask, because the product
+			// import resolves "categories" by ERC. A failed PUT throws
+			// PIMConnectorException and the import is not posted (covered by
+			// _testExecuteWithErrors).
+
 			_putTaxonomyVocabularies(
 				assetCategoriesMap.values(),
 				pimConnectorObjectEntry.getCompanyId(),
@@ -228,6 +252,32 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				exception);
 		}
 	}
+
+	// PR-NOTE: Builds the "categories" array of a product as
+	// [{externalReferenceCode, vocabularyExternalReferenceCode}], the shape
+	// the Commerce Product DTO accepts. Called from _createProductJSONObject.
+	// The generic loop over the mappings (priority order, deduplication,
+	// fallback rule, null when unmapped) is in PIMConnectorFieldMappingsUtil.
+	// getChannelFieldJSONArray; this lambda only turns one field mapping into
+	// values.
+	//
+	// Categories source (isCategories):
+	// - reads the categories assigned to the primary SKU entry (Q1);
+	// - skips the categories of internal vocabularies (Q9);
+	// - exports only the assigned category, not its ancestors (Q7);
+	// - registers each category in assetCategoriesMap, so that the whole tree
+	//   is synced later.
+	//
+	// Attribute or fixed value source:
+	// - the value, after the transformation rules, becomes a root category of
+	//   the Topic vocabulary (L_TOPIC);
+	// - its ERC is the value normalized by normalizeWithPeriodsAndSlashes;
+	// - when that is longer than the ERC column (ModelHintsUtil), the ERC is a
+	//   name-based UUID of it, so the same value always gets the same ERC;
+	// - the ERC and the name go into topicTaxonomyCategoryNamesMap for the PUT
+	//   later (after jsonObjectsMap.put, sorted on review).
+	// The rules apply only here, because the name of a real category must
+	// stay as it is in PIM.
 
 	private JSONArray _createCategoriesJSONArray(
 			Map<String, AssetCategory> assetCategoriesMap,
@@ -371,6 +421,13 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				pimFieldMappingObjectEntriesMap,
 				pimFieldMappingRuleObjectEntriesMap, values)
 		).put(
+
+			// PR-NOTE: The new "categories" key of the product. The supplier
+			// returns null when the channel field is unmapped, so the key is
+			// left out and the remote categories are kept. It returns [] when
+			// the field is mapped but has no values, so the categories are
+			// cleared.
+
 			"categories",
 			() -> _createCategoriesJSONArray(
 				assetCategoriesMap, objectDefinition,
@@ -451,6 +508,14 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 							pimProductObjectEntry))))
 		).put(
 			"tags",
+
+			// PR-NOTE: Behavior change. This was getChannelFieldValue, which
+			// supported only attributes and fixed values and left the key out
+			// when there were no values. Now it supports the Tags source, it
+			// sends [] when the field is mapped but has no values (so tags
+			// removed in PIM are removed remotely, accepted on 2026-11-09),
+			// and it drops duplicate tags.
+
 			() -> _createTagsJSONArray(
 				objectDefinition, pimFieldMappingObjectEntriesMap,
 				pimFieldMappingRuleObjectEntriesMap, objectEntry, values)
@@ -697,6 +762,15 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		);
 	}
 
+	// PR-NOTE: Builds the "tags" array of a product. Called from
+	// _createProductJSONObject.
+	// - Tags source (isTags): the names of the tags of the primary SKU entry.
+	// - Attribute or fixed value source: the single value of the mapping.
+	// Every value goes through the transformation rules, and blank results
+	// are dropped. Keying the map by the value removes duplicates. The loop
+	// over the mappings is the shared PIMConnectorFieldMappingsUtil.
+	// getChannelFieldJSONArray, as for categories.
+
 	private JSONArray _createTagsJSONArray(
 			ObjectDefinition objectDefinition,
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
@@ -746,6 +820,24 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				return tagsMap;
 			});
 	}
+
+	// PR-NOTE: Upserts every needed category on the remote instance before the
+	// product import. Called from execute, after _putTaxonomyVocabularies.
+	// 1. For each assigned category, it puts its ancestors into a
+	//    LinkedHashMap from the root down (getAncestors() returns the parent
+	//    first and the root last, so it walks the list backwards), then the
+	//    category itself, deduplicated by ERC. The insertion order is already
+	//    "parent before child", so no sorting is needed (simplified on review;
+	//    it used to sort by the number of ancestors). A child's PUT names its
+	//    parent by ERC (parentTaxonomyCategory), and that parent has to exist.
+	// 2. A root category (isRootCategory) gets parentTaxonomyCategory.id = 0
+	//    (DEFAULT_PARENT_CATEGORY_ID); any other category references the ERC
+	//    of getParentCategory().
+	// 3. The Topic categories made from attribute or fixed values are PUT as
+	//    root categories of L_TOPIC.
+	// "viewableBy": "Anyone": without it, only the owner gets VIEW, so a guest
+	// of the storefront sees no category navigation or facets, and category
+	// pages return 404 (found during the end-to-end check).
 
 	private void _putTaxonomyCategories(
 			Collection<AssetCategory> assetCategories,
@@ -833,6 +925,18 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 					));
 		}
 	}
+
+	// PR-NOTE: Upserts the vocabularies of the collected categories on the
+	// remote instance. Called from execute, before _putTaxonomyCategories.
+	// - It also adds the local Topic vocabulary (L_TOPIC of the company group)
+	//   when any attribute or fixed value became a Topic category.
+	// - L_TOPIC is skipped when it already exists remotely
+	//   (hasSiteTaxonomyVocabulary, Q10). Every other vocabulary is always PUT
+	//   (Q8), so a rename in PIM reaches the remote instance.
+	// - The body carries multiValued, the en_US name (Q5), "viewableBy":
+	//   "Anyone" (guest access, see _putTaxonomyCategories) and
+	//   "visibilityType": "PUBLIC". Internal vocabularies never get here,
+	//   because _createCategoriesJSONArray skips their categories.
 
 	private void _putTaxonomyVocabularies(
 			Collection<AssetCategory> assetCategories, long companyId,
@@ -946,6 +1050,14 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				"catalogExternalReferenceCode", true,
 				ObjectFieldConstants.BUSINESS_TYPE_TEXT);
 
+	// PR-NOTE: The new "categories" channel field. Its name matches the
+	// "categories" property of the Commerce Product DTO. It is multivalued and
+	// not required. Its type is TEXT so that the transformation rules can
+	// apply to the Topic values (user decision of 2026-11-09). Its allowed
+	// field mapping types are Categories, attribute, and fixed value. Every
+	// other channel field now passes attribute + fixed value explicitly,
+	// because the constructor without the list was removed (review).
+
 	private static final PIMConnectorChannelField
 		_PIM_CONNECTOR_CHANNEL_FIELD_CATEGORIES = new PIMConnectorChannelField(
 			ListUtil.fromArray(
@@ -1032,6 +1144,10 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 
 	private static final PIMConnectorChannelField
 		_PIM_CONNECTOR_CHANNEL_FIELD_TAGS = new PIMConnectorChannelField(
+
+			// PR-NOTE: "tags" now also accepts the Tags type, next to attribute
+			// and fixed value.
+
 			ListUtil.fromArray(
 				PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 				PIMConnectorFieldMappingTypeConstants.FIXED_VALUE,
@@ -1073,6 +1189,13 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				PIMConnectorFieldMappingTypeConstants.FIXED_VALUE),
 			"width", false, "skus[].width", false,
 			ObjectFieldConstants.BUSINESS_TYPE_DECIMAL);
+
+	// PR-NOTE: New references:
+	// - AssetCategoryLocalService: the categories of a PIM product;
+	// - AssetTagLocalService: its tags;
+	// - AssetVocabularyLocalService: the vocabulary of a category, and the
+	//   local Topic vocabulary;
+	// - GroupLocalService: the company group, where L_TOPIC lives.
 
 	@Reference
 	private AssetCategoryLocalService _assetCategoryLocalService;

@@ -234,6 +234,11 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		return serviceContext;
 	}
 
+	// PR-NOTE: Detects a PIM connector field mapping entry by its object
+	// definition ERC, like the sibling _isPIMConnectorFieldMappingRule
+	// ObjectEntry. onBeforeCreate and onBeforeUpdate use it to route to the
+	// new validation.
+
 	private boolean _isPIMConnectorFieldMappingObjectEntry(
 		ObjectEntry objectEntry) {
 
@@ -381,6 +386,10 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
+		// PR-NOTE: On create, a field mapping entry is now validated
+		// (originalObjectEntry = null, so only the channel field and type
+		// checks run).
+
 		if (_isPIMConnectorFieldMappingObjectEntry(objectEntry)) {
 			_validatePIMConnectorFieldMappingObjectEntry(null, objectEntry);
 		}
@@ -405,6 +414,9 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 			return;
 		}
+
+		// PR-NOTE: On update, the same validation runs, plus the check that the
+		// connector relationship did not change.
 
 		if (_isPIMConnectorFieldMappingObjectEntry(objectEntry)) {
 			_validatePIMConnectorFieldMappingObjectEntry(
@@ -499,6 +511,22 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 	}
 
+	// PR-NOTE: New server-side validation of a field mapping, as strict as the
+	// rule validator below (user decision of 2026-11-09):
+	// 1. On update, the connector relationship cannot change. A mapping moved
+	//    to another connector could carry a type that connector does not
+	//    allow.
+	// 2. channelFieldName must be a channel field of the connector's
+	//    connector type (_fetchPIMConnectorChannelField).
+	// 3. type must be one of the channel field's getAllowedFieldMappingTypes()
+	//    (local renamed to allowedFieldMappingTypes on review), so for example
+	//    "tags" on "name" is rejected.
+	// Before this change any "type" string was stored, and the export treated
+	// an unknown type as an attribute; the REST API and batch could create a
+	// Tags mapping on a channel field that cannot export it. Covered by
+	// ObjectEntryModelListenerTest._testOnBeforeCreateWithInvalidPIMConnector
+	// FieldMapping and testOnBeforeUpdate.
+
 	private void _validatePIMConnectorFieldMappingObjectEntry(
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws PortalException {
@@ -571,6 +599,10 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			_fetchPIMConnectorChannelField(
 				channelFieldName, pimConnectorObjectEntryId);
 
+		// PR-NOTE: Refactor. This is the same TEXT check as before, shared with
+		// the display context through PIMConnectorFieldMappingRulesUtil.
+		// isMappingRulesSupported (renamed from isSupported, review).
+
 		if (!PIMConnectorFieldMappingRulesUtil.isMappingRulesSupported(
 				pimConnectorChannelField)) {
 
@@ -596,6 +628,12 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 				Collections.singletonList("truncateLength"),
 				"\"truncateLength\" is invalid", "x-is-invalid");
 		}
+
+		// PR-NOTE: Behavior change. Before, the fallback rule was rejected on
+		// any multivalued channel field (isMultiple()). Now it is rejected only
+		// where isUseFirstNonemptySourceSupported says no: "tags" and
+		// "categories" accept it, because there the fallback means "only the
+		// values of the first source that has any".
 
 		if (MapUtil.getBoolean(values, "useFirstNonemptySource") &&
 			!PIMConnectorFieldMappingRulesUtil.

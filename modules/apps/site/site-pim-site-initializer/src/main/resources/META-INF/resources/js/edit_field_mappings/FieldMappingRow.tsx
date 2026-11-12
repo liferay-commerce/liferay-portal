@@ -48,6 +48,13 @@ export default function FieldMappingRow({
 		fieldMapping.sourceClassName
 	);
 
+	// PR-NOTE: The source select holds the attribute names plus three special
+	// values: categories, fixedValue, and tags. A special value becomes the
+	// mapping type, and anything else is an attribute (dynamicValue). Only an
+	// attribute keeps sourceFieldName, and only a fixed value keeps value.
+	// This extends the existing fixedValue trick to the two new sources; the
+	// user decided on 2026-11-09 not to add a "#" prefix to the option values.
+
 	const handleSourceFieldNameChange = (value: string) => {
 		const type = [TYPE_CATEGORIES, TYPE_FIXED_VALUE, TYPE_TAGS].includes(
 			value
@@ -134,6 +141,11 @@ export default function FieldMappingRow({
 						onChange={(event) =>
 							handleSourceFieldNameChange(event.target.value)
 						}
+
+						// PR-NOTE: The selected option is the attribute name
+						// for an attribute mapping, and the type itself
+						// (categories, fixedValue, or tags) otherwise.
+
 						value={
 							fieldMapping.type === TYPE_DYNAMIC_VALUE
 								? fieldMapping.sourceFieldName
@@ -144,6 +156,15 @@ export default function FieldMappingRow({
 							label={Liferay.Language.get('not-mapped')}
 							value=""
 						/>
+
+						{/* PR-NOTE: Each group of options is rendered only when
+						the channel field accepts that field mapping type
+						(channelFieldAllowedFieldMappingTypes from the display
+						context, prop allowedFieldMappingTypes here). The Tags
+						option appears only on "tags" and the Categories option
+						only on "categories". The order is attributes,
+						Categories, Tags, Fixed Value. Every other channel field
+						still gets attributes and Fixed Value only. */}
 
 						{allowedFieldMappingTypes.includes(
 							TYPE_DYNAMIC_VALUE

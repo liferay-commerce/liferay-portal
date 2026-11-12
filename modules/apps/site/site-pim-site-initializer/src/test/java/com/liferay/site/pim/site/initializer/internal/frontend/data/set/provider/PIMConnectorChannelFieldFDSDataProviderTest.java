@@ -375,6 +375,13 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 			Collections.singletonList("PIM Basic Product/ABC-1"),
 			pimConnectorChannelFieldDisplay.getSourceAttributes());
 
+		// PR-NOTE: testGetItems, new block. A channel field mapped only to
+		// Categories (with a structure) and Tags (without one) is "Mapped",
+		// which is the new _isMapped branch: these sources need no attribute or
+		// value. The Source Attributes column shows "PIM Basic Product/
+		// categories" and "tags", the new FDS data provider branches with and
+		// without the structure prefix.
+
 		_mockPIMConnectorFieldMappingObjectEntries(
 			_mockPIMConnectorFieldMappingObjectEntry(
 				"skus[].sku", 1, 0, _OBJECT_DEFINITION_CLASS_NAME,

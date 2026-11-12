@@ -332,6 +332,14 @@ public class PIMConnectorChannelFieldFDSDataProvider
 			});
 	}
 
+	// PR-NOTE: The old fixed value branch of _getSourceAttributes, extracted
+	// unchanged. It prefixes the value with the structure label
+	// ("PIM Basic Product/...") when the mapping is scoped to a structure.
+	// The fixed value, Tags, and Categories branches of _getSourceAttributes
+	// use it to build the "Source Attributes" column of the channel fields
+	// table on the Field Mappings page. "locale" was added to
+	// _getSourceAttributes for the localized Tags and Categories labels.
+
 	private String _getSourceAttribute(
 		Map<String, String> labelMap, String sourceClassName, String value) {
 
@@ -357,6 +365,12 @@ public class PIMConnectorChannelFieldFDSDataProvider
 
 				String sourceClassName = MapUtil.getString(
 					values, "sourceClassName");
+
+				// PR-NOTE: A Categories or Tags mapping has no source field and
+				// no value. The table shows the localized "categories" or
+				// "tags" label, with the structure prefix when the mapping has
+				// one. Without these branches, the row would fall through to
+				// the source field lookup and show an empty attribute.
 
 				if (PIMConnectorFieldMappingsUtil.isCategories(objectEntry)) {
 					return _getSourceAttribute(

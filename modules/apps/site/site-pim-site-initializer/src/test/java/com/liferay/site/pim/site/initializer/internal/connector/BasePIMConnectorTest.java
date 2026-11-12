@@ -376,6 +376,10 @@ public class BasePIMConnectorTest {
 						return null;
 					}
 
+					// PR-NOTE: Mechanical. The constant moved from
+					// PIMConnectorFieldMappingsUtil to the API class
+					// PIMConnectorFieldMappingTypeConstants. No test change.
+
 					return PIMConnectorFieldMappingTypeConstants.FIXED_VALUE;
 				}
 			).put(
