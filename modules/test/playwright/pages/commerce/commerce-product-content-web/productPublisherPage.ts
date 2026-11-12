@@ -11,6 +11,8 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayoutsPage';
 
 export class ProductPublisherPage {
+	readonly categoriesModal: Locator;
+	readonly categoriesSelectButton: Locator;
 	readonly closeButton: Locator;
 	readonly configurationFilterButton: Locator;
 	readonly configurationFrame: FrameLocator;
@@ -40,10 +42,23 @@ export class ProductPublisherPage {
 	readonly productLink: (productName: string) => Promise<Locator>;
 	readonly productSelectionRadio: (productSelection: string) => Locator;
 	readonly productSku: (productSku: string) => Promise<Locator>;
+	readonly queryNameSelect: Locator;
 	readonly removeTagNameButton: (tagName: string) => Promise<Locator>;
 	readonly tagsInput: Locator;
 
 	constructor(page: Page) {
+		this.configurationFrame = page.frameLocator(
+			'iframe[title*="Configuration"]'
+		);
+
+		this.categoriesModal = this.configurationFrame.getByRole('dialog', {
+			exact: true,
+			name: 'Select Categories',
+		});
+		this.categoriesSelectButton = this.configurationFrame.getByRole(
+			'button',
+			{exact: true, name: 'Select Categories'}
+		);
 		this.closeButton = page
 			.locator('.modal')
 			.getByLabel('Close', {exact: true});
@@ -52,9 +67,6 @@ export class ProductPublisherPage {
 				'iframe[title*="Product Publisher"][title*="Configuration"]'
 			)
 			.getByRole('button', {exact: true, name: 'Filter'});
-		this.configurationFrame = page.frameLocator(
-			'iframe[title*="Configuration"]'
-		);
 		this.configurationMenuItem = page.getByRole('menuitem', {
 			exact: true,
 			name: 'Configuration',
@@ -132,6 +144,9 @@ export class ProductPublisherPage {
 		this.productSku = async (productSku: string) => {
 			return page.getByText(productSku);
 		};
+		this.queryNameSelect = this.configurationFrame.locator(
+			'select.asset-query-name'
+		);
 		this.removeTagNameButton = async (tagName: string) => {
 			return this.configurationFrame.getByLabel(`Remove ${tagName}`);
 		};
@@ -139,6 +154,34 @@ export class ProductPublisherPage {
 			exact: true,
 			name: 'Tags',
 		});
+	}
+
+	async addProductPublisherCategoryFilter(categoryName: string) {
+		await expect(async () => {
+			await this.optionsButton.click();
+			await this.configurationMenuItem.click({timeout: 1000});
+		}).toPass();
+
+		await expandSection(this.configurationFilterButton);
+
+		await this.configurationFrame.getByLabel('Add Rule').click();
+		await this.queryNameSelect.selectOption('assetCategories');
+
+		await clickAndExpectToBeVisible({
+			target: this.categoriesModal,
+			trigger: this.categoriesSelectButton,
+		});
+
+		await this.categoriesModal
+			.getByRole('treeitem', {name: categoryName})
+			.getByRole('checkbox')
+			.check();
+		await this.categoriesModal
+			.getByRole('button', {exact: true, name: 'Done'})
+			.click();
+
+		await this.configurationSaveButton.click();
+		await this.closeButton.click();
 	}
 
 	async addProductPublisherTagFilter(tagName: string) {

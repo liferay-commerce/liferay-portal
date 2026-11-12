@@ -52,7 +52,6 @@ export const QUERY_NAME_OPTIONS: Array<{label: string; value: RuleType}> = [
 ];
 
 export interface RuleProps<T extends RuleType> {
-	categorySelectorURL: string;
 	groupIds: string;
 	index: number;
 	namespace: string;
@@ -64,7 +63,6 @@ export interface RuleProps<T extends RuleType> {
 }
 
 export function Rule<T extends RuleType>({
-	categorySelectorURL,
 	groupIds,
 	index,
 	namespace,
@@ -150,8 +148,6 @@ export function Rule<T extends RuleType>({
 						/>
 					) : (
 						<CategorySelector
-							categorySelectorURL={categorySelectorURL}
-							eventName={`${namespace}selectCategory`}
 							groupIds={groupIds}
 							index={index}
 							namespace={namespace}

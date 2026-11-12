@@ -36,6 +36,7 @@ page import="com.liferay.commerce.product.exception.CPDisplayLayoutEntryUuidExce
 page import="com.liferay.commerce.product.exception.NoSuchCPAttachmentFileEntryException" %><%@
 page import="com.liferay.commerce.product.model.CPAttachmentFileEntry" %><%@
 page import="com.liferay.commerce.product.model.CPDisplayLayout" %><%@
+page import="com.liferay.commerce.product.model.CommerceChannel" %><%@
 page import="com.liferay.document.library.kernel.exception.NoSuchFileEntryException" %><%@
 page import="com.liferay.petra.string.StringPool" %><%@
 page import="com.liferay.portal.kernel.bean.BeanParamUtil" %><%@
