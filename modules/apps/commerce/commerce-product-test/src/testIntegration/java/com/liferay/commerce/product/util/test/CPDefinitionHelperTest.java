@@ -6,9 +6,14 @@
 package com.liferay.commerce.product.util.test;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.model.AccountGroup;
+import com.liferay.account.service.AccountGroupLocalService;
+import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
+import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
@@ -21,25 +26,31 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -47,6 +58,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.frutilla.FrutillaRule;
@@ -313,6 +325,129 @@ public class CPDefinitionHelperTest {
 			cpCatalogEntry.getCPDefinitionId());
 	}
 
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testSearchCPDefinitionsWhenAccountGroupFilterIsEnabled()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Search for CPDefinitions visible to specific accounts"
+		).given(
+			"A CPDefinition visible to an account group and to specific " +
+				"accounts"
+		).when(
+			"Accounts search for CPDefinitions"
+		).then(
+			"The results contain the CPDefinition only for the accounts of " +
+				"the account group and for the specific accounts"
+		);
+
+		User user = UserTestUtil.addCompanyAdminUser(_company);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_company.getGroupId(), user.getUserId());
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		AccountEntry accountEntry1 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com", serviceContext);
+
+		AccountGroup accountGroup1 =
+			CommerceAccountTestUtil.addAccountGroupAndAccountRel(
+				RandomTestUtil.randomString(),
+				AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
+				accountEntry1.getAccountEntryId(), serviceContext);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition.getCPDefinitionId(),
+			AccountEntry.class.getName(), accountEntry1.getAccountEntryId());
+
+		AccountEntry accountEntry2 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com", serviceContext);
+
+		AccountGroup accountGroup2 =
+			CommerceAccountTestUtil.addAccountGroupAndAccountRel(
+				RandomTestUtil.randomString(),
+				AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
+				accountEntry2.getAccountEntryId(), serviceContext);
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup2.getAccountGroupId(), CPDefinition.class.getName(),
+			cpDefinition.getCPDefinitionId());
+
+		_cpDefinitionLocalService.updateCPDefinitionAccountGroupFilter(
+			cpDefinition.getCPDefinitionId(), true);
+
+		List<Long> cpDefinitionIds = Collections.singletonList(
+			cpDefinition.getCPDefinitionId());
+
+		Assert.assertEquals(
+			cpDefinitionIds,
+			_getCPDefinitionIds(accountEntry1.getAccountEntryId()));
+		Assert.assertEquals(
+			cpDefinitionIds,
+			_getCPDefinitionIds(accountEntry2.getAccountEntryId()));
+
+		AccountEntry accountEntry3 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com", serviceContext);
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup1.getAccountGroupId(), AccountEntry.class.getName(),
+			accountEntry3.getAccountEntryId());
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_getCPDefinitionIds(accountEntry3.getAccountEntryId()));
+
+		AccountEntry accountEntry4 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com", serviceContext);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition.getCPDefinitionId(),
+			AccountEntry.class.getName(), accountEntry4.getAccountEntryId());
+
+		Assert.assertEquals(
+			cpDefinitionIds,
+			_getCPDefinitionIds(accountEntry4.getAccountEntryId()));
+
+		AccountEntry accountEntry5 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com", serviceContext);
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_getCPDefinitionIds(accountEntry5.getAccountEntryId()));
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_getCPDefinitionIds(AccountConstants.ACCOUNT_ENTRY_ID_GUEST));
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-112683")) {
+
+			Assert.assertEquals(
+				Collections.emptyList(),
+				_getCPDefinitionIds(accountEntry1.getAccountEntryId()));
+			Assert.assertEquals(
+				cpDefinitionIds,
+				_getCPDefinitionIds(accountEntry2.getAccountEntryId()));
+		}
+	}
+
 	@FeatureFlag("LPD-109588")
 	@Test
 	public void testSearchCPDefinitionsWhenGuestBrowsingIsDisabled()
@@ -388,9 +523,36 @@ public class CPDefinitionHelperTest {
 		return cpInstances;
 	}
 
+	private List<Long> _getCPDefinitionIds(long accountEntryId)
+		throws PortalException {
+
+		SearchContext searchContext = CPTestUtil.getSearchContext(
+			null, WorkflowConstants.STATUS_APPROVED,
+			_commerceCatalog.getGroup());
+
+		searchContext.setAttribute("accountEntryId", accountEntryId);
+		searchContext.setAttribute(
+			"commerceAccountGroupIds",
+			_accountGroupLocalService.getAccountGroupIds(accountEntryId));
+
+		CPDataSourceResult cpDataSourceResult = _cpDefinitionHelper.search(
+			_commerceCatalog.getGroupId(), searchContext, new CPQuery(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		return TransformUtil.transform(
+			cpDataSourceResult.getCPCatalogEntries(),
+			CPCatalogEntry::getCPDefinitionId);
+	}
+
 	private static final int _CP_INSTANCES_COUNT = 10;
 
 	private static Company _company;
+
+	@Inject
+	private AccountGroupLocalService _accountGroupLocalService;
+
+	@Inject
+	private AccountGroupRelLocalService _accountGroupRelLocalService;
 
 	private CommerceCatalog _commerceCatalog;
 
@@ -405,6 +567,10 @@ public class CPDefinitionHelperTest {
 
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Inject
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
 
 	@Inject
 	private IndexerRegistry _indexerRegistry;
