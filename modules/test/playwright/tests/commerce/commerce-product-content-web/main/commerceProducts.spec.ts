@@ -9,21 +9,29 @@ import path from 'node:path';
 
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
+import {displayPageTemplatesPagesTest} from '../../../../fixtures/displayPageTemplatesPagesTest';
 import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {globalMenuPagesTest} from '../../../../fixtures/globalMenuPagesTest';
 import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import {liferayConfig} from '../../../../liferay.config';
+import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {
 	performLoginViaApi,
 	performLogout,
+	performUserSwitch,
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import {
+	TProductOptionSpec,
+	buildProductOptions,
 	createAccountWithBuyerUser,
+	createProductWithOptions,
+	deployProductFragmentsOnDefaultDPT,
 	miniCartCheckoutSetUp,
 	miniumSetUp,
 } from '../../utils/commerce';
@@ -31,14 +39,47 @@ import {
 export const test = mergeTests(
 	commercePagesTest,
 	dataApiHelpersTest,
+	displayPageTemplatesPagesTest,
 	featureFlagsTest({
 		'LPS-178052': {enabled: true},
 	}),
 	globalMenuPagesTest,
 	isolatedSiteTest,
 	loginTest(),
+	pageEditorPagesTest,
 	pageViewModePagesTest
 );
+
+const UNBUYABLE_REQUIRED_SKU_CASES: Array<{
+	errorMessage: string;
+	requiredProduct: {[key: string]: any};
+	tag: string;
+	title: string;
+}> = [
+	{
+		errorMessage: 'The product is no longer available.',
+		requiredProduct: {
+			productConfiguration: {allowBackOrder: true},
+			skus: [
+				{
+					cost: 0,
+					price: 0,
+					published: true,
+					purchasable: false,
+					sku: `SKU-${getRandomInt()}`,
+				},
+			],
+		},
+		tag: '@COMMERCE-12831',
+		title: 'A bundle option value linked to a SKU that is not purchasable blocks the add to cart',
+	},
+	{
+		errorMessage: 'The specified quantity is unavailable.',
+		requiredProduct: {productConfiguration: {allowBackOrder: false}},
+		tag: '@COMMERCE-12832',
+		title: 'A bundle option value linked to a SKU that is out of stock blocks the add to cart',
+	},
+];
 
 test('LPD-5780 Modal title and product name appear properly in product menu', async ({
 	apiHelpers,
@@ -1492,3 +1533,537 @@ test(
 		}
 	}
 );
+
+test(
+	'Bundle option values follow the bundle product relations in the Product Details widget and in the Option Selector fragment',
+	{
+		tag: [
+			'@COMMERCE-12806',
+			'@COMMERCE-12807',
+			'@COMMERCE-12810',
+			'@COMMERCE-12814',
+			'@LPD-108801',
+		],
+	},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsProductOptionsPage,
+		commerceAdminProductDetailsProductRelationsPage,
+		commerceAdminProductPage,
+		commerceInstanceSettingsPage,
+		displayPageTemplatesPage,
+		page,
+		pageEditorPage,
+		productDetailsPage,
+		site,
+	}) => {
+		await commerceInstanceSettingsPage.toggleShowUnselectableOptions(false);
+
+		try {
+			await miniCartCheckoutSetUp(
+				apiHelpers,
+				commerceAdminChannelsPage,
+				page,
+				site
+			);
+
+			const {
+				bundleProduct,
+				buyerUser,
+				productName1,
+				productName2,
+				productName3,
+				productName4,
+				skuContributorBundleProduct,
+			} =
+				await test.step('Create the products, the bundle products and a buyer', async () => {
+					const catalog =
+						await apiHelpers.headlessCommerceAdminCatalog.postCatalog(
+							{
+								name: getRandomString(),
+							}
+						);
+
+					const products = [];
+
+					for (let i = 0; i < 4; i++) {
+						products.push(
+							await apiHelpers.headlessCommerceAdminCatalog.postProduct(
+								{
+									catalogId: catalog.id,
+									name: {en_US: getRandomString()},
+									productConfiguration: {
+										allowBackOrder: true,
+									},
+								}
+							)
+						);
+					}
+
+					const [product1, product2, product3, product4] = products;
+
+					await apiHelpers.headlessCommerceAdminCatalog.postProductRelatedProduct(
+						product2.productId,
+						{
+							productId: product4.productId,
+							type: 'incompatible-in-bundle',
+						}
+					);
+
+					const optionSpecs: TProductOptionSpec[] = [
+						{
+							fieldType: 'select',
+							name: 'Option1',
+							required: true,
+							values: [
+								{
+									key: 'value1',
+									name: 'Value1',
+									skuId: product1.skus[0].id,
+								},
+								{
+									key: 'value2',
+									name: 'Value2',
+									skuId: product2.skus[0].id,
+								},
+							],
+						},
+						{
+							fieldType: 'select',
+							name: 'Option2',
+							required: true,
+							values: [
+								{
+									key: 'value3',
+									name: 'Value3',
+									skuId: product3.skus[0].id,
+								},
+								{
+									key: 'value4',
+									name: 'Value4',
+									skuId: product4.skus[0].id,
+								},
+							],
+						},
+					];
+
+					const productOptions = await buildProductOptions(
+						apiHelpers,
+						optionSpecs
+					);
+
+					const bundleProduct =
+						await apiHelpers.headlessCommerceAdminCatalog.postProduct(
+							{
+								catalogId: catalog.id,
+								name: {en_US: getRandomString()},
+								productConfiguration: {allowBackOrder: true},
+								productOptions,
+							}
+						);
+
+					const {product: skuContributorBundleProduct} =
+						await createProductWithOptions(
+							apiHelpers,
+							commerceAdminProductPage,
+							{
+								catalogId: catalog.id,
+								optionSpecs: optionSpecs.map((optionSpec) => ({
+									...optionSpec,
+									skuContributor: true,
+								})),
+								productConfiguration: {allowBackOrder: true},
+							}
+						);
+
+					const {buyerUser} = await createAccountWithBuyerUser(
+						apiHelpers,
+						site.id
+					);
+
+					return {
+						bundleProduct,
+						buyerUser,
+						productName1: product1.name.en_US,
+						productName2: product2.name.en_US,
+						productName3: product3.name.en_US,
+						productName4: product4.name.en_US,
+						skuContributorBundleProduct,
+					};
+				});
+
+			await test.step('Add the Requires in Bundle relation from the item selector', async () => {
+				await commerceAdminProductPage.gotoProduct(productName1);
+
+				await commerceAdminProductDetailsProductRelationsPage.goto();
+
+				await commerceAdminProductDetailsProductRelationsPage.addProductRelation(
+					'Requires in Bundle',
+					productName3
+				);
+			});
+
+			await test.step('Check the selectable values with SKU contributor options', async () => {
+				await performUserSwitch(page, buyerUser.alternateName);
+
+				await page.goto(
+					`/web/${site.name}/p/${skuContributorBundleProduct.name.en_US}`
+				);
+
+				await productDetailsPage.selectOption('Value2', 'Option1');
+
+				await expect(
+					productDetailsPage.optionSelectorValues('Option2')
+				).toHaveText(['Choose an Option', 'Value3']);
+
+				await productDetailsPage.selectOption('Value1', 'Option1');
+
+				await expect(
+					productDetailsPage.optionSelectorValues('Option2')
+				).toHaveText(['Choose an Option', 'Value3', 'Value4']);
+
+				await productDetailsPage.selectOption('Value4', 'Option2');
+
+				await expect(
+					productDetailsPage.optionSelectorValues('Option1')
+				).toHaveText(['Choose an Option']);
+
+				await expect(productDetailsPage.addToCartButton).toBeDisabled();
+			});
+
+			await test.step('Check the selectable values without SKU contributor options', async () => {
+				await page.goto(
+					`/web/${site.name}/p/${bundleProduct.name.en_US}`
+				);
+
+				await expect(
+					productDetailsPage.optionSelectorValues('Option1')
+				).toHaveText(['Choose an Option', 'Value2']);
+
+				await productDetailsPage.selectOption('Value2', 'Option1');
+
+				await expect(
+					productDetailsPage.optionSelectorValues('Option2')
+				).toHaveText(['Choose an Option', 'Value3']);
+
+				await productDetailsPage.selectOption('Value3', 'Option2');
+				await productDetailsPage.selectOption('Value1', 'Option1');
+
+				await expect(
+					productDetailsPage.optionSelectorValues('Option2')
+				).toHaveText(['Choose an Option', 'Value3', 'Value4']);
+
+				await productDetailsPage.selectOption('Value4', 'Option2');
+
+				await expect(
+					productDetailsPage.optionSelectorValues('Option1')
+				).toHaveText(['Choose an Option']);
+
+				await expect(productDetailsPage.addToCartButton).toBeDisabled();
+			});
+
+			await test.step('Show the unselectable options and set Value1 and Value4 as default option values', async () => {
+				await performUserSwitch(page, 'test');
+
+				await commerceInstanceSettingsPage.toggleShowUnselectableOptions(
+					true
+				);
+
+				await commerceAdminProductPage.gotoProduct(
+					bundleProduct.name.en_US
+				);
+
+				await commerceAdminProductDetailsPage.goToProductOptions();
+
+				for (const [optionName, optionValueName] of [
+					['Option1', 'Value1'],
+					['Option2', 'Value4'],
+				]) {
+					await commerceAdminProductDetailsProductOptionsPage.openOption(
+						optionName
+					);
+					await commerceAdminProductDetailsProductOptionsPage.setOptionValueDefault(
+						optionValueName
+					);
+
+					await clickAndExpectToBeHidden({
+						target: commerceAdminProductDetailsProductOptionsPage.visibleSidePanels,
+						trigger:
+							commerceAdminProductDetailsProductOptionsPage.optionSidePanelCancelButton,
+					});
+				}
+			});
+
+			const requiresMessage = `${productName1} requires ${productName3} to be purchased also.`;
+
+			await test.step('Check the reason messages in the Product Details widget', async () => {
+				await performUserSwitch(page, buyerUser.alternateName);
+
+				await page.goto(
+					`/web/${site.name}/p/${bundleProduct.name.en_US}`
+				);
+
+				await expect(
+					productDetailsPage.optionSelector('Option1')
+				).toHaveText('Value1');
+				await expect(
+					productDetailsPage.optionSelector('Option2')
+				).toHaveText('Value4');
+
+				await productDetailsPage.addToCartButton.click();
+
+				await waitForAlert(page, `Danger:${requiresMessage}`, {
+					type: 'danger',
+				});
+
+				await page.reload();
+
+				await productDetailsPage.assertPickerOptions(
+					[
+						{message: requiresMessage, name: 'Value1'},
+						{name: 'Value2'},
+					],
+					'Option1'
+				);
+				await productDetailsPage.assertPickerOptions(
+					[{name: 'Value3'}, {name: 'Value4'}],
+					'Option2'
+				);
+			});
+
+			await test.step('Deploy the Option Selector and Add to Cart fragments on the default product display page template', async () => {
+				await performUserSwitch(page, 'test');
+
+				await deployProductFragmentsOnDefaultDPT(apiHelpers, {
+					displayPageTemplatesPage,
+					fragmentNames: ['Option Selector', 'Add to Cart'],
+					pageEditorPage,
+					site,
+				});
+			});
+
+			await test.step('Check the reason messages in the Option Selector fragment', async () => {
+				await performUserSwitch(page, buyerUser.alternateName);
+
+				await page.goto(
+					`/web/${site.name}/p/${skuContributorBundleProduct.name.en_US}`
+				);
+
+				await productDetailsPage.selectPickerOption(
+					'Value1',
+					'Option1'
+				);
+				await productDetailsPage.selectPickerOption(
+					'Value4',
+					'Option2'
+				);
+
+				await expect(
+					page.getByText(requiresMessage, {exact: true})
+				).toBeVisible();
+				await expect(
+					page.getByText('This field is required.')
+				).toHaveCount(0);
+				await expect(productDetailsPage.addToCartButton).toBeDisabled();
+
+				await productDetailsPage.assertPickerOptions(
+					[
+						{
+							disabled: true,
+							message: requiresMessage,
+							name: 'Value1',
+						},
+						{
+							disabled: true,
+							message: `${productName2} cannot be combined with ${productName4}.`,
+							name: 'Value2',
+						},
+					],
+					'Option1'
+				);
+				await productDetailsPage.assertPickerOptions(
+					[
+						{disabled: false, name: 'Value3'},
+						{disabled: false, name: 'Value4'},
+					],
+					'Option2'
+				);
+
+				await productDetailsPage.selectPickerOption(
+					'Value3',
+					'Option2'
+				);
+				await productDetailsPage.selectPickerOption(
+					'Value2',
+					'Option1'
+				);
+
+				await productDetailsPage.assertPickerOptions(
+					[
+						{disabled: false, name: 'Value1'},
+						{disabled: false, name: 'Value2'},
+					],
+					'Option1'
+				);
+				await productDetailsPage.assertPickerOptions(
+					[
+						{disabled: false, name: 'Value3'},
+						{
+							disabled: true,
+							message: `${productName4} cannot be combined with ${productName2}.`,
+							name: 'Value4',
+						},
+					],
+					'Option2'
+				);
+			});
+		}
+		finally {
+			await performUserSwitch(page, 'test');
+
+			await commerceInstanceSettingsPage.toggleShowUnselectableOptions(
+				false
+			);
+		}
+	}
+);
+
+for (const {
+	errorMessage,
+	requiredProduct,
+	tag,
+	title,
+} of UNBUYABLE_REQUIRED_SKU_CASES) {
+	test(
+		title,
+		{tag: [tag, '@LPD-108801']},
+		async ({
+			apiHelpers,
+			commerceAdminChannelsPage,
+			commerceAdminProductPage,
+			commerceInstanceSettingsPage,
+			page,
+			productDetailsPage,
+			site,
+		}) => {
+			await commerceInstanceSettingsPage.toggleShowUnselectableOptions(
+				false
+			);
+
+			await miniCartCheckoutSetUp(
+				apiHelpers,
+				commerceAdminChannelsPage,
+				page,
+				site
+			);
+
+			const bundleProduct =
+				await test.step('Create a bundle product whose second option value requires the SKU that cannot be bought', async () => {
+					const catalog =
+						await apiHelpers.headlessCommerceAdminCatalog.postCatalog(
+							{
+								name: getRandomString(),
+							}
+						);
+
+					const product1 =
+						await apiHelpers.headlessCommerceAdminCatalog.postProduct(
+							{
+								catalogId: catalog.id,
+								name: {en_US: getRandomString()},
+								productConfiguration: {allowBackOrder: true},
+							}
+						);
+					const product2 =
+						await apiHelpers.headlessCommerceAdminCatalog.postProduct(
+							{
+								catalogId: catalog.id,
+								name: {en_US: getRandomString()},
+								...requiredProduct,
+							}
+						);
+
+					await apiHelpers.headlessCommerceAdminCatalog.postProductRelatedProduct(
+						product1.productId,
+						{
+							productId: product2.productId,
+							type: 'requires-in-bundle',
+						}
+					);
+
+					const {product} = await createProductWithOptions(
+						apiHelpers,
+						commerceAdminProductPage,
+						{
+							catalogId: catalog.id,
+							optionSpecs: [
+								{
+									fieldType: 'select',
+									name: 'Option1',
+									required: true,
+									skuContributor: true,
+									values: [
+										{
+											key: 'value1',
+											name: 'Value1',
+											skuId: product1.skus[0].id,
+										},
+									],
+								},
+								{
+									fieldType: 'select',
+									name: 'Option2',
+									required: true,
+									skuContributor: true,
+									values: [
+										{
+											key: 'value2',
+											name: 'Value2',
+											skuId: product2.skus[0].id,
+										},
+									],
+								},
+							],
+							productConfiguration: {allowBackOrder: true},
+						}
+					);
+
+					return product;
+				});
+
+			await test.step('Log in as a buyer', async () => {
+				const {buyerUser} = await createAccountWithBuyerUser(
+					apiHelpers,
+					site.id
+				);
+
+				await performUserSwitch(page, buyerUser.alternateName);
+			});
+
+			await test.step('Add the bundle product to the cart', async () => {
+				await page.goto(
+					`/web/${site.name}/p/${bundleProduct.name.en_US}`
+				);
+
+				await expect(
+					productDetailsPage
+						.optionSelector('Option1')
+						.locator('option:checked')
+				).toHaveText('Value1');
+				await expect(
+					productDetailsPage
+						.optionSelector('Option2')
+						.locator('option:checked')
+				).toHaveText('Value2');
+
+				await productDetailsPage.addToCartButton.click();
+
+				await waitForAlert(page, `Danger:${errorMessage}`, {
+					type: 'danger',
+				});
+			});
+		}
+	);
+}
