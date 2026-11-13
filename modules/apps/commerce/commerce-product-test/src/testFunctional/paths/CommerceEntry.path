@@ -176,11 +176,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>COMMERCE_OBJECT_NAME_ON_HEADER</td>
-	<td>//h1[contains(@class,'control-menu-level-1-heading') and contains(.,'${value1}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>HEADER_ERC_VALUE</td>
 	<td>//span[@title="External Reference Code"]//..//strong[contains(@class,'header-info-value') and normalize-space(text()='${key_erc}')]</td>
 	 <td></td>
@@ -293,16 +288,6 @@
 <tr>
 	<td>NAME_FIELD_SPECIAL</td>
 	<td>//label[contains(.,'Title')]//..//input[@type="text"]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>NOTIFICATION_TEMPLATE_FROM_NAME_FIELD</td>
-	<td>//label[contains(.,'From Name')]//..//input[contains(@id,'from')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>NOTIFICATION_TEMPLATE_FROM_ADDRESS_FIELD</td>
-	<td>//label[contains(.,'From Address')]//..//input[contains(@id,'from')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1016,11 +1001,6 @@
 
 <!--CHANNEL-->
 
-<tr>
-	<td>PAYMENT_METHODS_SIDE_PANEL_NAV_ITEMS</td>
-	<td>//div[contains(@class,'side-panel')]//li[a[span[contains(text(),'${navItem}')]]]</td>
-	<td></td>
-</tr>
 <tr>
 	<td>PRODUCT_CARD_LIST_PRICE</td>
 	<td>//p[@title='${key_productName}']//following-sibling::p[@class='card-text']//span[@class='price-value']</td>
