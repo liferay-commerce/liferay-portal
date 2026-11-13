@@ -49,25 +49,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addGroupedProductEntries(productNames = null) {
-		Click(locator1 = "Button#PLUS");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
-		for (var productName : list ${productNames}) {
-			Check.checkToggleSwitch(
-				locator1 = "CommerceAccelerators#SELECT_PRODUCT_RELATIONS",
-				productName = ${productName});
-		}
-
-		SelectFrame(value1 = "relative=top");
-
-		Button.clickAdd();
-
-		SelectFrameTop();
-	}
-
-	@summary = "Default summary"
 	macro addProductWithStatusViaAPI(catalogName = null, productStatusCode = null, productType = null) {
 		if (${productStatusCode} == 0) {
 			var productName = "Approved Product";
