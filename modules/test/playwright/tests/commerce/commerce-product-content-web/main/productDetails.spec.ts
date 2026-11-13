@@ -4,7 +4,7 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
-import {createReadStream} from 'fs';
+import {createReadStream, readFileSync} from 'fs';
 import path from 'node:path';
 
 import {accountsPagesTest} from '../../../../fixtures/accountsPagesTest';
@@ -35,6 +35,7 @@ import {
 	createAccountWithBuyerUser,
 	createChannelAccountManagerUser,
 	deployProductFragmentsOnDefaultDPT,
+	miniCartCheckoutSetUp,
 	miniumSetUp,
 } from '../../utils/commerce';
 
@@ -2062,6 +2063,319 @@ test(
 			await expect(productDetailsPage.requestQuoteFragment).toHaveCount(
 				0
 			);
+		});
+	}
+);
+
+test(
+	'The Product Details widget shows a grouped product with its entries, prices, stock and subscription',
+	{tag: ['@COMMERCE-9676', '@LPD-108799']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
+		const channel = await miniCartCheckoutSetUp(
+			apiHelpers,
+			commerceAdminChannelsPage,
+			page,
+			site
+		);
+
+		const {
+			catalog,
+			description,
+			entryProducts,
+			groupedProduct,
+			shortDescription,
+			sku,
+			specifications,
+		} =
+			await test.step('Create a grouped product with three entries, images, specifications and subscriptions', async () => {
+				const catalog =
+					await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+						name: getRandomString(),
+					});
+
+				const entryProducts = [];
+
+				for (let i = 0; i < 3; i++) {
+					const name = getRandomString();
+
+					entryProducts.push(
+						await apiHelpers.headlessCommerceAdminCatalog.postProduct(
+							{
+								catalogId: catalog.id,
+								name: {en_US: name},
+								shortDescription: {
+									en_US: `${name} Short Description`,
+								},
+							}
+						)
+					);
+				}
+
+				const specifications = [];
+
+				for (const specificationTitle of ['Material', 'Warranty']) {
+					specifications.push(
+						await apiHelpers.headlessCommerceAdminCatalog.postSpecification(
+							true,
+							0,
+							`${specificationTitle}${getRandomInt()}`
+						)
+					);
+				}
+
+				const [materialSpecification, warrantySpecification] =
+					specifications;
+
+				const description = getRandomString();
+				const shortDescription = getRandomString();
+				const sku = `SKU-${getRandomInt()}`;
+
+				const imageBuffer = readFileSync(
+					path.join(__dirname, 'dependencies', 'liferay.png')
+				);
+
+				const groupedProduct =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						description: {en_US: description},
+						groupedProducts: entryProducts.map(
+							(entryProduct, index) => ({
+								entryProductId: entryProduct.productId,
+								priority: index,
+								quantity: 1,
+							})
+						),
+						images: ['Black', 'Blue'].map((title) => ({
+							attachment: imageBuffer.toString('base64'),
+							title: {en_US: title},
+						})),
+						name: {en_US: getRandomString()},
+						productConfiguration: {
+							allowBackOrder: true,
+							displayAvailability: true,
+							displayStockQuantity: true,
+							minOrderQuantity: 4,
+						},
+						productSpecifications: [
+							{
+								specificationKey: materialSpecification.key,
+								value: {en_US: 'Iron'},
+							},
+							{
+								specificationKey: warrantySpecification.key,
+								value: {en_US: '6 Months'},
+							},
+						],
+						productType: 'grouped',
+						shortDescription: {en_US: shortDescription},
+						skus: [
+							{
+								cost: 0,
+								gtin: 'GTIN1',
+								manufacturerPartNumber: 'MPN1',
+								price: 0,
+								published: true,
+								purchasable: true,
+								sku,
+							},
+						],
+						subscriptionConfiguration: {
+							deliverySubscriptionEnable: true,
+							deliverySubscriptionLength: 10,
+							deliverySubscriptionType: 'monthly',
+							deliverySubscriptionTypeSettings: {
+								deliveryMonthDay: 15,
+								deliveryMonthlyMode: 1,
+							},
+							enable: true,
+							length: 10,
+							subscriptionType: 'monthly',
+							subscriptionTypeSettings: {
+								monthDay: 15,
+								monthlyMode: 1,
+							},
+						},
+					});
+
+				return {
+					catalog,
+					description,
+					entryProducts,
+					groupedProduct,
+					shortDescription,
+					sku,
+					specifications: [
+						[materialSpecification.title.en_US, 'Iron'],
+						[warrantySpecification.title.en_US, '6 Months'],
+					],
+				};
+			});
+
+		await test.step('Add prices, a discount and stock to the grouped product', async () => {
+			const basePriceList =
+				await apiHelpers.headlessCommerceAdminPricing.getBasePriceListId(
+					catalog.id
+				);
+
+			await apiHelpers.headlessCommerceAdminPricing.postPriceEntry({
+				price: 55,
+				priceListId: basePriceList.items[0].id,
+				skuId: groupedProduct.skus[0].id,
+			});
+
+			const basePromoPriceList =
+				await apiHelpers.headlessCommerceAdminPricing.getBasePromoPriceListId(
+					catalog.id
+				);
+
+			await apiHelpers.headlessCommerceAdminPricing.postPriceEntry({
+				price: 50,
+				priceListId: basePromoPriceList.items[0].id,
+				skuId: groupedProduct.skus[0].id,
+			});
+
+			await apiHelpers.headlessCommerceAdminPricing.postDiscount({
+				discountProducts: [{productId: groupedProduct.productId}],
+				percentageLevel1: 20,
+				usePercentage: true,
+			});
+
+			const warehouse =
+				await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+					{active: true, latitude: 40, longitude: -74}
+				);
+
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+				warehouse.id,
+				channel.id
+			);
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesWarehouseItems(
+				warehouse.id,
+				{quantity: 60, sku}
+			);
+		});
+
+		await test.step('Open the grouped product as a buyer', async () => {
+			const {buyerUser} = await createAccountWithBuyerUser(
+				apiHelpers,
+				site.id
+			);
+
+			await performUserSwitch(page, buyerUser.alternateName);
+
+			await page.goto(`/web/${site.name}/p/${groupedProduct.name.en_US}`);
+		});
+
+		await test.step('Check the product information', async () => {
+			await expect(
+				page.getByRole('heading', {name: groupedProduct.name.en_US})
+			).toBeVisible();
+			await expect(await productDetailsPage.skuField(sku)).toBeVisible();
+			await expect(
+				await productDetailsPage.mpnField('MPN1')
+			).toBeVisible();
+			await expect(
+				await productDetailsPage.gtinField('GTIN1')
+			).toBeVisible();
+			await expect(
+				await productDetailsPage.shortDescriptionField(shortDescription)
+			).toBeVisible();
+			await expect(
+				await productDetailsPage.fullDescriptionField(description)
+			).toBeVisible();
+		});
+
+		await test.step('Check the grouped entries', async () => {
+			const groupedProductsContainer = page.locator(
+				'.grouped-products-container'
+			);
+
+			for (const entryProduct of entryProducts) {
+				await expect(
+					groupedProductsContainer.getByText(
+						entryProduct.name.en_US,
+						{
+							exact: true,
+						}
+					)
+				).toBeVisible();
+				await expect(
+					groupedProductsContainer.getByText(
+						`${entryProduct.name.en_US} Short Description`,
+						{exact: true}
+					)
+				).toBeVisible();
+			}
+
+			await expect(groupedProductsContainer.getByRole('img')).toHaveCount(
+				entryProducts.length
+			);
+		});
+
+		await test.step('Check the availability, the prices and the subscriptions', async () => {
+			await expect(productDetailsPage.availabilityLabel).toHaveText(
+				'Available'
+			);
+			await expect(productDetailsPage.inStockQuantity).toContainText(
+				'60 in Stock'
+			);
+			await expect(
+				page.getByText('Payment Subscription (Every 10 Months)')
+			).toBeVisible();
+			await expect(
+				page.getByText('Delivery Subscription (Every 10 Months)')
+			).toBeVisible();
+			await expect(
+				await productDetailsPage.priceField('$ 55.00')
+			).toHaveClass(/price-value-inactive/);
+			await expect(
+				await productDetailsPage.promoPriceField('$ 50.00')
+			).toHaveClass(/price-value-promo price-value-inactive/);
+			await expect(
+				await productDetailsPage.priceField(
+					'–20%',
+					productDetailsPage.priceContainer
+				)
+			).toBeVisible();
+			await expect(
+				await productDetailsPage.priceField(
+					'$ 40.00',
+					productDetailsPage.priceContainer
+				)
+			).toBeVisible();
+			await expect(
+				productDetailsPage.minimumQuantityPerOrderLabel(4)
+			).toBeVisible();
+		});
+
+		await test.step('Check the images and the specifications', async () => {
+			for (const imageTitle of ['Black', 'Blue']) {
+				await expect(
+					page
+						.getByRole('img', {exact: true, name: imageTitle})
+						.first()
+				).toBeVisible();
+			}
+
+			await page.getByRole('tab', {name: 'Specifications'}).click();
+
+			for (const [
+				specificationTitle,
+				specificationValue,
+			] of specifications) {
+				await expect(page.getByRole('tabpanel')).toContainText(
+					specificationTitle
+				);
+				await expect(page.getByRole('tabpanel')).toContainText(
+					specificationValue
+				);
+			}
 		});
 	}
 );
