@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DigitalSignatureForm Validates required fields 1`] = `
+exports[`DigitalSignatureForm Shows the email format error after attempting to continue with an invalid email 1`] = `
 <DocumentFragment>
   <div
     class="collect-digital-signature container"
@@ -19,65 +19,53 @@ exports[`DigitalSignatureForm Validates required fields 1`] = `
       <div
         class="card-body m-2"
       >
-        <form>
+        <form
+          class="digital-signature-request-form"
+        >
           <div
-            class="form-group w-100 has-error"
+            class="mb-4"
           >
-            <label
-              class=""
-              for="envelopeName"
-            >
-              envelope-name
-              <span
-                class="inline-item-after reference-mark text-warning"
-              >
-                <svg
-                  class="lexicon-icon lexicon-icon-asterisk"
-                  role="presentation"
-                >
-                  <use
-                    href="#asterisk"
-                  />
-                </svg>
-              </span>
-              <span
-                class="hide-accessible sr-only"
-              >
-                required
-              </span>
-            </label>
-            <input
-              class="form-control form-control"
-              id="envelopeName"
-              name="envelopeName"
-              placeholder="my-envelope-name"
-              type="text"
-            />
             <div
-              class="form-feedback-group"
+              class="mb-1 text-secondary"
             >
-              <div
-                class="form-feedback-item"
-              >
-                <span>
-                  this-field-is-required
-                </span>
-              </div>
+              step-x-of-x
+            </div>
+            <div
+              class="text-6 text-weight-bold"
+            >
+              recipients
             </div>
           </div>
           <div
             class="document-library-form mb-4"
           >
             <button
-              class="select-button btn btn-secondary"
+              class="btn btn-secondary"
               type="button"
             >
-              <span
-                class="lfr-btn-label"
-              >
-                add-document
-              </span>
+              add-document
             </button>
+          </div>
+          <div
+            class="form-feedback-group has-error mb-4"
+          >
+            <div
+              class="form-feedback-item"
+            >
+              <span
+                class="form-feedback-indicator inline-item-before"
+              >
+                <svg
+                  class="lexicon-icon lexicon-icon-exclamation-full"
+                  role="presentation"
+                >
+                  <use
+                    href="#exclamation-full"
+                  />
+                </svg>
+              </span>
+              please-add-at-least-one-document
+            </div>
           </div>
           <div
             class="form-group recipient"
@@ -89,15 +77,15 @@ exports[`DigitalSignatureForm Validates required fields 1`] = `
                 class="input-group-item"
               >
                 <div
-                  class="form-group mb-0 w-100 has-error"
+                  class="form-group w-100 mb-0 has-error"
                 >
                   <label
                     class=""
-                    for="recipients[0].fullName"
+                    for="recipients[0].name"
                   >
                     recipient-full-name
                     <span
-                      class="inline-item-after reference-mark text-warning"
+                      class="ml-1 reference-mark text-warning"
                     >
                       <svg
                         class="lexicon-icon lexicon-icon-asterisk"
@@ -111,26 +99,38 @@ exports[`DigitalSignatureForm Validates required fields 1`] = `
                     <span
                       class="hide-accessible sr-only"
                     >
-                      required
+                      mandatory
                     </span>
                   </label>
                   <input
-                    class="form-control form-control"
-                    id="recipients[0].fullName"
-                    name="recipients[0].fullName"
+                    class="form-control"
+                    id="recipients[0].name"
+                    name="recipients[0].name"
                     placeholder="recipient-full-name"
                     type="text"
                     value=""
                   />
                   <div
-                    class="form-feedback-group"
+                    class="form-feedback-group field-feedback"
+                    id="recipients[0].namefieldFeedback"
                   >
                     <div
+                      aria-live="assertive"
                       class="form-feedback-item"
                     >
-                      <span>
-                        this-field-is-required
+                      <span
+                        class="form-feedback-indicator inline-item-before"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-exclamation-full"
+                          role="presentation"
+                        >
+                          <use
+                            href="#exclamation-full"
+                          />
+                        </svg>
                       </span>
+                      this-field-is-required
                     </div>
                   </div>
                 </div>
@@ -139,15 +139,15 @@ exports[`DigitalSignatureForm Validates required fields 1`] = `
                 class="input-group-item"
               >
                 <div
-                  class="form-group mb-0 w-100 has-error"
+                  class="form-group w-100 mb-0 has-error"
                 >
                   <label
                     class=""
-                    for="recipients[0].email"
+                    for="recipients[0].emailAddress"
                   >
                     recipient-email
                     <span
-                      class="inline-item-after reference-mark text-warning"
+                      class="ml-1 reference-mark text-warning"
                     >
                       <svg
                         class="lexicon-icon lexicon-icon-asterisk"
@@ -161,26 +161,38 @@ exports[`DigitalSignatureForm Validates required fields 1`] = `
                     <span
                       class="hide-accessible sr-only"
                     >
-                      required
+                      mandatory
                     </span>
                   </label>
                   <input
-                    class="form-control form-control"
-                    id="recipients[0].email"
-                    name="recipients[0].email"
+                    class="form-control"
+                    id="recipients[0].emailAddress"
+                    name="recipients[0].emailAddress"
                     placeholder="recipient-email"
                     type="text"
-                    value=""
+                    value="not-an-email"
                   />
                   <div
-                    class="form-feedback-group"
+                    class="form-feedback-group field-feedback"
+                    id="recipients[0].emailAddressfieldFeedback"
                   >
                     <div
+                      aria-live="assertive"
                       class="form-feedback-item"
                     >
-                      <span>
-                        this-field-is-required
+                      <span
+                        class="form-feedback-indicator inline-item-before"
+                      >
+                        <svg
+                          class="lexicon-icon lexicon-icon-exclamation-full"
+                          role="presentation"
+                        >
+                          <use
+                            href="#exclamation-full"
+                          />
+                        </svg>
                       </span>
+                      please-enter-a-valid-email-address
                     </div>
                   </div>
                 </div>
@@ -189,8 +201,50 @@ exports[`DigitalSignatureForm Validates required fields 1`] = `
                 class="input-group-item input-group-item-shrink"
               >
                 <button
+                  aria-label="move-up"
                   class="recipient-icon-button btn btn-monospaced btn-secondary"
                   disabled=""
+                  title="move-up"
+                  type="button"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-angle-up"
+                    role="presentation"
+                  >
+                    <use
+                      href="#angle-up"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div
+                class="input-group-item input-group-item-shrink"
+              >
+                <button
+                  aria-label="move-down"
+                  class="recipient-icon-button btn btn-monospaced btn-secondary"
+                  disabled=""
+                  title="move-down"
+                  type="button"
+                >
+                  <svg
+                    class="lexicon-icon lexicon-icon-angle-down"
+                    role="presentation"
+                  >
+                    <use
+                      href="#angle-down"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <div
+                class="input-group-item input-group-item-shrink"
+              >
+                <button
+                  aria-label="remove"
+                  class="recipient-icon-button btn btn-monospaced btn-secondary"
+                  disabled=""
+                  title="remove"
                   type="button"
                 >
                   <svg
@@ -226,97 +280,46 @@ exports[`DigitalSignatureForm Validates required fields 1`] = `
             </span>
           </button>
           <div
-            class="form-group w-100 has-error"
+            class="form-group"
           >
-            <label
-              class=""
-              for="emailSubject"
-            >
-              email-subject
-              <span
-                class="inline-item-after reference-mark text-warning"
-              >
-                <svg
-                  class="lexicon-icon lexicon-icon-asterisk"
-                  role="presentation"
-                >
-                  <use
-                    href="#asterisk"
-                  />
-                </svg>
-              </span>
-              <span
-                class="hide-accessible sr-only"
-              >
-                required
-              </span>
-            </label>
-            <input
-              class="form-control form-control"
-              id="emailSubject"
-              name="emailSubject"
-              placeholder="please-sign-this-document"
-              type="text"
-              value=""
-            />
             <div
-              class="form-feedback-group"
+              class="custom-control custom-checkbox custom-control-outside"
             >
-              <div
-                class="form-feedback-item"
-              >
-                <span>
-                  this-field-is-required
+              <label>
+                <input
+                  checked=""
+                  class="custom-control-input"
+                  type="checkbox"
+                />
+                <span
+                  class="custom-control-label"
+                >
+                  <span
+                    class="custom-control-label-text"
+                  >
+                    recipients-sign-in-the-order-listed
+                  </span>
                 </span>
-              </div>
+              </label>
             </div>
           </div>
           <div
-            class="form-group w-100"
+            class="mt-4 btn-group-spaced"
+            role="group"
           >
-            <label
-              class=""
-              for="emailMessage"
+            <button
+              class="btn btn-secondary"
+              type="button"
             >
-              email-message
-            </label>
-            <textarea
-              class="form-control form-control"
-              id="emailMessage"
-              maxlength="10001"
-              name="emailMessage"
-              placeholder="email-message"
-              type="textarea"
+              cancel
+            </button>
+            <button
+              class="btn btn-primary"
+              type="button"
             >
-              Email Message
-            </textarea>
-            <div
-              class="form-feedback-group"
-            >
-              <div
-                class="form-feedback-item"
-              >
-                <div
-                  class="form-text"
-                >
-                  x-characters-remaining
-                </div>
-              </div>
-            </div>
+              next
+            </button>
           </div>
-          <button
-            class="btn btn-primary"
-            disabled=""
-            type="submit"
-          >
-            send
-          </button>
-          <button
-            class="ml-2 btn btn-secondary"
-            type="button"
-          >
-            cancel
-          </button>
         </form>
       </div>
     </div>
