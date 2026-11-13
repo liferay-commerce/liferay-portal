@@ -19,13 +19,16 @@ import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOptionValue;
+import com.liferay.headless.commerce.admin.catalog.client.problem.Problem;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 
@@ -153,6 +156,7 @@ public class ProductOptionValueResourceTest
 	public void testPatchProductOptionValue() throws Exception {
 		super.testPatchProductOptionValue();
 
+		_testPatchProductOptionValueWithInvalidQuantity();
 		_testPatchProductOptionValueWithSkuExternalReferenceCode();
 	}
 
@@ -280,6 +284,33 @@ public class ProductOptionValueResourceTest
 		return productOptionValueResource.postProductOptionIdProductOptionValue(
 			_cpDefinitionOptionRel.getCPDefinitionOptionRelId(),
 			productOptionValue);
+	}
+
+	private void _testPatchProductOptionValueWithInvalidQuantity()
+		throws Exception {
+
+		ProductOptionValue postProductOptionValue =
+			testPatchProductOptionValue_addProductOptionValue();
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> productOptionValueResource.patchProductOptionValue(
+				postProductOptionValue.getId(),
+				new ProductOptionValue() {
+					{
+						quantity = BigDecimal.ZERO;
+						skuId = _cpInstance.getCPInstanceId();
+					}
+				}));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+		Assert.assertEquals(
+			LanguageUtil.get(
+				LocaleUtil.getDefault(),
+				"the-option-value-quantity-is-invalid"),
+			problem.getTitle());
 	}
 
 	private void _testPatchProductOptionValueWithSkuExternalReferenceCode()

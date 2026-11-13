@@ -774,7 +774,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 		).when(
 			"The option value is updated"
 		).then(
-			"Any of cpInstance attributes is set to the option value"
+			"Any of cpInstance attributes is set and the quantity is 0"
 		);
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
@@ -789,6 +789,25 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 		Assert.assertTrue(
 			Validator.isNull(cpDefinitionOptionValueRel.getCPInstanceUuid()));
 		Assert.assertEquals(0, cpDefinitionOptionValueRel.getCProductId());
+
+		cpDefinitionOptionValueRel =
+			_cpDefinitionOptionValueRelLocalService.
+				addCPDefinitionOptionValueRel(
+					null, cpDefinitionOptionRel.getCPDefinitionOptionRelId(), 0,
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomLocaleStringMap(), false, null,
+					RandomTestUtil.nextDouble(), null, StringPool.BLANK,
+					_serviceContext);
+
+		Assert.assertEquals(
+			BigDecimal.ZERO, cpDefinitionOptionValueRel.getQuantity());
+
+		cpDefinitionOptionValueRel = _updateCPDefinitionOptionValueRel(
+			cpDefinitionOptionValueRel, 0,
+			cpDefinitionOptionValueRel.isPreselected(), null, BigDecimal.ONE);
+
+		Assert.assertEquals(
+			BigDecimal.ZERO, cpDefinitionOptionValueRel.getQuantity());
 	}
 
 	@Test

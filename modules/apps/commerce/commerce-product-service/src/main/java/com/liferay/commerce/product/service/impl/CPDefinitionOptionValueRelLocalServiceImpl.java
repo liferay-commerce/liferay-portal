@@ -195,8 +195,15 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		}
 
 		cpDefinitionOptionValueRel.setPriority(priority);
-		cpDefinitionOptionValueRel.setQuantity(
-			BigDecimalUtil.get(quantity, BigDecimal.ONE));
+
+		if (cpDefinitionOptionRel.isPriceContributor()) {
+			cpDefinitionOptionValueRel.setQuantity(
+				BigDecimalUtil.get(quantity, BigDecimal.ONE));
+		}
+		else {
+			cpDefinitionOptionValueRel.setQuantity(BigDecimal.ZERO);
+		}
+
 		cpDefinitionOptionValueRel.setUnitOfMeasureKey(unitOfMeasureKey);
 
 		if (_emptyModelManager.isEmptyModel()) {
@@ -925,7 +932,13 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			cpDefinitionOptionValueRel.setPrice(price);
 		}
 
-		cpDefinitionOptionValueRel.setQuantity(quantity);
+		if (cpDefinitionOptionRel.isPriceContributor()) {
+			cpDefinitionOptionValueRel.setQuantity(quantity);
+		}
+		else {
+			cpDefinitionOptionValueRel.setQuantity(BigDecimal.ZERO);
+		}
+
 		cpDefinitionOptionValueRel.setUnitOfMeasureKey(unitOfMeasureKey);
 		cpDefinitionOptionValueRel.setStatus(
 			_emptyModelManager.solveEmptyModel(
@@ -1381,14 +1394,10 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		}
 
 		if (Validator.isNull(priceType)) {
-			BigDecimal quantity = cpDefinitionOptionValueRel.getQuantity();
-
 			if (Validator.isNotNull(
 					cpDefinitionOptionValueRel.getCPInstanceUuid()) ||
 				(cpDefinitionOptionValueRel.getCProductId() != 0) ||
-				(cpDefinitionOptionValueRel.getPrice() != null) ||
-				((quantity != null) &&
-				 (quantity.compareTo(BigDecimal.ZERO) != 0))) {
+				(cpDefinitionOptionValueRel.getPrice() != null)) {
 
 				throw new CPDefinitionOptionValueRelCPInstanceException();
 			}
