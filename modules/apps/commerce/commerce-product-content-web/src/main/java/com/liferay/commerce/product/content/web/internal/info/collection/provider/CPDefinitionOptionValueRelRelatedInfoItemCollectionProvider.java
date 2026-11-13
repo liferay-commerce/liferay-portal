@@ -5,10 +5,12 @@
 
 package com.liferay.commerce.product.content.web.internal.info.collection.provider;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.product.catalog.CPQuery;
 import com.liferay.commerce.product.helper.CPDefinitionHelper;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -21,6 +23,7 @@ import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalServi
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
+import com.liferay.commerce.util.CommerceContextThreadLocal;
 import com.liferay.info.collection.provider.CollectionQuery;
 import com.liferay.info.collection.provider.ConfigurableInfoCollectionProvider;
 import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
@@ -107,11 +110,30 @@ public class CPDefinitionOptionValueRelRelatedInfoItemCollectionProvider
 				channelGroupIds = groupIds;
 			}
 
+			long accountEntryId = 0;
+			long[] commerceAccountGroupIds = null;
+
+			CommerceContext commerceContext = CommerceContextThreadLocal.get();
+
+			if (commerceContext != null) {
+				AccountEntry accountEntry = commerceContext.getAccountEntry();
+
+				if (accountEntry != null) {
+					accountEntryId = accountEntry.getAccountEntryId();
+					commerceAccountGroupIds =
+						commerceContext.getCommerceAccountGroupIds();
+				}
+			}
+
 			SearchContext searchContext = new SearchContext();
 
 			searchContext.setAttributes(
 				HashMapBuilder.<String, Serializable>put(
 					Field.STATUS, WorkflowConstants.STATUS_APPROVED
+				).put(
+					"accountEntryId", accountEntryId
+				).put(
+					"commerceAccountGroupIds", commerceAccountGroupIds
 				).put(
 					"excludedCPDefinitionId", cpDefinition.getCPDefinitionId()
 				).build());
