@@ -108,6 +108,14 @@ describe('RecipientUserAutocomplete', () => {
 		expect(input).toHaveValue(USER.emailAddress);
 	});
 
+	it('leaves out the users excluded from the list', async () => {
+		renderRecipientUserAutocomplete({excludedUserIds: [USER.userId]});
+
+		await userEvent.type(screen.getByLabelText(/recipient-email/), 'test');
+
+		expect(await screen.findByText('no-results-found')).toBeInTheDocument();
+	});
+
 	it('searches the users by the typed text', async () => {
 		const searchUsers = jest.fn(() => Promise.resolve([]));
 
@@ -123,12 +131,14 @@ describe('RecipientUserAutocomplete', () => {
 		);
 	});
 
-	it('leaves out the users excluded from the list', async () => {
-		renderRecipientUserAutocomplete({excludedUserIds: [USER.userId]});
+	it('shows the badge text next to the user', async () => {
+		renderRecipientUserAutocomplete({
+			recipientBadgeText: () => 'countersigner',
+		});
 
 		await userEvent.type(screen.getByLabelText(/recipient-email/), 'test');
 
-		expect(await screen.findByText('no-results-found')).toBeInTheDocument();
+		expect(await screen.findByText('countersigner')).toBeInTheDocument();
 	});
 
 	it('updates the email when the value changes', () => {
