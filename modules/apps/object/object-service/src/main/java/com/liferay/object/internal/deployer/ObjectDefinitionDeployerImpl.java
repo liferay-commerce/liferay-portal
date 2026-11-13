@@ -55,6 +55,7 @@ import com.liferay.object.related.models.ObjectRelatedModelsPredicateProvider;
 import com.liferay.object.related.models.ObjectRelatedModelsProviderRegistryUtil;
 import com.liferay.object.rest.context.path.RESTContextPathResolver;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
+import com.liferay.object.search.RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 import com.liferay.object.service.ObjectActionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
@@ -160,6 +161,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		PortletLocalService portletLocalService,
 		ResourceActions resourceActions, UserLocalService userLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
+		RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry
+			rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry,
 		SearchLocalizationHelper searchLocalizationHelper,
 		SharingModelResourcePermissionConfigurator
 			sharingModelResourcePermissionConfigurator,
@@ -202,6 +205,8 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 		_resourceActions = resourceActions;
 		_userLocalService = userLocalService;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
+		_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry =
+			rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 		_searchLocalizationHelper = searchLocalizationHelper;
 		_sharingModelResourcePermissionConfigurator =
 			sharingModelResourcePermissionConfigurator;
@@ -356,6 +361,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 						_dlFileEntryLocalService, _dlFileEntryTextProvider,
 						_objectEntryFolderLocalService,
 						_objectFieldBusinessTypeRegistry,
+						_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry,
 						_textEmbeddingDocumentContributor),
 					HashMapDictionaryBuilder.<String, Object>put(
 						"indexer.class.name", objectDefinition.getClassName()
@@ -731,6 +737,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 	private final ResourceActions _resourceActions;
 	private final ResourcePermissionLocalService
 		_resourcePermissionLocalService;
+	private final
+		RootObjectEntryFolderObjectEntryModelDocumentContributorRegistry
+			_rootObjectEntryFolderObjectEntryModelDocumentContributorRegistry;
 	private final SearchLocalizationHelper _searchLocalizationHelper;
 	private final Map<String, ServiceRegistration<?>> _serviceRegistrations =
 		new ConcurrentHashMap<>();
