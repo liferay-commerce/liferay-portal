@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {selectOptionContaining} from '../../../tests/commerce/utils/selectOptionContaining';
 import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayoutsPage';
@@ -383,6 +383,38 @@ export class ProductDetailsPage {
 		this.viewButton = page.getByLabel('View');
 	}
 
+	async assertPickerOptions(
+		pickerOptions: {disabled?: boolean; message?: string; name: string}[],
+		optionName: string
+	) {
+		await this.optionSelector(optionName).click();
+
+		const listbox = this.page.getByRole('listbox');
+
+		const options = listbox.getByRole('option');
+
+		await expect(options).toHaveCount(pickerOptions.length + 1);
+
+		for (const {disabled, message, name} of pickerOptions) {
+			const option = options.filter({hasText: new RegExp(`^${name}`)});
+
+			await expect(option.locator('.label')).toHaveText(
+				message ? [message] : []
+			);
+
+			if (disabled === true) {
+				await expect(option).toBeDisabled();
+			}
+			else if (disabled === false) {
+				await expect(option).toBeEnabled();
+			}
+		}
+
+		await this.page.keyboard.press('Escape');
+
+		await expect(listbox).toBeHidden();
+	}
+
 	async goto() {
 		await this.layoutsPage.goto();
 	}
@@ -392,5 +424,17 @@ export class ProductDetailsPage {
 			this.optionSelector(optionName),
 			optionLabel
 		);
+	}
+
+	async selectPickerOption(optionLabel: string, optionName: string) {
+		const optionSelector = this.optionSelector(optionName);
+
+		await optionSelector.click();
+
+		await this.page
+			.getByRole('option', {exact: true, name: optionLabel})
+			.click();
+
+		await expect(optionSelector).toHaveText(optionLabel);
 	}
 }
