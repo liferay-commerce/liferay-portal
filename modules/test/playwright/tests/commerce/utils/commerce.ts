@@ -1024,6 +1024,8 @@ export async function miniCartCheckoutSetUp(
 	);
 
 	await waitForAlert(page);
+
+	return channel;
 }
 
 export async function miniumSetUp(

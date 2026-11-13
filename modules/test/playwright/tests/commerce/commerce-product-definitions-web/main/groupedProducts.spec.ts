@@ -117,3 +117,95 @@ test(
 		});
 	}
 );
+
+test(
+	'The grouped entries of a grouped product can be searched',
+	{tag: ['@COMMERCE-11961', '@LPD-108804']},
+	async ({apiHelpers, commerceAdminProductPage, page}) => {
+		const {groupedProduct, productNames} =
+			await test.step('Create a grouped product with three entries', async () => {
+				const catalog =
+					await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+				const entryProducts = [];
+
+				for (let i = 0; i < 3; i++) {
+					entryProducts.push(
+						await apiHelpers.headlessCommerceAdminCatalog.postProduct(
+							{
+								catalogId: catalog.id,
+								name: {en_US: getRandomString()},
+							}
+						)
+					);
+				}
+
+				const groupedProduct =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						groupedProducts: entryProducts.map(
+							(entryProduct, index) => ({
+								entryProductId: entryProduct.productId,
+								priority: index,
+								quantity: 1,
+							})
+						),
+						name: {en_US: getRandomString()},
+						productType: 'grouped',
+					});
+
+				return {
+					groupedProduct,
+					productNames: entryProducts.map(
+						(entryProduct) => entryProduct.name.en_US
+					),
+				};
+			});
+
+		await test.step('Search a grouped entry and clear the search', async () => {
+			await commerceAdminProductPage.gotoProduct(
+				groupedProduct.name.en_US
+			);
+
+			await page
+				.getByRole('link', {exact: true, name: 'Grouped'})
+				.click();
+
+			for (const productName of productNames) {
+				await expect(
+					page.getByRole('cell', {exact: true, name: productName})
+				).toBeVisible();
+			}
+
+			const searchInput = page.getByPlaceholder('Search for', {
+				exact: true,
+			});
+
+			await searchInput.fill(productNames[0]);
+			await searchInput.press('Enter');
+
+			await expect(
+				page.getByRole('cell', {exact: true, name: productNames[0]})
+			).toBeVisible();
+
+			for (const productName of productNames.slice(1)) {
+				await expect(
+					page.getByRole('cell', {exact: true, name: productName})
+				).toBeHidden();
+			}
+
+			await page
+				.getByRole('button', {
+					exact: true,
+					name: `Clear 1 Result for ${productNames[0]}`,
+				})
+				.click();
+
+			for (const productName of productNames) {
+				await expect(
+					page.getByRole('cell', {exact: true, name: productName})
+				).toBeVisible();
+			}
+		});
+	}
+);
