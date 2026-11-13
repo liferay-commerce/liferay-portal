@@ -110,6 +110,7 @@ export default [
 	'@liferay/design-library-web',
 	'@liferay/dialect-theme',
 	'@liferay/digital-sales-room-web',
+	'@liferay/digital-signature-js-components-web',
 	'@liferay/digital-signature-web',
 	'@liferay/dispatch-web',
 	'@liferay/document-library-opener-google-drive-web',
