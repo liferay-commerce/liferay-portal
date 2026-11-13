@@ -159,23 +159,11 @@ public class PIMConnectorChannelFieldFDSDataProvider
 	}
 
 	private Map<String, String> _getLabelMap(
-		long companyId, Locale locale,
-		Map<String, List<ObjectEntry>> objectEntriesMap) {
-
-		if (objectEntriesMap.isEmpty()) {
-			return Collections.emptyMap();
-		}
+		Locale locale, List<ObjectDefinition> objectDefinitions) {
 
 		Map<String, String> labelMap = new HashMap<>();
 
-		for (ObjectDefinition objectDefinition :
-				_objectDefinitionService.getCMSObjectDefinitions(
-					companyId,
-					new String[] {
-						PIMObjectFolderConstants.
-							EXTERNAL_REFERENCE_CODE_PRODUCT_TYPES
-					})) {
-
+		for (ObjectDefinition objectDefinition : objectDefinitions) {
 			String objectDefinitionLabel = objectDefinition.getLabel(locale);
 
 			labelMap.put(
@@ -242,8 +230,15 @@ public class PIMConnectorChannelFieldFDSDataProvider
 			objectEntries.add(objectEntry);
 		}
 
-		Map<String, String> labelMap = _getLabelMap(
-			themeDisplay.getCompanyId(), locale, objectEntriesMap);
+		List<ObjectDefinition> objectDefinitions =
+			_objectDefinitionService.getCMSObjectDefinitions(
+				themeDisplay.getCompanyId(),
+				new String[] {
+					PIMObjectFolderConstants.
+						EXTERNAL_REFERENCE_CODE_PRODUCT_TYPES
+				});
+
+		Map<String, String> labelMap = _getLabelMap(locale, objectDefinitions);
 
 		String pimFieldMappingRuleAPIURL =
 			PIMConnectorFieldMappingRulesUtil.getAPIURL(
@@ -283,7 +278,8 @@ public class PIMConnectorChannelFieldFDSDataProvider
 					locale, pimFieldMappingRuleAPIURL,
 					pimFieldMappingRuleObjectEntryId,
 					pimConnectorChannelField.isRequired(),
-					_getSourceAttributes(labelMap, objectEntries),
+					_getSourceAttributes(
+						labelMap, locale, objectDefinitions, objectEntries),
 					_getTransformationRules(locale, pimFieldMappingRuleValues),
 					MapUtil.getBoolean(
 						pimFieldMappingRuleValues, "useFirstNonemptySource"));
@@ -332,8 +328,40 @@ public class PIMConnectorChannelFieldFDSDataProvider
 			});
 	}
 
+	private String _getRepeatableGroupSourceAttribute(
+		Locale locale, List<ObjectDefinition> objectDefinitions,
+		String sourceClassName, String sourceFieldName) {
+
+		for (ObjectDefinition objectDefinition : objectDefinitions) {
+			if (Validator.isNotNull(sourceClassName) &&
+				!Objects.equals(
+					sourceClassName, objectDefinition.getClassName())) {
+
+				continue;
+			}
+
+			String label = PIMConnectorFieldMappingsUtil.getLabel(
+				objectDefinition, locale, sourceFieldName);
+
+			if (Validator.isNull(label)) {
+				continue;
+			}
+
+			if (Validator.isNull(sourceClassName)) {
+				return label;
+			}
+
+			return StringBundler.concat(
+				objectDefinition.getLabel(locale), StringPool.SLASH, label);
+		}
+
+		return sourceFieldName;
+	}
+
 	private List<String> _getSourceAttributes(
-		Map<String, String> labelMap, List<ObjectEntry> objectEntries) {
+		Map<String, String> labelMap, Locale locale,
+		List<ObjectDefinition> objectDefinitions,
+		List<ObjectEntry> objectEntries) {
 
 		return TransformUtil.transform(
 			objectEntries,
@@ -366,6 +394,14 @@ public class PIMConnectorChannelFieldFDSDataProvider
 
 				if (Validator.isNull(sourceFieldName)) {
 					return null;
+				}
+
+				if (PIMConnectorFieldMappingsUtil.isRepeatableGroupPath(
+						objectEntry)) {
+
+					return _getRepeatableGroupSourceAttribute(
+						locale, objectDefinitions, sourceClassName,
+						sourceFieldName);
 				}
 
 				return labelMap.getOrDefault(

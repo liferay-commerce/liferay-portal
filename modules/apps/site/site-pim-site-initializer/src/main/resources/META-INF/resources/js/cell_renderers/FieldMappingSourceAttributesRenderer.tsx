@@ -6,6 +6,8 @@
 import ClayLabel from '@clayui/label';
 import React from 'react';
 
+const SOURCE_ATTRIBUTE_MAX_WIDTH = '16rem';
+
 const MAX_VISIBLE_SOURCE_ATTRIBUTES = 3;
 
 export default function FieldMappingSourceAttributesRenderer({
@@ -29,8 +31,16 @@ export default function FieldMappingSourceAttributesRenderer({
 	return (
 		<span className="c-gap-1 d-inline-flex flex-wrap">
 			{visibleValue.map((sourceAttribute, index) => (
-				<ClayLabel className="label-inverse-secondary" key={index}>
-					{sourceAttribute}
+				<ClayLabel
+					className="label-inverse-secondary"
+					data-tooltip-align="top"
+					key={index}
+					style={{maxWidth: SOURCE_ATTRIBUTE_MAX_WIDTH}}
+					title={sourceAttribute}
+				>
+					<span className="d-block text-truncate">
+						{sourceAttribute}
+					</span>
 				</ClayLabel>
 			))}
 

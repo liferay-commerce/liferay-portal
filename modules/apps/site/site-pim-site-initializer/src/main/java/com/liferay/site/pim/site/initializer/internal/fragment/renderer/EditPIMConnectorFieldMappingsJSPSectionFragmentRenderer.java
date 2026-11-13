@@ -6,6 +6,7 @@
 package com.liferay.site.pim.site.initializer.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
@@ -36,10 +37,13 @@ public class EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return new EditPIMConnectorFieldMappingsDisplayContext(
-			httpServletRequest, _objectDefinitionService,
-			_objectEntryLocalService, _objectFieldLocalService,
-			_pimConnectorRegistry);
+			httpServletRequest, _objectDefinitionLocalService,
+			_objectDefinitionService, _objectEntryLocalService,
+			_objectFieldLocalService, _pimConnectorRegistry);
 	}
+
+	@Reference
+	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectDefinitionService _objectDefinitionService;

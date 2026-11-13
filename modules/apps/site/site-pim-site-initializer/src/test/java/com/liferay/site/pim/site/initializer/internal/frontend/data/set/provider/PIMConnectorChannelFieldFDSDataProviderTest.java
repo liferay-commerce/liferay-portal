@@ -8,15 +8,20 @@ package com.liferay.site.pim.site.initializer.internal.frontend.data.set.provide
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectFieldLocalServiceUtil;
+import com.liferay.object.service.ObjectFolderLocalServiceUtil;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
@@ -160,6 +165,8 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 	public void tearDown() {
 		_objectDefinitionLocalServiceUtilMockedStatic.close();
 		_objectEntryLocalServiceUtilMockedStatic.close();
+		_objectFieldLocalServiceUtilMockedStatic.close();
+		_objectFolderLocalServiceUtilMockedStatic.close();
 		_objectRelationshipLocalServiceUtilMockedStatic.close();
 	}
 
@@ -373,6 +380,37 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 
 		Assert.assertEquals(
 			Collections.singletonList("PIM Basic Product/ABC-1"),
+			pimConnectorChannelFieldDisplay.getSourceAttributes());
+
+		_mockRepeatableGroup();
+
+		_mockPIMConnectorFieldMappingObjectEntries(
+			_mockPIMConnectorFieldMappingObjectEntry(
+				"skus[].sku", 1, 0, StringPool.BLANK, "r_images/title",
+				"dynamicValue", StringPool.BLANK),
+			_mockPIMConnectorFieldMappingObjectEntry(
+				"skus[].sku", 2, 1, _OBJECT_DEFINITION_CLASS_NAME,
+				"r_images/title", "dynamicValue", StringPool.BLANK),
+			_mockPIMConnectorFieldMappingObjectEntry(
+				"skus[].sku", 3, 2, StringPool.BLANK, "r_deleted/title",
+				"dynamicValue", StringPool.BLANK),
+			_mockPIMConnectorFieldMappingObjectEntry(
+				"skus[].sku", 4, 3, StringPool.BLANK,
+				"r_images/r_images_c_productId", "dynamicValue",
+				StringPool.BLANK));
+
+		pimConnectorChannelFieldDisplays =
+			_pimConnectorChannelFieldFDSDataProvider.getItems(
+				_mockFDSKeywords(StringPool.BLANK), _mockFDSPagination(0, 20),
+				_httpServletRequest, null);
+
+		pimConnectorChannelFieldDisplay = pimConnectorChannelFieldDisplays.get(
+			1);
+
+		Assert.assertEquals(
+			Arrays.asList(
+				"Images \u203A Title", "PIM Basic Product/Images \u203A Title",
+				"r_deleted/title", "r_images/r_images_c_productId"),
 			pimConnectorChannelFieldDisplay.getSourceAttributes());
 
 		pimConnectorChannelFieldDisplays =
@@ -773,6 +811,12 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 		);
 
 		Mockito.when(
+			objectDefinition.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		Mockito.when(
 			objectDefinition.getLabel(LocaleUtil.US)
 		).thenReturn(
 			"PIM Basic Product"
@@ -804,6 +848,128 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 		);
 	}
 
+	private void _mockRepeatableGroup() {
+		ObjectFolder objectFolder = Mockito.mock(ObjectFolder.class);
+
+		Mockito.when(
+			objectFolder.getObjectFolderId()
+		).thenReturn(
+			_OBJECT_FOLDER_ID
+		);
+
+		_objectFolderLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectFolderLocalServiceUtil.
+					fetchObjectFolderByExternalReferenceCode(
+						ObjectFolderConstants.
+							EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
+						_COMPANY_ID)
+		).thenReturn(
+			objectFolder
+		);
+
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		Mockito.when(
+			objectDefinition.getLabel(LocaleUtil.US)
+		).thenReturn(
+			"Images"
+		);
+
+		Mockito.when(
+			objectDefinition.getObjectDefinitionId()
+		).thenReturn(
+			_REPEATABLE_GROUP_OBJECT_DEFINITION_ID
+		);
+
+		Mockito.when(
+			objectDefinition.getObjectFolderId()
+		).thenReturn(
+			_OBJECT_FOLDER_ID
+		);
+
+		_objectDefinitionLocalServiceUtilMockedStatic.when(
+			() -> ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
+				_REPEATABLE_GROUP_OBJECT_DEFINITION_ID)
+		).thenReturn(
+			objectDefinition
+		);
+
+		ObjectField objectField = _mockObjectField("Title", "title");
+
+		ObjectField parentObjectField = _mockObjectField(
+			"Product", "r_images_c_productId");
+
+		Mockito.when(
+			parentObjectField.getObjectFieldId()
+		).thenReturn(
+			_PARENT_OBJECT_FIELD_ID
+		);
+
+		_objectFieldLocalServiceUtilMockedStatic.when(
+			() -> ObjectFieldLocalServiceUtil.fetchObjectField(
+				_REPEATABLE_GROUP_OBJECT_DEFINITION_ID, "title")
+		).thenReturn(
+			objectField
+		);
+
+		_objectFieldLocalServiceUtilMockedStatic.when(
+			() -> ObjectFieldLocalServiceUtil.fetchObjectField(
+				_REPEATABLE_GROUP_OBJECT_DEFINITION_ID, "r_images_c_productId")
+		).thenReturn(
+			parentObjectField
+		);
+
+		ObjectRelationship objectRelationship = Mockito.mock(
+			ObjectRelationship.class);
+
+		Mockito.when(
+			objectRelationship.getName()
+		).thenReturn(
+			"r_images"
+		);
+
+		Mockito.when(
+			objectRelationship.getObjectDefinitionId2()
+		).thenReturn(
+			_REPEATABLE_GROUP_OBJECT_DEFINITION_ID
+		);
+
+		Mockito.when(
+			objectRelationship.getObjectFieldId2()
+		).thenReturn(
+			_PARENT_OBJECT_FIELD_ID
+		);
+
+		Mockito.when(
+			objectRelationship.getType()
+		).thenReturn(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY
+		);
+
+		Mockito.when(
+			objectRelationship.isEdge()
+		).thenReturn(
+			true
+		);
+
+		_objectRelationshipLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectRelationshipLocalServiceUtil.
+					fetchObjectRelationshipByObjectDefinitionId1(
+						_OBJECT_DEFINITION_ID, "r_images")
+		).thenReturn(
+			objectRelationship
+		);
+	}
+
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final long _GROUP_ID = RandomTestUtil.randomLong();
@@ -818,6 +984,11 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 
 	private static final long _OBJECT_ENTRY_ID = RandomTestUtil.randomLong();
 
+	private static final long _OBJECT_FOLDER_ID = RandomTestUtil.randomLong();
+
+	private static final long _PARENT_OBJECT_FIELD_ID =
+		RandomTestUtil.randomLong();
+
 	private static final long _PIM_CONNECTOR_OBJECT_DEFINITION_ID =
 		RandomTestUtil.randomLong();
 
@@ -825,6 +996,9 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 		RandomTestUtil.randomLong();
 
 	private static final long _PIM_FIELD_MAPPING_RULE_OBJECT_RELATIONSHIP_ID =
+		RandomTestUtil.randomLong();
+
+	private static final long _REPEATABLE_GROUP_OBJECT_DEFINITION_ID =
 		RandomTestUtil.randomLong();
 
 	private HttpServletRequest _httpServletRequest;
@@ -840,6 +1014,12 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 			ObjectEntryLocalServiceUtil.class);
 	private final ObjectFieldLocalService _objectFieldLocalService =
 		Mockito.mock(ObjectFieldLocalService.class);
+	private final MockedStatic<ObjectFieldLocalServiceUtil>
+		_objectFieldLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			ObjectFieldLocalServiceUtil.class);
+	private final MockedStatic<ObjectFolderLocalServiceUtil>
+		_objectFolderLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			ObjectFolderLocalServiceUtil.class);
 	private final MockedStatic<ObjectRelationshipLocalServiceUtil>
 		_objectRelationshipLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ObjectRelationshipLocalServiceUtil.class);
