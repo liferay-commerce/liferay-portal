@@ -68,19 +68,44 @@ public class LiferayCommercePIMClient {
 		return _logJSONArray;
 	}
 
+	// PR-NOTE: GET .../sites/L_GLOBAL/taxonomy-vocabularies/by-external-
+	// reference-code/{erc} on the remote instance. A 404 returns false and a
+	// 2xx returns true; any other error throws PIMConnectorException through
+	// _validateResponse. Only LiferayCommercePIMConnector._putTaxonomy
+	// Vocabularies calls it, for L_TOPIC: Topic is created only when it is
+	// missing remotely, so an admin's settings there are kept (Q10). Every
+	// other vocabulary is always PUT (Q8).
+
+	public boolean hasSiteTaxonomyVocabulary(String externalReferenceCode)
+		throws Exception {
+
+		Http.Options options = _createOptions(
+			null, Http.Method.GET,
+			StringBundler.concat(
+				"/o/headless-admin-taxonomy/v1.0/sites/L_GLOBAL",
+				"/taxonomy-vocabularies/by-external-reference-code/",
+				URLCodec.encodeURL(externalReferenceCode)));
+
+		_invoke(null, options);
+
+		Http.Response response = options.getResponse();
+
+		if (response.getResponseCode() == HttpServletResponse.SC_NOT_FOUND) {
+			return false;
+		}
+
+		_validateResponse(response);
+
+		return true;
+	}
+
 	public JSONObject postImportTask(JSONArray jsonArray) throws Exception {
 		Http.Options options = _createOptions(
+			jsonArray, Http.Method.POST,
 			StringBundler.concat(
 				"/o/headless-batch-engine/v1.0/import-task",
 				"/com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
 				"?createStrategy=UPSERT&importStrategy=ON_ERROR_CONTINUE"));
-
-		options.addHeader(
-			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
-		options.setBody(
-			jsonArray.toString(), ContentTypes.APPLICATION_JSON,
-			StringPool.UTF8);
-		options.setPost(true);
 
 		String responseString = _invoke(jsonArray, options);
 
@@ -93,30 +118,95 @@ public class LiferayCommercePIMClient {
 			String externalReferenceCode, JSONObject jsonObject)
 		throws Exception {
 
+		// PR-NOTE: Refactor only. The content type and the body moved into
+		// _createOptions (review), and this method still calls _invoke and
+		// _validateResponse itself. Options behave as before.
+
 		Http.Options options = _createOptions(
+			jsonObject, Http.Method.PUT,
 			StringBundler.concat(
 				"/o/headless-commerce-admin-catalog/v1.0/options",
 				"/by-externalReferenceCode/",
 				URLCodec.encodeURL(externalReferenceCode)));
-
-		options.addHeader(
-			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
-		options.setBody(
-			jsonObject.toString(), ContentTypes.APPLICATION_JSON,
-			StringPool.UTF8);
-		options.setMethod(Http.Method.PUT);
 
 		_invoke(jsonObject, options);
 
 		_validateResponse(options.getResponse());
 	}
 
-	private Http.Options _createOptions(String path) {
+	// PR-NOTE: Upserts a category in the Global site of the remote instance
+	// (PUT .../sites/L_GLOBAL/taxonomy-categories/by-external-reference-code/
+	// {erc}). LiferayCommercePIMConnector._putTaxonomyCategories calls it for
+	// every category of the tree (assigned categories and all their
+	// ancestors) and for every Topic category made from an attribute or a
+	// fixed value. The Commerce product import resolves "categories" by ERC,
+	// so they have to exist remotely before the import task is posted. PUT by
+	// ERC keeps the export idempotent.
+
+	public void putSiteTaxonomyCategoryByExternalReferenceCode(
+			String externalReferenceCode, JSONObject jsonObject)
+		throws Exception {
+
+		Http.Options options = _createOptions(
+			jsonObject, Http.Method.PUT,
+			StringBundler.concat(
+				"/o/headless-admin-taxonomy/v1.0/sites/L_GLOBAL",
+				"/taxonomy-categories/by-external-reference-code/",
+				URLCodec.encodeURL(externalReferenceCode)));
+
+		_invoke(jsonObject, options);
+
+		_validateResponse(options.getResponse());
+	}
+
+	// PR-NOTE: Upserts a vocabulary in the Global site of the remote instance
+	// (PUT .../sites/L_GLOBAL/taxonomy-vocabularies/by-external-reference-
+	// code/{erc}). Used by LiferayCommercePIMConnector._putTaxonomyVocabularies.
+	// A category PUT names its vocabulary by ERC (parentTaxonomyVocabulary),
+	// so the vocabulary has to exist first.
+
+	public void putSiteTaxonomyVocabularyByExternalReferenceCode(
+			String externalReferenceCode, JSONObject jsonObject)
+		throws Exception {
+
+		Http.Options options = _createOptions(
+			jsonObject, Http.Method.PUT,
+			StringBundler.concat(
+				"/o/headless-admin-taxonomy/v1.0/sites/L_GLOBAL",
+				"/taxonomy-vocabularies/by-external-reference-code/",
+				URLCodec.encodeURL(externalReferenceCode)));
+
+		_invoke(jsonObject, options);
+
+		_validateResponse(options.getResponse());
+	}
+
+	// PR-NOTE: Replaces the old _createOptions(String path) and the removed
+	// _put (review). Every caller passes its HTTP method, and a non-null body
+	// also sets the JSON content type and the body: the three PUTs pass their
+	// JSONObject, postImportTask its JSONArray (setPost(true) was the same as
+	// Http.Method.POST), and hasSiteTaxonomyVocabulary passes null for its
+	// GET. The callers still call _invoke and _validateResponse themselves.
+	// authenticate builds its own options (form parts, no bearer token).
+
+	private Http.Options _createOptions(
+		Object body, Http.Method method, String path) {
+
 		Http.Options options = new Http.Options();
 
 		options.addHeader(HttpHeaders.ACCEPT, ContentTypes.APPLICATION_JSON);
 		options.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + _accessToken);
+
+		if (body != null) {
+			options.addHeader(
+				HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
+			options.setBody(
+				body.toString(), ContentTypes.APPLICATION_JSON,
+				StringPool.UTF8);
+		}
+
 		options.setLocation(_url + path);
+		options.setMethod(method);
 
 		return options;
 	}

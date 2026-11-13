@@ -5,7 +5,6 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
-import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
@@ -27,6 +26,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.pim.site.initializer.connector.PIMConnector;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
+import com.liferay.site.pim.site.initializer.constants.PIMConnectorFieldMappingTypeConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingRulesUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
@@ -85,6 +85,32 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 		).put(
 			"channelField", _channelField
 		).put(
+
+			// PR-NOTE: Replaces "channelFieldMultiple", which was used only to
+			// hide the fallback rule (now "useFirstNonemptySourceSupported"
+			// below). Renamed from "channelFieldSourceTypes" (review), so it
+			// moved before "channelFieldLabel".
+			// EditPIMConnectorFieldMappings.tsx passes it through
+			// FieldMappingsSection to FieldMappingRow (prop
+			// allowedFieldMappingTypes), which renders only these options in
+			// the source dropdown. A channel field the connector does not know
+			// falls back to attribute + fixed value, which is what the page
+			// offered before.
+
+			"channelFieldAllowedFieldMappingTypes",
+			() -> {
+				if (pimConnectorChannelField == null) {
+					return JSONUtil.putAll(
+						PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
+						PIMConnectorFieldMappingTypeConstants.FIXED_VALUE);
+				}
+
+				List<String> allowedFieldMappingTypes =
+					pimConnectorChannelField.getAllowedFieldMappingTypes();
+
+				return JSONUtil.putAll(allowedFieldMappingTypes.toArray());
+			}
+		).put(
 			"channelFieldLabel",
 			() -> {
 				if (pimConnectorChannelField != null) {
@@ -93,15 +119,6 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 				}
 
 				return _channelField;
-			}
-		).put(
-			"channelFieldMultiple",
-			() -> {
-				if (pimConnectorChannelField != null) {
-					return pimConnectorChannelField.isMultiple();
-				}
-
-				return false;
 			}
 		).put(
 			"fieldMappings", _getFieldMappingsJSONArray(objectEntry)
@@ -141,6 +158,16 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 				return LanguageUtil.format(
 					_httpServletRequest, "edit-x", _channelField, false);
 			}
+		).put(
+
+			// PR-NOTE: Whether MappingRulesSection.tsx shows the fallback logic
+			// select. The rule is the same as the server-side validation in
+			// ObjectEntryModelListener, so the page never offers a rule that
+			// the save would reject.
+
+			"useFirstNonemptySourceSupported",
+			PIMConnectorFieldMappingRulesUtil.isUseFirstNonemptySourceSupported(
+				pimConnectorChannelField)
 		).build();
 	}
 
@@ -211,10 +238,12 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 			PIMConnectorChannelField pimConnectorChannelField)
 		throws Exception {
 
-		if ((pimConnectorChannelField == null) ||
-			!Objects.equals(
-				pimConnectorChannelField.getType(),
-				ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
+		// PR-NOTE: Refactor. This is the same TEXT check as before, now shared
+		// with the listener through PIMConnectorFieldMappingRulesUtil.
+		// isMappingRulesSupported (renamed from isSupported, review).
+
+		if (!PIMConnectorFieldMappingRulesUtil.isMappingRulesSupported(
+				pimConnectorChannelField)) {
 
 			return null;
 		}

@@ -53,9 +53,14 @@ function fixedValue(value = '') {
 	};
 }
 
+// PR-NOTE: The wrapper takes allowedFieldMappingTypes, with attribute + fixed
+// value as the default value, so the existing tests are unchanged.
+
 function FieldMappingsSectionWrapper({
+	allowedFieldMappingTypes = ['dynamicValue', 'fixedValue'],
 	initialFieldMappings,
 }: {
+	allowedFieldMappingTypes?: string[];
 	initialFieldMappings: IFieldMapping[];
 }) {
 	const [fieldMappings, setFieldMappings] =
@@ -63,6 +68,7 @@ function FieldMappingsSectionWrapper({
 
 	return (
 		<FieldMappingsSection
+			allowedFieldMappingTypes={allowedFieldMappingTypes}
 			fieldMappings={fieldMappings}
 			objectDefinitions={OBJECT_DEFINITIONS}
 			setFieldMappings={setFieldMappings}
@@ -85,6 +91,33 @@ describe('FieldMappingsSection', () => {
 		expect(
 			screen.getByRole('option', {name: 'Title (title)'})
 		).toBeInTheDocument();
+	});
+
+	// PR-NOTE: Covers the filtering in FieldMappingRow: with
+	// allowedFieldMappingTypes = ['categories'], the dropdown offers only
+	// Categories, and the attributes ('SKU (sku)'), Fixed Value, and Tags are
+	// not rendered.
+
+	it('offers only the allowed field mapping types of the channel field', () => {
+		render(
+			<FieldMappingsSectionWrapper
+				allowedFieldMappingTypes={['categories']}
+				initialFieldMappings={[dynamicValue()]}
+			/>
+		);
+
+		expect(
+			screen.getByRole('option', {name: 'categories'})
+		).toBeInTheDocument();
+		expect(
+			screen.queryByRole('option', {name: 'SKU (sku)'})
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('option', {name: 'fixed-value'})
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('option', {name: 'tags'})
+		).not.toBeInTheDocument();
 	});
 
 	it('narrows the source attributes to the selected structure', async () => {

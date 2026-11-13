@@ -122,6 +122,51 @@ public class LiferayCommercePIMClientTest {
 		Assert.assertFalse(logJSON.contains("TOKEN"));
 	}
 
+	// PR-NOTE: Covers all three outcomes of hasSiteTaxonomyVocabulary: a 500
+	// throws PIMConnectorException("the-remote-instance-returned-an-error"),
+	// a 404 returns false, and a 200 returns true. It also checks the request:
+	// a GET to .../sites/L_GLOBAL/taxonomy-vocabularies/by-external-reference-
+	// code/{erc}.
+
+	@Test
+	public void testHasSiteTaxonomyVocabulary() throws Exception {
+		_mockHttp(500, JSONUtil.put("status", RandomTestUtil.randomString()));
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		_assertPIMConnectorException(
+			"the-remote-instance-returned-an-error",
+			liferayCommercePIMClient ->
+				liferayCommercePIMClient.hasSiteTaxonomyVocabulary(
+					externalReferenceCode));
+
+		_mockHttp(404, JSONUtil.put("status", RandomTestUtil.randomString()));
+
+		LiferayCommercePIMClient liferayCommercePIMClient =
+			_createLiferayCommercePIMClient();
+
+		Assert.assertFalse(
+			liferayCommercePIMClient.hasSiteTaxonomyVocabulary(
+				externalReferenceCode));
+
+		_mockHttp(
+			200, JSONUtil.put("externalReferenceCode", externalReferenceCode));
+
+		Assert.assertTrue(
+			liferayCommercePIMClient.hasSiteTaxonomyVocabulary(
+				externalReferenceCode));
+
+		Http.Options options = _options.get(0);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"https://example.com/o/headless-admin-taxonomy/v1.0/sites",
+				"/L_GLOBAL/taxonomy-vocabularies/by-external-reference-code/",
+				externalReferenceCode),
+			options.getLocation());
+		Assert.assertEquals(Http.Method.GET, options.getMethod());
+	}
+
 	@Test
 	public void testPostImportTask() throws Exception {
 		_mockHttp(500, JSONUtil.put("status", RandomTestUtil.randomString()));
@@ -234,6 +279,76 @@ public class LiferayCommercePIMClientTest {
 			"Bearer null", headers.get(HttpHeaders.AUTHORIZATION));
 		Assert.assertEquals(
 			"application/json", headers.get(HttpHeaders.CONTENT_TYPE));
+	}
+
+	// PR-NOTE: Covers the URL (.../sites/L_GLOBAL/taxonomy-categories/by-
+	// external-reference-code/{erc}), the PUT method, and the body sent as is.
+	// The shared error handling (_invoke + _validateResponse) is already
+	// covered through testPutOptionByExternalReferenceCode, so it is not
+	// repeated here.
+
+	@Test
+	public void testPutSiteTaxonomyCategoryByExternalReferenceCode()
+		throws Exception {
+
+		_mockHttp(200, JSONFactoryUtil.createJSONObject());
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+		JSONObject jsonObject = JSONUtil.put(
+			"name", RandomTestUtil.randomString());
+		LiferayCommercePIMClient liferayCommercePIMClient =
+			_createLiferayCommercePIMClient();
+
+		liferayCommercePIMClient.putSiteTaxonomyCategoryByExternalReferenceCode(
+			externalReferenceCode, jsonObject);
+
+		Http.Options options = _options.get(0);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"https://example.com/o/headless-admin-taxonomy/v1.0/sites",
+				"/L_GLOBAL/taxonomy-categories/by-external-reference-code/",
+				externalReferenceCode),
+			options.getLocation());
+		Assert.assertEquals(Http.Method.PUT, options.getMethod());
+
+		Http.Body body = options.getBody();
+
+		Assert.assertEquals(jsonObject.toString(), body.getContent());
+	}
+
+	// PR-NOTE: The same as the category test, for .../taxonomy-vocabularies/
+	// by-external-reference-code/{erc}: the URL, the PUT method, and the body.
+
+	@Test
+	public void testPutSiteTaxonomyVocabularyByExternalReferenceCode()
+		throws Exception {
+
+		_mockHttp(200, JSONFactoryUtil.createJSONObject());
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+		JSONObject jsonObject = JSONUtil.put(
+			"name", RandomTestUtil.randomString());
+		LiferayCommercePIMClient liferayCommercePIMClient =
+			_createLiferayCommercePIMClient();
+
+		liferayCommercePIMClient.
+			putSiteTaxonomyVocabularyByExternalReferenceCode(
+				externalReferenceCode, jsonObject);
+
+		Http.Options options = _options.get(0);
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"https://example.com/o/headless-admin-taxonomy/v1.0/sites",
+				"/L_GLOBAL/taxonomy-vocabularies/by-external-reference-code/",
+				externalReferenceCode),
+			options.getLocation());
+		Assert.assertEquals(Http.Method.PUT, options.getMethod());
+
+		Http.Body body = options.getBody();
+
+		Assert.assertEquals(jsonObject.toString(), body.getContent());
 	}
 
 	private LiferayCommercePIMClient _assertPIMConnectorException(

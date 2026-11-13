@@ -283,7 +283,7 @@ public class PIMConnectorChannelFieldFDSDataProvider
 					locale, pimFieldMappingRuleAPIURL,
 					pimFieldMappingRuleObjectEntryId,
 					pimConnectorChannelField.isRequired(),
-					_getSourceAttributes(labelMap, objectEntries),
+					_getSourceAttributes(labelMap, locale, objectEntries),
 					_getTransformationRules(locale, pimFieldMappingRuleValues),
 					MapUtil.getBoolean(
 						pimFieldMappingRuleValues, "useFirstNonemptySource"));
@@ -332,8 +332,31 @@ public class PIMConnectorChannelFieldFDSDataProvider
 			});
 	}
 
+	// PR-NOTE: The old fixed value branch of _getSourceAttributes, extracted
+	// unchanged. It prefixes the value with the structure label
+	// ("PIM Basic Product/...") when the mapping is scoped to a structure.
+	// The fixed value, Tags, and Categories branches of _getSourceAttributes
+	// use it to build the "Source Attributes" column of the channel fields
+	// table on the Field Mappings page. "locale" was added to
+	// _getSourceAttributes for the localized Tags and Categories labels.
+
+	private String _getSourceAttribute(
+		Map<String, String> labelMap, String sourceClassName, String value) {
+
+		String objectDefinitionLabel = labelMap.get(
+			sourceClassName + StringPool.POUND);
+
+		if (Validator.isNull(objectDefinitionLabel)) {
+			return value;
+		}
+
+		return StringBundler.concat(
+			objectDefinitionLabel, StringPool.SLASH, value);
+	}
+
 	private List<String> _getSourceAttributes(
-		Map<String, String> labelMap, List<ObjectEntry> objectEntries) {
+		Map<String, String> labelMap, Locale locale,
+		List<ObjectEntry> objectEntries) {
 
 		return TransformUtil.transform(
 			objectEntries,
@@ -343,6 +366,18 @@ public class PIMConnectorChannelFieldFDSDataProvider
 				String sourceClassName = MapUtil.getString(
 					values, "sourceClassName");
 
+				// PR-NOTE: A Categories or Tags mapping has no source field and
+				// no value. The table shows the localized "categories" or
+				// "tags" label, with the structure prefix when the mapping has
+				// one. Without these branches, the row would fall through to
+				// the source field lookup and show an empty attribute.
+
+				if (PIMConnectorFieldMappingsUtil.isCategories(objectEntry)) {
+					return _getSourceAttribute(
+						labelMap, sourceClassName,
+						LanguageUtil.get(locale, "categories"));
+				}
+
 				if (PIMConnectorFieldMappingsUtil.isFixedValue(objectEntry)) {
 					String value = MapUtil.getString(values, "value");
 
@@ -350,15 +385,14 @@ public class PIMConnectorChannelFieldFDSDataProvider
 						return null;
 					}
 
-					String objectDefinitionLabel = labelMap.get(
-						sourceClassName + StringPool.POUND);
+					return _getSourceAttribute(
+						labelMap, sourceClassName, value);
+				}
 
-					if (objectDefinitionLabel == null) {
-						return value;
-					}
-
-					return StringBundler.concat(
-						objectDefinitionLabel, StringPool.SLASH, value);
+				if (PIMConnectorFieldMappingsUtil.isTags(objectEntry)) {
+					return _getSourceAttribute(
+						labelMap, sourceClassName,
+						LanguageUtil.get(locale, "tags"));
 				}
 
 				String sourceFieldName = MapUtil.getString(

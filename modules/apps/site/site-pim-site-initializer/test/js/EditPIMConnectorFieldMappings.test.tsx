@@ -62,8 +62,14 @@ const PROPS = {
 	apiURL: '/o/pim/connector-field-mappings',
 	backURL: '/web/cms/field-mappings?objectEntryId=42',
 	channelField: 'skus[].sku',
+
+	// PR-NOTE: The default props use the new
+	// channelFieldAllowedFieldMappingTypes and useFirstNonemptySourceSupported
+	// props instead of channelFieldMultiple. The existing tests keep their
+	// behavior.
+
+	channelFieldAllowedFieldMappingTypes: ['dynamicValue', 'fixedValue'],
 	channelFieldLabel: 'SKU',
-	channelFieldMultiple: false,
 	fieldMappings: [],
 	mappingRule: null,
 	mappingRuleAPIURL: '/o/pim/connector-field-mapping-rules',
@@ -86,6 +92,7 @@ const PROPS = {
 		'r_pimConnectorToPIMConnectorFieldMappings_l_pimConnectorId',
 	spritemap: '/icons.svg',
 	title: 'Edit SKU',
+	useFirstNonemptySourceSupported: true,
 };
 
 function getRequestBody(index: number) {
@@ -238,6 +245,37 @@ describe('EditPIMConnectorFieldMappings', () => {
 		expect(getRequestBody(0).sourceFieldName).toBe('');
 	});
 
+	// PR-NOTE: Covers: the Tags option is rendered when the channel field
+	// accepts it; a Tags row counts as complete (isComplete), so it is saved;
+	// and the save body has type 'tags' with an empty sourceFieldName and an
+	// empty value.
+
+	it('saves the tags source without a source attribute', async () => {
+		render(
+			<EditPIMConnectorFieldMappings
+				{...PROPS}
+				channelFieldAllowedFieldMappingTypes={[
+					'dynamicValue',
+					'fixedValue',
+					'tags',
+				]}
+			/>
+		);
+
+		await userEvent.selectOptions(
+			screen.getByLabelText('source-attribute'),
+			'tags'
+		);
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+
+		expect(getRequestBody(0).sourceFieldName).toBe('');
+		expect(getRequestBody(0).type).toBe('tags');
+		expect(getRequestBody(0).value).toBe('');
+	});
+
 	it('stays on the page when a request fails', async () => {
 		mockFetch.mockResolvedValue({ok: false});
 
@@ -272,6 +310,43 @@ describe('EditPIMConnectorFieldMappings', () => {
 		);
 
 		expect(screen.getByLabelText('source-attribute')).toHaveValue('');
+	});
+
+	// PR-NOTE: Covers: a saved Categories mapping is not dropped by the initial
+	// filter (which before this change dropped any non-fixed-value row whose
+	// attribute was not found); the select shows 'categories'; and saving
+	// PATCHes the existing entry (/o/pim/connector-field-mappings/7) instead
+	// of recreating it.
+
+	it('keeps a saved categories field mapping', async () => {
+		render(
+			<EditPIMConnectorFieldMappings
+				{...PROPS}
+				channelFieldAllowedFieldMappingTypes={['categories']}
+				fieldMappings={[
+					{
+						id: 7,
+						sourceClassName: '',
+						sourceFieldName: '',
+						type: 'categories',
+						value: '',
+					},
+				]}
+			/>
+		);
+
+		expect(screen.getByLabelText('source-attribute')).toHaveValue(
+			'categories'
+		);
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+
+		expect(mockFetch.mock.calls[0][0]).toBe(
+			'/o/pim/connector-field-mappings/7'
+		);
+		expect(mockFetch.mock.calls[0][1].method).toBe('PATCH');
 	});
 
 	it('disables the mapping rules of a channel field that is not text', () => {

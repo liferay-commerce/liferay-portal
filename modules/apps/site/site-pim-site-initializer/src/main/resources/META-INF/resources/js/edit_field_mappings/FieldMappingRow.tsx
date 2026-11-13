@@ -12,11 +12,14 @@ import getObjectFields from './getObjectFields';
 import {
 	IFieldMapping,
 	IObjectDefinition,
+	TYPE_CATEGORIES,
 	TYPE_DYNAMIC_VALUE,
 	TYPE_FIXED_VALUE,
+	TYPE_TAGS,
 } from './types';
 
 interface IProps {
+	allowedFieldMappingTypes: string[];
 	deletable: boolean;
 	fieldMapping: IFieldMapping;
 	index: number;
@@ -28,6 +31,7 @@ interface IProps {
 }
 
 export default function FieldMappingRow({
+	allowedFieldMappingTypes,
 	deletable,
 	fieldMapping,
 	index,
@@ -44,14 +48,25 @@ export default function FieldMappingRow({
 		fieldMapping.sourceClassName
 	);
 
+	// PR-NOTE: The source select holds the attribute names plus three special
+	// values: categories, fixedValue, and tags. A special value becomes the
+	// mapping type, and anything else is an attribute (dynamicValue). Only an
+	// attribute keeps sourceFieldName, and only a fixed value keeps value.
+	// This extends the existing fixedValue trick to the two new sources; the
+	// user decided on 2026-11-09 not to add a "#" prefix to the option values.
+
 	const handleSourceFieldNameChange = (value: string) => {
-		const nextFixedValue = value === TYPE_FIXED_VALUE;
+		const type = [TYPE_CATEGORIES, TYPE_FIXED_VALUE, TYPE_TAGS].includes(
+			value
+		)
+			? value
+			: TYPE_DYNAMIC_VALUE;
 
 		onChange(index, {
 			...fieldMapping,
-			sourceFieldName: nextFixedValue ? '' : value,
-			type: nextFixedValue ? TYPE_FIXED_VALUE : TYPE_DYNAMIC_VALUE,
-			value: nextFixedValue ? fieldMapping.value : '',
+			sourceFieldName: type === TYPE_DYNAMIC_VALUE ? value : '',
+			type,
+			value: type === TYPE_FIXED_VALUE ? fieldMapping.value : '',
 		});
 	};
 
@@ -126,10 +141,15 @@ export default function FieldMappingRow({
 						onChange={(event) =>
 							handleSourceFieldNameChange(event.target.value)
 						}
+
+						// PR-NOTE: The selected option is the attribute name
+						// for an attribute mapping, and the type itself
+						// (categories, fixedValue, or tags) otherwise.
+
 						value={
-							fixedValue
-								? TYPE_FIXED_VALUE
-								: fieldMapping.sourceFieldName
+							fieldMapping.type === TYPE_DYNAMIC_VALUE
+								? fieldMapping.sourceFieldName
+								: fieldMapping.type
 						}
 					>
 						<ClaySelect.Option
@@ -137,18 +157,48 @@ export default function FieldMappingRow({
 							value=""
 						/>
 
-						{objectFields.map((objectField) => (
-							<ClaySelect.Option
-								key={objectField.name}
-								label={`${objectField.label} (${objectField.name})`}
-								value={objectField.name}
-							/>
-						))}
+						{/* PR-NOTE: Each group of options is rendered only when
+						the channel field accepts that field mapping type
+						(channelFieldAllowedFieldMappingTypes from the display
+						context, prop allowedFieldMappingTypes here). The Tags
+						option appears only on "tags" and the Categories option
+						only on "categories". The order is attributes,
+						Categories, Tags, Fixed Value. Every other channel field
+						still gets attributes and Fixed Value only. */}
 
-						<ClaySelect.Option
-							label={Liferay.Language.get('fixed-value')}
-							value={TYPE_FIXED_VALUE}
-						/>
+						{allowedFieldMappingTypes.includes(
+							TYPE_DYNAMIC_VALUE
+						) &&
+							objectFields.map((objectField) => (
+								<ClaySelect.Option
+									key={objectField.name}
+									label={`${objectField.label} (${objectField.name})`}
+									value={objectField.name}
+								/>
+							))}
+
+						{allowedFieldMappingTypes.includes(TYPE_CATEGORIES) && (
+							<ClaySelect.Option
+								label={Liferay.Language.get('categories')}
+								value={TYPE_CATEGORIES}
+							/>
+						)}
+
+						{allowedFieldMappingTypes.includes(TYPE_TAGS) && (
+							<ClaySelect.Option
+								label={Liferay.Language.get('tags')}
+								value={TYPE_TAGS}
+							/>
+						)}
+
+						{allowedFieldMappingTypes.includes(
+							TYPE_FIXED_VALUE
+						) && (
+							<ClaySelect.Option
+								label={Liferay.Language.get('fixed-value')}
+								value={TYPE_FIXED_VALUE}
+							/>
+						)}
 					</ClaySelect>
 				</ClayInput.GroupItem>
 			</ClayInput.Group>

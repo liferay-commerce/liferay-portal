@@ -5,6 +5,7 @@
 
 package com.liferay.site.pim.site.initializer.internal.util;
 
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectRelationship;
@@ -20,6 +21,8 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
+import com.liferay.site.pim.site.initializer.constants.PIMConnectorFieldMappingTypeConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 
 import java.io.Serializable;
@@ -101,6 +104,81 @@ public class PIMConnectorFieldMappingRulesUtil {
 		}
 
 		return objectEntriesMap;
+	}
+
+	// PR-NOTE: Whether a channel field can have transformation rules: it must
+	// exist and be TEXT. Renamed from isSupported (review); "Supported"
+	// matches the existing UI message "mapping-rules-are-not-supported-for-
+	// this-field-type" and isUseFirstNonemptySourceSupported below. The same
+	// check used to be copied in ObjectEntryModelListener and
+	// EditPIMConnectorFieldMappingsDisplayContext; both call this now.
+	// "categories" is a TEXT channel field (user decision), so its Topic values
+	// get the rules, and the single check keeps the validator and the edit
+	// page in sync.
+
+	public static boolean isMappingRulesSupported(
+		PIMConnectorChannelField pimConnectorChannelField) {
+
+		if ((pimConnectorChannelField != null) &&
+			Objects.equals(
+				pimConnectorChannelField.getType(),
+				ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	// PR-NOTE: Reads "useFirstNonemptySource" from a rule entry, and returns
+	// false when there is no rule entry. Used by PIMConnectorFieldMappingsUtil.
+	// getChannelFieldValue (it replaces the inline null check there) and by
+	// the new getChannelFieldJSONArray.
+
+	public static boolean isUseFirstNonemptySource(ObjectEntry objectEntry) {
+		if (objectEntry == null) {
+			return false;
+		}
+
+		return MapUtil.getBoolean(
+			objectEntry.getValues(), "useFirstNonemptySource");
+	}
+
+	// PR-NOTE: Whether the "first nonempty source" fallback rule is allowed on
+	// a channel field.
+	// - Single-valued fields: yes, as before.
+	// - Multivalued fields: only those that accept Tags or Categories. For
+	//   them, the fallback means "export only the values of the first source
+	//   that has any", for example the product tags, or a fixed tag when the
+	//   product has none.
+	// - productOptions and productSpecifications: still not allowed, as before
+	//   (isMultiple() was the old check).
+	// Used by the listener (rule validation) and the display context
+	// ("useFirstNonemptySourceSupported").
+
+	public static boolean isUseFirstNonemptySourceSupported(
+		PIMConnectorChannelField pimConnectorChannelField) {
+
+		if (pimConnectorChannelField == null) {
+			return false;
+		}
+
+		if (!pimConnectorChannelField.isMultiple()) {
+			return true;
+		}
+
+		List<String> allowedFieldMappingTypes =
+			pimConnectorChannelField.getAllowedFieldMappingTypes();
+
+		if (allowedFieldMappingTypes.contains(
+				PIMConnectorFieldMappingTypeConstants.CATEGORIES) ||
+			allowedFieldMappingTypes.contains(
+				PIMConnectorFieldMappingTypeConstants.TAGS)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static String _encodeURL(int length, String value) {

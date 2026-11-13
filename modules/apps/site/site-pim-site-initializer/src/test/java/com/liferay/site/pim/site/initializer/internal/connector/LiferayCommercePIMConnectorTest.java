@@ -5,6 +5,14 @@
 
 package com.liferay.site.pim.site.initializer.internal.connector;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
+import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
@@ -16,6 +24,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -24,6 +33,9 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
@@ -35,10 +47,11 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
+import com.liferay.site.pim.site.initializer.constants.PIMConnectorFieldMappingTypeConstants;
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
-import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
 
 import java.io.Serializable;
 
@@ -81,6 +94,30 @@ public class LiferayCommercePIMConnectorTest {
 				invocationOnMock.getArgument(0, String.class))
 		);
 
+		// PR-NOTE: Setup for the Topic ERC. normalizeWithPeriodsAndSlashes
+		// lowercases the value and turns "." and "/" into "-", which is enough
+		// for the test to predict the ERC. ModelHintsUtil.getMaxLength returns
+		// 75 for AssetCategory.externalReferenceCode, so a 76-character value
+		// takes the UUID path.
+
+		Mockito.when(
+			_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
+				Mockito.anyString())
+		).thenAnswer(
+			invocationOnMock -> StringUtil.toLowerCase(
+				StringUtil.replace(
+					invocationOnMock.getArgument(0, String.class),
+					new char[] {CharPool.PERIOD, CharPool.SLASH},
+					new char[] {CharPool.DASH, CharPool.DASH}))
+		);
+
+		_modelHintsUtilMockedStatic.when(
+			() -> ModelHintsUtil.getMaxLength(
+				AssetCategory.class.getName(), "externalReferenceCode")
+		).thenReturn(
+			75
+		);
+
 		Mockito.when(
 			_language.get(Mockito.eq(LocaleUtil.US), Mockito.anyString())
 		).thenAnswer(
@@ -91,9 +128,24 @@ public class LiferayCommercePIMConnectorTest {
 
 		languageUtil.setLanguage(_language);
 
+		// PR-NOTE: Injects the mocked asset and group services into the
+		// connector, the same way as the existing references.
+
+		ReflectionTestUtil.setFieldValue(
+			_liferayCommercePIMConnector, "_assetCategoryLocalService",
+			_assetCategoryLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_liferayCommercePIMConnector, "_assetTagLocalService",
+			_assetTagLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_liferayCommercePIMConnector, "_assetVocabularyLocalService",
+			_assetVocabularyLocalService);
 		ReflectionTestUtil.setFieldValue(
 			_liferayCommercePIMConnector, "_friendlyURLNormalizer",
 			_friendlyURLNormalizer);
+		ReflectionTestUtil.setFieldValue(
+			_liferayCommercePIMConnector, "_groupLocalService",
+			_groupLocalService);
 		ReflectionTestUtil.setFieldValue(
 			_liferayCommercePIMConnector, "_http", _http);
 		ReflectionTestUtil.setFieldValue(
@@ -134,6 +186,7 @@ public class LiferayCommercePIMConnectorTest {
 	public void tearDown() {
 		_htmlParserUtilMockedStatic.close();
 		_listTypeEntryLocalServiceUtilMockedStatic.close();
+		_modelHintsUtilMockedStatic.close();
 		_objectFieldLocalServiceUtilMockedStatic.close();
 	}
 
@@ -142,6 +195,12 @@ public class LiferayCommercePIMConnectorTest {
 		_testExecute();
 		_testExecuteWithBooleanProductType();
 		_testExecuteWithCatalogs();
+
+		// PR-NOTE: Registers the three new subtests (_testExecuteWith
+		// Categories, _testExecuteWithTags, _testExecuteWithTopicCategories),
+		// in alphabetical order.
+
+		_testExecuteWithCategories();
 		_testExecuteWithErrors();
 		_testExecuteWithFieldMappingRules();
 		_testExecuteWithFirstNonemptySourceFieldMappingRule();
@@ -152,6 +211,8 @@ public class LiferayCommercePIMConnectorTest {
 		_testExecuteWithPicklistProductSpecification();
 		_testExecuteWithProductOptions();
 		_testExecuteWithProductSpecifications();
+		_testExecuteWithTags();
+		_testExecuteWithTopicCategories();
 		_testExecuteWithTrailingSlashURL();
 		_testExecuteWithVariantPIMLinks();
 		_testExecuteWithoutUnitOfMeasure();
@@ -176,12 +237,45 @@ public class LiferayCommercePIMConnectorTest {
 			_liferayCommercePIMConnector.getPIMConnectorChannelFields();
 
 		Assert.assertEquals(
-			pimConnectorChannelFields.toString(), 15,
+			pimConnectorChannelFields.toString(), 16,
 			pimConnectorChannelFields.size());
+
+		// PR-NOTE: testGetPIMConnectorChannelFields, changed part. Covers the
+		// new "categories" channel field (label, name, TEXT type, multivalued)
+		// in the asserts below. This assert covers the declared allowed field
+		// mapping types: only "categories" and "tags" differ from
+		// [dynamicValue, fixedValue], so only they are listed, and a new field
+		// with other types would show up here. It moved to the top because
+		// getAllowedFieldMappingTypes sorts first (review rename).
+
 		Assert.assertEquals(
 			Arrays.asList(
-				"catalog-external-reference-code", "depth", "description",
-				"height", "name", "precision", "product-options",
+				"categories=[categories, dynamicValue, fixedValue]",
+				"tags=[dynamicValue, fixedValue, tags]"),
+			TransformUtil.transform(
+				pimConnectorChannelFields,
+				pimConnectorChannelField -> {
+					List<String> allowedFieldMappingTypes =
+						pimConnectorChannelField.getAllowedFieldMappingTypes();
+
+					if (allowedFieldMappingTypes.equals(
+							Arrays.asList(
+								PIMConnectorFieldMappingTypeConstants.
+									DYNAMIC_VALUE,
+								PIMConnectorFieldMappingTypeConstants.
+									FIXED_VALUE))) {
+
+						return null;
+					}
+
+					return StringBundler.concat(
+						pimConnectorChannelField.getName(), StringPool.EQUAL,
+						allowedFieldMappingTypes);
+				}));
+		Assert.assertEquals(
+			Arrays.asList(
+				"catalog-external-reference-code", "categories", "depth",
+				"description", "height", "name", "precision", "product-options",
 				"product-specifications", "product-type", "sku", "tags",
 				"unit-of-measure-key", "unit-of-measure-name", "weight",
 				"width"),
@@ -191,10 +285,11 @@ public class LiferayCommercePIMConnectorTest {
 					LocaleUtil.US)));
 		Assert.assertEquals(
 			Arrays.asList(
-				"catalogExternalReferenceCode", "skus[].depth", "description",
-				"skus[].height", "name", "skus[].skuUnitOfMeasures[].precision",
-				"productOptions", "productSpecifications", "productType",
-				"skus[].sku", "tags", "skus[].skuUnitOfMeasures[].key",
+				"catalogExternalReferenceCode", "categories", "skus[].depth",
+				"description", "skus[].height", "name",
+				"skus[].skuUnitOfMeasures[].precision", "productOptions",
+				"productSpecifications", "productType", "skus[].sku", "tags",
+				"skus[].skuUnitOfMeasures[].key",
 				"skus[].skuUnitOfMeasures[].name", "skus[].weight",
 				"skus[].width"),
 			TransformUtil.transform(
@@ -214,13 +309,15 @@ public class LiferayCommercePIMConnectorTest {
 				}));
 		Assert.assertEquals(
 			Arrays.asList(
-				"Text", "Decimal", "Text", "Decimal", "Text", "Integer", "Text",
-				"Text", "Text", "Text", "Text", "Text", "Text", "Decimal",
-				"Decimal"),
+				"Text", "Text", "Decimal", "Text", "Decimal", "Text", "Integer",
+				"Text", "Text", "Text", "Text", "Text", "Text", "Text",
+				"Decimal", "Decimal"),
 			TransformUtil.transform(
 				pimConnectorChannelFields, PIMConnectorChannelField::getType));
 		Assert.assertEquals(
-			Arrays.asList("productOptions", "productSpecifications", "tags"),
+			Arrays.asList(
+				"categories", "productOptions", "productSpecifications",
+				"tags"),
 			TransformUtil.transform(
 				pimConnectorChannelFields,
 				pimConnectorChannelField -> {
@@ -326,6 +423,19 @@ public class LiferayCommercePIMConnectorTest {
 		return jsonArray.getJSONObject(0);
 	}
 
+	// PR-NOTE: Helper. Returns the JSON body of the request sent to a given
+	// location; used to assert the vocabulary and category PUT bodies.
+
+	private JSONObject _getRequestBodyJSONObject(String location)
+		throws Exception {
+
+		Http.Options options = _getOptions(location);
+
+		Http.Body body = options.getBody();
+
+		return JSONFactoryUtil.createJSONObject(body.getContent());
+	}
+
 	private List<ObjectEntry> _getRequiredObjectEntries(
 		ObjectEntry... objectEntries) {
 
@@ -333,16 +443,18 @@ public class LiferayCommercePIMConnectorTest {
 			_mockPIMFieldMappingObjectEntry(
 				"catalogExternalReferenceCode", StringPool.BLANK,
 				StringPool.BLANK,
-				PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE,
+				PIMConnectorFieldMappingTypeConstants.FIXED_VALUE,
 				_CATALOG_EXTERNAL_REFERENCE_CODE_1),
 			_mockPIMFieldMappingObjectEntry(
-				"name", StringPool.BLANK, "title", "dynamicValue",
+				"name", StringPool.BLANK, "title",
+				PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 				StringPool.BLANK),
 			_mockPIMFieldMappingObjectEntry(
 				"productType", StringPool.BLANK, StringPool.BLANK,
-				PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE, "simple"),
+				PIMConnectorFieldMappingTypeConstants.FIXED_VALUE, "simple"),
 			_mockPIMFieldMappingObjectEntry(
-				"skus[].sku", StringPool.BLANK, "sku", "dynamicValue",
+				"skus[].sku", StringPool.BLANK, "sku",
+				PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 				StringPool.BLANK));
 
 		Collections.addAll(requiredObjectEntries, objectEntries);
@@ -356,6 +468,184 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertTrue(jsonArray.toString(), jsonArray.length() > index);
 
 		return jsonArray.getJSONObject(index);
+	}
+
+	// PR-NOTE: Helper. Lists the taxonomy requests in order, as
+	// "METHOD /taxonomy-...". The tests use it to assert which vocabularies
+	// and categories were sent and in what order: parents before children,
+	// and no taxonomy request at all when there is nothing to sync.
+
+	private List<String> _getTaxonomyRequests() {
+		return TransformUtil.transform(
+			_options,
+			options -> {
+				String location = options.getLocation();
+
+				int index = location.indexOf("/taxonomy-");
+
+				if (index == -1) {
+					return null;
+				}
+
+				return StringBundler.concat(
+					options.getMethod(), StringPool.SPACE,
+					location.substring(index));
+			});
+	}
+
+	// PR-NOTE: Helpers _mockAssetCategories, _mockAssetCategory, _mockAssetTags,
+	// and _mockAssetVocabulary. They mock the categories or tags assigned to a
+	// PIM product entry, a category with its ancestors (parent first, like
+	// AssetCategory.getAncestors; getParentCategory and isRootCategory follow
+	// from them, since the connector now reads those), and a vocabulary with a
+	// given visibility, which is also registered in
+	// _assetVocabularyLocalService.getVocabulary.
+
+	private void _mockAssetCategories(
+		ObjectEntry pimProductObjectEntry, AssetCategory... assetCategories) {
+
+		long objectEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			pimProductObjectEntry.getObjectEntryId()
+		).thenReturn(
+			objectEntryId
+		);
+
+		Mockito.when(
+			_assetCategoryLocalService.getCategories(_CLASS_NAME, objectEntryId)
+		).thenReturn(
+			Arrays.asList(assetCategories)
+		);
+	}
+
+	private AssetCategory _mockAssetCategory(
+			AssetVocabulary assetVocabulary, String externalReferenceCode,
+			AssetCategory... ancestorAssetCategories)
+		throws Exception {
+
+		AssetCategory assetCategory = Mockito.mock(AssetCategory.class);
+
+		Mockito.when(
+			assetCategory.getAncestors()
+		).thenReturn(
+			Arrays.asList(ancestorAssetCategories)
+		);
+
+		Mockito.when(
+			assetCategory.getExternalReferenceCode()
+		).thenReturn(
+			externalReferenceCode
+		);
+
+		if (ancestorAssetCategories.length > 0) {
+			Mockito.when(
+				assetCategory.getParentCategory()
+			).thenReturn(
+				ancestorAssetCategories[0]
+			);
+		}
+
+		Mockito.when(
+			assetCategory.getTitle(LocaleUtil.US)
+		).thenReturn(
+			externalReferenceCode + " title"
+		);
+
+		long vocabularyId = assetVocabulary.getVocabularyId();
+
+		Mockito.when(
+			assetCategory.getVocabularyId()
+		).thenReturn(
+			vocabularyId
+		);
+
+		Mockito.when(
+			assetCategory.isRootCategory()
+		).thenReturn(
+			ancestorAssetCategories.length == 0
+		);
+
+		return assetCategory;
+	}
+
+	private void _mockAssetTags(
+		ObjectEntry pimProductObjectEntry, String... names) {
+
+		long objectEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			pimProductObjectEntry.getObjectEntryId()
+		).thenReturn(
+			objectEntryId
+		);
+
+		List<AssetTag> assetTags = TransformUtil.transformToList(
+			names,
+			name -> {
+				AssetTag assetTag = Mockito.mock(AssetTag.class);
+
+				Mockito.when(
+					assetTag.getName()
+				).thenReturn(
+					name
+				);
+
+				return assetTag;
+			});
+
+		Mockito.when(
+			_assetTagLocalService.getTags(_CLASS_NAME, objectEntryId)
+		).thenReturn(
+			assetTags
+		);
+	}
+
+	private AssetVocabulary _mockAssetVocabulary(
+			String externalReferenceCode, int visibilityType)
+		throws Exception {
+
+		AssetVocabulary assetVocabulary = Mockito.mock(AssetVocabulary.class);
+
+		Mockito.when(
+			assetVocabulary.getExternalReferenceCode()
+		).thenReturn(
+			externalReferenceCode
+		);
+
+		Mockito.when(
+			assetVocabulary.getTitle(LocaleUtil.US)
+		).thenReturn(
+			externalReferenceCode + " title"
+		);
+
+		Mockito.when(
+			assetVocabulary.getVisibilityType()
+		).thenReturn(
+			visibilityType
+		);
+
+		long vocabularyId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			assetVocabulary.getVocabularyId()
+		).thenReturn(
+			vocabularyId
+		);
+
+		Mockito.when(
+			assetVocabulary.isMultiValued()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_assetVocabularyLocalService.getVocabulary(vocabularyId)
+		).thenReturn(
+			assetVocabulary
+		);
+
+		return assetVocabulary;
 	}
 
 	private void _mockHttp(Map<String, Integer> responseCodes)
@@ -373,10 +663,20 @@ public class LiferayCommercePIMConnectorTest {
 				String location = options.getLocation();
 				Http.Response response = options.getResponse();
 
+				// PR-NOTE: Helper change. _mockHttp now matches its keys
+				// against "METHOD location" instead of the location alone.
+				// _testExecuteWithTopicCategories needs it to make only the
+				// Topic GET (hasSiteTaxonomyVocabulary) return 404, and not the
+				// PUT to the same URL. The existing callers match a path
+				// fragment, so they work as before.
+
+				String request = StringBundler.concat(
+					options.getMethod(), StringPool.SPACE, location);
+
 				for (Map.Entry<String, Integer> entry :
 						responseCodes.entrySet()) {
 
-					if (location.contains(entry.getKey())) {
+					if (request.contains(entry.getKey())) {
 						response.setResponseCode(entry.getValue());
 
 						return JSONUtil.put(
@@ -509,6 +809,12 @@ public class LiferayCommercePIMConnectorTest {
 			_CATALOG_EXTERNAL_REFERENCE_CODE_1,
 			jsonObject.getString("catalogExternalReferenceCode"));
 		Assert.assertFalse(jsonObject.has("catalogId"));
+
+		// PR-NOTE: _testExecute. An unmapped "categories" channel field leaves
+		// the key out of the product, so the import keeps the categories of the
+		// remote product (the null branch of getChannelFieldJSONArray).
+
+		Assert.assertFalse(jsonObject.toString(), jsonObject.has("categories"));
 		Assert.assertEquals(
 			"SKU-1", jsonObject.getString("externalReferenceCode"));
 		Assert.assertEquals("simple", jsonObject.getString("productType"));
@@ -540,16 +846,19 @@ public class LiferayCommercePIMConnectorTest {
 			_mockPIMFieldMappingObjectEntry(
 				"catalogExternalReferenceCode", StringPool.BLANK,
 				StringPool.BLANK,
-				PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE,
+				PIMConnectorFieldMappingTypeConstants.FIXED_VALUE,
 				_CATALOG_EXTERNAL_REFERENCE_CODE_1),
 			_mockPIMFieldMappingObjectEntry(
-				"name", StringPool.BLANK, "title", "dynamicValue",
+				"name", StringPool.BLANK, "title",
+				PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 				StringPool.BLANK),
 			_mockPIMFieldMappingObjectEntry(
-				"productType", StringPool.BLANK, "virtual", "dynamicValue",
+				"productType", StringPool.BLANK, "virtual",
+				PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 				StringPool.BLANK),
 			_mockPIMFieldMappingObjectEntry(
-				"skus[].sku", StringPool.BLANK, "sku", "dynamicValue",
+				"skus[].sku", StringPool.BLANK, "sku",
+				PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 				StringPool.BLANK));
 
 		JSONObject jsonObject = _getProductJSONObject(
@@ -579,18 +888,22 @@ public class LiferayCommercePIMConnectorTest {
 		List<ObjectEntry> objectEntries = ListUtil.fromArray(
 			_mockPIMFieldMappingObjectEntry(
 				"catalogExternalReferenceCode", StringPool.BLANK, "catalog",
-				"dynamicValue", StringPool.BLANK),
-			_mockPIMFieldMappingObjectEntry(
-				"name", StringPool.BLANK, "title", "dynamicValue",
+				PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 				StringPool.BLANK),
 			_mockPIMFieldMappingObjectEntry(
-				"productOptions", StringPool.BLANK, "color", "dynamicValue",
+				"name", StringPool.BLANK, "title",
+				PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
+				StringPool.BLANK),
+			_mockPIMFieldMappingObjectEntry(
+				"productOptions", StringPool.BLANK, "color",
+				PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 				StringPool.BLANK),
 			_mockPIMFieldMappingObjectEntry(
 				"productType", StringPool.BLANK, StringPool.BLANK,
-				PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE, "simple"),
+				PIMConnectorFieldMappingTypeConstants.FIXED_VALUE, "simple"),
 			_mockPIMFieldMappingObjectEntry(
-				"skus[].sku", StringPool.BLANK, "sku", "dynamicValue",
+				"skus[].sku", StringPool.BLANK, "sku",
+				PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 				StringPool.BLANK));
 
 		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
@@ -680,6 +993,166 @@ public class LiferayCommercePIMConnectorTest {
 		jsonArray = jsonObject.getJSONArray("log");
 
 		Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
+	}
+
+	// PR-NOTE: Covers the Categories source:
+	// - only the primary SKU entry (entry 1 of SKU-1) is read, and the
+	//   category of entry 2 is not exported (Q1);
+	// - the category of an internal vocabulary is skipped (Q9);
+	// - only the assigned leaf (grandchild) is in the product, with its
+	//   vocabulary ERC (Q7);
+	// - the taxonomy sync sends exactly the vocabulary PUT, then root, child,
+	//   and grandchild in this order (parents first), and nothing for the
+	//   internal vocabulary;
+	// - the vocabulary body: multiValued, name, viewableBy Anyone,
+	//   visibilityType PUBLIC;
+	// - the root body: name, parentTaxonomyCategory.id = 0,
+	//   parentTaxonomyVocabulary ERC, viewableBy Anyone;
+	// - the child and the grandchild reference their direct parent by ERC.
+	// The child mock now has the root as ancestor, because the parent comes
+	// from getParentCategory() instead of the grandchild's ancestor list.
+	// Last block: a product with no categories exports "categories": [], so
+	// removals reach the remote instance, and sends no taxonomy request.
+
+	private void _testExecuteWithCategories() throws Exception {
+		AssetVocabulary assetVocabulary = _mockAssetVocabulary(
+			RandomTestUtil.randomString(),
+			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC);
+
+		AssetCategory rootAssetCategory = _mockAssetCategory(
+			assetVocabulary, RandomTestUtil.randomString());
+
+		AssetCategory childAssetCategory = _mockAssetCategory(
+			assetVocabulary, RandomTestUtil.randomString(), rootAssetCategory);
+
+		AssetCategory grandchildAssetCategory = _mockAssetCategory(
+			assetVocabulary, RandomTestUtil.randomString(), childAssetCategory,
+			rootAssetCategory);
+
+		ObjectEntry pimProductObjectEntry1 = _mockPIMProductObjectEntry(
+			"SKU-1", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetCategories(
+			pimProductObjectEntry1, grandchildAssetCategory,
+			_mockAssetCategory(
+				_mockAssetVocabulary(
+					RandomTestUtil.randomString(),
+					AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL),
+				RandomTestUtil.randomString()));
+
+		ObjectEntry pimProductObjectEntry2 = _mockPIMProductObjectEntry(
+			"SKU-2", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetCategories(
+			pimProductObjectEntry2,
+			_mockAssetCategory(assetVocabulary, RandomTestUtil.randomString()));
+
+		List<ObjectEntry> pimFieldMappingObjectEntries =
+			_getRequiredObjectEntries(
+				_mockPIMFieldMappingObjectEntry(
+					"categories", StringPool.BLANK, StringPool.BLANK,
+					PIMConnectorFieldMappingTypeConstants.CATEGORIES,
+					StringPool.BLANK));
+
+		JSONObject jsonObject1 = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			Collections.<String, ObjectEntry>emptyMap(), pimProductObjectEntry1,
+			pimProductObjectEntry2);
+
+		JSONArray jsonArray = jsonObject1.getJSONArray("categories");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		jsonObject1 = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			grandchildAssetCategory.getExternalReferenceCode(),
+			jsonObject1.getString("externalReferenceCode"));
+		Assert.assertEquals(
+			assetVocabulary.getExternalReferenceCode(),
+			jsonObject1.getString("vocabularyExternalReferenceCode"));
+
+		Assert.assertEquals(
+			Arrays.asList(
+				"PUT /taxonomy-vocabularies/by-external-reference-code/" +
+					assetVocabulary.getExternalReferenceCode(),
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					rootAssetCategory.getExternalReferenceCode(),
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					childAssetCategory.getExternalReferenceCode(),
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					grandchildAssetCategory.getExternalReferenceCode()),
+			_getTaxonomyRequests());
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-vocabularies/by-external-reference-code/" +
+				assetVocabulary.getExternalReferenceCode());
+
+		Assert.assertTrue(jsonObject1.getBoolean("multiValued"));
+		Assert.assertEquals(
+			assetVocabulary.getTitle(LocaleUtil.US),
+			jsonObject1.getString("name"));
+		Assert.assertEquals("Anyone", jsonObject1.getString("viewableBy"));
+		Assert.assertEquals("PUBLIC", jsonObject1.getString("visibilityType"));
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-categories/by-external-reference-code/" +
+				rootAssetCategory.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			rootAssetCategory.getTitle(LocaleUtil.US),
+			jsonObject1.getString("name"));
+
+		JSONObject jsonObject2 = jsonObject1.getJSONObject(
+			"parentTaxonomyCategory");
+
+		Assert.assertEquals(
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			jsonObject2.getLong("id"));
+
+		jsonObject2 = jsonObject1.getJSONObject("parentTaxonomyVocabulary");
+
+		Assert.assertEquals(
+			assetVocabulary.getExternalReferenceCode(),
+			jsonObject2.getString("externalReferenceCode"));
+
+		Assert.assertEquals("Anyone", jsonObject1.getString("viewableBy"));
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-categories/by-external-reference-code/" +
+				childAssetCategory.getExternalReferenceCode());
+
+		jsonObject2 = jsonObject1.getJSONObject("parentTaxonomyCategory");
+
+		Assert.assertEquals(
+			rootAssetCategory.getExternalReferenceCode(),
+			jsonObject2.getString("externalReferenceCode"));
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-categories/by-external-reference-code/" +
+				grandchildAssetCategory.getExternalReferenceCode());
+
+		jsonObject2 = jsonObject1.getJSONObject("parentTaxonomyCategory");
+
+		Assert.assertEquals(
+			childAssetCategory.getExternalReferenceCode(),
+			jsonObject2.getString("externalReferenceCode"));
+
+		pimProductObjectEntry1 = _mockPIMProductObjectEntry(
+			"SKU-1", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetCategories(pimProductObjectEntry1);
+
+		jsonObject1 = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			Collections.<String, ObjectEntry>emptyMap(),
+			pimProductObjectEntry1);
+
+		jsonArray = jsonObject1.getJSONArray("categories");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
+
+		Assert.assertEquals(Collections.emptyList(), _getTaxonomyRequests());
 	}
 
 	private void _testExecuteWithErrors() throws Exception {
@@ -813,6 +1286,51 @@ public class LiferayCommercePIMConnectorTest {
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
+		// PR-NOTE: _testExecuteWithErrors, new block. When a category PUT fails
+		// on the remote instance, execute throws PIMConnectorException
+		// ("the-remote-instance-returned-an-error") and the import task is
+		// never posted. The taxonomy sync runs before the import, so a failed
+		// sync cannot leave products with unresolved categories.
+
+		_mockHttp(
+			HashMapBuilder.put(
+				"/taxonomy-categories", 500
+			).build());
+
+		ObjectEntry pimProductObjectEntry = _mockPIMProductObjectEntry(
+			"SKU-1", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetCategories(
+			pimProductObjectEntry,
+			_mockAssetCategory(
+				_mockAssetVocabulary(
+					RandomTestUtil.randomString(),
+					AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC),
+				RandomTestUtil.randomString()));
+
+		_assertPIMConnectorException(
+			"the-remote-instance-returned-an-error",
+			() -> _execute(
+				_pimConnectorConfigurationValues,
+				_getRequiredObjectEntries(
+					_mockPIMFieldMappingObjectEntry(
+						"categories", StringPool.BLANK, StringPool.BLANK,
+						PIMConnectorFieldMappingTypeConstants.CATEGORIES,
+						StringPool.BLANK)),
+				Collections.<String, ObjectEntry>emptyMap(),
+				HashMapBuilder.put(
+					"SKU-1", Arrays.asList(pimProductObjectEntry)
+				).build()));
+
+		Assert.assertFalse(
+			ListUtil.exists(
+				_options,
+				options -> {
+					String location = options.getLocation();
+
+					return location.contains("/import-task");
+				}));
+
 		_mockHttp(Collections.emptyMap());
 	}
 
@@ -828,23 +1346,27 @@ public class LiferayCommercePIMConnectorTest {
 			_getRequiredObjectEntries(
 				_mockPIMFieldMappingObjectEntry(
 					"description", StringPool.BLANK, "description",
-					"dynamicValue", StringPool.BLANK),
-				_mockPIMFieldMappingObjectEntry(
-					"name", StringPool.BLANK, "sku", "dynamicValue",
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 					StringPool.BLANK),
 				_mockPIMFieldMappingObjectEntry(
-					"productOptions", StringPool.BLANK, "color", "dynamicValue",
+					"name", StringPool.BLANK, "sku",
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
+					StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"productOptions", StringPool.BLANK, "color",
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 					StringPool.BLANK),
 				_mockPIMFieldMappingObjectEntry(
 					"productSpecifications", StringPool.BLANK, "material",
-					"dynamicValue", StringPool.BLANK),
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
+					StringPool.BLANK),
 				_mockPIMFieldMappingObjectEntry(
 					"tags", StringPool.BLANK, StringPool.BLANK,
-					PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE,
+					PIMConnectorFieldMappingTypeConstants.FIXED_VALUE,
 					"Home Office"),
 				_mockPIMFieldMappingObjectEntry(
 					"tags", StringPool.BLANK, StringPool.BLANK,
-					PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE,
+					PIMConnectorFieldMappingTypeConstants.FIXED_VALUE,
 					"Summer Sale")),
 			HashMapBuilder.put(
 				"description",
@@ -939,7 +1461,8 @@ public class LiferayCommercePIMConnectorTest {
 			"SKU-1",
 			_getRequiredObjectEntries(
 				_mockPIMFieldMappingObjectEntry(
-					"name", StringPool.BLANK, "sku", "dynamicValue",
+					"name", StringPool.BLANK, "sku",
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 					StringPool.BLANK)),
 			HashMapBuilder.put(
 				"name",
@@ -963,7 +1486,8 @@ public class LiferayCommercePIMConnectorTest {
 				_mockPIMFieldMappingObjectEntry(
 					"description", RandomTestUtil.randomString(),
 					StringPool.BLANK,
-					PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE, "A shirt")),
+					PIMConnectorFieldMappingTypeConstants.FIXED_VALUE,
+					"A shirt")),
 			Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
 				"SKU-1", Collections.<String, Serializable>emptyMap()));
@@ -980,7 +1504,8 @@ public class LiferayCommercePIMConnectorTest {
 			_getRequiredObjectEntries(
 				_mockPIMFieldMappingObjectEntry(
 					"description", RandomTestUtil.randomString(), "description",
-					"dynamicValue", StringPool.BLANK)),
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
+					StringPool.BLANK)),
 			Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
 				"SKU-1",
@@ -997,7 +1522,8 @@ public class LiferayCommercePIMConnectorTest {
 			"SKU-1",
 			_getRequiredObjectEntries(
 				_mockPIMFieldMappingObjectEntry(
-					"name", _CLASS_NAME, "sku", "dynamicValue",
+					"name", _CLASS_NAME, "sku",
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 					StringPool.BLANK)),
 			Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
@@ -1056,7 +1582,8 @@ public class LiferayCommercePIMConnectorTest {
 			"SKU-1",
 			_getRequiredObjectEntries(
 				_mockPIMFieldMappingObjectEntry(
-					"productOptions", StringPool.BLANK, "size", "dynamicValue",
+					"productOptions", StringPool.BLANK, "size",
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 					StringPool.BLANK)),
 			Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
@@ -1148,7 +1675,8 @@ public class LiferayCommercePIMConnectorTest {
 			_getRequiredObjectEntries(
 				_mockPIMFieldMappingObjectEntry(
 					"productSpecifications", StringPool.BLANK, "size",
-					"dynamicValue", StringPool.BLANK)),
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
+					StringPool.BLANK)),
 			Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
 				"SKU-1",
@@ -1174,7 +1702,8 @@ public class LiferayCommercePIMConnectorTest {
 			"SKU-1",
 			_getRequiredObjectEntries(
 				_mockPIMFieldMappingObjectEntry(
-					"productOptions", StringPool.BLANK, "color", "dynamicValue",
+					"productOptions", StringPool.BLANK, "color",
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
 					StringPool.BLANK)),
 			Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
@@ -1245,13 +1774,15 @@ public class LiferayCommercePIMConnectorTest {
 			_getRequiredObjectEntries(
 				_mockPIMFieldMappingObjectEntry(
 					"productSpecifications", StringPool.BLANK, "color",
-					"dynamicValue", StringPool.BLANK),
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
+					StringPool.BLANK),
 				_mockPIMFieldMappingObjectEntry(
 					"productSpecifications", StringPool.BLANK, "color",
-					"dynamicValue", StringPool.BLANK),
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
+					StringPool.BLANK),
 				_mockPIMFieldMappingObjectEntry(
 					"productSpecifications", StringPool.BLANK, StringPool.BLANK,
-					PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE, "Red")),
+					PIMConnectorFieldMappingTypeConstants.FIXED_VALUE, "Red")),
 			Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
 				"SKU-1",
@@ -1275,6 +1806,268 @@ public class LiferayCommercePIMConnectorTest {
 			productSpecificationJSONObject.getJSONObject("label");
 
 		Assert.assertEquals("Color", labelJSONObject.getString("en_US"));
+	}
+
+	// PR-NOTE: Covers:
+	// - an attribute mapping, then a Tags mapping: the values are merged in
+	//   priority order and deduplicated (name1 comes from both but appears
+	//   once); only the primary SKU's tags are read, and entry 2's tag is not
+	//   exported;
+	// - with the fallback rule, only the first nonempty source (the
+	//   attribute) is exported;
+	// - a product with no tags exports "tags": [] instead of leaving the key
+	//   out, so tags removed in PIM are removed remotely too.
+
+	private void _testExecuteWithTags() throws Exception {
+		String name1 = RandomTestUtil.randomString();
+		String sourceFieldName = RandomTestUtil.randomString();
+
+		ObjectEntry pimProductObjectEntry1 = _mockPIMProductObjectEntry(
+			"SKU-1",
+			HashMapBuilder.<String, Serializable>put(
+				sourceFieldName, name1
+			).build());
+
+		String name2 = RandomTestUtil.randomString();
+
+		_mockAssetTags(pimProductObjectEntry1, name1, name2);
+
+		ObjectEntry pimProductObjectEntry2 = _mockPIMProductObjectEntry(
+			"SKU-2", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetTags(pimProductObjectEntry2, RandomTestUtil.randomString());
+
+		List<ObjectEntry> pimFieldMappingObjectEntries =
+			_getRequiredObjectEntries(
+				_mockPIMFieldMappingObjectEntry(
+					"tags", StringPool.BLANK, sourceFieldName,
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
+					StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"tags", StringPool.BLANK, StringPool.BLANK,
+					PIMConnectorFieldMappingTypeConstants.TAGS,
+					StringPool.BLANK));
+
+		JSONObject jsonObject = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			Collections.<String, ObjectEntry>emptyMap(), pimProductObjectEntry1,
+			pimProductObjectEntry2);
+
+		Assert.assertEquals(
+			Arrays.asList(name1, name2),
+			JSONUtil.toStringList(jsonObject.getJSONArray("tags")));
+
+		jsonObject = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			HashMapBuilder.put(
+				"tags",
+				_mockPIMFieldMappingRuleObjectEntry(
+					HashMapBuilder.<String, Serializable>put(
+						"useFirstNonemptySource", true
+					).build())
+			).build(),
+			pimProductObjectEntry1);
+
+		Assert.assertEquals(
+			Arrays.asList(name1),
+			JSONUtil.toStringList(jsonObject.getJSONArray("tags")));
+
+		pimProductObjectEntry1 = _mockPIMProductObjectEntry(
+			"SKU-1", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetTags(pimProductObjectEntry1);
+
+		jsonObject = _getProductJSONObject(
+			"SKU-1",
+			_getRequiredObjectEntries(
+				_mockPIMFieldMappingObjectEntry(
+					"tags", StringPool.BLANK, StringPool.BLANK,
+					PIMConnectorFieldMappingTypeConstants.TAGS,
+					StringPool.BLANK)),
+			Collections.<String, ObjectEntry>emptyMap(),
+			pimProductObjectEntry1);
+
+		JSONArray jsonArray = jsonObject.getJSONArray("tags");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
+	}
+
+	// PR-NOTE: Covers the attribute and fixed value sources on "categories"
+	// (Topic):
+	// - an attribute value with a "/" becomes a Topic ERC through the
+	//   normalizer;
+	// - a 76-character fixed value becomes a name-based UUID ERC;
+	// - a real category mapped after them is still exported, in priority
+	//   order;
+	// - the transformation rule (textCase upper) changes the Topic category
+	//   name, and the ERC is normalized from the transformed value (the
+	//   mocked normalizer lowercases it);
+	// - the Topic category body: parentTaxonomyCategory.id = 0, vocabulary
+	//   L_TOPIC, viewableBy Anyone;
+	// - when L_TOPIC exists remotely (GET 200), no Topic vocabulary PUT is
+	//   sent (Q10).
+	// Second block: when the GET returns 404, the Topic vocabulary is PUT;
+	// with the fallback rule and an empty attribute, only the fixed value is
+	// exported.
+
+	private void _testExecuteWithTopicCategories() throws Exception {
+		String sourceFieldName = RandomTestUtil.randomString();
+		String value1 = StringBundler.concat(
+			RandomTestUtil.randomString(), StringPool.SLASH,
+			RandomTestUtil.randomString());
+
+		ObjectEntry pimProductObjectEntry = _mockPIMProductObjectEntry(
+			"SKU-1",
+			HashMapBuilder.<String, Serializable>put(
+				sourceFieldName, value1
+			).build());
+
+		AssetVocabulary assetVocabulary = _mockAssetVocabulary(
+			AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC,
+			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC);
+
+		AssetCategory assetCategory = _mockAssetCategory(
+			assetVocabulary, RandomTestUtil.randomString());
+
+		_mockAssetCategories(pimProductObjectEntry, assetCategory);
+
+		Group group = Mockito.mock(Group.class);
+		long groupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			group.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
+		Mockito.when(
+			_groupLocalService.getCompanyGroup(Mockito.anyLong())
+		).thenReturn(
+			group
+		);
+
+		Mockito.when(
+			_assetVocabularyLocalService.
+				getAssetVocabularyByExternalReferenceCode(
+					AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC,
+					groupId)
+		).thenReturn(
+			assetVocabulary
+		);
+
+		String value2 = StringUtil.toLowerCase(RandomTestUtil.randomString(76));
+
+		List<ObjectEntry> pimFieldMappingObjectEntries =
+			_getRequiredObjectEntries(
+				_mockPIMFieldMappingObjectEntry(
+					"categories", StringPool.BLANK, sourceFieldName,
+					PIMConnectorFieldMappingTypeConstants.DYNAMIC_VALUE,
+					StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"categories", StringPool.BLANK, StringPool.BLANK,
+					PIMConnectorFieldMappingTypeConstants.FIXED_VALUE, value2),
+				_mockPIMFieldMappingObjectEntry(
+					"categories", StringPool.BLANK, StringPool.BLANK,
+					PIMConnectorFieldMappingTypeConstants.CATEGORIES,
+					StringPool.BLANK));
+
+		JSONObject jsonObject1 = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			HashMapBuilder.put(
+				"categories",
+				_mockPIMFieldMappingRuleObjectEntry(
+					HashMapBuilder.<String, Serializable>put(
+						"textCase", "upper"
+					).build())
+			).build(),
+			pimProductObjectEntry);
+
+		String externalReferenceCode1 = StringUtil.toLowerCase(
+			StringUtil.replace(value1, CharPool.SLASH, CharPool.DASH));
+		String externalReferenceCode2 = PortalUUIDUtil.generate(
+			value2.getBytes());
+
+		Assert.assertEquals(
+			Arrays.asList(
+				externalReferenceCode1, externalReferenceCode2,
+				assetCategory.getExternalReferenceCode()),
+			JSONUtil.toStringList(
+				jsonObject1.getJSONArray("categories"),
+				"externalReferenceCode"));
+
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				"GET /taxonomy-vocabularies/by-external-reference-code/L_TOPIC",
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					assetCategory.getExternalReferenceCode(),
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					externalReferenceCode1,
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					externalReferenceCode2),
+			SetUtil.fromList(_getTaxonomyRequests()));
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-categories/by-external-reference-code/" +
+				assetCategory.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			assetCategory.getTitle(LocaleUtil.US),
+			jsonObject1.getString("name"));
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-categories/by-external-reference-code/" +
+				externalReferenceCode1);
+
+		Assert.assertEquals(
+			StringUtil.toUpperCase(value1), jsonObject1.getString("name"));
+
+		JSONObject jsonObject2 = jsonObject1.getJSONObject(
+			"parentTaxonomyCategory");
+
+		Assert.assertEquals(
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			jsonObject2.getLong("id"));
+
+		jsonObject2 = jsonObject1.getJSONObject("parentTaxonomyVocabulary");
+
+		Assert.assertEquals(
+			AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC,
+			jsonObject2.getString("externalReferenceCode"));
+
+		Assert.assertEquals("Anyone", jsonObject1.getString("viewableBy"));
+
+		_mockHttp(
+			HashMapBuilder.put(
+				"GET https://example.com/o/headless-admin-taxonomy", 404
+			).build());
+
+		jsonObject1 = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			HashMapBuilder.put(
+				"categories",
+				_mockPIMFieldMappingRuleObjectEntry(
+					HashMapBuilder.<String, Serializable>put(
+						"useFirstNonemptySource", true
+					).build())
+			).build(),
+			_mockPIMProductObjectEntry(
+				"SKU-1", Collections.<String, Serializable>emptyMap()));
+
+		Assert.assertEquals(
+			Arrays.asList(externalReferenceCode2),
+			JSONUtil.toStringList(
+				jsonObject1.getJSONArray("categories"),
+				"externalReferenceCode"));
+
+		Assert.assertEquals(
+			Arrays.asList(
+				"GET /taxonomy-vocabularies/by-external-reference-code/L_TOPIC",
+				"PUT /taxonomy-vocabularies/by-external-reference-code/L_TOPIC",
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					externalReferenceCode2),
+			_getTaxonomyRequests());
+
+		_mockHttp(Collections.emptyMap());
 	}
 
 	private void _testExecuteWithTrailingSlashURL() throws Exception {
@@ -1369,8 +2162,16 @@ public class LiferayCommercePIMConnectorTest {
 				"url", "https://example.com"
 			).build();
 
+	private final AssetCategoryLocalService _assetCategoryLocalService =
+		Mockito.mock(AssetCategoryLocalService.class);
+	private final AssetTagLocalService _assetTagLocalService = Mockito.mock(
+		AssetTagLocalService.class);
+	private final AssetVocabularyLocalService _assetVocabularyLocalService =
+		Mockito.mock(AssetVocabularyLocalService.class);
 	private final FriendlyURLNormalizer _friendlyURLNormalizer = Mockito.mock(
 		FriendlyURLNormalizer.class);
+	private final GroupLocalService _groupLocalService = Mockito.mock(
+		GroupLocalService.class);
 	private final MockedStatic<HtmlParserUtil> _htmlParserUtilMockedStatic =
 		Mockito.mockStatic(HtmlParserUtil.class);
 	private final Http _http = Mockito.mock(Http.class);
@@ -1380,6 +2181,8 @@ public class LiferayCommercePIMConnectorTest {
 	private final MockedStatic<ListTypeEntryLocalServiceUtil>
 		_listTypeEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ListTypeEntryLocalServiceUtil.class);
+	private final MockedStatic<ModelHintsUtil> _modelHintsUtilMockedStatic =
+		Mockito.mockStatic(ModelHintsUtil.class);
 	private final ObjectDefinition _objectDefinition = Mockito.mock(
 		ObjectDefinition.class);
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService =

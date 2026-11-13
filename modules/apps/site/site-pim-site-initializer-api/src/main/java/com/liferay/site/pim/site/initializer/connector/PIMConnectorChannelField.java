@@ -7,6 +7,8 @@ package com.liferay.site.pim.site.initializer.connector;
 
 import com.liferay.portal.kernel.language.LanguageUtil;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -15,15 +17,41 @@ import java.util.Locale;
  */
 public class PIMConnectorChannelField {
 
-	public PIMConnectorChannelField(
-		String labelKey, boolean multiple, String name, boolean required,
-		String type) {
+	// PR-NOTE: The constructor takes a new first parameter,
+	// allowedFieldMappingTypes: the field mapping types (the "type" values of
+	// PIMConnectorFieldMappingTypeConstants) this channel field accepts. The
+	// old constructor without it was removed (review), so every caller passes
+	// the list: LiferayCommercePIMConnector passes dynamicValue + fixedValue
+	// for every field, plus categories on "categories" and tags on "tags".
+	// This is an API break, hence the 3.0.0 bump in the Semantic versioning
+	// commit. The list is unmodifiable because getAllowedFieldMappingTypes()
+	// exposes it.
 
+	public PIMConnectorChannelField(
+		List<String> allowedFieldMappingTypes, String labelKey,
+		boolean multiple, String name, boolean required, String type) {
+
+		_allowedFieldMappingTypes = Collections.unmodifiableList(
+			allowedFieldMappingTypes);
 		_labelKey = labelKey;
 		_multiple = multiple;
 		_name = name;
 		_required = required;
 		_type = type;
+	}
+
+	// PR-NOTE: Read by:
+	// - ObjectEntryModelListener._validatePIMConnectorFieldMappingObjectEntry,
+	//   which rejects a field mapping whose "type" is not in this list;
+	// - EditPIMConnectorFieldMappingsDisplayContext
+	//   ("channelFieldAllowedFieldMappingTypes"), which decides the options of
+	//   the source dropdown;
+	// - PIMConnectorFieldMappingRulesUtil.isUseFirstNonemptySourceSupported,
+	//   which allows the fallback rule on multivalued fields that take Tags or
+	//   Categories.
+
+	public List<String> getAllowedFieldMappingTypes() {
+		return _allowedFieldMappingTypes;
 	}
 
 	public String getLabel(Locale locale) {
@@ -46,6 +74,7 @@ public class PIMConnectorChannelField {
 		return _required;
 	}
 
+	private final List<String> _allowedFieldMappingTypes;
 	private final String _labelKey;
 	private final boolean _multiple;
 	private final String _name;

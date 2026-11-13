@@ -21,13 +21,18 @@ const MAPPING_RULE = {
 };
 
 describe('MappingRulesSection', () => {
+	// PR-NOTE: Unchanged behavior: every control is disabled for a channel
+	// field that is not text. Only the prop changed (channelFieldMultiple=
+	// {false} -> useFirstNonemptySourceSupported={true}, so the fallback
+	// select is rendered and can be checked as disabled).
+
 	it('disables the rules of a channel field that is not text', () => {
 		render(
 			<MappingRulesSection
-				channelFieldMultiple={false}
 				disabled={true}
 				mappingRule={MAPPING_RULE}
 				onChange={jest.fn()}
+				useFirstNonemptySourceSupported={true}
 			/>
 		);
 
@@ -45,12 +50,16 @@ describe('MappingRulesSection', () => {
 		expect(screen.getByLabelText('url-encode')).toBeDisabled();
 	});
 
-	it('hides the fallback of a channel field that takes many values', () => {
+	// PR-NOTE: Renamed from "...that takes many values". Covers that with
+	// useFirstNonemptySourceSupported = false the fallback logic select is
+	// hidden; the server now decides this instead of channelFieldMultiple.
+
+	it('hides the fallback of a channel field that does not support it', () => {
 		render(
 			<MappingRulesSection
-				channelFieldMultiple={true}
 				mappingRule={MAPPING_RULE}
 				onChange={jest.fn()}
+				useFirstNonemptySourceSupported={false}
 			/>
 		);
 
@@ -59,14 +68,17 @@ describe('MappingRulesSection', () => {
 		).not.toBeInTheDocument();
 	});
 
+	// PR-NOTE: Unchanged behavior: each control reports its rule through
+	// onChange. Only the prop changed, as in the first test.
+
 	it('changes the rule a control sets', async () => {
 		const onChange = jest.fn();
 
 		render(
 			<MappingRulesSection
-				channelFieldMultiple={false}
 				mappingRule={MAPPING_RULE}
 				onChange={onChange}
+				useFirstNonemptySourceSupported={true}
 			/>
 		);
 

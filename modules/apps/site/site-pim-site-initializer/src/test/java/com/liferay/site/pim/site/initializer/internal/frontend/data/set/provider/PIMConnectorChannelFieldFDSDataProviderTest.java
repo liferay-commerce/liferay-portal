@@ -375,6 +375,34 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 			Collections.singletonList("PIM Basic Product/ABC-1"),
 			pimConnectorChannelFieldDisplay.getSourceAttributes());
 
+		// PR-NOTE: testGetItems, new block. A channel field mapped only to
+		// Categories (with a structure) and Tags (without one) is "Mapped",
+		// which is the new _isMapped branch: these sources need no attribute or
+		// value. The Source Attributes column shows "PIM Basic Product/
+		// categories" and "tags", the new FDS data provider branches with and
+		// without the structure prefix.
+
+		_mockPIMConnectorFieldMappingObjectEntries(
+			_mockPIMConnectorFieldMappingObjectEntry(
+				"skus[].sku", 1, 0, _OBJECT_DEFINITION_CLASS_NAME,
+				StringPool.BLANK, "categories", StringPool.BLANK),
+			_mockPIMConnectorFieldMappingObjectEntry(
+				"skus[].sku", 2, 1, StringPool.BLANK, StringPool.BLANK, "tags",
+				StringPool.BLANK));
+
+		pimConnectorChannelFieldDisplays =
+			_pimConnectorChannelFieldFDSDataProvider.getItems(
+				_mockFDSKeywords(StringPool.BLANK), _mockFDSPagination(0, 20),
+				_httpServletRequest, null);
+
+		pimConnectorChannelFieldDisplay = pimConnectorChannelFieldDisplays.get(
+			1);
+
+		Assert.assertTrue(pimConnectorChannelFieldDisplay.isMapped());
+		Assert.assertEquals(
+			Arrays.asList("PIM Basic Product/categories", "tags"),
+			pimConnectorChannelFieldDisplay.getSourceAttributes());
+
 		pimConnectorChannelFieldDisplays =
 			_pimConnectorChannelFieldFDSDataProvider.getItems(
 				_mockFDSKeywords("sku"), _mockFDSPagination(0, 20),
@@ -466,7 +494,7 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 		).thenReturn(
 			Collections.singletonList(
 				new PIMConnectorChannelField(
-					"Tags", true, "tags", false,
+					Collections.emptyList(), "Tags", true, "tags", false,
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT))
 		);
 
@@ -625,10 +653,10 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 		).thenReturn(
 			Arrays.asList(
 				new PIMConnectorChannelField(
-					"Name", false, "name", true,
+					Collections.emptyList(), "Name", false, "name", true,
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT),
 				new PIMConnectorChannelField(
-					"SKU", false, "skus[].sku", false,
+					Collections.emptyList(), "SKU", false, "skus[].sku", false,
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT))
 		);
 

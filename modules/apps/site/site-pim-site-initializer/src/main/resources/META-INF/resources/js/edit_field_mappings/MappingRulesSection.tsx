@@ -18,17 +18,17 @@ const TEXT_CASES = [
 const TRUNCATE_LENGTHS = [40, 80, 200, 1000];
 
 interface IProps {
-	channelFieldMultiple: boolean;
 	disabled?: boolean;
 	mappingRule: IMappingRule;
 	onChange: (mappingRule: IMappingRule) => void;
+	useFirstNonemptySourceSupported: boolean;
 }
 
 export default function MappingRulesSection({
-	channelFieldMultiple,
 	disabled,
 	mappingRule,
 	onChange,
+	useFirstNonemptySourceSupported,
 }: IProps) {
 	const handleChange = (values: Partial<IMappingRule>) =>
 		onChange({...mappingRule, ...values});
@@ -160,7 +160,12 @@ export default function MappingRulesSection({
 						</ClaySelect>
 					</div>
 
-					{!channelFieldMultiple && (
+					{/* PR-NOTE: The fallback select is shown when the server
+					says the channel field supports it. Before, it was hidden for
+					every multivalued field (!channelFieldMultiple); now it also
+					shows on "tags" and "categories". */}
+
+					{useFirstNonemptySourceSupported && (
 						<div className="c-gap-1 d-flex flex-column">
 							<label>
 								{Liferay.Language.get('fallback-logic')}

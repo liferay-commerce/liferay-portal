@@ -16,6 +16,7 @@ import {
 	IFieldMapping,
 	IMappingRule,
 	IObjectDefinition,
+	TYPE_DYNAMIC_VALUE,
 	TYPE_FIXED_VALUE,
 } from './edit_field_mappings/types';
 
@@ -33,8 +34,15 @@ interface IProps {
 	apiURL: string;
 	backURL: string;
 	channelField: string;
+
+	// PR-NOTE: Two new props from the display context.
+	// channelFieldAllowedFieldMappingTypes (renamed from
+	// channelFieldSourceTypes, review) replaces channelFieldMultiple, and
+	// useFirstNonemptySourceSupported is now decided on the server, with the
+	// same rule as the validator.
+
+	channelFieldAllowedFieldMappingTypes: string[];
 	channelFieldLabel: string;
-	channelFieldMultiple: boolean;
 	fieldMappings: IFieldMapping[];
 	mappingRule: IMappingRule | null;
 	mappingRuleAPIURL: string;
@@ -44,14 +52,25 @@ interface IProps {
 	objectRelationshipObjectFieldName: string;
 	spritemap: string;
 	title: string;
+	useFirstNonemptySourceSupported: boolean;
 }
 
+// PR-NOTE: isComplete decides which rows are saved; incomplete rows are
+// dropped on save. An attribute row needs a source field and a fixed value
+// row needs a value, as before. Tags and Categories rows need nothing, so they
+// are always complete. Before this change, every row that was not a fixed
+// value was treated as an attribute row.
+
 function isComplete({sourceFieldName, type, value}: IFieldMapping) {
+	if (type === TYPE_DYNAMIC_VALUE) {
+		return Boolean(sourceFieldName);
+	}
+
 	if (type === TYPE_FIXED_VALUE) {
 		return Boolean(value);
 	}
 
-	return Boolean(sourceFieldName);
+	return true;
 }
 
 function isEmpty({
@@ -76,8 +95,8 @@ export default function EditPIMConnectorFieldMappings({
 	apiURL,
 	backURL,
 	channelField,
+	channelFieldAllowedFieldMappingTypes = [],
 	channelFieldLabel,
-	channelFieldMultiple,
 	fieldMappings: initialFieldMappings = [],
 	mappingRule: initialMappingRule,
 	mappingRuleAPIURL,
@@ -87,12 +106,18 @@ export default function EditPIMConnectorFieldMappings({
 	objectRelationshipObjectFieldName,
 	spritemap,
 	title,
+	useFirstNonemptySourceSupported,
 }: IProps) {
 	const [fieldMappings, setFieldMappings] = useState<IFieldMapping[]>(() => {
+		// PR-NOTE: The initial filter drops a saved attribute mapping whose
+		// attribute no longer exists in the structure. Before, only fixed
+		// values were kept unconditionally. Now Tags and Categories mappings
+		// are kept too, because they have no attribute to look up.
+
 		const currentFieldMappings = initialFieldMappings
 			.filter(
 				(fieldMapping) =>
-					fieldMapping.type === TYPE_FIXED_VALUE ||
+					fieldMapping.type !== TYPE_DYNAMIC_VALUE ||
 					getObjectFields(
 						objectDefinitions,
 						fieldMapping.sourceClassName
@@ -180,17 +205,25 @@ export default function EditPIMConnectorFieldMappings({
 
 			const saveResponses = await Promise.all(
 				nextFieldMappings.map((fieldMapping, index) => {
-					const fixedValue = fieldMapping.type === TYPE_FIXED_VALUE;
+
+					// PR-NOTE: The save body sends sourceFieldName only for an
+					// attribute and value only for a fixed value, so a Tags or
+					// Categories mapping is saved with both empty. Before, every
+					// row that was not a fixed value sent its sourceFieldName.
 
 					const body: {[key: string]: unknown} = {
 						channelFieldName: channelField,
 						priority: index,
 						sourceClassName: fieldMapping.sourceClassName,
-						sourceFieldName: fixedValue
-							? ''
-							: fieldMapping.sourceFieldName,
+						sourceFieldName:
+							fieldMapping.type === TYPE_DYNAMIC_VALUE
+								? fieldMapping.sourceFieldName
+								: '',
 						type: fieldMapping.type,
-						value: fixedValue ? fieldMapping.value : '',
+						value:
+							fieldMapping.type === TYPE_FIXED_VALUE
+								? fieldMapping.value
+								: '',
 					};
 
 					if (!fieldMapping.id) {
@@ -268,6 +301,14 @@ export default function EditPIMConnectorFieldMappings({
 					{
 						component: (
 							<FieldMappingsSection
+
+								// PR-NOTE: FieldMappingsSection passes the
+								// allowed field mapping types down to every
+								// FieldMappingRow.
+
+								allowedFieldMappingTypes={
+									channelFieldAllowedFieldMappingTypes
+								}
 								fieldMappings={fieldMappings}
 								objectDefinitions={objectDefinitions}
 								setFieldMappings={setFieldMappings}
@@ -280,10 +321,16 @@ export default function EditPIMConnectorFieldMappings({
 					{
 						component: (
 							<MappingRulesSection
-								channelFieldMultiple={channelFieldMultiple}
 								disabled={!initialMappingRule}
 								mappingRule={mappingRule}
 								onChange={setMappingRule}
+
+								// PR-NOTE: Replaces channelFieldMultiple; the
+								// server decides whether the fallback is shown.
+
+								useFirstNonemptySourceSupported={
+									useFirstNonemptySourceSupported
+								}
 							/>
 						),
 						id: 'mappingRules',

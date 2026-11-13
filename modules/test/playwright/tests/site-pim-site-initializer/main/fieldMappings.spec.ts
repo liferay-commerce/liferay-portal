@@ -41,15 +41,22 @@ test(
 
 			await expect(page).toHaveURL(/\/field-mappings\?/);
 
+			// PR-NOTE: The new Categories[] channel field is listed (15 -> 16
+			// rows). The next step checks that it is "Not Mapped" on a new
+			// connector.
+
 			await expect(
 				fieldMappingsPage.dataSetFragmentPage.table.bodyRows
-			).toHaveCount(15);
+			).toHaveCount(16);
 		});
 
 		await test.step('Every channel field of a new connector is unmapped', async () => {
 			await expect(
 				fieldMappingsPage.status('Catalog External Reference Code')
 			).toHaveText('Required - Not Mapped');
+			await expect(fieldMappingsPage.status('Categories[]')).toHaveText(
+				'Not Mapped'
+			);
 			await expect(fieldMappingsPage.status('Description')).toHaveText(
 				'Not Mapped'
 			);
@@ -85,9 +92,12 @@ test(
 	}
 );
 
+// PR-NOTE: Also tagged @LPD-114544, because the three new steps at the end of
+// this test cover the story.
+
 test(
 	'Declare where a channel field takes its value from',
-	{tag: ['@LPD-106221']},
+	{tag: ['@LPD-106221', '@LPD-114544']},
 	async ({
 		connectorsPage,
 		editFieldMappingsPage,
@@ -179,6 +189,68 @@ test(
 			await expect(page).toHaveURL(/\/field-mappings\?/);
 			await expect(fieldMappingsPage.status('SKU')).toHaveText(
 				'Required - Not Mapped'
+			);
+		});
+
+		// PR-NOTE: Covers: the Categories option exists on Categories[] and can
+		// be combined with an attribute row; the save passes the new server
+		// validation; the channel field turns "Mapped"; and the Source
+		// Attributes column shows "Categories" and "SKU".
+
+		await test.step('Map the categories next to an attribute', async () => {
+			await fieldMappingsPage.channelField('Categories[]').click();
+
+			await editFieldMappingsPage.mapToSourceAttribute('Categories');
+
+			await editFieldMappingsPage.addRowButton.click();
+
+			await editFieldMappingsPage.mapToSourceAttribute('SKU (sku)', 1);
+
+			await editFieldMappingsPage.saveButton.click();
+
+			await expect(page).toHaveURL(/\/field-mappings\?/);
+			await expect(fieldMappingsPage.status('Categories[]')).toHaveText(
+				'Mapped'
+			);
+			await expect(
+				fieldMappingsPage.sourceAttributes('Categories[]')
+			).toHaveText('CategoriesSKU');
+		});
+
+		// PR-NOTE: The same flow for Tags[], with the Tags source plus a random
+		// fixed value. The column shows "Tags" and the value.
+
+		await test.step('Map the tags next to a fixed value', async () => {
+			await fieldMappingsPage.channelField('Tags[]').click();
+
+			await editFieldMappingsPage.mapToSourceAttribute('Tags');
+
+			await editFieldMappingsPage.addRowButton.click();
+
+			const value = getRandomString();
+
+			await editFieldMappingsPage.mapToValue(value, 1);
+
+			await editFieldMappingsPage.saveButton.click();
+
+			await expect(page).toHaveURL(/\/field-mappings\?/);
+			await expect(fieldMappingsPage.status('Tags[]')).toHaveText(
+				'Mapped'
+			);
+			await expect(
+				fieldMappingsPage.sourceAttributes('Tags[]')
+			).toHaveText(`Tags${value}`);
+		});
+
+		// PR-NOTE: A saved Tags mapping is loaded back into the select as
+		// 'tags', not dropped or shown as an empty attribute (the initial
+		// filter in EditPIMConnectorFieldMappings).
+
+		await test.step('The tags mapping comes back on reopening', async () => {
+			await fieldMappingsPage.channelField('Tags[]').click();
+
+			await expect(editFieldMappingsPage.sourceAttribute(0)).toHaveValue(
+				'tags'
 			);
 		});
 	}
