@@ -26,11 +26,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>PRODUCT_COMPARISON_TABLE_SPECIFICATION</td>
-	<td>//td[contains(.,'${key_specification}')]/following-sibling::td[${key_columnNumber}][contains(.,'${key_value}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>PRODUCT_DETAILS_PRICE_TABLE_FIELD_ENTRY</td>
 	<td>//tbody//tr[@class][${key_index}]//td[text()='${key_fieldValue}']</td>
 	<td></td>
@@ -286,21 +281,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>MINI_COMPARE_ITEM_ACTIVE_N</td>
-	<td>//div[@class='mini-compare-item active'][${key_value}]//div[@class='mini-compare-thumbnail']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>MINI_COMPARE_ITEM_N</td>
-	<td>//div[contains(@class,'mini-compare-item')][${key_value}]//div[@class='mini-compare-thumbnail']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>MINI_COMPARE_ITEM_CUSTOM_IMAGE</td>
-	<td>//div[contains(@class,'mini-compare active')]//div[contains(@style,'${key_productMediaId}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>FS_PRODUCT_VALUE_PROMO_PRICE</td>
 	<td>//p[@title='${key_productName}']//following-sibling::p[@class='card-text']//span[@class='price-value price-value-promo']</td>
 	<td></td>
@@ -308,11 +288,6 @@
 <tr>
 	<td>FS_PRODUCT_VALUE_INACTIVE_PRICE</td>
 	<td>//p[@title='${key_productName}']//following-sibling::p[@class='card-text']//span[@class='price-value price-value-inactive']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>MINI_COMPARE_ITEM_REMOVE_BUTTON</td>
-	<td>//div[contains(@class,'mini-compare active')]//div[contains(@style,'${key_productMediaId}')]/../../..//button[contains(@class,'mini-compare-delete')]</td>
 	<td></td>
 </tr>
 <tr>
