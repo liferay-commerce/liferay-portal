@@ -7,11 +7,17 @@ package com.liferay.headless.commerce.admin.channel.internal.dto.v1_0.converter;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.commerce.configuration.CommerceOrderCheckoutConfiguration;
+import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelService;
+import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 
@@ -70,6 +76,32 @@ public class ChannelDTOConverter
 				setCurrencyId(commerceCurrency::getCommerceCurrencyId);
 				setExternalReferenceCode(
 					commerceChannel::getExternalReferenceCode);
+				setGuestBrowsingEnabled(
+					() -> {
+						if (!FeatureFlagManagerUtil.isEnabled(
+								commerceChannel.getCompanyId(), "LPD-109588")) {
+
+							return null;
+						}
+
+						return CommerceChannelConfigurationUtil.
+							isGuestBrowsingEnabled(
+								commerceChannel.getGroupId());
+					});
+				setGuestCheckoutEnabled(
+					() -> {
+						CommerceOrderCheckoutConfiguration
+							commerceOrderCheckoutConfiguration =
+								_configurationProvider.getConfiguration(
+									CommerceOrderCheckoutConfiguration.class,
+									new GroupServiceSettingsLocator(
+										commerceChannel.getGroupId(),
+										CommerceConstants.
+											SERVICE_NAME_COMMERCE_ORDER));
+
+						return commerceOrderCheckoutConfiguration.
+							guestCheckoutEnabled();
+					});
 				setId(commerceChannel::getCommerceChannelId);
 				setName(commerceChannel::getName);
 				setSiteGroupId(commerceChannel::getSiteGroupId);
@@ -86,5 +118,8 @@ public class ChannelDTOConverter
 
 	@Reference
 	private CommerceCurrencyLocalService _commerceCurrencyLocalService;
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 }
