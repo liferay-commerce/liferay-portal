@@ -129,25 +129,30 @@ public class PIMConnectorFieldMappingsUtil {
 					pimFieldMappingObjectEntriesMap.get(
 						pimConnectorChannelField.getName()))) {
 
-			for (String value :
+			channelFieldValues.addAll(
+				TransformUtil.transform(
 					getValues(
 						objectDefinition, pimFieldMappingObjectEntry,
-						pimProductObjectEntry, values)) {
+						pimProductObjectEntry, values),
+					value -> {
+						if (pimConnectorChannelField.isMultiple()) {
+							value =
+								PIMConnectorFieldMappingRulesUtil.applyRules(
+									pimFieldMappingRuleObjectEntry, value);
+						}
 
-				if (pimConnectorChannelField.isMultiple()) {
-					value = PIMConnectorFieldMappingRulesUtil.applyRules(
-						pimFieldMappingRuleObjectEntry, value);
-				}
+						if (Validator.isNotNull(value)) {
+							return value;
+						}
 
-				if (Validator.isNotNull(value)) {
-					channelFieldValues.add(value);
-				}
-				else if (pimConnectorChannelField.isMultiple() &&
-						 isRepeatableGroupPath(pimFieldMappingObjectEntry)) {
+						if (pimConnectorChannelField.isMultiple() &&
+							isRepeatableGroupPath(pimFieldMappingObjectEntry)) {
 
-					channelFieldValues.add(StringPool.BLANK);
-				}
-			}
+							return StringPool.BLANK;
+						}
+
+						return null;
+					}));
 		}
 
 		if (channelFieldValues.isEmpty()) {
