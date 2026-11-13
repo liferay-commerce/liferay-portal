@@ -5,6 +5,7 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import {waitForAlert} from '../../utils/waitForAlert';
 import {GlobalMenuPage} from '../product-navigation-applications-menu/GlobalMenuPage';
 import {UIElementsPage} from '../uielements/UIElementsPage';
 
@@ -86,5 +87,7 @@ export class CommerceInstanceSettingsPage {
 		}
 
 		await this.submitConfigurationButton.click();
+
+		await waitForAlert(this.page);
 	}
 }

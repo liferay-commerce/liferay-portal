@@ -1141,6 +1141,8 @@ export async function miniCartCheckoutSetUp(
 	);
 
 	await waitForAlert(page);
+
+	return channel;
 }
 
 export async function miniumSetUp(
@@ -1450,7 +1452,7 @@ export async function createSalesAgentUser(
 	return user;
 }
 
-async function buildProductOptions(
+export async function buildProductOptions(
 	apiHelpers: DataApiHelpers,
 	optionSpecs: TProductOptionSpec[]
 ) {
@@ -1487,6 +1489,48 @@ async function buildProductOptions(
 	}
 
 	return productOptions;
+}
+
+export async function createGroupedProduct(
+	apiHelpers: DataApiHelpers,
+	{
+		catalogId,
+		entryProductsCount = 3,
+		...product
+	}: {
+		catalogId: number;
+		entryProductsCount?: number;
+		[key: string]: any;
+	}
+) {
+	const entryProducts = [];
+
+	for (let i = 0; i < entryProductsCount; i++) {
+		const name = getRandomString();
+
+		entryProducts.push(
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId,
+				name: {en_US: name},
+				shortDescription: {en_US: `${name} Short Description`},
+			})
+		);
+	}
+
+	const groupedProduct =
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId,
+			groupedProducts: entryProducts.map((entryProduct, index) => ({
+				entryProductId: entryProduct.productId,
+				priority: index,
+				quantity: 1,
+			})),
+			name: {en_US: getRandomString()},
+			productType: 'grouped',
+			...product,
+		});
+
+	return {entryProducts, groupedProduct};
 }
 
 export async function createProductWithOptions(
