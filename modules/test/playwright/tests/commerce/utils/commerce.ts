@@ -56,8 +56,23 @@ type TUnitOfMeasure = {
 	promoPrice: number;
 };
 
+const BUYER_ORDER_ACTION_IDS = [
+	'ADD_COMMERCE_ORDER',
+	'ADD_COMMERCE_ORDER_ATTACHMENT',
+	'CHECKOUT_OPEN_COMMERCE_ORDERS',
+	'MANAGE_COMMERCE_ORDER_DELIVERY_TERMS',
+	'MANAGE_COMMERCE_ORDER_MULTISHIPPING',
+	'MANAGE_COMMERCE_ORDER_PAYMENT_METHODS',
+	'MANAGE_COMMERCE_ORDER_PAYMENT_TERMS',
+	'MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS',
+	'VIEW_BILLING_ADDRESS',
+	'VIEW_COMMERCE_ORDERS',
+	'VIEW_OPEN_COMMERCE_ORDERS',
+];
+
 const CHANNEL_PAYMENT_METHOD_NAMES: {[paymentIntegrationKey: string]: string} =
 	{
+		'authorize-net': 'Authorize.Net',
 		'money-order': 'Money Order',
 		'paypal': 'PayPal Subscriptions',
 		'paypal-integration': 'PayPal',
@@ -83,6 +98,46 @@ export async function activateChannelPaymentMethod(
 		CHANNEL_PAYMENT_METHOD_NAMES[paymentIntegrationKey],
 		paymentIntegrationKey
 	);
+}
+
+export async function restrictChannelPaymentMethodView(
+	apiHelpers: DataApiHelpers,
+	paymentMethodGroupRel: {
+		commercePaymentMethodGroupRelId: number;
+		groupId: number;
+	},
+	roleIds: number[]
+) {
+	const company =
+		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+			'liferay.com'
+		);
+
+	const resourcePermissionArguments = [
+		String(company.companyId),
+		String(paymentMethodGroupRel.groupId),
+		'com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel',
+		String(paymentMethodGroupRel.commercePaymentMethodGroupRelId),
+	] as const;
+
+	for (const roleName of ['Guest', 'User']) {
+		const role = await apiHelpers.headlessAdminUser.getRoleByName(roleName);
+
+		await apiHelpers.jsonWebServicesResourcePermissionApiHelper.removeResourcePermission(
+			'VIEW',
+			...resourcePermissionArguments,
+			String(role.id),
+			'4'
+		);
+	}
+
+	for (const roleId of roleIds) {
+		await apiHelpers.jsonWebServicesResourcePermissionApiHelper.setIndividualResourcePermissions(
+			['VIEW'],
+			...resourcePermissionArguments,
+			String(roleId)
+		);
+	}
 }
 
 export async function checkoutStorefrontSetUp(
@@ -295,6 +350,72 @@ export async function configureBuyerUserForSite(
 		account.externalReferenceCode,
 		accountRoleBuyer[0].id,
 		user.emailAddress
+	);
+
+	const siteRole =
+		await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
+
+	await apiHelpers.headlessAdminUser.assignUserToSite(
+		siteRole.id,
+		site.id,
+		user.id
+	);
+	await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
+		account.id,
+		[user.emailAddress]
+	);
+
+	return user;
+}
+
+export async function configureBuyerUserWithoutOrderPermissions(
+	account: TAccount,
+	apiHelpers: DataApiHelpers,
+	excludedOrderActionIds: string[],
+	site: Site
+) {
+	const company =
+		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+			'liferay.com'
+		);
+
+	const role = await apiHelpers.headlessAdminUser.postRole({
+		name: 'Buyer ' + getRandomString(),
+		rolePermissions: [
+			{
+				actionIds: ['MANAGE_ADDRESSES', 'VIEW_ADDRESSES'],
+				primaryKey: '0',
+				resourceName: 'com.liferay.account.model.AccountEntry',
+				scope: 3,
+			},
+			{
+				actionIds: ['VIEW'],
+				primaryKey: String(company.companyId),
+				resourceName: 'com.liferay.commerce.model.CommerceOrderType',
+				scope: 1,
+			},
+			{
+				actionIds: BUYER_ORDER_ACTION_IDS.filter(
+					(actionId) => !excludedOrderActionIds.includes(actionId)
+				),
+				primaryKey: '0',
+				resourceName: 'com.liferay.commerce.order',
+				scope: 3,
+			},
+		],
+	});
+
+	const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+	userData[user.alternateName] = {
+		name: user.givenName,
+		password: 'test',
+		surname: user.familyName,
+	};
+
+	await apiHelpers.headlessAdminUser.postRoleByExternalReferenceCodeUserAccountAssociation(
+		role.externalReferenceCode,
+		user.id
 	);
 
 	const siteRole =
@@ -1175,6 +1296,22 @@ export async function assignBuyerUserToAccount(
 			buyerUser.emailAddress
 		);
 	}
+}
+
+export async function assignUserToNewRole(
+	apiHelpers: DataApiHelpers,
+	userId: string
+) {
+	const role = await apiHelpers.headlessAdminUser.postRole({
+		name: 'Test Role ' + getRandomString(),
+	});
+
+	await apiHelpers.headlessAdminUser.postRoleByExternalReferenceCodeUserAccountAssociation(
+		role.externalReferenceCode,
+		userId
+	);
+
+	return role;
 }
 
 export async function createBuyerUserForAccount(
