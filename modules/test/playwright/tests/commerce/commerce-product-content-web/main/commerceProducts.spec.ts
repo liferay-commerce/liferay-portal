@@ -1492,3 +1492,207 @@ test(
 		}
 	}
 );
+
+test(
+	'A products limit rule counts the decimal unit of measure quantity of a bundled product',
+	{tag: ['@COMMERCE-12797', '@LPD-115317']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsProductOptionsPage,
+		commerceAdminProductPage,
+		commerceInstanceSettingsPage,
+		commerceMiniCartPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
+		test.setTimeout(180000);
+
+		await commerceInstanceSettingsPage.toggleShowUnselectableOptions(true);
+
+		try {
+			await miniCartCheckoutSetUp(
+				apiHelpers,
+				commerceAdminChannelsPage,
+				page,
+				site
+			);
+
+			const bundleProductName = getRandomString();
+
+			let linkedProduct;
+
+			await test.step('Create a bundle product whose default option value adds 1.2 units of measure of a linked product', async () => {
+				const catalog =
+					await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+						name: getRandomString(),
+					});
+
+				linkedProduct =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						productConfiguration: {
+							allowBackOrder: true,
+							multipleOrderQuantity: 1.2,
+						},
+					});
+
+				const linkedSku = linkedProduct.skus[0];
+
+				const unitOfMeasure =
+					await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+						linkedSku.id,
+						{
+							basePrice: 10,
+							incrementalOrderQuantity: 1.2,
+							name: {en_US: 'UOM1'},
+							precision: 1,
+							primary: true,
+							priority: 1,
+							rate: 1,
+						}
+					);
+
+				const option =
+					await apiHelpers.headlessCommerceAdminCatalog.postOption(
+						'select',
+						`option-${getRandomInt()}`,
+						'Option1',
+						1
+					);
+
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: bundleProductName},
+					productConfiguration: {allowBackOrder: true},
+					productOptions: [
+						{
+							fieldType: 'select',
+							key: option.key,
+							name: {en_US: 'Option1'},
+							optionId: option.id,
+							priceType: 'static',
+							priority: 1,
+							productOptionValues: [
+								{
+									deltaPrice: 0.0,
+									key: 'value1',
+									name: {en_US: 'Value1'},
+									preselected: true,
+									priority: 1,
+								},
+							],
+							required: true,
+							skuContributor: false,
+						},
+					],
+					skus: [
+						{
+							cost: 0,
+							price: 50,
+							published: true,
+							purchasable: true,
+							sku: `SKU-${bundleProductName}`,
+						},
+					],
+				});
+
+				await commerceAdminProductPage.gotoProduct(bundleProductName);
+
+				await commerceAdminProductDetailsPage.goToProductOptions();
+
+				await commerceAdminProductDetailsProductOptionsPage.openOption(
+					'Option1'
+				);
+				await commerceAdminProductDetailsProductOptionsPage.editOptionValue(
+					'Value1',
+					{
+						quantity: '1.2',
+						sku: linkedSku.sku,
+						unitOfMeasureKey: unitOfMeasure.key,
+					}
+				);
+				await commerceAdminProductDetailsProductOptionsPage.closeOption();
+			});
+
+			await test.step('Create an active order rule limiting the linked product to 1.1', async () => {
+				await apiHelpers.headlessCommerceAdminOrder.postOrderRule({
+					type: 'products-limit',
+					typeSettings:
+						'products-limit-field-product-external-reference-codes=' +
+						`${linkedProduct.externalReferenceCode}\n` +
+						'products-limit-field-product-quantity=1.1\n',
+				});
+			});
+
+			const warningMessage =
+				'No more than 1.1 products in this product range can be purchased together.';
+
+			await test.step('Verify the buyer sees the default option value flagged', async () => {
+				const {buyerUser} = await createAccountWithBuyerUser(
+					apiHelpers,
+					site.id
+				);
+
+				await performLogout(page);
+
+				await performLoginViaApi({
+					page,
+					screenName: buyerUser.alternateName,
+				});
+
+				await page.goto(`/web/${site.name}/p/${bundleProductName}`);
+
+				await expect(
+					productDetailsPage.optionSelector('Option1')
+				).toHaveText('Value1');
+
+				await productDetailsPage.optionSelector('Option1').click();
+
+				await expect(
+					page.getByRole('option', {
+						name: `Value1 ${warningMessage}`,
+					})
+				).toBeVisible();
+			});
+
+			await test.step('Add the bundle to the cart and submit the order', async () => {
+				await page.goto(`/web/${site.name}/p/${bundleProductName}`);
+
+				await expect(
+					productDetailsPage.optionSelector('Option1')
+				).toHaveText('Value1');
+
+				await productDetailsPage.addToCartButton.click();
+
+				await commerceMiniCartPage.miniCartButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartItem(bundleProductName)
+				).toBeVisible();
+
+				await commerceMiniCartPage.submitButton.click();
+			});
+
+			await test.step('Verify the order is rejected because 1.2 units of measure exceed the limit', async () => {
+				await expect(
+					page.getByRole('dialog').getByText(warningMessage)
+				).toBeVisible();
+				await expect(
+					page.locator('.commerce-multi-step-nav')
+				).toBeHidden();
+			});
+		}
+		finally {
+			await performLogout(page);
+
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await commerceInstanceSettingsPage.toggleShowUnselectableOptions(
+				false
+			);
+		}
+	}
+);
