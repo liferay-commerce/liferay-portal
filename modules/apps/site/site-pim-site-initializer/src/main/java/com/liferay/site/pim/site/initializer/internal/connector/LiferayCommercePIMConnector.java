@@ -561,13 +561,11 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			Map<String, Serializable> values)
 		throws PortalException {
 
-		String value = PIMConnectorFieldMappingRulesUtil.applyRules(
-			pimFieldMappingRuleObjectEntry,
-			PIMConnectorFieldMappingsUtil.getValue(
-				objectDefinition, pimFieldMappingObjectEntry,
-				pimProductObjectEntry, values));
+		String value = _getSkuOptionValue(
+			objectDefinition, pimFieldMappingObjectEntry,
+			pimFieldMappingRuleObjectEntry, pimProductObjectEntry, values);
 
-		if (Validator.isNull(value)) {
+		if (value == null) {
 			return null;
 		}
 
@@ -587,6 +585,29 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				return _friendlyURLNormalizer.normalize(value);
 			}
 		);
+	}
+
+	private String _getSkuOptionValue(
+			ObjectDefinition objectDefinition,
+			ObjectEntry pimFieldMappingObjectEntry,
+			ObjectEntry pimFieldMappingRuleObjectEntry,
+			ObjectEntry pimProductObjectEntry, Map<String, Serializable> values)
+		throws PortalException {
+
+		for (String curValue :
+				PIMConnectorFieldMappingsUtil.getValues(
+					objectDefinition, pimFieldMappingObjectEntry,
+					pimProductObjectEntry, values)) {
+
+			String value = PIMConnectorFieldMappingRulesUtil.applyRules(
+				pimFieldMappingRuleObjectEntry, curValue);
+
+			if (Validator.isNotNull(value)) {
+				return value;
+			}
+		}
+
+		return null;
 	}
 
 	private JSONArray _toJSONArray(
