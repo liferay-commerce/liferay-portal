@@ -6,20 +6,27 @@
 package com.liferay.site.pim.site.initializer.internal.util;
 
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectField;
+import com.liferay.object.service.ObjectEntryLocalServiceUtil;
+import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.Serializable;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -31,6 +38,73 @@ public class PIMConnectorFieldMappingsUtilTest {
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Test
+	public void testGetObjectEntryValues() throws Exception {
+		long objectDefinitionId = RandomTestUtil.randomLong();
+		long objectEntryId = RandomTestUtil.randomLong();
+		String title = RandomTestUtil.randomString();
+
+		List<ObjectField> objectFields = Arrays.asList(
+			_mockObjectField("expirationDate", "expirationDate", true),
+			_mockObjectField("objectEntryId", "id", true),
+			_mockObjectField("status", "status", true),
+			_mockObjectField("userName", "title", false));
+
+		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+
+		Mockito.when(
+			objectEntry.getModelAttributes()
+		).thenReturn(
+			HashMapBuilder.<String, Object>put(
+				"objectEntryId", objectEntryId
+			).put(
+				"status", WorkflowConstants.STATUS_APPROVED
+			).put(
+				"userName", RandomTestUtil.randomString()
+			).build()
+		);
+
+		Mockito.when(
+			objectEntry.getObjectDefinitionId()
+		).thenReturn(
+			objectDefinitionId
+		);
+
+		try (MockedStatic<ObjectEntryLocalServiceUtil>
+				objectEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					ObjectEntryLocalServiceUtil.class);
+			MockedStatic<ObjectFieldLocalServiceUtil>
+				objectFieldLocalServiceUtilMockedStatic = Mockito.mockStatic(
+					ObjectFieldLocalServiceUtil.class)) {
+
+			objectEntryLocalServiceUtilMockedStatic.when(
+				() -> ObjectEntryLocalServiceUtil.getValues(objectEntry)
+			).thenReturn(
+				HashMapBuilder.<String, Serializable>put(
+					"title", title
+				).build()
+			);
+
+			objectFieldLocalServiceUtilMockedStatic.when(
+				() -> ObjectFieldLocalServiceUtil.getObjectFields(
+					objectDefinitionId)
+			).thenReturn(
+				objectFields
+			);
+
+			Assert.assertEquals(
+				HashMapBuilder.<String, Serializable>put(
+					"id", objectEntryId
+				).put(
+					"status", WorkflowConstants.LABEL_APPROVED
+				).put(
+					"title", title
+				).build(),
+				PIMConnectorFieldMappingsUtil.getObjectEntryValues(
+					objectEntry));
+		}
+	}
 
 	@Test
 	public void testGetSourceFieldPath() {
@@ -91,6 +165,32 @@ public class PIMConnectorFieldMappingsUtilTest {
 		);
 
 		return objectEntry;
+	}
+
+	private ObjectField _mockObjectField(
+		String dbColumnName, String name, boolean system) {
+
+		ObjectField objectField = Mockito.mock(ObjectField.class);
+
+		Mockito.when(
+			objectField.getDBColumnName()
+		).thenReturn(
+			dbColumnName
+		);
+
+		Mockito.when(
+			objectField.getName()
+		).thenReturn(
+			name
+		);
+
+		Mockito.when(
+			objectField.isSystem()
+		).thenReturn(
+			system
+		);
+
+		return objectField;
 	}
 
 }
