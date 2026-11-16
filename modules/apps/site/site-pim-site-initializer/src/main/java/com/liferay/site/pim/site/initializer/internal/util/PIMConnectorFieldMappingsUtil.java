@@ -301,6 +301,35 @@ public class PIMConnectorFieldMappingsUtil {
 			MapUtil.getString(objectEntry.getValues(), "sourceFieldName"));
 	}
 
+	public static List<ObjectEntry> getLeafObjectEntries(
+			ObjectDefinition objectDefinition,
+			ObjectEntry pimFieldMappingObjectEntry,
+			ObjectEntry pimProductObjectEntry)
+		throws PortalException {
+
+		if (pimProductObjectEntry == null) {
+			return Collections.emptyList();
+		}
+
+		if (!isRepeatableGroupPath(pimFieldMappingObjectEntry)) {
+			return Collections.singletonList(pimProductObjectEntry);
+		}
+
+		List<ObjectRelationship> objectRelationships = _getObjectRelationships(
+			objectDefinition,
+			getSourceFieldPath(
+				MapUtil.getString(
+					pimFieldMappingObjectEntry.getValues(),
+					"sourceFieldName")));
+
+		if (objectRelationships == null) {
+			return Collections.emptyList();
+		}
+
+		return _getLeafObjectEntries(
+			objectRelationships, pimProductObjectEntry);
+	}
+
 	public static List<ObjectEntry> getObjectEntries(ObjectEntry objectEntry)
 		throws PortalException {
 
@@ -464,26 +493,8 @@ public class PIMConnectorFieldMappingsUtil {
 			return Collections.emptyList();
 		}
 
-		List<ObjectEntry> objectEntries = Collections.singletonList(
-			pimProductObjectEntry);
-
-		for (ObjectRelationship objectRelationship : objectRelationships) {
-			List<ObjectEntry> repeatableGroupObjectEntries = new ArrayList<>();
-
-			for (ObjectEntry objectEntry : objectEntries) {
-				repeatableGroupObjectEntries.addAll(
-					ObjectEntryLocalServiceUtil.getRelatedObjectEntries(
-						objectEntry.getGroupId(),
-						objectRelationship.getObjectRelationshipId(), null,
-						false, objectEntry.getObjectEntryId(), true, null,
-						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
-			}
-
-			objectEntries = repeatableGroupObjectEntries;
-		}
-
 		return TransformUtil.transform(
-			objectEntries,
+			_getLeafObjectEntries(objectRelationships, pimProductObjectEntry),
 			objectEntry -> _getValue(
 				leafObjectDefinition, objectFieldName,
 				getObjectEntryValues(objectEntry)));
@@ -601,6 +612,37 @@ public class PIMConnectorFieldMappingsUtil {
 				ObjectFolderConstants.
 					EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
 				companyId);
+	}
+
+	private static List<ObjectEntry> _getLeafObjectEntries(
+			List<ObjectRelationship> objectRelationships,
+			ObjectEntry pimProductObjectEntry)
+		throws PortalException {
+
+		List<ObjectEntry> objectEntries = Collections.singletonList(
+			pimProductObjectEntry);
+
+		for (ObjectRelationship objectRelationship : objectRelationships) {
+			List<ObjectEntry> repeatableGroupObjectEntries = new ArrayList<>();
+
+			for (ObjectEntry objectEntry : objectEntries) {
+				List<ObjectEntry> childObjectEntries = new ArrayList<>(
+					ObjectEntryLocalServiceUtil.getRelatedObjectEntries(
+						objectEntry.getGroupId(),
+						objectRelationship.getObjectRelationshipId(), null,
+						false, objectEntry.getObjectEntryId(), true, null,
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+
+				childObjectEntries.sort(
+					Comparator.comparingLong(ObjectEntry::getObjectEntryId));
+
+				repeatableGroupObjectEntries.addAll(childObjectEntries);
+			}
+
+			objectEntries = repeatableGroupObjectEntries;
+		}
+
+		return objectEntries;
 	}
 
 	private static List<ObjectRelationship> _getObjectRelationships(

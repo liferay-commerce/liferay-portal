@@ -184,6 +184,20 @@ public class LiferayCommercePIMClient {
 	private String _invoke(Http.Options options, Object requestBody)
 		throws Exception {
 
+		if (requestBody instanceof JSONArray) {
+			JSONArray jsonArray = _jsonFactory.createJSONArray(
+				requestBody.toString());
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+				_stripAttachments(jsonObject.getJSONArray("attachments"));
+				_stripAttachments(jsonObject.getJSONArray("images"));
+			}
+
+			requestBody = jsonArray;
+		}
+
 		JSONObject jsonObject = JSONUtil.put(
 			"request",
 			JSONUtil.put(
@@ -229,6 +243,27 @@ public class LiferayCommercePIMClient {
 		}
 
 		return false;
+	}
+
+	private void _stripAttachments(JSONArray jsonArray) {
+		if (jsonArray == null) {
+			return;
+		}
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+			String attachment = jsonObject.getString("attachment");
+
+			if (attachment.isEmpty()) {
+				continue;
+			}
+
+			jsonObject.put(
+				"attachment",
+				StringBundler.concat(
+					"<Base64, ", attachment.length(), " characters>"));
+		}
 	}
 
 	private Object _toLogValue(String responseString) throws Exception {
