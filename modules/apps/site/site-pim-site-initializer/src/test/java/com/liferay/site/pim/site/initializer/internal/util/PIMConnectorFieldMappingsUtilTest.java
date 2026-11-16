@@ -43,13 +43,6 @@ public class PIMConnectorFieldMappingsUtilTest {
 	public void testGetObjectEntryValues() throws Exception {
 		long objectDefinitionId = RandomTestUtil.randomLong();
 		long objectEntryId = RandomTestUtil.randomLong();
-		String title = RandomTestUtil.randomString();
-
-		List<ObjectField> objectFields = Arrays.asList(
-			_mockObjectField("expirationDate", "expirationDate", true),
-			_mockObjectField("objectEntryId", "id", true),
-			_mockObjectField("status", "status", true),
-			_mockObjectField("userName", "title", false));
 
 		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
 
@@ -78,6 +71,8 @@ public class PIMConnectorFieldMappingsUtilTest {
 				objectFieldLocalServiceUtilMockedStatic = Mockito.mockStatic(
 					ObjectFieldLocalServiceUtil.class)) {
 
+			String title = RandomTestUtil.randomString();
+
 			objectEntryLocalServiceUtilMockedStatic.when(
 				() -> ObjectEntryLocalServiceUtil.getValues(objectEntry)
 			).thenReturn(
@@ -85,6 +80,12 @@ public class PIMConnectorFieldMappingsUtilTest {
 					"title", title
 				).build()
 			);
+
+			List<ObjectField> objectFields = Arrays.asList(
+				_mockObjectField("expirationDate", "expirationDate", true),
+				_mockObjectField("objectEntryId", "id", true),
+				_mockObjectField("status", "status", true),
+				_mockObjectField("userName", "title", false));
 
 			objectFieldLocalServiceUtilMockedStatic.when(
 				() -> ObjectFieldLocalServiceUtil.getObjectFields(
