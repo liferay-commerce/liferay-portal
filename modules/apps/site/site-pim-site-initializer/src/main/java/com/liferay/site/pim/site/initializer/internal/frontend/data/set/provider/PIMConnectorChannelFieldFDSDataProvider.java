@@ -355,7 +355,7 @@ public class PIMConnectorChannelFieldFDSDataProvider
 			}
 
 			String label = PIMConnectorFieldMappingsUtil.getLabel(
-				objectDefinition, locale, sourceFieldName);
+				locale, objectDefinition, sourceFieldName);
 
 			if (Validator.isNull(label)) {
 				continue;

@@ -248,7 +248,7 @@ public class PIMConnectorFieldMappingsUtil {
 	}
 
 	public static String getLabel(
-		ObjectDefinition objectDefinition, Locale locale,
+		Locale locale, ObjectDefinition objectDefinition,
 		String sourceFieldName) {
 
 		List<String> sourceFieldPath = getSourceFieldPath(sourceFieldName);
@@ -295,7 +295,7 @@ public class PIMConnectorFieldMappingsUtil {
 		ObjectDefinition objectDefinition, ObjectEntry objectEntry) {
 
 		return getLabel(
-			objectDefinition, LocaleUtil.US,
+			LocaleUtil.US, objectDefinition,
 			MapUtil.getString(objectEntry.getValues(), "sourceFieldName"));
 	}
 
@@ -327,11 +327,14 @@ public class PIMConnectorFieldMappingsUtil {
 		getRepeatableGroupObjectRelationships(
 			ObjectDefinition objectDefinition) {
 
+		ObjectFolder objectFolder = _fetchRepeatableGroupsObjectFolder(
+			objectDefinition.getCompanyId());
+
 		return ListUtil.filter(
 			ObjectRelationshipLocalServiceUtil.getObjectRelationships(
 				objectDefinition.getObjectDefinitionId(), true),
 			objectRelationship -> _isRepeatableGroupObjectRelationship(
-				objectDefinition.getCompanyId(), objectRelationship));
+				objectFolder, objectRelationship));
 	}
 
 	public static List<String> getSourceFieldPath(String sourceFieldName) {
@@ -555,6 +558,16 @@ public class PIMConnectorFieldMappingsUtil {
 			objectField.getListTypeDefinitionId(), value);
 	}
 
+	private static ObjectFolder _fetchRepeatableGroupsObjectFolder(
+		long companyId) {
+
+		return ObjectFolderLocalServiceUtil.
+			fetchObjectFolderByExternalReferenceCode(
+				ObjectFolderConstants.
+					EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
+				companyId);
+	}
+
 	private static List<ObjectRelationship> _getObjectRelationships(
 		ObjectDefinition objectDefinition, List<String> sourceFieldPath) {
 
@@ -563,6 +576,9 @@ public class PIMConnectorFieldMappingsUtil {
 		}
 
 		List<ObjectRelationship> objectRelationships = new ArrayList<>();
+
+		ObjectFolder objectFolder = _fetchRepeatableGroupsObjectFolder(
+			objectDefinition.getCompanyId());
 
 		long objectDefinitionId = objectDefinition.getObjectDefinitionId();
 
@@ -576,7 +592,7 @@ public class PIMConnectorFieldMappingsUtil {
 
 			if ((objectRelationship == null) ||
 				!_isRepeatableGroupObjectRelationship(
-					objectDefinition.getCompanyId(), objectRelationship)) {
+					objectFolder, objectRelationship)) {
 
 				return null;
 			}
@@ -618,7 +634,7 @@ public class PIMConnectorFieldMappingsUtil {
 	}
 
 	private static boolean _isRepeatableGroupObjectRelationship(
-		long companyId, ObjectRelationship objectRelationship) {
+		ObjectFolder objectFolder, ObjectRelationship objectRelationship) {
 
 		if (!objectRelationship.isEdge() ||
 			!Objects.equals(
@@ -627,13 +643,6 @@ public class PIMConnectorFieldMappingsUtil {
 
 			return false;
 		}
-
-		ObjectFolder objectFolder =
-			ObjectFolderLocalServiceUtil.
-				fetchObjectFolderByExternalReferenceCode(
-					ObjectFolderConstants.
-						EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
-					companyId);
 
 		if (objectFolder == null) {
 			return false;
