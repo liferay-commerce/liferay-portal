@@ -233,7 +233,8 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				objectEntry.getObjectDefinitionId());
 
 		List<Map<String, Serializable>> valuesList = TransformUtil.transform(
-			pimProductObjectEntries, objectEntryLocalService::getValues);
+			pimProductObjectEntries,
+			PIMConnectorFieldMappingsUtil::getObjectEntryValues);
 
 		Map<String, Serializable> values = valuesList.get(0);
 
