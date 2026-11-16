@@ -1896,6 +1896,12 @@ public class LiferayCommercePIMConnectorTest {
 
 		JSONObject productOptionJSONObject = jsonArray.getJSONObject(0);
 
+		Assert.assertEquals(
+			"r_images-title", productOptionJSONObject.getString("key"));
+		Assert.assertEquals(
+			"r_images-title",
+			productOptionJSONObject.getString("optionExternalReferenceCode"));
+
 		jsonArray = productOptionJSONObject.getJSONArray("productOptionValues");
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
@@ -1919,7 +1925,7 @@ public class LiferayCommercePIMConnectorTest {
 		JSONObject skuOptionJSONObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			"r_images/title", skuOptionJSONObject.getString("key"));
+			"r_images-title", skuOptionJSONObject.getString("key"));
 		Assert.assertEquals("front", skuOptionJSONObject.getString("value"));
 
 		Assert.assertEquals(
