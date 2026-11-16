@@ -11,6 +11,7 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.function.UnsafeTriFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.pim.site.initializer.connector.PIMConnector;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
@@ -630,8 +632,10 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				}
 
 				String sourceFieldName = _friendlyURLNormalizer.normalize(
-					MapUtil.getString(
-						objectEntry.getValues(), "sourceFieldName"));
+					StringUtil.replace(
+						MapUtil.getString(
+							objectEntry.getValues(), "sourceFieldName"),
+						CharPool.SLASH, CharPool.DASH));
 
 				if (!sourceFieldNames.add(sourceFieldName)) {
 					return null;
