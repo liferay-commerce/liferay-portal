@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.site.pim.site.initializer.connector.PIMConnector;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
@@ -45,6 +46,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -323,6 +325,39 @@ public class PIMConnectorFieldMappingsUtil {
 					curObjectEntry.getValues(), "priority")));
 	}
 
+	public static Map<String, Serializable> getObjectEntryValues(
+			ObjectEntry objectEntry)
+		throws PortalException {
+
+		Map<String, Serializable> values = new HashMap<>(
+			ObjectEntryLocalServiceUtil.getValues(objectEntry));
+
+		Map<String, Object> modelAttributes = objectEntry.getModelAttributes();
+
+		for (ObjectField objectField :
+				ObjectFieldLocalServiceUtil.getObjectFields(
+					objectEntry.getObjectDefinitionId())) {
+
+			if (!objectField.isSystem()) {
+				continue;
+			}
+
+			Object value = modelAttributes.get(objectField.getDBColumnName());
+
+			if (value == null) {
+				continue;
+			}
+
+			if (Objects.equals(objectField.getName(), "status")) {
+				value = WorkflowConstants.getStatusLabel((Integer)value);
+			}
+
+			values.put(objectField.getName(), (Serializable)value);
+		}
+
+		return values;
+	}
+
 	public static List<ObjectRelationship>
 		getRepeatableGroupObjectRelationships(
 			ObjectDefinition objectDefinition) {
@@ -451,7 +486,7 @@ public class PIMConnectorFieldMappingsUtil {
 			objectEntries,
 			objectEntry -> _getValue(
 				leafObjectDefinition, objectFieldName,
-				ObjectEntryLocalServiceUtil.getValues(objectEntry)));
+				getObjectEntryValues(objectEntry)));
 	}
 
 	public static boolean isCategories(ObjectEntry objectEntry) {
