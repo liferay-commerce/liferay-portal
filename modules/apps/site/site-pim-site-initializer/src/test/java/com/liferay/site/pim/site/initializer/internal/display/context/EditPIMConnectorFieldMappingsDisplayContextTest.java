@@ -880,12 +880,12 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 			"Images", _OBJECT_DEFINITION_ID_IMAGES,
 			RandomTestUtil.randomString(), "title", _OBJECT_FOLDER_ID);
 		_mockRepeatableGroupObjectDefinition(
+			"Sizes", _OBJECT_DEFINITION_ID_SIZES, RandomTestUtil.randomString(),
+			"width", _OBJECT_FOLDER_ID);
+		_mockRepeatableGroupObjectDefinition(
 			RandomTestUtil.randomString(), _OBJECT_DEFINITION_ID_REFERENCED,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomLong());
-		_mockRepeatableGroupObjectDefinition(
-			"Sizes", _OBJECT_DEFINITION_ID_SIZES, RandomTestUtil.randomString(),
-			"width", _OBJECT_FOLDER_ID);
 
 		List<ObjectRelationship> objectRelationships = Arrays.asList(
 			_mockRepeatableGroupObjectRelationship(
