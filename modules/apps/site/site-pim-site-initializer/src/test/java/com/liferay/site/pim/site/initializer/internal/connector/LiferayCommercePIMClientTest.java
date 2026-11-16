@@ -180,10 +180,19 @@ public class LiferayCommercePIMClientTest {
 		LiferayCommercePIMClient liferayCommercePIMClient =
 			_createLiferayCommercePIMClient();
 
+		String attachment = RandomTestUtil.randomString();
+		String image = RandomTestUtil.randomString();
+
 		JSONObject jsonObject = liferayCommercePIMClient.postImportTask(
 			JSONUtil.putAll(
 				JSONUtil.put(
-					"externalReferenceCode", RandomTestUtil.randomString())));
+					"attachments",
+					JSONUtil.putAll(JSONUtil.put("attachment", attachment))
+				).put(
+					"externalReferenceCode", RandomTestUtil.randomString()
+				).put(
+					"images", JSONUtil.putAll(JSONUtil.put("attachment", image))
+				)));
 
 		Assert.assertEquals("INITIAL", jsonObject.getString("executeStatus"));
 
@@ -202,10 +211,25 @@ public class LiferayCommercePIMClientTest {
 
 		Assert.assertEquals("application/json", body.getContentType());
 
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
-			body.getContent());
+		String content = body.getContent();
+
+		Assert.assertTrue(content, content.contains(attachment));
+		Assert.assertTrue(content, content.contains(image));
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(content);
 
 		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		jsonArray = liferayCommercePIMClient.getLogJSONArray();
+
+		String logString = jsonArray.toString();
+
+		Assert.assertFalse(logString, logString.contains(attachment));
+		Assert.assertFalse(logString, logString.contains(image));
+		Assert.assertTrue(
+			logString,
+			logString.contains(
+				"<Base64, " + attachment.length() + " characters>"));
 	}
 
 	@Test
