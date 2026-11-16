@@ -923,8 +923,6 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 			objectDefinition
 		);
 
-		ObjectField objectField = _mockObjectField("Title", "title");
-
 		ObjectField parentObjectField = _mockObjectField(
 			RandomTestUtil.randomString(), "r_images_c_productId");
 
@@ -933,6 +931,8 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 		).thenReturn(
 			_PARENT_OBJECT_FIELD_ID
 		);
+
+		ObjectField objectField = _mockObjectField("Title", "title");
 
 		_objectFieldLocalServiceUtilMockedStatic.when(
 			() -> ObjectFieldLocalServiceUtil.fetchObjectField(
