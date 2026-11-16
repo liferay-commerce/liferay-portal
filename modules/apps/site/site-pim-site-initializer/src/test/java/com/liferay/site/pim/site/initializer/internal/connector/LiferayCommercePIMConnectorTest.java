@@ -1453,6 +1453,9 @@ public class LiferayCommercePIMConnectorTest {
 					"name", StringPool.BLANK, "r_images/title", "dynamicValue",
 					StringPool.BLANK),
 				_mockPIMFieldMappingObjectEntry(
+					"productOptions", StringPool.BLANK, "r_images/title",
+					"dynamicValue", StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
 					"productType", StringPool.BLANK, StringPool.BLANK,
 					PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE, "simple"),
 				_mockPIMFieldMappingObjectEntry(
@@ -1475,6 +1478,38 @@ public class LiferayCommercePIMConnectorTest {
 		JSONObject nameJSONObject = jsonObject.getJSONObject("name");
 
 		Assert.assertEquals("Front Back", nameJSONObject.getString("en_US"));
+
+		JSONArray jsonArray = jsonObject.getJSONArray("productOptions");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		JSONObject productOptionJSONObject = jsonArray.getJSONObject(0);
+
+		jsonArray = productOptionJSONObject.getJSONArray("productOptionValues");
+
+		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
+
+		JSONObject productOptionValueJSONObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			"front", productOptionValueJSONObject.getString("key"));
+
+		productOptionValueJSONObject = jsonArray.getJSONObject(1);
+
+		Assert.assertEquals(
+			"back", productOptionValueJSONObject.getString("key"));
+
+		JSONObject skuJSONObject = _getSkuJSONObject(0, jsonObject);
+
+		jsonArray = skuJSONObject.getJSONArray("skuOptions");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		JSONObject skuOptionJSONObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			"r_images/title", skuOptionJSONObject.getString("key"));
+		Assert.assertEquals("front", skuOptionJSONObject.getString("value"));
 
 		Assert.assertEquals(
 			String.valueOf(JSONUtil.putAll("Front", StringPool.BLANK, "Back")),
