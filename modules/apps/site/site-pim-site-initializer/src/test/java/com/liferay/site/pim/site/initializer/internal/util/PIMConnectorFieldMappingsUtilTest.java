@@ -111,9 +111,6 @@ public class PIMConnectorFieldMappingsUtilTest {
 	public void testGetSourceFieldPath() {
 		Assert.assertEquals(
 			Collections.emptyList(),
-			PIMConnectorFieldMappingsUtil.getSourceFieldPath(null));
-		Assert.assertEquals(
-			Collections.emptyList(),
 			PIMConnectorFieldMappingsUtil.getSourceFieldPath(StringPool.BLANK));
 		Assert.assertEquals(
 			Collections.emptyList(),
@@ -135,6 +132,9 @@ public class PIMConnectorFieldMappingsUtilTest {
 		Assert.assertEquals(
 			Collections.singletonList("title"),
 			PIMConnectorFieldMappingsUtil.getSourceFieldPath("title"));
+		Assert.assertEquals(
+			Collections.emptyList(),
+			PIMConnectorFieldMappingsUtil.getSourceFieldPath(null));
 	}
 
 	@Test
