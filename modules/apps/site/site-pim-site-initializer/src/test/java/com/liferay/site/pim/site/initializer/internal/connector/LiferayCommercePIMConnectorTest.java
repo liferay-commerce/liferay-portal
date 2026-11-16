@@ -17,7 +17,6 @@ import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
-import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
 import com.liferay.object.service.ObjectFolderLocalServiceUtil;
@@ -113,9 +112,6 @@ public class LiferayCommercePIMConnectorTest {
 		ReflectionTestUtil.setFieldValue(
 			_liferayCommercePIMConnector, "objectDefinitionLocalService",
 			_objectDefinitionLocalService);
-		ReflectionTestUtil.setFieldValue(
-			_liferayCommercePIMConnector, "objectEntryLocalService",
-			_objectEntryLocalService);
 
 		Mockito.when(
 			_objectDefinition.getClassName()
@@ -494,8 +490,8 @@ public class LiferayCommercePIMConnectorTest {
 			_OBJECT_DEFINITION_ID
 		);
 
-		Mockito.when(
-			_objectEntryLocalService.getValues(objectEntry)
+		_objectEntryLocalServiceUtilMockedStatic.when(
+			() -> ObjectEntryLocalServiceUtil.getValues(objectEntry)
 		).thenReturn(
 			HashMapBuilder.<String, Serializable>put(
 				"sku", sku
@@ -1638,8 +1634,6 @@ public class LiferayCommercePIMConnectorTest {
 	private final MockedStatic<ObjectDefinitionLocalServiceUtil>
 		_objectDefinitionLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ObjectDefinitionLocalServiceUtil.class);
-	private final ObjectEntryLocalService _objectEntryLocalService =
-		Mockito.mock(ObjectEntryLocalService.class);
 	private final MockedStatic<ObjectEntryLocalServiceUtil>
 		_objectEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ObjectEntryLocalServiceUtil.class);
