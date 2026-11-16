@@ -1512,7 +1512,9 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals("front", skuOptionJSONObject.getString("value"));
 
 		Assert.assertEquals(
-			String.valueOf(JSONUtil.putAll("Front", StringPool.BLANK, "Back")),
+			JSONUtil.putAll(
+				"Front", StringPool.BLANK, "Back"
+			).toString(),
 			String.valueOf(jsonObject.getJSONArray("tags")));
 	}
 
