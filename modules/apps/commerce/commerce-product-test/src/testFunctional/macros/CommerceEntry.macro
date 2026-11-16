@@ -343,42 +343,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addNewNotificationTemplate(entryName = null, fromName = null, fromAddress = null, notificationType = null, entryTo = null) {
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Type(
-			locator1 = "CommerceEntry#NAME_FIELD",
-			value1 = ${entryName});
-
-		Type(
-			locator1 = "TextArea#DESCRIPTION",
-			value1 = "${entryName} Description");
-
-		Select(
-			locator1 = "Select#TYPE",
-			value1 = ${notificationType});
-
-		Check.checkToggleSwitch(
-			key_toggleSwitchLabel = "Enabled",
-			locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
-
-		if (isSet(entryTo)) {
-			Type(
-				key_fieldLabel = "To",
-				locator1 = "TextInput#GENERIC_TEXT_INPUT",
-				value1 = ${entryTo});
-		}
-
-		Type(
-			locator1 = "CommerceEntry#NOTIFICATION_TEMPLATE_FROM_ADDRESS_FIELD",
-			value1 = ${fromAddress});
-
-		Type(
-			locator1 = "CommerceEntry#NOTIFICATION_TEMPLATE_FROM_NAME_FIELD",
-			value1 = ${fromName});
-	}
-
-	@summary = "Default summary"
 	macro addNewPriceListsEntry(priceListCatalog = null, priceListCurrency = null, priceListName = null) {
 		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
 
@@ -634,30 +598,6 @@ definition {
 		Click(locator1 = "Icon#CLOSE");
 
 		SelectFrameParent();
-	}
-
-	@summary = "Default summary"
-	macro AddShippingOptionVariableRate(key_name = null, key_description = null, key_priority = null) {
-		Click(locator1 = "Button#PLUS");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Type(
-			key_fieldLabel = "Name",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${key_name});
-
-		Type(
-			key_fieldLabel = "Description",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${key_description});
-
-		Type(
-			key_fieldLabel = "Priority",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${key_priority});
-
-		Button.clickSave();
 	}
 
 	@summary = "Default summary"

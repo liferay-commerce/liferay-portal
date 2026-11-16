@@ -68,26 +68,27 @@ public class
 		String secretKey = RandomTestUtil.randomString();
 		User user = TestPropsValues.getUser();
 
-		_processAction(commerceChannel, merchantId, secretKey, user);
+		_processAction(commerceChannel, "test", merchantId, secretKey, user);
 
-		_assertSettings(commerceChannel, merchantId, secretKey);
+		_assertSettings(commerceChannel, "test", merchantId, secretKey);
 
 		merchantId = RandomTestUtil.randomString();
 
 		_processAction(
-			commerceChannel, merchantId, Portal.TEMP_OBFUSCATION_VALUE, user);
+			commerceChannel, "test", merchantId, Portal.TEMP_OBFUSCATION_VALUE,
+			user);
 
-		_assertSettings(commerceChannel, merchantId, secretKey);
+		_assertSettings(commerceChannel, "test", merchantId, secretKey);
 
 		secretKey = RandomTestUtil.randomString();
 
-		_processAction(commerceChannel, merchantId, secretKey, user);
+		_processAction(commerceChannel, "prod", merchantId, secretKey, user);
 
-		_assertSettings(commerceChannel, merchantId, secretKey);
+		_assertSettings(commerceChannel, "prod", merchantId, secretKey);
 
 		try {
 			_processAction(
-				commerceChannel, RandomTestUtil.randomString(),
+				commerceChannel, "test", RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), UserTestUtil.addUser());
 
 			Assert.fail();
@@ -97,12 +98,12 @@ public class
 				portletException.getCause() instanceof PrincipalException);
 		}
 
-		_assertSettings(commerceChannel, merchantId, secretKey);
+		_assertSettings(commerceChannel, "prod", merchantId, secretKey);
 	}
 
 	private void _assertSettings(
-			CommerceChannel commerceChannel, String merchantId,
-			String secretKey)
+			CommerceChannel commerceChannel, String environment,
+			String merchantId, String secretKey)
 		throws Exception {
 
 		Settings settings = FallbackKeysSettingsUtil.getSettings(
@@ -110,15 +111,16 @@ public class
 				commerceChannel.getGroupId(),
 				"com.liferay.commerce.payment.method.mercanet"));
 
-		Assert.assertEquals("test", settings.getValue("environment", null));
+		Assert.assertEquals(
+			environment, settings.getValue("environment", null));
 		Assert.assertEquals("1", settings.getValue("keyVersion", null));
 		Assert.assertEquals(merchantId, settings.getValue("merchantId", null));
 		Assert.assertEquals(secretKey, settings.getValue("secretKey", null));
 	}
 
 	private void _processAction(
-			CommerceChannel commerceChannel, String merchantId,
-			String secretKey, User user)
+			CommerceChannel commerceChannel, String environment,
+			String merchantId, String secretKey, User user)
 		throws Exception {
 
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
@@ -130,7 +132,7 @@ public class
 			"commerceChannelId",
 			String.valueOf(commerceChannel.getCommerceChannelId()));
 		mockLiferayPortletActionRequest.setParameter(
-			"settings--environment--", "test");
+			"settings--environment--", environment);
 		mockLiferayPortletActionRequest.setParameter(
 			"settings--keyVersion--", "1");
 		mockLiferayPortletActionRequest.setParameter(

@@ -19,4 +19,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
 	compileOnly project(":dxp:apps:commerce-avalara:commerce-avalara-connector-api")
+	testImplementation group: "net.avalara.avatax", name: "avatax-rest-v2-api-java_2.11", version: "20.6.0"
 }
