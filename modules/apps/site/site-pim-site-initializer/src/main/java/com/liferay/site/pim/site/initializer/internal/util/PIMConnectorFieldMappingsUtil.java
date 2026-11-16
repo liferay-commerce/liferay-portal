@@ -639,12 +639,9 @@ public class PIMConnectorFieldMappingsUtil {
 		if (!objectRelationship.isEdge() ||
 			!Objects.equals(
 				objectRelationship.getType(),
-				ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY) ||
+			(objectFolder == null)) {
 
-			return false;
-		}
-
-		if (objectFolder == null) {
 			return false;
 		}
 
