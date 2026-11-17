@@ -18,6 +18,7 @@ import com.liferay.bulk.rest.dto.v1_0.DeleteObjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.DueDateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.EditObjectCategoriesBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.EditObjectTagsBulkSelectionAction;
+import com.liferay.bulk.rest.dto.v1_0.GenerateVariantsBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.MoveObjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.PermissionObjectBulkSelectionAction;
 import com.liferay.bulk.rest.dto.v1_0.SelectionScope;
@@ -146,6 +147,14 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 		BulkSelection<Object> bulkSelection =
 			bulkActionBulkSelectionFactory.create();
+
+		if (BulkAction.Type.GENERATE_VARIANTS_BULK_SELECTION_ACTION.equals(
+				bulkAction.getType()) &&
+			(bulkSelection.getSize() != 1)) {
+
+			throw new BadRequestException(
+				"Generating variants is only supported with a single item");
+		}
 
 		if (bulkSelection.getSize() == 0) {
 			return new BulkActionTask();
@@ -498,6 +507,18 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 
 			return _expireObjectBulkSelectionAction;
 		}
+		else if (BulkAction.Type.GENERATE_VARIANTS_BULK_SELECTION_ACTION.equals(
+					type)) {
+
+			BulkSelectionAction<Object> generateVariantsBulkSelectionAction =
+				_generateVariantsBulkSelectionActionSnapshot.get();
+
+			if (generateVariantsBulkSelectionAction == null) {
+				throw new UnsupportedOperationException();
+			}
+
+			return generateVariantsBulkSelectionAction;
+		}
 		else if (BulkAction.Type.MOVE_OBJECT_BULK_SELECTION_ACTION.equals(
 					type)) {
 
@@ -707,6 +728,17 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 					type)) {
 
 			return hashMapWrapper.build();
+		}
+		else if (BulkAction.Type.GENERATE_VARIANTS_BULK_SELECTION_ACTION.equals(
+					type)) {
+
+			GenerateVariantsBulkSelectionAction generateVariantsBulkAction =
+				(GenerateVariantsBulkSelectionAction)bulkAction;
+
+			return hashMapWrapper.put(
+				"objectFieldNames",
+				generateVariantsBulkAction.getObjectFieldNames()
+			).build();
 		}
 		else if (BulkAction.Type.MOVE_OBJECT_BULK_SELECTION_ACTION.equals(
 					type)) {
@@ -1206,6 +1238,11 @@ public class BulkActionResourceImpl extends BaseBulkActionResourceImpl {
 			Snapshot.cast(BulkSelectionAction.class),
 			"(bulk.selection.action.key=assign.to.object)", true);
 	private static final EntityModel _entityModel = new BulkActionEntityModel();
+	private static final Snapshot<BulkSelectionAction<Object>>
+		_generateVariantsBulkSelectionActionSnapshot = new Snapshot<>(
+			BulkActionResourceImpl.class,
+			Snapshot.cast(BulkSelectionAction.class),
+			"(bulk.selection.action.key=generate.variants)", true);
 
 	@Reference(target = "(bulk.selection.action.key=add.object.to.project)")
 	private BulkSelectionAction<Object> _addObjectToProjectBulkSelectionAction;
