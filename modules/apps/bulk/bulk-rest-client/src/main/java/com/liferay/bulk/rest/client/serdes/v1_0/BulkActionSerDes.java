@@ -20,6 +20,7 @@ import com.liferay.bulk.rest.client.dto.v1_0.DuplicateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.EditObjectCategoriesBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.EditObjectTagsBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.ExpireObjectBulkSelectionAction;
+import com.liferay.bulk.rest.client.dto.v1_0.GeneratePIMProductVariantsBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.MoveObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.PermissionObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.ResetPermissionObjectBulkSelectionAction;
@@ -139,6 +140,15 @@ public class BulkActionSerDes {
 			if (typeString.equals("ExpireObjectBulkSelectionAction")) {
 				return ExpireObjectBulkSelectionActionSerDes.toJSON(
 					(ExpireObjectBulkSelectionAction)bulkAction);
+			}
+
+			if (typeString.equals(
+					"GeneratePIMProductVariantsBulkSelectionAction")) {
+
+				return GeneratePIMProductVariantsBulkSelectionActionSerDes.
+					toJSON(
+						(GeneratePIMProductVariantsBulkSelectionAction)
+							bulkAction);
 			}
 
 			if (typeString.equals("MoveObjectBulkSelectionAction")) {
@@ -337,6 +347,13 @@ public class BulkActionSerDes {
 					return ExpireObjectBulkSelectionAction.toDTO(json);
 				}
 
+				if (typeString.equals(
+						"GeneratePIMProductVariantsBulkSelectionAction")) {
+
+					return GeneratePIMProductVariantsBulkSelectionAction.toDTO(
+						json);
+				}
+
 				if (typeString.equals("MoveObjectBulkSelectionAction")) {
 					return MoveObjectBulkSelectionAction.toDTO(json);
 				}
@@ -508,4 +525,4 @@ public class BulkActionSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1059874053
+// LIFERAY-REST-BUILDER-HASH:1675842850
