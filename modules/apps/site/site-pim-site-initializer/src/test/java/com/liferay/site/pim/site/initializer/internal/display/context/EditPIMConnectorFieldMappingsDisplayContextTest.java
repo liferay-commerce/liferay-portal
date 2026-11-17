@@ -799,28 +799,7 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 	private ObjectRelationship _mockRepeatableGroupObjectRelationship(
 		String name, long objectDefinitionId2) {
 
-		ObjectRelationship objectRelationship = Mockito.mock(
-			ObjectRelationship.class);
-
-		Mockito.when(
-			objectRelationship.getName()
-		).thenReturn(
-			name
-		);
-
-		Mockito.when(
-			objectRelationship.getObjectDefinitionId2()
-		).thenReturn(
-			objectDefinitionId2
-		);
-
 		long objectFieldId = RandomTestUtil.randomLong();
-
-		Mockito.when(
-			objectRelationship.getObjectFieldId2()
-		).thenReturn(
-			objectFieldId
-		);
 
 		ObjectField objectField = Mockito.mock(ObjectField.class);
 
@@ -839,6 +818,27 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 			_objectFieldLocalService.getObjectFields(objectDefinitionId2)
 		).thenReturn(
 			objectFields
+		);
+
+		ObjectRelationship objectRelationship = Mockito.mock(
+			ObjectRelationship.class);
+
+		Mockito.when(
+			objectRelationship.getName()
+		).thenReturn(
+			name
+		);
+
+		Mockito.when(
+			objectRelationship.getObjectDefinitionId2()
+		).thenReturn(
+			objectDefinitionId2
+		);
+
+		Mockito.when(
+			objectRelationship.getObjectFieldId2()
+		).thenReturn(
+			objectFieldId
 		);
 
 		Mockito.when(
