@@ -4,6 +4,10 @@
  */
 
 import {getSpritemap} from '@liferay/frontend-icons-web';
+import {
+	openItemSelectorModal,
+	openTreeItemSelectorModal,
+} from '@liferay/frontend-js-item-selector-web';
 import {openSelectionModal} from 'frontend-js-components-web';
 import {normalizeFriendlyURL} from 'frontend-js-web';
 
@@ -55,9 +59,9 @@ export function CategoryCPFriendlyURL({portletNamespace}) {
 
 export function EditAssetCategoryCPDisplayLayout({
 	assetCategory,
-	categorySelectorUrl,
 	itemSelectorUrl,
 	portletNamespace,
+	siteId,
 	title,
 }) {
 	const displayPageItemRemove = document.getElementById(
@@ -184,45 +188,61 @@ export function EditAssetCategoryCPDisplayLayout({
 	);
 
 	selectCategoriesButton?.addEventListener('click', () => {
-		openSelectionModal({
-			buttonAddLabel: Liferay.Language.get('done'),
-			multiple: true,
-			onSelect: (selectedItems) => {
-				if (selectedItems) {
-					Object.keys(selectedItems).forEach((key) => {
-						const item = selectedItems[key];
+		openItemSelectorModal({
+			apiURL: `/o/headless-admin-taxonomy/v1.0/sites/${siteId}/taxonomy-vocabularies`,
+			fdsProps: {
+				configInURLBehavior: 'OFF',
+				id: `${portletNamespace}taxonomyVocabulariesItemSelector`,
+				pagination: {
+					deltas: [{label: 20}, {label: 40}, {label: 60}],
+					initialDelta: 20,
+				},
+				views: [
+					{
+						contentRenderer: 'table',
+						label: '',
+						name: 'table',
+						schema: {
+							fields: [
+								{
+									fieldName: 'name',
+									label: Liferay.Language.get('name'),
+								},
+							],
+						},
+					},
+				],
+			},
+			itemTypeLabel: Liferay.Language.get('vocabulary'),
+			items: [],
+			locator: {id: 'id', label: 'name', value: 'id'},
+			multiSelect: false,
+			onItemsChange: ([taxonomyVocabulary]) => {
+				if (!taxonomyVocabulary) {
+					return;
+				}
 
-						if (item.unchecked && !categoriesContainer) {
+				openTreeItemSelectorModal({
+					multiSelect: false,
+					onItemsChange: ([taxonomyCategory]) => {
+						if (!taxonomyCategory) {
 							return;
 						}
 
-						const categoryNodes = categoriesContainer.children;
-
-						if (categoryNodes.length) {
-							for (let i = 0; i < categoryNodes.length; i++) {
-								categoriesContainer.removeChild(
-									categoryNodes.item(i)
-								);
-							}
-						}
-
-						delete selectedItems[key];
-
-						const categoryNode = createLabel(
-							`category-${item.categoryId}`,
-							item.value
+						categoriesContainer.replaceChildren(
+							createLabel(
+								`category-${taxonomyCategory.id}`,
+								taxonomyCategory.name
+							)
 						);
 
-						categoriesContainer.appendChild(categoryNode);
-						classPK.value = item.categoryId;
-
-						return;
-					});
-				}
+						classPK.value = taxonomyCategory.id;
+					},
+					title: Liferay.Language.get('select-category'),
+					vocabularyIds: [taxonomyVocabulary.id],
+				});
 			},
-			selectEventName: `${portletNamespace}selectCategory`,
-			title: Liferay.Language.get('select-category-display-page'),
-			url: categorySelectorUrl,
+			title: Liferay.Language.get('select-vocabulary'),
 		});
 	});
 

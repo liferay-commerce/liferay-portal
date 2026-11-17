@@ -9,6 +9,8 @@ import {apiHelpersTest} from '../../../../fixtures/apiHelpersTest';
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../../fixtures/loginTest';
+import {createCategories} from '../../../../helpers/CreateCategories';
+import getRandomString from '../../../../utils/getRandomString';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -131,3 +133,84 @@ test('LPD-3381 Error message is shown when saving an existing override category 
 		commerceAdminChannelDetailsCategoryDisplayPagesPage.errorMessageSelectCategory
 	).toBeVisible();
 });
+
+test(
+	'Category display page rules pick the category from the new item selector',
+	{tag: '@LPD-110420'},
+	async ({
+		apiHelpers,
+		commerceAdminChannelDetailsCategoryDisplayPagesPage,
+		commerceAdminChannelDetailsPage,
+		commerceAdminChannelsPage,
+	}) => {
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		const vocabularyName = getRandomString();
+
+		const [category] = await createCategories({
+			apiHelpers,
+			categoryNames: [{name: getRandomString()}],
+			siteId: site.id,
+			vocabularyName,
+		});
+
+		await commerceAdminChannelsPage.goto();
+
+		await (
+			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
+		).click();
+
+		await commerceAdminChannelDetailsPage.goToCategoryDisplayPages();
+
+		await commerceAdminChannelDetailsCategoryDisplayPagesPage.addDisplayLayoutButton.click();
+
+		await commerceAdminChannelDetailsCategoryDisplayPagesPage.selectCategory(
+			vocabularyName,
+			category.name
+		);
+
+		await expect(
+			await commerceAdminChannelDetailsCategoryDisplayPagesPage.categoryLabel(
+				category.name
+			)
+		).toBeVisible();
+
+		await commerceAdminChannelDetailsCategoryDisplayPagesPage.clickFrameButton(
+			'Choose'
+		);
+
+		await commerceAdminChannelDetailsCategoryDisplayPagesPage.selectCategoryDisplayPage(
+			layout.nameCurrentValue
+		);
+
+		await commerceAdminChannelDetailsCategoryDisplayPagesPage.clickFrameButton(
+			'Save'
+		);
+
+		await expect(
+			commerceAdminChannelDetailsCategoryDisplayPagesPage.successMessage
+		).toBeVisible();
+
+		await commerceAdminChannelDetailsPage.page.reload();
+
+		await commerceAdminChannelDetailsPage.goToCategoryDisplayPages();
+
+		await expect(
+			await commerceAdminChannelDetailsCategoryDisplayPagesPage.categoryNameRowTableLink(
+				category.name
+			)
+		).toBeVisible();
+	}
+);
