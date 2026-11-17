@@ -362,7 +362,6 @@ public class GenerateVariantsBulkSelectionActionTest {
 	private void _testExecuteWithVariantFamily() throws Exception {
 		ObjectEntry objectEntry = _addObjectEntry(
 			"Black", "M", "LebronSocksBlackM", "Lebron Socks");
-
 		ObjectEntry variantObjectEntry = _addObjectEntry(
 			"White", "M", "LebronSocksBlackXL", "Lebron Socks");
 

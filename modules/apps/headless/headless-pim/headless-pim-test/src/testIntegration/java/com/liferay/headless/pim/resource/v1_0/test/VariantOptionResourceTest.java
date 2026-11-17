@@ -171,7 +171,8 @@ public class VariantOptionResourceTest
 						"material"
 					).build(),
 					PIMProductTypeTestUtil.createPicklistObjectField(
-						"pattern", "Plain", "Striped"),
+						"pattern", RandomTestUtil.randomString(),
+						RandomTestUtil.randomString()),
 					sizeObjectField,
 					new TextObjectFieldBuilder(
 					).labelMap(

@@ -189,12 +189,16 @@ public class GenerateVariantsBulkSelectionAction
 				"Invalid object field names " + objectFieldNames);
 		}
 
+		List<Object> objects = new ArrayList<>();
+
 		Set<String> skus = new HashSet<>();
 		Map<List<String>, ObjectEntry> variantObjectEntries = new HashMap<>();
 
 		for (PIMLinkRelatedEntry pimLinkRelatedEntry :
 				_pimLinkEngine.getPIMLinkRelatedEntries(
-					"type eq '" + VariantPIMLinkType.TYPE + "'", objectEntry)) {
+					StringBundler.concat(
+						"type eq '", VariantPIMLinkType.TYPE, "'"),
+					objectEntry)) {
 
 			ObjectEntry variantObjectEntry =
 				pimLinkRelatedEntry.getObjectEntry();
@@ -214,7 +218,6 @@ public class GenerateVariantsBulkSelectionAction
 			pimVariantOptions, objectEntry.getValues());
 		Locale locale = PortalUtil.getSiteDefaultLocale(
 			objectEntry.getGroupId());
-		List<Object> objects = new ArrayList<>();
 
 		for (List<ListTypeEntry> listTypeEntries :
 				PIMVariantUtil.getCombinations(

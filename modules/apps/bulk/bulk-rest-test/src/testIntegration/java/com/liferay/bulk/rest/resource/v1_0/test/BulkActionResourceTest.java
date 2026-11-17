@@ -175,6 +175,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		_user = UserTestUtil.addUser();
 	}
 
+	@FeatureFlag("LPD-96666")
 	@Override
 	@Test
 	public void testPostBulkAction() throws Exception {
@@ -188,6 +189,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		_testPostBulkActionWithTypeDeleteObjectEntry();
 		_testPostBulkActionWithTypeDuplicate();
 		_testPostBulkActionWithTypeExpire();
+		_testPostBulkActionWithTypeGenerateVariants();
 		_testPostBulkActionWithTypeKeyword();
 		_testPostBulkActionWithTypePermission();
 		_testPostBulkActionWithTypePermissionSingleRole();
@@ -202,87 +204,6 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		_testPostBulkActionItemPreviewPage(_depotEntry2, "PERMANENT_DELETION");
 		_testPostBulkActionItemPreviewPageWithNonexistentClassPK();
 		_testPostBulkActionItemPreviewPageWithTrashedItems();
-	}
-
-	@FeatureFlag("LPD-96666")
-	@Test
-	public void testPostBulkActionWithTypeGenerateVariants() throws Exception {
-		PIMTestUtil.getOrAddGroup();
-
-		ObjectDefinition objectDefinition =
-			PIMProductTypeTestUtil.addProductTypeObjectDefinition(
-				Arrays.asList(
-					PIMProductTypeTestUtil.createPicklistObjectField(
-						"color", "Black", "White"),
-					ObjectFieldUtil.createObjectField(
-						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-						ObjectFieldConstants.DB_TYPE_STRING,
-						RandomTestUtil.randomString(), "sku"),
-					ObjectFieldUtil.createObjectField(
-						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-						ObjectFieldConstants.DB_TYPE_STRING,
-						RandomTestUtil.randomString(), "title")));
-
-		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
-
-		Map<String, Serializable> values =
-			HashMapBuilder.<String, Serializable>put(
-				"color", "Black"
-			).put(
-				"sku", RandomTestUtil.randomString()
-			).put(
-				"title", RandomTestUtil.randomString()
-			).build();
-
-		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
-			depotEntry.getGroupId(), objectDefinition, 0, values);
-		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
-			depotEntry.getGroupId(), objectDefinition, 0, values);
-
-		GenerateVariantsBulkSelectionAction
-			generateVariantsBulkSelectionAction =
-				new GenerateVariantsBulkSelectionAction() {
-					{
-						setBulkActionItems(
-							_toBulkActionItems(
-								objectDefinition, objectEntry1, objectEntry2));
-						setObjectFieldNames(new String[] {"color"});
-						setType(
-							BulkAction.Type.
-								GENERATE_VARIANTS_BULK_SELECTION_ACTION);
-					}
-				};
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
-				LoggerTestUtil.ERROR)) {
-
-			assertHttpResponseStatusCode(
-				400,
-				bulkActionResource.postBulkActionHttpResponse(
-					null, null, null, null, null, null, null, null,
-					generateVariantsBulkSelectionAction));
-		}
-
-		generateVariantsBulkSelectionAction.setBulkActionItems(
-			_toBulkActionItems(objectDefinition, objectEntry1));
-
-		BulkActionTask bulkActionTask = bulkActionResource.postBulkAction(
-			null, null, null, null, null, null, null, null,
-			generateVariantsBulkSelectionAction);
-
-		_waitForFinish(GetterUtil.getLong(bulkActionTask.getId()));
-
-		ObjectEntry bulkActionTaskObjectEntry =
-			_objectEntryLocalService.getObjectEntry(bulkActionTask.getId());
-
-		values = bulkActionTaskObjectEntry.getValues();
-
-		Assert.assertEquals(
-			1, GetterUtil.getInteger(values.get("numberOfItems")));
-		Assert.assertEquals(
-			1, GetterUtil.getInteger(values.get("numberOfSuccessfulItems")));
 	}
 
 	private DepotEntry _addDepotEntry(boolean trashEnabled) throws Exception {
@@ -1714,6 +1635,89 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, objectEntryFolder.getStatus());
+	}
+
+	private void _testPostBulkActionWithTypeGenerateVariants()
+		throws Exception {
+
+		PIMTestUtil.getOrAddGroup();
+
+		String colorKey = RandomTestUtil.randomString();
+
+		ObjectDefinition objectDefinition =
+			PIMProductTypeTestUtil.addProductTypeObjectDefinition(
+				Arrays.asList(
+					PIMProductTypeTestUtil.createPicklistObjectField(
+						"color", colorKey, RandomTestUtil.randomString()),
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						RandomTestUtil.randomString(), "sku"),
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						RandomTestUtil.randomString(), "title")));
+
+		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
+
+		Map<String, Serializable> values =
+			HashMapBuilder.<String, Serializable>put(
+				"color", colorKey
+			).put(
+				"sku", RandomTestUtil.randomString()
+			).put(
+				"title", RandomTestUtil.randomString()
+			).build();
+
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			depotEntry.getGroupId(), objectDefinition, 0, values);
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+			depotEntry.getGroupId(), objectDefinition, 0, values);
+
+		GenerateVariantsBulkSelectionAction
+			generateVariantsBulkSelectionAction =
+				new GenerateVariantsBulkSelectionAction() {
+					{
+						setBulkActionItems(
+							_toBulkActionItems(
+								objectDefinition, objectEntry1, objectEntry2));
+						setObjectFieldNames(new String[] {"color"});
+						setType(
+							BulkAction.Type.
+								GENERATE_VARIANTS_BULK_SELECTION_ACTION);
+					}
+				};
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.ERROR)) {
+
+			assertHttpResponseStatusCode(
+				400,
+				bulkActionResource.postBulkActionHttpResponse(
+					null, null, null, null, null, null, null, null,
+					generateVariantsBulkSelectionAction));
+		}
+
+		generateVariantsBulkSelectionAction.setBulkActionItems(
+			_toBulkActionItems(objectDefinition, objectEntry1));
+
+		BulkActionTask bulkActionTask = bulkActionResource.postBulkAction(
+			null, null, null, null, null, null, null, null,
+			generateVariantsBulkSelectionAction);
+
+		_waitForFinish(GetterUtil.getLong(bulkActionTask.getId()));
+
+		ObjectEntry bulkActionTaskObjectEntry =
+			_objectEntryLocalService.getObjectEntry(bulkActionTask.getId());
+
+		values = bulkActionTaskObjectEntry.getValues();
+
+		Assert.assertEquals(
+			1, GetterUtil.getInteger(values.get("numberOfItems")));
+		Assert.assertEquals(
+			1, GetterUtil.getInteger(values.get("numberOfSuccessfulItems")));
 	}
 
 	private void _testPostBulkActionWithTypeKeyword() throws Exception {

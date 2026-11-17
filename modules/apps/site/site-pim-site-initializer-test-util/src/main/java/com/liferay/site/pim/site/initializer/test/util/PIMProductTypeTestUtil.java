@@ -48,6 +48,10 @@ public class PIMProductTypeTestUtil {
 			ObjectDefinition objectDefinition, String... objectFieldNames)
 		throws Exception {
 
+		ObjectLayoutTab objectLayoutTab =
+			ObjectLayoutTabLocalServiceUtil.createObjectLayoutTab(0);
+		ObjectLayoutBox objectLayoutBox = ObjectLayoutBoxUtil.create(0);
+
 		ObjectLayoutRow objectLayoutRow = ObjectLayoutRowUtil.create(0);
 
 		objectLayoutRow.setObjectLayoutColumns(
@@ -70,15 +74,10 @@ public class PIMProductTypeTestUtil {
 					return objectLayoutColumn;
 				}));
 
-		ObjectLayoutBox objectLayoutBox = ObjectLayoutBoxUtil.create(0);
-
 		objectLayoutBox.setNameMap(RandomTestUtil.randomLocaleStringMap());
 		objectLayoutBox.setType(ObjectLayoutBoxConstants.TYPE_REGULAR);
 		objectLayoutBox.setObjectLayoutRows(
 			Collections.singletonList(objectLayoutRow));
-
-		ObjectLayoutTab objectLayoutTab =
-			ObjectLayoutTabLocalServiceUtil.createObjectLayoutTab(0);
 
 		objectLayoutTab.setNameMap(RandomTestUtil.randomLocaleStringMap());
 		objectLayoutTab.setObjectLayoutBoxes(
