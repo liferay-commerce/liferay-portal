@@ -281,11 +281,10 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		jsonObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals("PIM Basic Product", jsonObject.getString("label"));
-		Assert.assertEquals(
-			0,
-			jsonObject.getJSONArray(
-				"repeatableGroups"
-			).length());
+
+		jsonArray = jsonObject.getJSONArray("repeatableGroups");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
 
 		jsonArray = jsonObject.getJSONArray("objectFields");
 
@@ -443,11 +442,10 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		Assert.assertEquals("Sizes", jsonObject.getString("label"));
 		Assert.assertEquals("r_sizes", jsonObject.getString("name"));
 		_assertObjectFieldName(jsonObject, "width");
-		Assert.assertEquals(
-			0,
-			jsonObject.getJSONArray(
-				"repeatableGroups"
-			).length());
+
+		jsonArray = jsonObject.getJSONArray("repeatableGroups");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
 	}
 
 	private void _assertObjectFieldName(
