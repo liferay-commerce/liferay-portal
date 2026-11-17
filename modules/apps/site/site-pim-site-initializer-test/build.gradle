@@ -1,4 +1,5 @@
 dependencies {
+	testIntegrationImplementation project(":apps:bulk:bulk-selection-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:dispatch:dispatch-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
