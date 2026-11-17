@@ -22,11 +22,11 @@ import com.liferay.commerce.internal.upgrade.v13_0_5.CommerceReturnReasonConfigu
 import com.liferay.commerce.internal.upgrade.v14_0_0.ObjectDefinitionUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v15_0_3.OrderAdministratorRoleUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v15_1_0.util.CommerceOrderAttachmentTable;
+import com.liferay.commerce.internal.upgrade.v15_1_10.CommerceReturnRoleUpgradeProcess;
+import com.liferay.commerce.internal.upgrade.v15_1_11.CommerceStatusExternalReferenceCodeUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v15_1_4.CommerceAvailabilityEstimateExternalReferenceCodeUpgradeProcess;
-import com.liferay.commerce.internal.upgrade.v15_1_5.CommerceOrderAttachmentUpgradeProcess;
-import com.liferay.commerce.internal.upgrade.v15_1_6.CPConfigurationEntryUpgradeProcess;
-import com.liferay.commerce.internal.upgrade.v15_1_7.CommerceReturnRoleUpgradeProcess;
-import com.liferay.commerce.internal.upgrade.v15_1_8.CommerceStatusExternalReferenceCodeUpgradeProcess;
+import com.liferay.commerce.internal.upgrade.v15_1_8.CommerceOrderAttachmentUpgradeProcess;
+import com.liferay.commerce.internal.upgrade.v15_1_9.CPConfigurationEntryUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v1_2_0.CommerceSubscriptionUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v2_0_0.CommercePaymentMethodUpgradeProcess;
 import com.liferay.commerce.internal.upgrade.v2_1_0.CPDAvailabilityEstimateUpgradeProcess;
@@ -933,13 +933,19 @@ public class CommerceServiceUpgradeStepRegistrator
 			"15.1.3", "15.1.4",
 			new CommerceAvailabilityEstimateExternalReferenceCodeUpgradeProcess());
 
+		registry.register("15.1.4", "15.1.5", new DummyUpgradeProcess());
+
+		registry.register("15.1.5", "15.1.6", new DummyUpgradeProcess());
+
+		registry.register("15.1.6", "15.1.7", new DummyUpgradeProcess());
+
 		registry.register(
-			"15.1.4", "15.1.5",
+			"15.1.7", "15.1.8",
 			new CommerceOrderAttachmentUpgradeProcess(
 				_classNameLocalService, _resourceLocalService));
 
 		registry.register(
-			"15.1.5", "15.1.6",
+			"15.1.8", "15.1.9",
 			new CPConfigurationEntryUpgradeProcess(
 				_classNameLocalService, _cpConfigurationEntryLocalService,
 				_cpConfigurationEntrySettingLocalService,
@@ -947,14 +953,14 @@ public class CommerceServiceUpgradeStepRegistrator
 				_ctCollectionLocalService, _userLocalService));
 
 		registry.register(
-			"15.1.6", "15.1.7",
+			"15.1.9", "15.1.10",
 			new CommerceReturnRoleUpgradeProcess(
 				_companyLocalService, _objectDefinitionLocalService,
 				_resourceActionLocalService, _resourcePermissionLocalService,
 				_roleLocalService));
 
 		registry.register(
-			"15.1.7", "15.1.8",
+			"15.1.10", "15.1.11",
 			new CommerceStatusExternalReferenceCodeUpgradeProcess());
 
 		if (_log.isInfoEnabled()) {
