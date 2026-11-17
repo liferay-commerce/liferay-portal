@@ -729,6 +729,12 @@ public class LiferayCommercePIMConnectorTest {
 					).toString();
 				}
 
+				if (location.contains("/options/by-externalReferenceCode/")) {
+					return JSONUtil.put(
+						"id", _OPTION_ID
+					).toString();
+				}
+
 				return "{}";
 			}
 		);
@@ -1853,7 +1859,7 @@ public class LiferayCommercePIMConnectorTest {
 		JSONObject productOptionValueJSONObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			"extraLarge", productOptionValueJSONObject.getString("key"));
+			"extralarge", productOptionValueJSONObject.getString("key"));
 
 		JSONObject nameJSONObject = productOptionValueJSONObject.getJSONObject(
 			"name");
@@ -1869,7 +1875,7 @@ public class LiferayCommercePIMConnectorTest {
 		JSONObject skuOptionJSONObject = jsonArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			"extraLarge", skuOptionJSONObject.getString("value"));
+			"extralarge", skuOptionJSONObject.getString("value"));
 	}
 
 	private void _testExecuteWithPicklistProductSpecification()
@@ -1975,7 +1981,8 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals(
 			"color",
 			productOptionJSONObject.getString("optionExternalReferenceCode"));
-		Assert.assertEquals(0, productOptionJSONObject.getLong("optionId"));
+		Assert.assertEquals(
+			_OPTION_ID, productOptionJSONObject.getLong("optionId"));
 		Assert.assertTrue(productOptionJSONObject.getBoolean("skuContributor"));
 
 		JSONObject nameJSONObject = productOptionJSONObject.getJSONObject(
@@ -2497,6 +2504,8 @@ public class LiferayCommercePIMConnectorTest {
 
 	private static final long _OBJECT_RELATIONSHIP_ID =
 		RandomTestUtil.randomLong();
+
+	private static final long _OPTION_ID = RandomTestUtil.randomLong();
 
 	private static final Map<String, Serializable>
 		_pimConnectorConfigurationValues =

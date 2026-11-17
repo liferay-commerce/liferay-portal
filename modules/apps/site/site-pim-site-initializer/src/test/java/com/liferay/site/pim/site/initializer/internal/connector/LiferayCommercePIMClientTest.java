@@ -275,12 +275,16 @@ public class LiferayCommercePIMClientTest {
 				curLiferayCommercePIMClient.putOptionByExternalReferenceCode(
 					"color", JSONUtil.put("key", "color")));
 
-		_mockHttp(200, JSONFactoryUtil.createJSONObject());
+		long optionId = RandomTestUtil.randomLong();
+
+		_mockHttp(200, JSONUtil.put("id", optionId));
 
 		liferayCommercePIMClient = _createLiferayCommercePIMClient();
 
-		liferayCommercePIMClient.putOptionByExternalReferenceCode(
+		jsonObject = liferayCommercePIMClient.putOptionByExternalReferenceCode(
 			"color", JSONUtil.put("key", "color"));
+
+		Assert.assertEquals(optionId, jsonObject.getLong("id"));
 
 		Http.Options options = _options.get(0);
 
