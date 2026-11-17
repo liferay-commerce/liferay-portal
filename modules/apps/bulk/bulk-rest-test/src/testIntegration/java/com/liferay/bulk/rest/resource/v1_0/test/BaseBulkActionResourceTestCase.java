@@ -28,6 +28,7 @@ import com.liferay.bulk.rest.client.dto.v1_0.DuplicateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.EditObjectCategoriesBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.EditObjectTagsBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.ExpireObjectBulkSelectionAction;
+import com.liferay.bulk.rest.client.dto.v1_0.GenerateVariantsBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.MoveObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.PermissionObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.ResetPermissionObjectBulkSelectionAction;
@@ -648,6 +649,22 @@ public abstract class BaseBulkActionResourceTestCase {
 
 				if (((EditObjectTagsBulkSelectionAction)bulkAction).
 						getKeywordsToRemove() == null) {
+
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("objectFieldNames", additionalAssertFieldName)) {
+				if (!(bulkAction instanceof
+						GenerateVariantsBulkSelectionAction)) {
+
+					continue;
+				}
+
+				if (((GenerateVariantsBulkSelectionAction)bulkAction).
+						getObjectFieldNames() == null) {
 
 					valid = false;
 				}
@@ -1468,6 +1485,27 @@ public abstract class BaseBulkActionResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("objectFieldNames", additionalAssertFieldName)) {
+				if (!(bulkAction1 instanceof
+						GenerateVariantsBulkSelectionAction) ||
+					!(bulkAction2 instanceof
+						GenerateVariantsBulkSelectionAction)) {
+
+					continue;
+				}
+
+				if (!Objects.deepEquals(
+						((GenerateVariantsBulkSelectionAction)bulkAction1).
+							getObjectFieldNames(),
+						((GenerateVariantsBulkSelectionAction)bulkAction2).
+							getObjectFieldNames())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"objectEntryFolderId", additionalAssertFieldName)) {
 
@@ -2079,6 +2117,16 @@ public abstract class BaseBulkActionResourceTestCase {
 				return bulkAction;
 			},
 			() -> {
+				GenerateVariantsBulkSelectionAction bulkAction =
+					new GenerateVariantsBulkSelectionAction();
+
+				bulkAction.setType(
+					BulkAction.Type.create(
+						"GenerateVariantsBulkSelectionAction"));
+
+				return bulkAction;
+			},
+			() -> {
 				MoveObjectBulkSelectionAction bulkAction =
 					new MoveObjectBulkSelectionAction();
 
@@ -2412,4 +2460,4 @@ public abstract class BaseBulkActionResourceTestCase {
 		_bulkActionResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1070069828
+// LIFERAY-REST-BUILDER-HASH:623566614

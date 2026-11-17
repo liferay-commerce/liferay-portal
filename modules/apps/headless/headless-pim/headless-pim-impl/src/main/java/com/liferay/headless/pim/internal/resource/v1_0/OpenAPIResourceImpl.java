@@ -90,9 +90,11 @@ public class OpenAPIResourceImpl {
 
 			add(LinkReferenceResourceImpl.class);
 
+			add(VariantOptionResourceImpl.class);
+
 			add(OpenAPIResourceImpl.class);
 		}
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1842698217
+// LIFERAY-REST-BUILDER-HASH:388852633
