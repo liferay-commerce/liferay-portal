@@ -48,6 +48,7 @@ components:
                     EditObjectCategoriesBulkSelectionAction: "#/components/schemas/EditObjectCategoriesBulkSelectionAction"
                     EditObjectTagsBulkSelectionAction: "#/components/schemas/EditObjectTagsBulkSelectionAction"
                     ExpireObjectBulkSelectionAction: "#/components/schemas/ExpireObjectBulkSelectionAction"
+                    GenerateVariantsBulkSelectionAction: "#/components/schemas/GenerateVariantsBulkSelectionAction"
                     MoveObjectBulkSelectionAction: "#/components/schemas/MoveObjectBulkSelectionAction"
                     PermissionObjectBulkSelectionAction: "#/components/schemas/PermissionObjectBulkSelectionAction"
                     ResetPermissionObjectBulkSelectionAction: "#/components/schemas/ResetPermissionObjectBulkSelectionAction"
@@ -78,6 +79,7 @@ components:
                         -   DuplicateObjectBulkSelectionAction
                         -   ExpireObjectBulkSelectionAction
                         -   EditObjectTagsBulkSelectionAction
+                        -   GenerateVariantsBulkSelectionAction
                         -   MoveObjectBulkSelectionAction
                         -   PermissionObjectBulkSelectionAction
                         -   ResetPermissionObjectBulkSelectionAction
@@ -221,6 +223,14 @@ components:
         ExpireObjectBulkSelectionAction:
             allOf:
                 -   $ref: "#/components/schemas/BulkAction"
+        GenerateVariantsBulkSelectionAction:
+            allOf:
+                -   $ref: "#/components/schemas/BulkAction"
+                -   properties:
+                        objectFieldNames:
+                            items:
+                                type: string
+                            type: array
         GenericError:
             description:
                 https://www.schema.org/GenericError
