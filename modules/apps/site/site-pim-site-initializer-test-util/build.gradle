@@ -2,9 +2,12 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	compileOnly project(":apps:depot:depot-api")
+	compileOnly project(":apps:list-type:list-type-api")
 	compileOnly project(":apps:object:object-api")
+	compileOnly project(":apps:object:object-test-util")
 	compileOnly project(":apps:site:site-api")
 	compileOnly project(":apps:site:site-pim-site-initializer-api")
+	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-lang")
 }
 
