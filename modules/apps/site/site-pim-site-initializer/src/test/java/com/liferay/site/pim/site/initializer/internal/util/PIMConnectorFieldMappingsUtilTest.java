@@ -41,10 +41,9 @@ public class PIMConnectorFieldMappingsUtilTest {
 
 	@Test
 	public void testGetObjectEntryValues() throws Exception {
-		long objectDefinitionId = RandomTestUtil.randomLong();
-		long objectEntryId = RandomTestUtil.randomLong();
-
 		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+
+		long objectEntryId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			objectEntry.getModelAttributes()
@@ -57,6 +56,8 @@ public class PIMConnectorFieldMappingsUtilTest {
 				"userName", RandomTestUtil.randomString()
 			).build()
 		);
+
+		long objectDefinitionId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			objectEntry.getObjectDefinitionId()
