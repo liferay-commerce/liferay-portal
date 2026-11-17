@@ -54,6 +54,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -190,11 +191,39 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		try {
 			liferayCommercePIMClient.authenticate();
 
+			Map<String, Long> optionIdsMap = new HashMap<>();
+
 			for (Map.Entry<String, JSONObject> entry :
 					optionJSONObjectsMap.entrySet()) {
 
-				liferayCommercePIMClient.putOptionByExternalReferenceCode(
-					entry.getKey(), entry.getValue());
+				JSONObject optionJSONObject =
+					liferayCommercePIMClient.putOptionByExternalReferenceCode(
+						entry.getKey(), entry.getValue());
+
+				optionIdsMap.put(
+					entry.getKey(), optionJSONObject.getLong("id"));
+			}
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+				JSONArray productOptionsJSONArray = jsonObject.getJSONArray(
+					"productOptions");
+
+				if (productOptionsJSONArray == null) {
+					continue;
+				}
+
+				for (int j = 0; j < productOptionsJSONArray.length(); j++) {
+					JSONObject productOptionJSONObject =
+						productOptionsJSONArray.getJSONObject(j);
+
+					productOptionJSONObject.put(
+						"optionId",
+						optionIdsMap.get(
+							productOptionJSONObject.getString(
+								"optionExternalReferenceCode")));
+				}
 			}
 
 			_putSiteTaxonomyVocabularies(
@@ -702,11 +731,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 					continue;
 				}
 
-				String valueKey = _friendlyURLNormalizer.normalize(value);
-
-				if (listTypeEntry != null) {
-					valueKey = listTypeEntry.getKey();
-				}
+				String valueKey = _getValueKey(listTypeEntry, value);
 
 				if (!valueKeys.add(valueKey)) {
 					continue;
@@ -741,8 +766,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 					objectDefinition, pimFieldMappingObjectEntry))
 		).put(
 			"optionExternalReferenceCode", sourceFieldName
-		).put(
-			"optionId", 0
 		).put(
 			"priority", priority
 		).put(
@@ -908,17 +931,10 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			"key", sourceFieldName
 		).put(
 			"value",
-			() -> {
-				ListTypeEntry listTypeEntry =
-					PIMConnectorFieldMappingsUtil.fetchListTypeEntry(
-						objectDefinition, pimFieldMappingObjectEntry, values);
-
-				if (listTypeEntry != null) {
-					return listTypeEntry.getKey();
-				}
-
-				return _friendlyURLNormalizer.normalize(value);
-			}
+			_getValueKey(
+				PIMConnectorFieldMappingsUtil.fetchListTypeEntry(
+					objectDefinition, pimFieldMappingObjectEntry, values),
+				value)
 		);
 	}
 
@@ -1045,6 +1061,14 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		}
 
 		return titles;
+	}
+
+	private String _getValueKey(ListTypeEntry listTypeEntry, String value) {
+		if (listTypeEntry != null) {
+			value = listTypeEntry.getKey();
+		}
+
+		return _friendlyURLNormalizer.normalize(value);
 	}
 
 	private void _putSiteTaxonomyCategories(

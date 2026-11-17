@@ -108,7 +108,7 @@ public class LiferayCommercePIMClient {
 		return _jsonFactory.createJSONObject(responseString);
 	}
 
-	public void putOptionByExternalReferenceCode(
+	public JSONObject putOptionByExternalReferenceCode(
 			String externalReferenceCode, JSONObject jsonObject)
 		throws Exception {
 
@@ -120,9 +120,11 @@ public class LiferayCommercePIMClient {
 				URLCodec.encodeURL(externalReferenceCode)),
 			jsonObject);
 
-		_invoke(options, jsonObject);
+		String responseString = _invoke(options, jsonObject);
 
 		_validateResponse(options.getResponse());
+
+		return _jsonFactory.createJSONObject(responseString);
 	}
 
 	public void putSiteTaxonomyCategoryByExternalReferenceCode(
