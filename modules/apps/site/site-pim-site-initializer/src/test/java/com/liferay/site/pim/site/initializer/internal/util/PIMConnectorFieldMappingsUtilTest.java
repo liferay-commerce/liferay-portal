@@ -142,18 +142,21 @@ public class PIMConnectorFieldMappingsUtilTest {
 	public void testIsRepeatableGroupPath() {
 		Assert.assertTrue(
 			PIMConnectorFieldMappingsUtil.isRepeatableGroupPath(
-				_mockFieldMapping("r_images/title", "dynamicValue")));
+				_mockFieldMappingObjectEntry(
+					"r_images/title", "dynamicValue")));
 		Assert.assertFalse(
 			PIMConnectorFieldMappingsUtil.isRepeatableGroupPath(
-				_mockFieldMapping(
+				_mockFieldMappingObjectEntry(
 					"r_images/title",
 					PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE)));
 		Assert.assertFalse(
 			PIMConnectorFieldMappingsUtil.isRepeatableGroupPath(
-				_mockFieldMapping("title", "dynamicValue")));
+				_mockFieldMappingObjectEntry("title", "dynamicValue")));
 	}
 
-	private ObjectEntry _mockFieldMapping(String sourceFieldName, String type) {
+	private ObjectEntry _mockFieldMappingObjectEntry(
+		String sourceFieldName, String type) {
+
 		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
 
 		Mockito.when(
