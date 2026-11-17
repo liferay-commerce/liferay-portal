@@ -6,4 +6,5 @@ Export-Package:\
 	com.liferay.site.pim.site.initializer.constants,\
 	com.liferay.site.pim.site.initializer.engine,\
 	com.liferay.site.pim.site.initializer.exception,\
-	com.liferay.site.pim.site.initializer.link
+	com.liferay.site.pim.site.initializer.link,\
+	com.liferay.site.pim.site.initializer.variant
