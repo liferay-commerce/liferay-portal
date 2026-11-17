@@ -131,6 +131,16 @@ describe('RecipientUserAutocomplete', () => {
 		);
 	});
 
+	it('shows the badge text next to the user', async () => {
+		renderRecipientUserAutocomplete({
+			recipientBadgeText: () => 'countersigner',
+		});
+
+		await userEvent.type(screen.getByLabelText(/recipient-email/), 'test');
+
+		expect(await screen.findByText('countersigner')).toBeInTheDocument();
+	});
+
 	it('updates the email when the value changes', () => {
 		const {rerender} = renderRecipientUserAutocomplete({
 			value: 'test1@liferay.com',
