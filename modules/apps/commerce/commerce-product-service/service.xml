@@ -538,6 +538,7 @@
 		<column name="maxSubscriptionCycles" type="long" />
 		<column name="productTypeName" type="String" />
 		<column name="published" type="boolean" />
+		<column name="roleFilterEnabled" type="boolean" />
 		<column name="shipSeparately" type="boolean" />
 		<column name="shippable" type="boolean" />
 		<column name="shippingExtraPrice" type="double" />
