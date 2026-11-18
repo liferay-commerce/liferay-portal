@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
@@ -226,6 +227,8 @@ public class CPDefinitionModelDocumentContributor
 				CPField.SHORT_DESCRIPTION,
 				cpDefinition.getShortDescription(
 					cpDefinitionDefaultLanguageId));
+			document.addKeyword(
+				"roleFilterEnabled", cpDefinition.isRoleFilterEnabled());
 
 			List<CPDefinitionSpecificationOptionValue>
 				cpDefinitionSpecificationOptionValues =
@@ -351,6 +354,15 @@ public class CPDefinitionModelDocumentContributor
 						getCPDefinitionVisibilityRels(
 							cpDefinition.getCPDefinitionId(),
 							AccountEntry.class.getName(), QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS, null),
+					CPDefinitionVisibilityRel::getClassPK));
+			document.addNumber(
+				"commerceRoleIds",
+				TransformUtil.transformToLongArray(
+					_cpDefinitionVisibilityRelLocalService.
+						getCPDefinitionVisibilityRels(
+							cpDefinition.getCPDefinitionId(),
+							Role.class.getName(), QueryUtil.ALL_POS,
 							QueryUtil.ALL_POS, null),
 					CPDefinitionVisibilityRel::getClassPK));
 

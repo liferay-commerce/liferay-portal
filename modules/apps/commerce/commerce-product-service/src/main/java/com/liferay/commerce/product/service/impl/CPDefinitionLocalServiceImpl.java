@@ -114,6 +114,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -3436,6 +3437,11 @@ public class CPDefinitionLocalServiceImpl
 			predicate = predicate.and(
 				CPDefinitionTable.INSTANCE.status.in(
 					ArrayUtil.toArray(statuses)));
+		}
+
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-112683")) {
+			predicate = predicate.and(
+				CPDefinitionTable.INSTANCE.roleFilterEnabled.eq(false));
 		}
 
 		predicate = predicate.and(
