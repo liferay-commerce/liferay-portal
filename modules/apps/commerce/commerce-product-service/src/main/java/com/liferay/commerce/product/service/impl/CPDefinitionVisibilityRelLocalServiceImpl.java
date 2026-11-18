@@ -15,11 +15,14 @@ import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.commerce.product.service.base.CPDefinitionVisibilityRelLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -149,15 +152,28 @@ public class CPDefinitionVisibilityRelLocalServiceImpl
 	private void _validate(String className, long classPK, long companyId)
 		throws PortalException {
 
-		if (!className.equals(AccountEntry.class.getName())) {
+		if (className.equals(AccountEntry.class.getName())) {
+			AccountEntry accountEntry =
+				_accountEntryLocalService.fetchAccountEntry(classPK);
+
+			if ((accountEntry == null) ||
+				(accountEntry.getCompanyId() != companyId)) {
+
+				throw new CPDefinitionVisibilityRelClassPKException();
+			}
+
+			return;
+		}
+
+		if (!className.equals(Role.class.getName())) {
 			throw new CPDefinitionVisibilityRelClassNameIdException();
 		}
 
-		AccountEntry accountEntry = _accountEntryLocalService.fetchAccountEntry(
-			classPK);
+		Role role = _roleLocalService.fetchRole(classPK);
 
-		if ((accountEntry == null) ||
-			(accountEntry.getCompanyId() != companyId)) {
+		if ((role == null) || (role.getCompanyId() != companyId) ||
+			((role.getType() != RoleConstants.TYPE_ACCOUNT) &&
+			 (role.getType() != RoleConstants.TYPE_REGULAR))) {
 
 			throw new CPDefinitionVisibilityRelClassPKException();
 		}
@@ -168,6 +184,9 @@ public class CPDefinitionVisibilityRelLocalServiceImpl
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
