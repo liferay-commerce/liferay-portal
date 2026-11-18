@@ -6,6 +6,7 @@
 package com.liferay.headless.commerce.admin.catalog.internal.resource.v1_0;
 
 import com.liferay.account.model.AccountEntry;
+import com.liferay.commerce.product.exception.NoSuchCPDefinitionVisibilityRelException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.commerce.product.service.CPDefinitionService;
@@ -20,6 +21,7 @@ import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
 import java.util.Collections;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -37,13 +39,14 @@ public class ProductAccountResourceImpl extends BaseProductAccountResourceImpl {
 
 	@Override
 	public void deleteProductAccount(Long id) throws Exception {
+		_getCPDefinitionVisibilityRel(id);
+
 		_cpDefinitionVisibilityRelService.deleteCPDefinitionVisibilityRel(id);
 	}
 
 	@Override
 	public ProductAccount getProductAccount(Long id) throws Exception {
-		return _toProductAccount(
-			_cpDefinitionVisibilityRelService.getCPDefinitionVisibilityRel(id));
+		return _toProductAccount(_getCPDefinitionVisibilityRel(id));
 	}
 
 	@Override
@@ -68,6 +71,22 @@ public class ProductAccountResourceImpl extends BaseProductAccountResourceImpl {
 		return _getProductAccountsPage(
 			_cpDefinitionService.fetchCPDefinitionByCProductId(id, false),
 			pagination);
+	}
+
+	private CPDefinitionVisibilityRel _getCPDefinitionVisibilityRel(long id)
+		throws Exception {
+
+		CPDefinitionVisibilityRel cpDefinitionVisibilityRel =
+			_cpDefinitionVisibilityRelService.getCPDefinitionVisibilityRel(id);
+
+		if (!Objects.equals(
+				cpDefinitionVisibilityRel.getClassName(),
+				AccountEntry.class.getName())) {
+
+			throw new NoSuchCPDefinitionVisibilityRelException();
+		}
+
+		return cpDefinitionVisibilityRel;
 	}
 
 	private Page<ProductAccount> _getProductAccountsPage(
