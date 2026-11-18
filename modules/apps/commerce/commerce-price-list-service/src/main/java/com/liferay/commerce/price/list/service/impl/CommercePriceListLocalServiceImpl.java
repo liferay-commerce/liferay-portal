@@ -1110,6 +1110,15 @@ public class CommercePriceListLocalServiceImpl
 			long groupId, long commercePriceListId, String type)
 		throws PortalException {
 
+		CommercePriceList commercePriceList =
+			commercePriceListPersistence.findByPrimaryKey(commercePriceListId);
+
+		if ((commercePriceList.getGroupId() != groupId) ||
+			!Objects.equals(commercePriceList.getType(), type)) {
+
+			throw new NoSuchPriceListException();
+		}
+
 		CommercePriceList baseCommercePriceList =
 			commercePriceListPersistence.fetchByG_CBPL_T_First(
 				groupId, true, type, null);
