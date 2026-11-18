@@ -38,8 +38,8 @@ export class CommerceDNDTablePage {
 	readonly dropdownActionItem: (itemPosition: number) => Locator;
 	readonly emptyTableMessage: Locator;
 	readonly filterButton: Locator;
-	readonly filterMenuItem: (name: string) => Locator;
 	readonly filterValue: (value: string) => Locator;
+	readonly menuItem: (name: string) => Locator;
 	readonly resetFiltersButton: Locator;
 	readonly searchInput: Locator;
 	readonly table: Locator;
@@ -74,9 +74,9 @@ export class CommerceDNDTablePage {
 			exact: true,
 			name: 'Filter',
 		});
-		this.filterMenuItem = (name: string) =>
-			page.getByRole('menuitem', {exact: true, name});
 		this.filterValue = (value: string) => page.getByLabel(value);
+		this.menuItem = (name: string) =>
+			page.getByRole('menuitem', {exact: true, name});
 		this.resetFiltersButton = page.getByRole('button', {
 			exact: true,
 			name: 'Clear',
@@ -164,7 +164,7 @@ export class CommerceDNDTablePage {
 		if (backButton) {
 			await this.backButton.click();
 		}
-		await this.filterMenuItem(filterName).click();
+		await this.menuItem(filterName).click();
 		await this.filterValue(filterValue).check();
 
 		if (exclude) {
