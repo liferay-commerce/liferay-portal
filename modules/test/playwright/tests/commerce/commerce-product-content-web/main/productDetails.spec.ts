@@ -499,6 +499,12 @@ test(
 			await expect(
 				await productDetailsPage.skuField(bundleSku('black', 'xl'))
 			).toHaveCount(0);
+			await expect(
+				await productDetailsPage.priceField('$ 60.00')
+			).toBeVisible();
+			await expect(
+				await productDetailsPage.priceField('$ 50.00')
+			).toHaveCount(0);
 		});
 	}
 );
