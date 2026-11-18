@@ -8,8 +8,10 @@ package com.liferay.headless.commerce.admin.catalog.resource.v1_0.test;
 import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroup;
+import com.liferay.account.model.AccountRole;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountGroupLocalService;
+import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
@@ -58,6 +60,7 @@ import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductConfig
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOptionValue;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductProductGroup;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductRole;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductShippingConfiguration;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductSpecification;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductTaxConfiguration;
@@ -90,9 +93,11 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.SystemEvent;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.search.IndexStatusManagerThreadLocal;
@@ -110,6 +115,7 @@ import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -431,6 +437,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 		_testPatchProductWithInvalidCommerceCatalog();
 		_testPatchProductWithInvalidProductAccounts();
+		_testPatchProductWithInvalidProductRoles();
 		_testPatchProductWithNegativeValue("cost");
 		_testPatchProductWithNegativeValue("depth");
 		_testPatchProductWithNegativeValue("height");
@@ -440,6 +447,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPatchProductWithNegativeValue("width");
 		_testPatchProductWithObjectField();
 		_testPatchProductWithProductAccounts();
+		_testPatchProductWithProductRoles();
 	}
 
 	@Override
@@ -496,6 +504,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductWithProductAccountsWhenLazyReferencingEnabled();
 		_testPostProductWithProductChannelExternalReferenceCode();
 		_testPostProductWithProductGroupExternalReferenceCode();
+		_testPostProductWithProductRoles();
+		_testPostProductWithProductRolesWhenFeatureFlagDisabled();
 		_testPostProductWithTermsOfUseJournalArticleExternalReferenceCode();
 		_testPostProductWithTermsOfUseJournalArticleGroupExternalReferenceCode();
 		_testPostProductWithWorkflowSingleApprover();
@@ -506,6 +516,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	public void testPutProductByExternalReferenceCode() throws Exception {
 		_testPutProductByExternalReferenceCodeBatch();
 		_testPutProductByExternalReferenceCodeBatchWithProductAccounts();
+		_testPutProductByExternalReferenceCodeBatchWithProductRoles();
 		_testPutProductByExternalReferenceCodeWithFutureDisplayDate();
 		_testPutProductByExternalReferenceCodeWithGroupedProducts();
 		_testPutProductByExternalReferenceCodeWithInvalidCommerceCatalog();
@@ -680,6 +691,15 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				TransformUtil.transformToList(
 					product.getProductAccounts(),
 					ProductAccount::getAccountId)));
+	}
+
+	private void _assertProductRoles(Product product, Role... roles) {
+		Assert.assertEquals(
+			SetUtil.fromList(
+				TransformUtil.transformToList(roles, Role::getRoleId)),
+			SetUtil.fromList(
+				TransformUtil.transformToList(
+					product.getProductRoles(), ProductRole::getRoleId)));
 	}
 
 	private ProductResource _getProductResource(String nestedFields)
@@ -1614,6 +1634,70 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		}
 	}
 
+	private void _testPatchProductWithInvalidProductRoles() throws Exception {
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			Product postProduct = productResource.postProduct(randomProduct());
+
+			_assertProblemException(
+				"BAD_REQUEST",
+				new Product() {
+					{
+						setProductRoles(
+							new ProductRole[] {
+								new ProductRole() {
+									{
+										externalReferenceCode =
+											RandomTestUtil.randomString();
+									}
+								}
+							});
+					}
+				},
+				patchProduct -> productResource.patchProduct(
+					postProduct.getProductId(), patchProduct));
+
+			_assertProblemException(
+				"BAD_REQUEST",
+				new Product() {
+					{
+						setProductRoles(
+							new ProductRole[] {
+								new ProductRole() {
+									{
+										roleId = RandomTestUtil.randomLong();
+									}
+								}
+							});
+					}
+				},
+				patchProduct -> productResource.patchProduct(
+					postProduct.getProductId(), patchProduct));
+
+			Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+			_assertProblemException(
+				"BAD_REQUEST",
+				new Product() {
+					{
+						setProductRoles(
+							new ProductRole[] {
+								new ProductRole() {
+									{
+										roleId = role.getRoleId();
+										roleType = ProductRole.RoleType.ACCOUNT;
+									}
+								}
+							});
+					}
+				},
+				patchProduct -> productResource.patchProduct(
+					postProduct.getProductId(), patchProduct));
+		}
+	}
+
 	private void _testPatchProductWithNegativeValue(String fieldName)
 		throws Exception {
 
@@ -1857,6 +1941,74 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				});
 
 			_assertProductAccounts(
+				productResource.getProduct(postProduct.getProductId()));
+		}
+	}
+
+	private void _testPatchProductWithProductRoles() throws Exception {
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			Role role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+			Product product = randomProduct();
+
+			product.setProductRoleFilter(true);
+			product.setProductRoles(
+				new ProductRole[] {
+					new ProductRole() {
+						{
+							roleId = role1.getRoleId();
+						}
+					}
+				});
+
+			Product postProduct = productResource.postProduct(product);
+
+			productResource.patchProduct(
+				postProduct.getProductId(), new Product());
+
+			Product getProduct = productResource.getProduct(
+				postProduct.getProductId());
+
+			Assert.assertTrue(getProduct.getProductRoleFilter());
+
+			_assertProductRoles(getProduct, role1);
+
+			Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+			productResource.patchProduct(
+				postProduct.getProductId(),
+				new Product() {
+					{
+						setProductRoleFilter(false);
+						setProductRoles(
+							new ProductRole[] {
+								new ProductRole() {
+									{
+										roleId = role2.getRoleId();
+									}
+								}
+							});
+					}
+				});
+
+			getProduct = productResource.getProduct(postProduct.getProductId());
+
+			Assert.assertFalse(getProduct.getProductRoleFilter());
+
+			_assertProductRoles(getProduct, role2);
+
+			productResource.patchProduct(
+				postProduct.getProductId(),
+				new Product() {
+					{
+						setProductRoles(new ProductRole[0]);
+					}
+				});
+
+			_assertProductRoles(
 				productResource.getProduct(postProduct.getProductId()));
 		}
 	}
@@ -2646,6 +2798,127 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			GetterUtil.getLong(productProductGroup.getProductGroupId()));
 	}
 
+	private void _testPostProductWithProductRoles() throws Exception {
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			AccountRole accountRole = _accountRoleLocalService.addAccountRole(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+				RandomTestUtil.randomString(), null, null);
+
+			Product product = randomProduct();
+
+			product.setProductRoleFilter(true);
+			product.setProductRoles(
+				new ProductRole[] {
+					new ProductRole() {
+						{
+							externalReferenceCode =
+								accountRole.getExternalReferenceCode();
+							roleType = ProductRole.RoleType.ACCOUNT;
+						}
+					}
+				});
+
+			Product postProduct = productResource.postProduct(product);
+
+			Assert.assertTrue(postProduct.getProductRoleFilter());
+
+			ProductRole[] productRoles = postProduct.getProductRoles();
+
+			Assert.assertEquals(
+				Arrays.toString(productRoles), 1, productRoles.length);
+
+			ProductRole productRole = productRoles[0];
+
+			Role role1 = accountRole.getRole();
+
+			Assert.assertEquals(
+				role1.getExternalReferenceCode(),
+				productRole.getExternalReferenceCode());
+
+			Assert.assertNotNull(productRole.getId());
+			Assert.assertEquals(role1.getName(), productRole.getName());
+			Assert.assertEquals(
+				Long.valueOf(role1.getRoleId()), productRole.getRoleId());
+			Assert.assertEquals(
+				ProductRole.RoleType.ACCOUNT, productRole.getRoleType());
+
+			Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+			product = randomProduct();
+
+			product.setProductRoles(
+				new ProductRole[] {
+					new ProductRole() {
+						{
+							roleId = role1.getRoleId();
+						}
+					},
+					new ProductRole() {
+						{
+							externalReferenceCode =
+								role2.getExternalReferenceCode();
+							roleId = RandomTestUtil.randomLong();
+							roleType = ProductRole.RoleType.REGULAR;
+						}
+					}
+				});
+
+			postProduct = productResource.postProduct(product);
+
+			Assert.assertFalse(postProduct.getProductRoleFilter());
+
+			_assertProductRoles(
+				productResource.getProduct(postProduct.getProductId()), role1,
+				role2);
+		}
+	}
+
+	private void _testPostProductWithProductRolesWhenFeatureFlagDisabled()
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		Product product = randomProduct();
+
+		product.setProductRoleFilter(true);
+		product.setProductRoles(
+			new ProductRole[] {
+				new ProductRole() {
+					{
+						roleId = role.getRoleId();
+					}
+				}
+			});
+
+		Product postProduct = null;
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-112683")) {
+
+			postProduct = productResource.postProduct(product);
+
+			Assert.assertNull(postProduct.getProductRoleFilter());
+			Assert.assertNull(postProduct.getProductRoles());
+		}
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			Product getProduct = productResource.getProduct(
+				postProduct.getProductId());
+
+			Assert.assertFalse(getProduct.getProductRoleFilter());
+
+			_assertProductRoles(getProduct);
+		}
+	}
+
 	private void _testPostProductWithTermsOfUseJournalArticleExternalReferenceCode()
 		throws Exception {
 
@@ -2821,6 +3094,51 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				productResource.getProductByExternalReferenceCode(
 					postProduct.getExternalReferenceCode()),
 				accountEntry2);
+		}
+	}
+
+	private void _testPutProductByExternalReferenceCodeBatchWithProductRoles()
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			Product postProduct = productResource.postProduct(randomProduct());
+
+			Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+			JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode",
+						postProduct.getExternalReferenceCode()
+					).put(
+						"productRoleFilter", true
+					).put(
+						"productRoles",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"externalReferenceCode",
+								role.getExternalReferenceCode()))
+					)
+				).toString(),
+				StringBundler.concat(
+					"headless-batch-engine/v1.0/import-task",
+					"/com.liferay.headless.commerce.admin.catalog.dto.v1_0.",
+					"Product?createStrategy=UPSERT&importStrategy=",
+					"ON_ERROR_FAIL&updateStrategy=PARTIAL_UPDATE"),
+				Http.Method.POST);
+
+			waitForFinish("COMPLETED", jsonObject);
+
+			Product getProduct =
+				productResource.getProductByExternalReferenceCode(
+					postProduct.getExternalReferenceCode());
+
+			Assert.assertTrue(getProduct.getProductRoleFilter());
+
+			_assertProductRoles(getProduct, role);
 		}
 	}
 
@@ -3101,6 +3419,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Inject
 	private AccountGroupLocalService _accountGroupLocalService;
+
+	@Inject
+	private AccountRoleLocalService _accountRoleLocalService;
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
