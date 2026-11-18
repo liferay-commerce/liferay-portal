@@ -600,6 +600,27 @@ public interface CPDefinitionModel
 	public void setPublished(boolean published);
 
 	/**
+	 * Returns the role filter enabled of this cp definition.
+	 *
+	 * @return the role filter enabled of this cp definition
+	 */
+	public boolean getRoleFilterEnabled();
+
+	/**
+	 * Returns <code>true</code> if this cp definition is role filter enabled.
+	 *
+	 * @return <code>true</code> if this cp definition is role filter enabled; <code>false</code> otherwise
+	 */
+	public boolean isRoleFilterEnabled();
+
+	/**
+	 * Sets whether this cp definition is role filter enabled.
+	 *
+	 * @param roleFilterEnabled the role filter enabled of this cp definition
+	 */
+	public void setRoleFilterEnabled(boolean roleFilterEnabled);
+
+	/**
 	 * Returns the ship separately of this cp definition.
 	 *
 	 * @return the ship separately of this cp definition
@@ -1035,4 +1056,4 @@ public interface CPDefinitionModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-409355784
+// LIFERAY-SERVICE-BUILDER-HASH:-1065404766

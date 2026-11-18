@@ -116,6 +116,10 @@ public class CPDefinitionTable extends BaseTable<CPDefinitionTable> {
 			Column.FLAG_DEFAULT);
 	public final Column<CPDefinitionTable, Boolean> published = createColumn(
 		"published", Boolean.class, Types.BOOLEAN, Column.FLAG_DEFAULT);
+	public final Column<CPDefinitionTable, Boolean> roleFilterEnabled =
+		createColumn(
+			"roleFilterEnabled", Boolean.class, Types.BOOLEAN,
+			Column.FLAG_DEFAULT);
 	public final Column<CPDefinitionTable, Boolean> shipSeparately =
 		createColumn(
 			"shipSeparately", Boolean.class, Types.BOOLEAN,
@@ -172,4 +176,4 @@ public class CPDefinitionTable extends BaseTable<CPDefinitionTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1285525045
+// LIFERAY-SERVICE-BUILDER-HASH:-690578484

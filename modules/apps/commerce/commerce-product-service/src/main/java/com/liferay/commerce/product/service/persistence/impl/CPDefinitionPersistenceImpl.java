@@ -1430,6 +1430,7 @@ public class CPDefinitionPersistenceImpl
 		ctMergeColumnNames.add("maxSubscriptionCycles");
 		ctMergeColumnNames.add("productTypeName");
 		ctMergeColumnNames.add("published");
+		ctMergeColumnNames.add("roleFilterEnabled");
 		ctMergeColumnNames.add("shipSeparately");
 		ctMergeColumnNames.add("shippable");
 		ctMergeColumnNames.add("shippingExtraPrice");
@@ -1817,4 +1818,4 @@ public class CPDefinitionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1937175628
+// LIFERAY-SERVICE-BUILDER-HASH:-1921704092
