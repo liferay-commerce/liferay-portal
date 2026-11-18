@@ -724,6 +724,13 @@ public class CommerceProductServiceUpgradeStepRegistrator
 		registry.register(
 			"6.8.0", "6.9.0", CPDefinitionVisibilityRelTable.create());
 
+		registry.register(
+			"6.9.0", "6.10.0",
+			UpgradeProcessFactory.addColumns(
+				"CPDefinition", "roleFilterEnabled BOOLEAN"),
+			UpgradeProcessFactory.runSQL(
+				"update CPDefinition set roleFilterEnabled = [$FALSE$]"));
+
 		if (_log.isInfoEnabled()) {
 			_log.info("Commerce product upgrade step registrator finished");
 		}
