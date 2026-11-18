@@ -28,6 +28,7 @@ import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Category;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductAccount;
+import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductRole;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.Status;
 import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter.constants.DTOConverterConstants;
 import com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.util.CreatorUtil;
@@ -37,6 +38,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -199,6 +201,36 @@ public class ProductDTOConverter
 					});
 				setProductChannelFilter(cpDefinition::isChannelFilterEnabled);
 				setProductId(cProduct::getCProductId);
+				setProductRoleFilter(
+					() -> {
+						if (!FeatureFlagManagerUtil.isEnabled(
+								cpDefinition.getCompanyId(), "LPD-112683")) {
+
+							return null;
+						}
+
+						return cpDefinition.isRoleFilterEnabled();
+					});
+				setProductRoles(
+					() -> {
+						if (!FeatureFlagManagerUtil.isEnabled(
+								cpDefinition.getCompanyId(), "LPD-112683")) {
+
+							return null;
+						}
+
+						return TransformUtil.transformToArray(
+							_cpDefinitionVisibilityRelLocalService.
+								getCPDefinitionVisibilityRels(
+									cpDefinition.getCPDefinitionId(),
+									Role.class.getName(), QueryUtil.ALL_POS,
+									QueryUtil.ALL_POS, null),
+							cpDefinitionVisibilityRel ->
+								_productRoleDTOConverter.toDTO(
+									dtoConverterContext,
+									cpDefinitionVisibilityRel),
+							ProductRole.class);
+					});
 				setProductStatus(cpDefinition::getStatus);
 				setProductType(cpType::getName);
 				setProductTypeI18n(() -> cpType.getLabel(locale));
@@ -365,6 +397,10 @@ public class ProductDTOConverter
 	@Reference(target = DTOConverterConstants.PRODUCT_ACCOUNT_DTO_CONVERTER)
 	private DTOConverter<CPDefinitionVisibilityRel, ProductAccount>
 		_productAccountDTOConverter;
+
+	@Reference(target = DTOConverterConstants.PRODUCT_ROLE_DTO_CONVERTER)
+	private DTOConverter<CPDefinitionVisibilityRel, ProductRole>
+		_productRoleDTOConverter;
 
 	@Reference
 	private UserLocalService _userLocalService;
