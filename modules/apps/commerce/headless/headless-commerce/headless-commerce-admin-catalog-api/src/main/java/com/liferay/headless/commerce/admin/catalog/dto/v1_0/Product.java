@@ -2027,6 +2027,98 @@ public class Product implements Serializable {
 	private Supplier<ProductOption[]> _productOptionsSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "When true, the product is visible only to people who have one of the roles in `productRoles`. Null and ignored while the feature is disabled.",
+		example = "true"
+	)
+	public Boolean getProductRoleFilter() {
+		if (_productRoleFilterSupplier != null) {
+			productRoleFilter = _productRoleFilterSupplier.get();
+
+			_productRoleFilterSupplier = null;
+		}
+
+		return productRoleFilter;
+	}
+
+	public void setProductRoleFilter(Boolean productRoleFilter) {
+		this.productRoleFilter = productRoleFilter;
+
+		_productRoleFilterSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setProductRoleFilter(
+		UnsafeSupplier<Boolean, Exception> productRoleFilterUnsafeSupplier) {
+
+		_productRoleFilterSupplier = () -> {
+			try {
+				return productRoleFilterUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "When true, the product is visible only to people who have one of the roles in `productRoles`. Null and ignored while the feature is disabled."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean productRoleFilter;
+
+	@JsonIgnore
+	private Supplier<Boolean> _productRoleFilterSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Regular roles and account roles allowed to see this product when `productRoleFilter` is enabled; a missing field leaves them unchanged and an array replaces them. Null and ignored while the feature is disabled."
+	)
+	@Valid
+	public ProductRole[] getProductRoles() {
+		if (_productRolesSupplier != null) {
+			productRoles = _productRolesSupplier.get();
+
+			_productRolesSupplier = null;
+		}
+
+		return productRoles;
+	}
+
+	public void setProductRoles(ProductRole[] productRoles) {
+		this.productRoles = productRoles;
+
+		_productRolesSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setProductRoles(
+		UnsafeSupplier<ProductRole[], Exception> productRolesUnsafeSupplier) {
+
+		_productRolesSupplier = () -> {
+			try {
+				return productRolesUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Regular roles and account roles allowed to see this product when `productRoleFilter` is enabled; a missing field leaves them unchanged and an array replaces them. Null and ignored while the feature is disabled."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected ProductRole[] productRoles;
+
+	@JsonIgnore
+	private Supplier<ProductRole[]> _productRolesSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "Specification attribute values recorded against this product."
 	)
 	@Valid
@@ -3521,6 +3613,40 @@ public class Product implements Serializable {
 			sb.append("]");
 		}
 
+		Boolean productRoleFilter = getProductRoleFilter();
+
+		if (productRoleFilter != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productRoleFilter\": ");
+
+			sb.append(productRoleFilter);
+		}
+
+		ProductRole[] productRoles = getProductRoles();
+
+		if (productRoles != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productRoles\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < productRoles.length; i++) {
+				sb.append(String.valueOf(productRoles[i]));
+
+				if ((i + 1) < productRoles.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		ProductSpecification[] productSpecifications =
 			getProductSpecifications();
 
@@ -3911,4 +4037,4 @@ public class Product implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-227241570
+// LIFERAY-REST-BUILDER-HASH:687371281
