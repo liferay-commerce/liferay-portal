@@ -17,6 +17,7 @@ import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccoun
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductChannel;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOption;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductProductGroup;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductRole;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductSpecification;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.RelatedProduct;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Sku;
@@ -663,6 +664,36 @@ public class ProductSerDes {
 			sb.append("]");
 		}
 
+		if (product.getProductRoleFilter() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productRoleFilter\": ");
+
+			sb.append(product.getProductRoleFilter());
+		}
+
+		if (product.getProductRoles() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productRoles\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < product.getProductRoles().length; i++) {
+				sb.append(String.valueOf(product.getProductRoles()[i]));
+
+				if ((i + 1) < product.getProductRoles().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (product.getProductSpecifications() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -1248,6 +1279,22 @@ public class ProductSerDes {
 				"productOptions", String.valueOf(product.getProductOptions()));
 		}
 
+		if (product.getProductRoleFilter() == null) {
+			map.put("productRoleFilter", null);
+		}
+		else {
+			map.put(
+				"productRoleFilter",
+				String.valueOf(product.getProductRoleFilter()));
+		}
+
+		if (product.getProductRoles() == null) {
+			map.put("productRoles", null);
+		}
+		else {
+			map.put("productRoles", String.valueOf(product.getProductRoles()));
+		}
+
 		if (product.getProductSpecifications() == null) {
 			map.put("productSpecifications", null);
 		}
@@ -1544,6 +1591,12 @@ public class ProductSerDes {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "productOptions")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "productRoleFilter")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "productRoles")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -2014,6 +2067,27 @@ public class ProductSerDes {
 					product.setProductOptions(productOptionsArray);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "productRoleFilter")) {
+				if (jsonParserFieldValue != null) {
+					product.setProductRoleFilter((Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "productRoles")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					ProductRole[] productRolesArray =
+						new ProductRole[jsonParserFieldValues.length];
+
+					for (int i = 0; i < productRolesArray.length; i++) {
+						productRolesArray[i] = ProductRoleSerDes.toDTO(
+							(String)jsonParserFieldValues[i]);
+					}
+
+					product.setProductRoles(productRolesArray);
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "productSpecifications")) {
 
@@ -2244,4 +2318,4 @@ public class ProductSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:672379910
+// LIFERAY-REST-BUILDER-HASH:387256608

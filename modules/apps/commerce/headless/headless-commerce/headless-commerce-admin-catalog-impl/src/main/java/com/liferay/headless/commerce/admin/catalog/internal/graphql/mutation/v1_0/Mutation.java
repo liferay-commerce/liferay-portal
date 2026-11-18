@@ -67,6 +67,7 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductGroupRes
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductOptionResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductOptionValueResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductResource;
+import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductRoleResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductShippingConfigurationResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductSpecificationResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductSubscriptionConfigurationResource;
@@ -328,6 +329,14 @@ public class Mutation {
 
 		_productOptionValueResourceComponentServiceObjects =
 			productOptionValueResourceComponentServiceObjects;
+	}
+
+	public static void setProductRoleResourceComponentServiceObjects(
+		ComponentServiceObjects<ProductRoleResource>
+			productRoleResourceComponentServiceObjects) {
+
+		_productRoleResourceComponentServiceObjects =
+			productRoleResourceComponentServiceObjects;
 	}
 
 	public static void
@@ -3189,6 +3198,35 @@ public class Mutation {
 						callbackURL, object));
 	}
 
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-112683")
+	@GraphQLField(
+		description = "Removes the role assignment identified by ID from its product. Returns 404 when the record is not found or does not link a role. Side effects -- Removes the role <-> product association."
+	)
+	public boolean deleteProductRole(@GraphQLName("id") Long id)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_productRoleResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productRoleResource -> productRoleResource.deleteProductRole(id));
+
+		return true;
+	}
+
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-112683")
+	@GraphQLField
+	public Response deleteProductRoleBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productRoleResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productRoleResource -> productRoleResource.deleteProductRoleBatch(
+				callbackURL, object));
+	}
+
 	@GraphQLField(
 		description = "Partially updates the shipping configuration of the product identified by external reference code. Returns 404 when the product external reference code is not found. Side effects -- Updates the product definition shipping fields (weight, width, height, depth, etc.)."
 	)
@@ -4654,6 +4692,26 @@ public class Mutation {
 	}
 
 	private void _populateResourceContext(
+			ProductRoleResource productRoleResource)
+		throws Exception {
+
+		productRoleResource.setContextAcceptLanguage(_acceptLanguage);
+		productRoleResource.setContextCompany(_company);
+		productRoleResource.setContextHttpServletRequest(_httpServletRequest);
+		productRoleResource.setContextHttpServletResponse(_httpServletResponse);
+		productRoleResource.setContextUriInfo(_uriInfo);
+		productRoleResource.setContextUser(_user);
+		productRoleResource.setGroupLocalService(_groupLocalService);
+		productRoleResource.setRoleLocalService(_roleLocalService);
+
+		productRoleResource.setVulcanBatchEngineExportTaskResource(
+			_vulcanBatchEngineExportTaskResource);
+
+		productRoleResource.setVulcanBatchEngineImportTaskResource(
+			_vulcanBatchEngineImportTaskResource);
+	}
+
+	private void _populateResourceContext(
 			ProductShippingConfigurationResource
 				productShippingConfigurationResource)
 		throws Exception {
@@ -4931,6 +4989,8 @@ public class Mutation {
 		_productOptionResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ProductOptionValueResource>
 		_productOptionValueResourceComponentServiceObjects;
+	private static ComponentServiceObjects<ProductRoleResource>
+		_productRoleResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ProductShippingConfigurationResource>
 		_productShippingConfigurationResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ProductSpecificationResource>
@@ -4973,4 +5033,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:880534228
+// LIFERAY-REST-BUILDER-HASH:-270142425
