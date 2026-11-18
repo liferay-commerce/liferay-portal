@@ -14,6 +14,7 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.info.collection.provider.CollectionQuery;
@@ -22,9 +23,12 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.pagination.InfoPage;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -160,6 +164,112 @@ public abstract class BaseItemCollectionProviderTestCase {
 		}
 	}
 
+	@Test
+	public void testGetRelatedItemsInfoPageWithAccountGroupFilterEnabledWhenFeatureFlagIsDisabled()
+		throws Exception {
+
+		RelatedInfoItemCollectionProvider<CPDefinition, CPDefinition>
+			relatedInfoItemCollectionProvider =
+				infoItemServiceRegistry.getInfoItemService(
+					RelatedInfoItemCollectionProvider.class,
+					getInfoItemCollectionProviderName());
+
+		CollectionQuery collectionQuery = new CollectionQuery();
+
+		collectionQuery.setRelatedItemObject(getRandomRelatedItemObject());
+
+		List<? extends CPDefinition> pageItems =
+			IdempotentRetryAssert.retryAssert(
+				5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+				() -> {
+					InfoPage<CPDefinition> infoPage =
+						relatedInfoItemCollectionProvider.getCollectionInfoPage(
+							collectionQuery);
+
+					List<? extends CPDefinition> cpDefinitions =
+						infoPage.getPageItems();
+
+					Assert.assertFalse(cpDefinitions.isEmpty());
+
+					return cpDefinitions;
+				});
+
+		CPDefinition cpDefinition = pageItems.get(0);
+
+		cpDefinitionLocalService.updateCPDefinitionAccountGroupFilter(
+			cpDefinition.getCPDefinitionId(), true);
+
+		InfoPage<CPDefinition> infoPage =
+			relatedInfoItemCollectionProvider.getCollectionInfoPage(
+				collectionQuery);
+
+		pageItems = infoPage.getPageItems();
+
+		Assert.assertTrue(pageItems.contains(cpDefinition));
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testGetRelatedItemsInfoPageWithRoleFilterEnabled()
+		throws Exception {
+
+		RelatedInfoItemCollectionProvider<CPDefinition, CPDefinition>
+			relatedInfoItemCollectionProvider =
+				infoItemServiceRegistry.getInfoItemService(
+					RelatedInfoItemCollectionProvider.class,
+					getInfoItemCollectionProviderName());
+
+		CollectionQuery collectionQuery = new CollectionQuery();
+
+		collectionQuery.setRelatedItemObject(getRandomRelatedItemObject());
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+		List<? extends CPDefinition> pageItems =
+			IdempotentRetryAssert.retryAssert(
+				5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+				() -> {
+					InfoPage<CPDefinition> infoPage =
+						relatedInfoItemCollectionProvider.getCollectionInfoPage(
+							collectionQuery);
+
+					List<? extends CPDefinition> cpDefinitions =
+						infoPage.getPageItems();
+
+					Assert.assertFalse(cpDefinitions.isEmpty());
+
+					return cpDefinitions;
+				});
+
+		CPDefinition cpDefinition = pageItems.get(0);
+
+		cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition.getCPDefinitionId(), true);
+
+		InfoPage<CPDefinition> infoPage =
+			relatedInfoItemCollectionProvider.getCollectionInfoPage(
+				collectionQuery);
+
+		pageItems = infoPage.getPageItems();
+
+		Assert.assertFalse(pageItems.contains(cpDefinition));
+
+		Role role = roleLocalService.getRole(
+			cpDefinition.getCompanyId(), RoleConstants.ADMINISTRATOR);
+
+		cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(), cpDefinition.getCPDefinitionId(),
+			Role.class.getName(), role.getRoleId());
+
+		infoPage = relatedInfoItemCollectionProvider.getCollectionInfoPage(
+			collectionQuery);
+
+		pageItems = infoPage.getPageItems();
+
+		Assert.assertTrue(pageItems.contains(cpDefinition));
+	}
+
 	protected CommerceCatalog addCommerceCatalog() throws Exception {
 		User user = UserTestUtil.addUser();
 
@@ -188,7 +298,14 @@ public abstract class BaseItemCollectionProviderTestCase {
 	protected CPDefinitionLocalService cpDefinitionLocalService;
 
 	@Inject
+	protected CPDefinitionVisibilityRelLocalService
+		cpDefinitionVisibilityRelLocalService;
+
+	@Inject
 	protected InfoItemServiceRegistry infoItemServiceRegistry;
+
+	@Inject
+	protected RoleLocalService roleLocalService;
 
 	private void _testGetRelatedItemsInfoPage(
 		RelatedInfoItemCollectionProvider<CPDefinition, CPDefinition>

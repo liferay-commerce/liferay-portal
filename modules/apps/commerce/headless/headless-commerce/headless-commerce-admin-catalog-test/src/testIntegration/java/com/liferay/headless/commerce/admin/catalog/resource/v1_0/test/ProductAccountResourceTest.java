@@ -21,8 +21,11 @@ import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccoun
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -61,6 +64,14 @@ public class ProductAccountResourceTest
 		_cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
 			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
 			false);
+	}
+
+	@Override
+	@Test
+	public void testDeleteProductAccount() throws Exception {
+		super.testDeleteProductAccount();
+
+		_testDeleteProductAccountWithProductRole();
 	}
 
 	@Override
@@ -170,6 +181,18 @@ public class ProductAccountResourceTest
 		return _addProductAccount(randomProductAccount());
 	}
 
+	private CPDefinitionVisibilityRel _addCPDefinitionVisibilityRel()
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		return _cpDefinitionVisibilityRelLocalService.
+			addCPDefinitionVisibilityRel(
+				null, TestPropsValues.getUserId(),
+				_cpDefinition.getCPDefinitionId(), Role.class.getName(),
+				role.getRoleId());
+	}
+
 	private ProductAccount _addProductAccount(ProductAccount productAccount)
 		throws Exception {
 
@@ -181,6 +204,16 @@ public class ProductAccountResourceTest
 
 		return productAccountResource.getProductAccount(
 			cpDefinitionVisibilityRel.getCPDefinitionVisibilityRelId());
+	}
+
+	private void _testDeleteProductAccountWithProductRole() throws Exception {
+		CPDefinitionVisibilityRel cpDefinitionVisibilityRel =
+			_addCPDefinitionVisibilityRel();
+
+		assertHttpResponseStatusCode(
+			404,
+			productAccountResource.deleteProductAccountHttpResponse(
+				cpDefinitionVisibilityRel.getCPDefinitionVisibilityRelId()));
 	}
 
 	private void _testGetProductIdProductAccountsPageWithNonexistentProduct()
