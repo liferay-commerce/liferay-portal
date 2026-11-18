@@ -345,9 +345,7 @@ test(
 				.nth(0)
 				.fill('10');
 
-			await commerceAdminProductDetailsSkusPage.skuPriceAddModal
-				.getByRole('button', {exact: true, name: 'Add Entry'})
-				.click();
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalAddEntryButton.click();
 
 			await commerceAdminProductDetailsSkusPage.skuPriceListSelect
 				.nth(1)
@@ -365,16 +363,256 @@ test(
 			).toBeHidden();
 
 			await expect(
-				commerceAdminProductDetailsSkusPage.sidePanelFrame
-					.getByRole('row')
-					.filter({hasText: priceList1.name})
+				commerceAdminProductDetailsSkusPage.sidePanelSkuPriceTableRow(
+					priceList1.name
+				)
 			).toContainText('$ 10.00');
 			await expect(
-				commerceAdminProductDetailsSkusPage.sidePanelFrame
-					.getByRole('row')
-					.filter({hasText: priceList2.name})
+				commerceAdminProductDetailsSkusPage.sidePanelSkuPriceTableRow(
+					priceList2.name
+				)
 			).toContainText('$ 20.00');
 		});
+	}
+);
+
+test(
+	'The add price dialog shows the unit of measure fields of the SKU and adds an entry for each one',
+	{tag: ['@COMMERCE-12289', '@COMMERCE-12290', '@LPD-108844']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsSkusPage,
+		commerceAdminProductPage,
+	}) => {
+		const {catalog, priceList1, priceList2, product, sku} =
+			await test.step('Create a product with a SKU priced 50 and two price lists', async () => {
+				const catalog =
+					await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+				const product =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						skus: [
+							{
+								cost: 0,
+								price: 50,
+								published: true,
+								purchasable: true,
+								sku: `SKU-${getRandomInt()}`,
+							},
+						],
+					});
+
+				const productDetails =
+					await apiHelpers.headlessCommerceAdminCatalog.getProduct(
+						product.productId
+					);
+
+				const priceList1 =
+					await apiHelpers.headlessCommerceAdminPricing.postPriceList(
+						{
+							catalogId: catalog.id,
+							currencyCode: 'USD',
+							name: getRandomString(),
+							type: 'price-list',
+						}
+					);
+				const priceList2 =
+					await apiHelpers.headlessCommerceAdminPricing.postPriceList(
+						{
+							catalogId: catalog.id,
+							currencyCode: 'EUR',
+							name: getRandomString(),
+							type: 'price-list',
+						}
+					);
+
+				return {
+					catalog,
+					priceList1,
+					priceList2,
+					product,
+					sku: productDetails.skus[0],
+				};
+			});
+
+		await test.step('Without units of measure the dialog shows the SKU price and no unit of measure field', async () => {
+			await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+			await commerceAdminProductDetailsPage.goToProductSkus();
+
+			await commerceAdminProductDetailsSkusPage
+				.skusTableRowLink(sku.sku)
+				.click();
+			await commerceAdminProductDetailsSkusPage.goToSkuTab('Price');
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelSkuPriceTableRowLink(
+					`${catalog.name} Base Price List`
+				)
+			).toBeVisible();
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelSkuPriceTableRow(
+					priceList1.name
+				)
+			).toHaveCount(0);
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelSkuPriceTableRow(
+					priceList2.name
+				)
+			).toHaveCount(0);
+
+			await commerceAdminProductDetailsSkusPage.skuPriceAddButton.click();
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.skuPriceListSelect
+			).toBeVisible();
+			await expect(
+				commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitOfMeasureSelect
+			).toHaveCount(0);
+			await expect(
+				commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+			).toHaveValue('50');
+
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalCancelButton.click();
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+			).toBeHidden();
+		});
+
+		await test.step('Add two units of measure to the SKU', async () => {
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku.id,
+				{
+					basePrice: 1,
+					key: 'uom1',
+					name: {en_US: 'uom1'},
+					primary: true,
+					priority: 1,
+				}
+			);
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku.id,
+				{
+					basePrice: 2,
+					key: 'uom2',
+					name: {en_US: 'uom2'},
+					primary: false,
+					priority: 2,
+				}
+			);
+		});
+
+		await test.step('With units of measure the dialog preselects the first one and its price', async () => {
+			await commerceAdminProductDetailsSkusPage.skuPriceAddButton.click();
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitOfMeasureSelect
+			).toHaveValue('uom1');
+			await expect(
+				commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+			).toHaveValue('1');
+		});
+
+		await test.step('Add an entry for each unit of measure on a different price list', async () => {
+			await commerceAdminProductDetailsSkusPage.skuPriceListSelect
+				.nth(0)
+				.selectOption(priceList1.name);
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitOfMeasureSelect
+				.nth(0)
+				.selectOption('uom1');
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+				.nth(0)
+				.fill('30');
+
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalAddEntryButton.click();
+
+			await commerceAdminProductDetailsSkusPage.skuPriceListSelect
+				.nth(1)
+				.selectOption(priceList2.name);
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitOfMeasureSelect
+				.nth(1)
+				.selectOption('uom2');
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput
+				.nth(1)
+				.fill('90');
+
+			await commerceAdminProductDetailsSkusPage.skuPriceAddModalAddButton.click();
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.skuPriceAddModalUnitPriceInput.first()
+			).toBeHidden();
+		});
+
+		await test.step('Check the entries show their unit of measure and the price in the price list currency', async () => {
+			const priceList1Row =
+				commerceAdminProductDetailsSkusPage.sidePanelSkuPriceTableRow(
+					priceList1.name
+				);
+
+			await expect(priceList1Row).toHaveCount(1);
+			await expect(priceList1Row).toContainText('uom1');
+			await expect(priceList1Row).toContainText('$ 30.00');
+
+			const priceList2Row =
+				commerceAdminProductDetailsSkusPage.sidePanelSkuPriceTableRow(
+					priceList2.name
+				);
+
+			await expect(priceList2Row).toHaveCount(1);
+			await expect(priceList2Row).toContainText('uom2');
+			await expect(priceList2Row).toContainText('€ 90.00');
+		});
+	}
+);
+
+test(
+	'Delete a SKU from the SKUs table',
+	{tag: ['@COMMERCE-6023', '@LPD-108844']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsSkusPage,
+		commerceAdminProductPage,
+		page,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const skuCodes = [`SKU-${getRandomInt()}`, `SKU-${getRandomInt()}`];
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				skus: skuCodes.map((skuCode) => ({
+					cost: 0,
+					price: 10,
+					published: true,
+					purchasable: true,
+					sku: skuCode,
+				})),
+			});
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		await commerceAdminProductDetailsPage.goToProductSkus();
+
+		await commerceAdminProductDetailsSkusPage
+			.skusTableRowActionsButton(skuCodes[0])
+			.click();
+		await commerceAdminProductDetailsSkusPage.menuItem('Delete').click();
+
+		await waitForAlert(page);
+
+		await expect(
+			commerceAdminProductDetailsSkusPage.skusTableRowLink(skuCodes[0])
+		).toHaveCount(0);
+		await expect(
+			commerceAdminProductDetailsSkusPage.skusTableRowLink(skuCodes[1])
+		).toBeVisible();
 	}
 );
 
