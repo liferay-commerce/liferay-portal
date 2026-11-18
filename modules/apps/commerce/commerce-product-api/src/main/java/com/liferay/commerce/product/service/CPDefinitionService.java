@@ -253,6 +253,10 @@ public interface CPDefinitionService extends BaseService {
 			long cpDefinitionId, boolean enable)
 		throws PortalException;
 
+	public CPDefinition updateCPDefinitionRoleFilter(
+			long cpDefinitionId, boolean enable)
+		throws PortalException;
+
 	public CPDefinition updateExternalReferenceCode(
 			long cpDefinitionId, String externalReferenceCode)
 		throws PortalException;
@@ -285,4 +289,4 @@ public interface CPDefinitionService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1099460396
+// LIFERAY-SERVICE-BUILDER-HASH:510621710

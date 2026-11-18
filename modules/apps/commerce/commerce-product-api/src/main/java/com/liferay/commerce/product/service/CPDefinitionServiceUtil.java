@@ -386,6 +386,14 @@ public class CPDefinitionServiceUtil {
 			cpDefinitionId, enable);
 	}
 
+	public static CPDefinition updateCPDefinitionRoleFilter(
+			long cpDefinitionId, boolean enable)
+		throws PortalException {
+
+		return getService().updateCPDefinitionRoleFilter(
+			cpDefinitionId, enable);
+	}
+
 	public static CPDefinition updateExternalReferenceCode(
 			long cpDefinitionId, String externalReferenceCode)
 		throws PortalException {
@@ -455,4 +463,4 @@ public class CPDefinitionServiceUtil {
 			CPDefinitionServiceUtil.class, CPDefinitionService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1226012107
+// LIFERAY-SERVICE-BUILDER-HASH:-170561471
