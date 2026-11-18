@@ -53,7 +53,7 @@ definition {
 	}
 
 	@summary = "This macro can be used to add a product SKU with/without UOM to a Price List"
-	macro addSKUPriceEntry(key_index = null, priceList = null, unitPrice = null, uomKey = null) {
+	macro addSKUPriceEntry(priceList = null, unitPrice = null, uomKey = null) {
 		Click(locator1 = "Button#PLUS");
 
 		SelectFrameTop();
@@ -79,34 +79,6 @@ definition {
 				key_fieldLabel = "Unit Price",
 				locator1 = "TextInput#GENERIC_NUMBER_INPUT",
 				value1 = ${unitPrice});
-		}
-
-		if (isSet(addNewEntry)) {
-			Button.click(button = "Add Entry");
-
-			if (isSet(newEntryPriceList)) {
-				Select(
-					key_fieldLabel = "Price List",
-					key_index = ${key_index},
-					locator1 = "CommerceEntry#LABEL_SELECT_BY_INDEX",
-					value1 = ${newEntryPriceList});
-			}
-
-			if (isSet(newEntryUomKey)) {
-				Select(
-					key_fieldLabel = "Unit of Measure",
-					key_index = ${key_index},
-					locator1 = "CommerceEntry#LABEL_SELECT_BY_INDEX",
-					value1 = ${newEntryUomKey});
-			}
-
-			if (isSet(newEntryUnitPrice)) {
-				Type(
-					key_fieldLabel = "Unit Price",
-					key_indexNumber = ${key_index},
-					locator1 = "TextInput#GENERIC_NUMBER_INPUT_N",
-					value1 = ${newEntryUnitPrice});
-			}
 		}
 
 		SelectFrame.selectFrameTop();
