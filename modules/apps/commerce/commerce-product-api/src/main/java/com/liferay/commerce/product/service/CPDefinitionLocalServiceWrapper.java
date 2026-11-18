@@ -1027,6 +1027,15 @@ public class CPDefinitionLocalServiceWrapper
 	}
 
 	@Override
+	public CPDefinition updateCPDefinitionRoleFilter(
+			long cpDefinitionId, boolean enable)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinitionId, enable);
+	}
+
+	@Override
 	public void updateCPDefinitionsByCPTaxCategoryId(long cpTaxCategoryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -1139,4 +1148,4 @@ public class CPDefinitionLocalServiceWrapper
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1726778878
+// LIFERAY-SERVICE-BUILDER-HASH:2019863330
