@@ -243,6 +243,7 @@
 		<field name="published" type="boolean">
 			<hint name="default-value">true</hint>
 		</field>
+		<field name="roleFilterEnabled" type="boolean" />
 		<field name="shipSeparately" type="boolean" />
 		<field name="shippable" type="boolean" />
 		<field name="shippingExtraPrice" type="double" />

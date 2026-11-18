@@ -92,8 +92,8 @@ public class CPDefinitionModelImpl
 		{"ignoreSKUCombinations", Types.BOOLEAN},
 		{"maxSubscriptionCycles", Types.BIGINT},
 		{"productTypeName", Types.VARCHAR}, {"published", Types.BOOLEAN},
-		{"shipSeparately", Types.BOOLEAN}, {"shippable", Types.BOOLEAN},
-		{"shippingExtraPrice", Types.DOUBLE},
+		{"roleFilterEnabled", Types.BOOLEAN}, {"shipSeparately", Types.BOOLEAN},
+		{"shippable", Types.BOOLEAN}, {"shippingExtraPrice", Types.DOUBLE},
 		{"subscriptionEnabled", Types.BOOLEAN},
 		{"subscriptionLength", Types.INTEGER},
 		{"subscriptionType", Types.VARCHAR},
@@ -141,6 +141,7 @@ public class CPDefinitionModelImpl
 		TABLE_COLUMNS_MAP.put("maxSubscriptionCycles", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("productTypeName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("published", Types.BOOLEAN);
+		TABLE_COLUMNS_MAP.put("roleFilterEnabled", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("shipSeparately", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("shippable", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("shippingExtraPrice", Types.DOUBLE);
@@ -161,7 +162,7 @@ public class CPDefinitionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table CPDefinition (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,defaultLanguageId VARCHAR(75) null,CPDefinitionId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CProductExternalReferenceCode VARCHAR(75) null,CProductId LONG,CPTaxCategoryId LONG,accountGroupFilterEnabled BOOLEAN,availableIndividually BOOLEAN,channelFilterEnabled BOOLEAN,DDMStructureKey VARCHAR(75) null,deliveryMaxSubscriptionCycles LONG,deliverySubscriptionEnabled BOOLEAN,deliverySubscriptionLength INTEGER,deliverySubscriptionType VARCHAR(75) null,deliverySubTypeSettings VARCHAR(75) null,depth DOUBLE,displayDate DATE null,expirationDate DATE null,freeShipping BOOLEAN,height DOUBLE,ignoreSKUCombinations BOOLEAN,maxSubscriptionCycles LONG,productTypeName VARCHAR(75) null,published BOOLEAN,shipSeparately BOOLEAN,shippable BOOLEAN,shippingExtraPrice DOUBLE,subscriptionEnabled BOOLEAN,subscriptionLength INTEGER,subscriptionType VARCHAR(75) null,subscriptionTypeSettings TEXT null,taxExempt BOOLEAN,telcoOrElectronics BOOLEAN,version INTEGER,weight DOUBLE,width DOUBLE,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (CPDefinitionId, ctCollectionId))";
+		"create table CPDefinition (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,defaultLanguageId VARCHAR(75) null,CPDefinitionId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,CProductExternalReferenceCode VARCHAR(75) null,CProductId LONG,CPTaxCategoryId LONG,accountGroupFilterEnabled BOOLEAN,availableIndividually BOOLEAN,channelFilterEnabled BOOLEAN,DDMStructureKey VARCHAR(75) null,deliveryMaxSubscriptionCycles LONG,deliverySubscriptionEnabled BOOLEAN,deliverySubscriptionLength INTEGER,deliverySubscriptionType VARCHAR(75) null,deliverySubTypeSettings VARCHAR(75) null,depth DOUBLE,displayDate DATE null,expirationDate DATE null,freeShipping BOOLEAN,height DOUBLE,ignoreSKUCombinations BOOLEAN,maxSubscriptionCycles LONG,productTypeName VARCHAR(75) null,published BOOLEAN,roleFilterEnabled BOOLEAN,shipSeparately BOOLEAN,shippable BOOLEAN,shippingExtraPrice DOUBLE,subscriptionEnabled BOOLEAN,subscriptionLength INTEGER,subscriptionType VARCHAR(75) null,subscriptionTypeSettings TEXT null,taxExempt BOOLEAN,telcoOrElectronics BOOLEAN,version INTEGER,weight DOUBLE,width DOUBLE,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (CPDefinitionId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table CPDefinition";
 
@@ -417,6 +418,8 @@ public class CPDefinitionModelImpl
 			attributeGetterFunctions.put(
 				"published", CPDefinition::getPublished);
 			attributeGetterFunctions.put(
+				"roleFilterEnabled", CPDefinition::getRoleFilterEnabled);
+			attributeGetterFunctions.put(
 				"shipSeparately", CPDefinition::getShipSeparately);
 			attributeGetterFunctions.put(
 				"shippable", CPDefinition::getShippable);
@@ -579,6 +582,10 @@ public class CPDefinitionModelImpl
 			attributeSetterBiConsumers.put(
 				"published",
 				(BiConsumer<CPDefinition, Boolean>)CPDefinition::setPublished);
+			attributeSetterBiConsumers.put(
+				"roleFilterEnabled",
+				(BiConsumer<CPDefinition, Boolean>)
+					CPDefinition::setRoleFilterEnabled);
 			attributeSetterBiConsumers.put(
 				"shipSeparately",
 				(BiConsumer<CPDefinition, Boolean>)
@@ -1718,6 +1725,27 @@ public class CPDefinitionModelImpl
 
 	@JSON
 	@Override
+	public boolean getRoleFilterEnabled() {
+		return _roleFilterEnabled;
+	}
+
+	@JSON
+	@Override
+	public boolean isRoleFilterEnabled() {
+		return _roleFilterEnabled;
+	}
+
+	@Override
+	public void setRoleFilterEnabled(boolean roleFilterEnabled) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_roleFilterEnabled = roleFilterEnabled;
+	}
+
+	@JSON
+	@Override
 	public boolean getShipSeparately() {
 		return _shipSeparately;
 	}
@@ -2233,6 +2261,7 @@ public class CPDefinitionModelImpl
 		cpDefinitionImpl.setMaxSubscriptionCycles(getMaxSubscriptionCycles());
 		cpDefinitionImpl.setProductTypeName(getProductTypeName());
 		cpDefinitionImpl.setPublished(isPublished());
+		cpDefinitionImpl.setRoleFilterEnabled(isRoleFilterEnabled());
 		cpDefinitionImpl.setShipSeparately(isShipSeparately());
 		cpDefinitionImpl.setShippable(isShippable());
 		cpDefinitionImpl.setShippingExtraPrice(getShippingExtraPrice());
@@ -2324,6 +2353,8 @@ public class CPDefinitionModelImpl
 			this.<String>getColumnOriginalValue("productTypeName"));
 		cpDefinitionImpl.setPublished(
 			this.<Boolean>getColumnOriginalValue("published"));
+		cpDefinitionImpl.setRoleFilterEnabled(
+			this.<Boolean>getColumnOriginalValue("roleFilterEnabled"));
 		cpDefinitionImpl.setShipSeparately(
 			this.<Boolean>getColumnOriginalValue("shipSeparately"));
 		cpDefinitionImpl.setShippable(
@@ -2604,6 +2635,8 @@ public class CPDefinitionModelImpl
 
 		cpDefinitionCacheModel.published = isPublished();
 
+		cpDefinitionCacheModel.roleFilterEnabled = isRoleFilterEnabled();
+
 		cpDefinitionCacheModel.shipSeparately = isShipSeparately();
 
 		cpDefinitionCacheModel.shippable = isShippable();
@@ -2768,6 +2801,7 @@ public class CPDefinitionModelImpl
 	private long _maxSubscriptionCycles;
 	private String _productTypeName;
 	private boolean _published;
+	private boolean _roleFilterEnabled;
 	private boolean _shipSeparately;
 	private boolean _shippable;
 	private double _shippingExtraPrice;
@@ -2859,6 +2893,7 @@ public class CPDefinitionModelImpl
 			"maxSubscriptionCycles", _maxSubscriptionCycles);
 		_columnOriginalValues.put("productTypeName", _productTypeName);
 		_columnOriginalValues.put("published", _published);
+		_columnOriginalValues.put("roleFilterEnabled", _roleFilterEnabled);
 		_columnOriginalValues.put("shipSeparately", _shipSeparately);
 		_columnOriginalValues.put("shippable", _shippable);
 		_columnOriginalValues.put("shippingExtraPrice", _shippingExtraPrice);
@@ -2966,39 +3001,41 @@ public class CPDefinitionModelImpl
 
 		columnBitmasks.put("published", 2147483648L);
 
-		columnBitmasks.put("shipSeparately", 4294967296L);
+		columnBitmasks.put("roleFilterEnabled", 4294967296L);
 
-		columnBitmasks.put("shippable", 8589934592L);
+		columnBitmasks.put("shipSeparately", 8589934592L);
 
-		columnBitmasks.put("shippingExtraPrice", 17179869184L);
+		columnBitmasks.put("shippable", 17179869184L);
 
-		columnBitmasks.put("subscriptionEnabled", 34359738368L);
+		columnBitmasks.put("shippingExtraPrice", 34359738368L);
 
-		columnBitmasks.put("subscriptionLength", 68719476736L);
+		columnBitmasks.put("subscriptionEnabled", 68719476736L);
 
-		columnBitmasks.put("subscriptionType", 137438953472L);
+		columnBitmasks.put("subscriptionLength", 137438953472L);
 
-		columnBitmasks.put("subscriptionTypeSettings", 274877906944L);
+		columnBitmasks.put("subscriptionType", 274877906944L);
 
-		columnBitmasks.put("taxExempt", 549755813888L);
+		columnBitmasks.put("subscriptionTypeSettings", 549755813888L);
 
-		columnBitmasks.put("telcoOrElectronics", 1099511627776L);
+		columnBitmasks.put("taxExempt", 1099511627776L);
 
-		columnBitmasks.put("version", 2199023255552L);
+		columnBitmasks.put("telcoOrElectronics", 2199023255552L);
 
-		columnBitmasks.put("weight", 4398046511104L);
+		columnBitmasks.put("version", 4398046511104L);
 
-		columnBitmasks.put("width", 8796093022208L);
+		columnBitmasks.put("weight", 8796093022208L);
 
-		columnBitmasks.put("lastPublishDate", 17592186044416L);
+		columnBitmasks.put("width", 17592186044416L);
 
-		columnBitmasks.put("status", 35184372088832L);
+		columnBitmasks.put("lastPublishDate", 35184372088832L);
 
-		columnBitmasks.put("statusByUserId", 70368744177664L);
+		columnBitmasks.put("status", 70368744177664L);
 
-		columnBitmasks.put("statusByUserName", 140737488355328L);
+		columnBitmasks.put("statusByUserId", 140737488355328L);
 
-		columnBitmasks.put("statusDate", 281474976710656L);
+		columnBitmasks.put("statusByUserName", 281474976710656L);
+
+		columnBitmasks.put("statusDate", 562949953421312L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -3007,4 +3044,4 @@ public class CPDefinitionModelImpl
 	private CPDefinition _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1088897790
+// LIFERAY-SERVICE-BUILDER-HASH:-1529802292
