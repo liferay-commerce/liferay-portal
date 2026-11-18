@@ -7,6 +7,7 @@ package com.liferay.commerce.product.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
+import com.liferay.commerce.product.exception.CPDefinitionGroupIdException;
 import com.liferay.commerce.product.exception.CPInstanceReplacementCPInstanceUuidException;
 import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -157,6 +158,43 @@ public class CPInstanceLocalServiceTest {
 			cpDefinition.getCPDefinitionId(),
 			combinationsSize +
 				(int)Math.pow(cpOptionValuesCount, cpOptionsCount - 1));
+	}
+
+	@Test
+	public void testAddOrUpdateCPInstance() throws Exception {
+		frutillaRule.scenario(
+			"Add or update a product SKU with a different group"
+		).given(
+			"A product definition in a catalog"
+		).when(
+			"A SKU is added to the product definition with a different group"
+		).then(
+			"A CPDefinitionGroupIdException is thrown"
+		).and(
+			"No SKU is added"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		Assert.assertThrows(
+			CPDefinitionGroupIdException.class,
+			() -> _cpInstanceLocalService.addOrUpdateCPInstance(
+				externalReferenceCode, cpDefinition.getCPDefinitionId(),
+				RandomTestUtil.nextLong(), RandomTestUtil.randomString(), null,
+				null, true, null, 0, 0, 0, 0, BigDecimal.ZERO, BigDecimal.ZERO,
+				BigDecimal.ZERO, true, 0, 1, 2026, 0, 0, 0, 0, 0, 0, 0, true,
+				false, false, 1, null, null, 0, false, 1, null, null, 0, null,
+				false, null, 0, 0, 0, 0,
+				ServiceContextTestUtil.getServiceContext(
+					_commerceCatalog.getGroupId())));
+
+		Assert.assertNull(
+			_cpInstanceLocalService.fetchCPInstanceByExternalReferenceCode(
+				externalReferenceCode, _company.getCompanyId()));
 	}
 
 	@Test
