@@ -321,4 +321,4 @@ public interface CPDefinitionVisibilityRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-73854690
+// LIFERAY-SERVICE-BUILDER-HASH:4223147
