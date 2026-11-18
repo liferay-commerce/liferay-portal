@@ -7,6 +7,7 @@ package com.liferay.commerce.product.internal.search.spi.model.query.contributor
 
 import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
+import com.liferay.commerce.product.internal.util.CommerceRoleUtil;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
@@ -71,6 +72,7 @@ public class CPDefinitionModelPreFilterContributor
 			_filterByAccountGroupIds(booleanFilter, searchContext);
 			_filterByCommerceChannelId(booleanFilter, searchContext);
 			_filterByGuestBrowsing(booleanFilter, searchContext);
+			_filterByRoleIds(booleanFilter, searchContext);
 		}
 		else {
 			_filterByGuestBrowsingEnabledCommerceChannels(
@@ -400,6 +402,43 @@ public class CPDefinitionModelPreFilterContributor
 		if (published) {
 			booleanFilter.addRequiredTerm(CPField.PUBLISHED, true);
 		}
+	}
+
+	private void _filterByRoleIds(
+		BooleanFilter booleanFilter, SearchContext searchContext) {
+
+		if (GetterUtil.getBoolean(
+				searchContext.getAttribute("ignoreCommerceAccountGroup")) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				searchContext.getCompanyId(), "LPD-112683")) {
+
+			return;
+		}
+
+		BooleanFilter roleIdsBooleanFilter = new BooleanFilter();
+
+		BooleanFilter roleFilterDisabledBooleanFilter = new BooleanFilter();
+
+		roleFilterDisabledBooleanFilter.addTerm(
+			"roleFilterEnabled", Boolean.TRUE.toString(),
+			BooleanClauseOccur.MUST_NOT);
+
+		roleIdsBooleanFilter.add(
+			roleFilterDisabledBooleanFilter, BooleanClauseOccur.SHOULD);
+
+		long[] roleIds = CommerceRoleUtil.getRoleIds(
+			GetterUtil.getLong(searchContext.getAttribute("accountEntryId")),
+			PermissionThreadLocal.getPermissionChecker());
+
+		if (ArrayUtil.isNotEmpty(roleIds)) {
+			TermsFilter termsFilter = new TermsFilter("commerceRoleIds");
+
+			termsFilter.addValues(ArrayUtil.toStringArray(roleIds));
+
+			roleIdsBooleanFilter.add(termsFilter, BooleanClauseOccur.SHOULD);
+		}
+
+		booleanFilter.add(roleIdsBooleanFilter, BooleanClauseOccur.MUST);
 	}
 
 	private void _filterByStatuses(
