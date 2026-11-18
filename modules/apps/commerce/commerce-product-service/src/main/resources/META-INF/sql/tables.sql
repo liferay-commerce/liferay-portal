@@ -203,6 +203,7 @@ create table CPDefinition (
 	maxSubscriptionCycles LONG,
 	productTypeName VARCHAR(75) null,
 	published BOOLEAN,
+	roleFilterEnabled BOOLEAN,
 	shipSeparately BOOLEAN,
 	shippable BOOLEAN,
 	shippingExtraPrice DOUBLE,

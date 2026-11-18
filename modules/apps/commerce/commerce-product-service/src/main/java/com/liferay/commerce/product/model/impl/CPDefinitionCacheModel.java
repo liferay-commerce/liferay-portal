@@ -68,7 +68,7 @@ public class CPDefinitionCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(99);
+		StringBundler sb = new StringBundler(101);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -134,6 +134,8 @@ public class CPDefinitionCacheModel
 		sb.append(productTypeName);
 		sb.append(", published=");
 		sb.append(published);
+		sb.append(", roleFilterEnabled=");
+		sb.append(roleFilterEnabled);
 		sb.append(", shipSeparately=");
 		sb.append(shipSeparately);
 		sb.append(", shippable=");
@@ -294,6 +296,7 @@ public class CPDefinitionCacheModel
 		}
 
 		cpDefinitionImpl.setPublished(published);
+		cpDefinitionImpl.setRoleFilterEnabled(roleFilterEnabled);
 		cpDefinitionImpl.setShipSeparately(shipSeparately);
 		cpDefinitionImpl.setShippable(shippable);
 		cpDefinitionImpl.setShippingExtraPrice(shippingExtraPrice);
@@ -405,6 +408,8 @@ public class CPDefinitionCacheModel
 		productTypeName = objectInput.readUTF();
 
 		published = objectInput.readBoolean();
+
+		roleFilterEnabled = objectInput.readBoolean();
 
 		shipSeparately = objectInput.readBoolean();
 
@@ -539,6 +544,8 @@ public class CPDefinitionCacheModel
 
 		objectOutput.writeBoolean(published);
 
+		objectOutput.writeBoolean(roleFilterEnabled);
+
 		objectOutput.writeBoolean(shipSeparately);
 
 		objectOutput.writeBoolean(shippable);
@@ -620,6 +627,7 @@ public class CPDefinitionCacheModel
 	public long maxSubscriptionCycles;
 	public String productTypeName;
 	public boolean published;
+	public boolean roleFilterEnabled;
 	public boolean shipSeparately;
 	public boolean shippable;
 	public double shippingExtraPrice;
@@ -639,4 +647,4 @@ public class CPDefinitionCacheModel
 	public long statusDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1147853357
+// LIFERAY-SERVICE-BUILDER-HASH:1478222620
