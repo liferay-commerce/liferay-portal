@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.math.BigDecimal;
 
@@ -124,7 +125,18 @@ public class CPInstanceServiceImpl extends CPInstanceServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		_checkCommerceCatalog(groupId, ActionKeys.UPDATE);
+		_checkCommerceCatalogByCPDefinitionId(
+			cpDefinitionId, ActionKeys.UPDATE);
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			CPInstance cpInstance = cpInstancePersistence.fetchByERC_C(
+				externalReferenceCode, serviceContext.getCompanyId());
+
+			if (cpInstance != null) {
+				_checkCommerceCatalogByCPDefinitionId(
+					cpInstance.getCPDefinitionId(), ActionKeys.UPDATE);
+			}
+		}
 
 		return cpInstanceLocalService.addOrUpdateCPInstance(
 			externalReferenceCode, cpDefinitionId, groupId, sku, gtin,
