@@ -33,6 +33,7 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 	readonly sidePanelSaveAsDraftButton: Locator;
 	readonly sidePanelSaveButton: Locator;
 	readonly sidePanelSkuInventoryQuantity: Locator;
+	readonly sidePanelSkuPriceTableRow: (priceListName: string) => Locator;
 	readonly sidePanelSkuPriceTableRowLink: (priceListName: string) => Locator;
 	readonly skuAddButton: Locator;
 	readonly skuAddModal: FrameLocator;
@@ -43,18 +44,15 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 	readonly skuPriceAddButton: Locator;
 	readonly skuPriceAddModal: FrameLocator;
 	readonly skuPriceAddModalAddButton: Locator;
+	readonly skuPriceAddModalAddEntryButton: Locator;
+	readonly skuPriceAddModalCancelButton: Locator;
+	readonly skuPriceAddModalUnitOfMeasureSelect: Locator;
 	readonly skuPriceAddModalUnitPriceInput: Locator;
 	readonly skuPriceFrame: FrameLocator;
 	readonly skuPriceListSelect: Locator;
 	readonly skuTab: (tabName: string) => Locator;
 	readonly skusLink: Locator;
-	readonly skusTable: Locator;
-	readonly skusTableRowBasePrice: (price: string) => Promise<Locator>;
-	readonly skusTableRow: (
-		colPosition: number,
-		value: number | string,
-		strictEqual?: boolean
-	) => Promise<{column: Locator; row: Locator}>;
+	readonly skusTableRowActionsButton: (skuName: string) => Locator;
 	readonly skusTableRowLink: (skuName: string) => Locator;
 	readonly skuUOMFrame: FrameLocator;
 	readonly skuUOMModal: FrameLocator;
@@ -161,6 +159,10 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 			'textbox',
 			{name: 'commerce-inventory-warehouse-'}
 		);
+		this.sidePanelSkuPriceTableRow = (priceListName: string) =>
+			this.sidePanelFrame.getByRole('row').filter({
+				has: this.sidePanelSkuPriceTableRowLink(priceListName),
+			});
 		this.sidePanelSkuPriceTableRowLink = (priceListName: string) =>
 			this.sidePanelFrame.getByRole('link', {
 				exact: true,
@@ -199,6 +201,16 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 			'button',
 			{exact: true, name: 'Add'}
 		);
+		this.skuPriceAddModalAddEntryButton = this.skuPriceAddModal.getByRole(
+			'button',
+			{exact: true, name: 'Add Entry'}
+		);
+		this.skuPriceAddModalCancelButton = this.skuPriceFrame.getByRole(
+			'button',
+			{exact: true, name: 'Cancel'}
+		);
+		this.skuPriceAddModalUnitOfMeasureSelect =
+			this.skuPriceAddModal.getByLabel('Unit of Measure');
 		this.skuPriceAddModalUnitPriceInput =
 			this.skuPriceAddModal.getByLabel('Unit Price');
 		this.skuPriceListSelect =
@@ -208,30 +220,11 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 				exact: true,
 				name: skuTab,
 			});
-		this.skusTable = page.locator(
-			'#_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fm .fds table'
-		);
-		this.skusTableRow = async (
-			colPosition: number,
-			value: number | string,
-			strictEqual: boolean = false
-		) => {
-			return await searchTableRowByValue(
-				this.skusTable,
-				colPosition,
-				String(value),
-				strictEqual
-			);
-		};
-		this.skusTableRowBasePrice = async (price: string) => {
-			const shipmentTableRow = await this.skusTableRow(2, price, true);
-
-			if (shipmentTableRow && shipmentTableRow.column) {
-				return shipmentTableRow.row.getByText(price, {exact: true});
-			}
-
-			throw new Error(`Cannot locate shipment row with value ${price}`);
-		};
+		this.skusTableRowActionsButton = (sku: string) =>
+			this.table
+				.getByRole('row')
+				.filter({has: this.skusTableRowLink(sku)})
+				.getByRole('button', {name: 'Actions'});
 		this.skusTableRowLink = (sku: string) =>
 			page.getByRole('link', {exact: true, name: sku});
 		this.skuUOMFrame = page.frameLocator('iframe').first();
