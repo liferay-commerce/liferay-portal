@@ -2639,6 +2639,24 @@ public abstract class BaseProductResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"productRoleFilter", additionalAssertFieldName)) {
+
+				if (product.getProductRoleFilter() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productRoles", additionalAssertFieldName)) {
+				if (product.getProductRoles() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"productSpecifications", additionalAssertFieldName)) {
 
 				if (product.getProductSpecifications() == null) {
@@ -3356,6 +3374,30 @@ public abstract class BaseProductResourceTestCase {
 				if (!Objects.deepEquals(
 						product1.getProductOptions(),
 						product2.getProductOptions())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"productRoleFilter", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						product1.getProductRoleFilter(),
+						product2.getProductRoleFilter())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productRoles", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						product1.getProductRoles(),
+						product2.getProductRoles())) {
 
 					return false;
 				}
@@ -4218,6 +4260,16 @@ public abstract class BaseProductResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("productRoleFilter")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("productRoles")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("productSpecifications")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -4539,6 +4591,7 @@ public abstract class BaseProductResourceTestCase {
 				productAccountGroupFilter = RandomTestUtil.randomBoolean();
 				productChannelFilter = RandomTestUtil.randomBoolean();
 				productId = RandomTestUtil.randomLong();
+				productRoleFilter = RandomTestUtil.randomBoolean();
 				productStatus = RandomTestUtil.randomInt();
 				productType = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
@@ -4819,4 +4872,4 @@ public abstract class BaseProductResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1919163760
+// LIFERAY-REST-BUILDER-HASH:2132486448

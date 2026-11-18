@@ -945,6 +945,48 @@ public class Product implements Cloneable, Serializable {
 
 	protected ProductOption[] productOptions;
 
+	public Boolean getProductRoleFilter() {
+		return productRoleFilter;
+	}
+
+	public void setProductRoleFilter(Boolean productRoleFilter) {
+		this.productRoleFilter = productRoleFilter;
+	}
+
+	public void setProductRoleFilter(
+		UnsafeSupplier<Boolean, Exception> productRoleFilterUnsafeSupplier) {
+
+		try {
+			productRoleFilter = productRoleFilterUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean productRoleFilter;
+
+	public ProductRole[] getProductRoles() {
+		return productRoles;
+	}
+
+	public void setProductRoles(ProductRole[] productRoles) {
+		this.productRoles = productRoles;
+	}
+
+	public void setProductRoles(
+		UnsafeSupplier<ProductRole[], Exception> productRolesUnsafeSupplier) {
+
+		try {
+			productRoles = productRolesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ProductRole[] productRoles;
+
 	public ProductSpecification[] getProductSpecifications() {
 		return productSpecifications;
 	}
@@ -1348,4 +1390,4 @@ public class Product implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1055950301
+// LIFERAY-REST-BUILDER-HASH:431045921
