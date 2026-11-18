@@ -108,6 +108,14 @@ describe('RecipientUserAutocomplete', () => {
 		expect(input).toHaveValue(USER.emailAddress);
 	});
 
+	it('leaves out the users excluded from the list', async () => {
+		renderRecipientUserAutocomplete({excludedUserIds: [USER.userId]});
+
+		await userEvent.type(screen.getByLabelText(/recipient-email/), 'test');
+
+		expect(await screen.findByText('no-results-found')).toBeInTheDocument();
+	});
+
 	it('searches the users by the typed text', async () => {
 		const searchUsers = jest.fn(() => Promise.resolve([]));
 
