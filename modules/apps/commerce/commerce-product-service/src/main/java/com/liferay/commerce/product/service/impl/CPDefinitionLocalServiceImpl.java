@@ -2542,6 +2542,20 @@ public class CPDefinitionLocalServiceImpl
 		return cpDefinitionPersistence.update(cpDefinition);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CPDefinition updateCPDefinitionRoleFilter(
+			long cpDefinitionId, boolean enable)
+		throws PortalException {
+
+		CPDefinition cpDefinition = cpDefinitionPersistence.findByPrimaryKey(
+			cpDefinitionId);
+
+		cpDefinition.setRoleFilterEnabled(enable);
+
+		return cpDefinitionPersistence.update(cpDefinition);
+	}
+
 	@Override
 	public void updateCPDefinitionsByCPTaxCategoryId(long cpTaxCategoryId)
 		throws PortalException {
