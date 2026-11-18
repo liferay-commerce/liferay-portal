@@ -81,9 +81,10 @@ public class
 						pagination.getStart(), pagination.getEnd()),
 					productContentCommerceMLRecommendation -> {
 						try {
-							return _cpDefinitionService.fetchCPDefinition(
-								productContentCommerceMLRecommendation.
-									getRecommendedEntryClassPK());
+							return getVisibleCPDefinition(
+								_cpDefinitionService.fetchCPDefinition(
+									productContentCommerceMLRecommendation.
+										getRecommendedEntryClassPK()));
 						}
 						catch (PortalException portalException) {
 							_log.error(portalException);
