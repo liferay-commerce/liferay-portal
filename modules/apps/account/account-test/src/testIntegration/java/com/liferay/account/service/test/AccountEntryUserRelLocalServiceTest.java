@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.exception.NoSuchUserException;
 import com.liferay.portal.kernel.exception.UserEmailAddressException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Ticket;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
@@ -40,6 +41,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -358,12 +360,15 @@ public class AccountEntryUserRelLocalServiceTest {
 			_userLocalService.fetchUserByEmailAddress(
 				TestPropsValues.getCompanyId(), _userInfo.emailAddress));
 
+		Group group = GroupTestUtil.addGroup();
+
 		AccountEntryUserRel accountEntryUserRel =
 			_accountEntryUserRelLocalService.
 				addAccountEntryUserRelByEmailAddress(
 					_accountEntry.getAccountEntryId(), _userInfo.emailAddress,
 					new long[] {accountRole.getAccountRoleId()}, null,
-					ServiceContextTestUtil.getServiceContext());
+					ServiceContextTestUtil.getServiceContext(
+						group.getGroupId()));
 
 		User user = _userLocalService.fetchUser(
 			accountEntryUserRel.getAccountUserId());
@@ -376,6 +381,8 @@ public class AccountEntryUserRelLocalServiceTest {
 			_accountRoleLocalService.hasUserAccountRole(
 				_accountEntry.getAccountEntryId(),
 				accountRole.getAccountRoleId(), user.getUserId()));
+		Assert.assertFalse(
+			ArrayUtil.contains(user.getGroupIds(), group.getGroupId()));
 	}
 
 	@Test
