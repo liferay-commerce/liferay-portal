@@ -150,6 +150,8 @@ public abstract class BulkAction implements Cloneable, Serializable {
 		EXPIRE_OBJECT_BULK_SELECTION_ACTION("ExpireObjectBulkSelectionAction"),
 		EDIT_OBJECT_TAGS_BULK_SELECTION_ACTION(
 			"EditObjectTagsBulkSelectionAction"),
+		GENERATE_VARIANTS_BULK_SELECTION_ACTION(
+			"GenerateVariantsBulkSelectionAction"),
 		MOVE_OBJECT_BULK_SELECTION_ACTION("MoveObjectBulkSelectionAction"),
 		PERMISSION_OBJECT_BULK_SELECTION_ACTION(
 			"PermissionObjectBulkSelectionAction"),
@@ -197,4 +199,4 @@ public abstract class BulkAction implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2012469309
+// LIFERAY-REST-BUILDER-HASH:1981775070
