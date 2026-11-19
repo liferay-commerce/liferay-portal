@@ -6,6 +6,8 @@
 import ClayForm from '@clayui/form';
 import ClayPanel from '@clayui/panel';
 import React from 'react';
+import {DndProvider} from 'react-dnd';
+import {HTML5Backend} from 'react-dnd-html5-backend';
 
 import FieldMappingRow from './FieldMappingRow';
 import newFieldMapping from './newFieldMapping';
@@ -44,41 +46,67 @@ export default function FieldMappingsSection({
 			)
 		);
 
+	const handleMove = (index: number, targetIndex: number) =>
+		setFieldMappings((previousFieldMappings) => {
+			if (
+				targetIndex < 0 ||
+				targetIndex >= previousFieldMappings.length
+			) {
+				return previousFieldMappings;
+			}
+
+			const nextFieldMappings = [...previousFieldMappings];
+
+			nextFieldMappings.splice(
+				targetIndex,
+				0,
+				...nextFieldMappings.splice(index, 1)
+			);
+
+			return nextFieldMappings;
+		});
+
 	return (
-		<div className="container-fluid container-fluid-max-md p-0 p-md-4">
-			<ClayPanel
-				aria-label={Liferay.Language.get('destination')}
-				className="mb-4"
-				collapsable={false}
-				displayType="secondary"
-				role="group"
-			>
-				<ClayForm.Group className="c-gap-4 d-flex flex-column p-4">
-					<h2 className="mb-0 py-2 text-6 text-dark">
-						{Liferay.Language.get('destination')}
-					</h2>
 
-					<div className="text-secondary">
-						{Liferay.Language.get(
-							'this-channel-field-takes-its-value-from-the-selected-sources'
-						)}
-					</div>
+		// @ts-ignore
 
-					{fieldMappings.map((fieldMapping, index) => (
-						<FieldMappingRow
-							deletable={fieldMappings.length > 1}
-							fieldMapping={fieldMapping}
-							index={index}
-							key={fieldMapping.key}
-							objectDefinitions={objectDefinitions}
-							onAdd={handleAdd}
-							onChange={handleChange}
-							onDelete={handleDelete}
-							spritemap={spritemap}
-						/>
-					))}
-				</ClayForm.Group>
-			</ClayPanel>
-		</div>
+		<DndProvider backend={HTML5Backend}>
+			<div className="container-fluid container-fluid-max-md p-0 p-md-4">
+				<ClayPanel
+					aria-label={Liferay.Language.get('destination')}
+					className="mb-4"
+					collapsable={false}
+					displayType="secondary"
+					role="group"
+				>
+					<ClayForm.Group className="c-gap-4 d-flex flex-column p-4">
+						<h2 className="mb-0 py-2 text-6 text-dark">
+							{Liferay.Language.get('destination')}
+						</h2>
+
+						<div className="text-secondary">
+							{Liferay.Language.get(
+								'this-channel-field-takes-its-value-from-the-selected-sources'
+							)}
+						</div>
+
+						{fieldMappings.map((fieldMapping, index) => (
+							<FieldMappingRow
+								deletable={fieldMappings.length > 1}
+								fieldMapping={fieldMapping}
+								index={index}
+								key={fieldMapping.key}
+								objectDefinitions={objectDefinitions}
+								onAdd={handleAdd}
+								onChange={handleChange}
+								onDelete={handleDelete}
+								onMove={handleMove}
+								spritemap={spritemap}
+							/>
+						))}
+					</ClayForm.Group>
+				</ClayPanel>
+			</div>
+		</DndProvider>
 	);
 }

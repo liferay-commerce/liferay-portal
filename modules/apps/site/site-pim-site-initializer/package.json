@@ -12,9 +12,12 @@
 		"@liferay/frontend-data-set-web": "*",
 		"@liferay/frontend-js-react-web": "*",
 		"@liferay/site-cms-site-initializer": "*",
+		"classnames": "2.3.1",
 		"frontend-js-components-web": "*",
 		"frontend-js-web": "*",
-		"react": "18.2.0"
+		"react": "18.2.0",
+		"react-dnd": "11.1.1",
+		"react-dnd-html5-backend": "11.1.1"
 	},
 	"main": "js/index.js",
 	"name": "@liferay/site-pim-site-initializer",
