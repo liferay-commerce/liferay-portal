@@ -7,6 +7,7 @@ package com.liferay.commerce.internal.order;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroupRel;
+import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.commerce.model.CommerceOrder;
@@ -18,12 +19,15 @@ import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
+import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 
@@ -67,7 +71,8 @@ public class VisibilityCommerceOrderValidatorImpl
 		}
 
 		if (!_isAccountEnabled(commerceOrder, cpInstance.getCPDefinition()) ||
-			!_isChannelEnabled(commerceOrder, cpInstance.getCPDefinition())) {
+			!_isChannelEnabled(commerceOrder, cpInstance.getCPDefinition()) ||
+			!_isRoleEnabled(commerceOrder, cpInstance.getCPDefinition())) {
 
 			return new CommerceOrderValidatorResult(
 				false,
@@ -94,7 +99,8 @@ public class VisibilityCommerceOrderValidatorImpl
 
 		if (!_isAccountEnabled(commerceOrder, cpInstance.getCPDefinition()) ||
 			!_isChannelEnabled(
-				commerceOrder, commerceOrderItem.getCPDefinition())) {
+				commerceOrder, commerceOrderItem.getCPDefinition()) ||
+			!_isRoleEnabled(commerceOrder, cpInstance.getCPDefinition())) {
 
 			return new CommerceOrderValidatorResult(
 				commerceOrderItem.getCommerceOrderItemId(), false,
@@ -188,6 +194,33 @@ public class VisibilityCommerceOrderValidatorImpl
 		return true;
 	}
 
+	private boolean _isRoleEnabled(
+			CommerceOrder commerceOrder, CPDefinition cpDefinition)
+		throws PortalException {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if ((permissionChecker == null) ||
+			_commerceProductViewPermission.isRoleEnabled(
+				permissionChecker, commerceOrder.getCommerceAccountId(),
+				cpDefinition)) {
+
+			return true;
+		}
+
+		if (!permissionChecker.isSignedIn() && commerceOrder.isGuestOrder()) {
+			return false;
+		}
+
+		return !_accountEntryUserRelLocalService.hasAccountEntryUserRel(
+			commerceOrder.getCommerceAccountId(),
+			permissionChecker.getUserId());
+	}
+
+	@Reference
+	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
+
 	@Reference
 	private AccountGroupLocalService _accountGroupLocalService;
 
@@ -199,6 +232,9 @@ public class VisibilityCommerceOrderValidatorImpl
 
 	@Reference
 	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
+
+	@Reference
+	private CommerceProductViewPermission _commerceProductViewPermission;
 
 	@Reference
 	private CPDefinitionVisibilityRelLocalService
