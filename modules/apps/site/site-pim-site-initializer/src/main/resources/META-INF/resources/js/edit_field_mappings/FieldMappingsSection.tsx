@@ -44,6 +44,18 @@ export default function FieldMappingsSection({
 			)
 		);
 
+	const handleMove = (index: number, offset: number) =>
+		setFieldMappings((previousFieldMappings) => {
+			const nextFieldMappings = [...previousFieldMappings];
+
+			[nextFieldMappings[index], nextFieldMappings[index + offset]] = [
+				nextFieldMappings[index + offset],
+				nextFieldMappings[index],
+			];
+
+			return nextFieldMappings;
+		});
+
 	return (
 		<div className="container-fluid container-fluid-max-md p-0 p-md-4">
 			<ClayPanel
@@ -70,10 +82,12 @@ export default function FieldMappingsSection({
 							fieldMapping={fieldMapping}
 							index={index}
 							key={fieldMapping.key}
+							last={index === fieldMappings.length - 1}
 							objectDefinitions={objectDefinitions}
 							onAdd={handleAdd}
 							onChange={handleChange}
 							onDelete={handleDelete}
+							onMove={handleMove}
 							spritemap={spritemap}
 						/>
 					))}
