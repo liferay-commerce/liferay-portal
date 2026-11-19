@@ -53,6 +53,12 @@ function fixedValue(value = '') {
 	};
 }
 
+function getSourceAttributeValues() {
+	return screen
+		.getAllByLabelText('source-attribute')
+		.map((element) => (element as HTMLSelectElement).value);
+}
+
 function FieldMappingsSectionWrapper({
 	initialFieldMappings,
 }: {
@@ -190,5 +196,40 @@ describe('FieldMappingsSection', () => {
 		await userEvent.click(screen.getAllByLabelText('delete-row')[0]);
 
 		expect(screen.getAllByLabelText('source')).toHaveLength(1);
+	});
+
+	it('moves a field mapping row', async () => {
+		render(
+			<FieldMappingsSectionWrapper
+				initialFieldMappings={[
+					dynamicValue('sku'),
+					dynamicValue('title'),
+					fixedValue('ABC-1'),
+				]}
+			/>
+		);
+
+		expect(screen.getAllByLabelText('move-down')[2]).toBeDisabled();
+		expect(screen.getAllByLabelText('move-up')[0]).toBeDisabled();
+
+		const value = screen.getByLabelText('value');
+
+		await userEvent.click(screen.getAllByLabelText('move-up')[2]);
+
+		expect(getSourceAttributeValues()).toEqual([
+			'sku',
+			'fixedValue',
+			'title',
+		]);
+		expect(screen.getByLabelText('value')).toBe(value);
+		expect(screen.getByLabelText('value')).toHaveValue('ABC-1');
+
+		await userEvent.click(screen.getAllByLabelText('move-down')[0]);
+
+		expect(getSourceAttributeValues()).toEqual([
+			'fixedValue',
+			'sku',
+			'title',
+		]);
 	});
 });
