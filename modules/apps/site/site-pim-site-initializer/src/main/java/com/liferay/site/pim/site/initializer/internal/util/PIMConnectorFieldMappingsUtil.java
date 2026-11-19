@@ -556,9 +556,9 @@ public class PIMConnectorFieldMappingsUtil {
 
 		List<ObjectRelationship> objectRelationships = new ArrayList<>();
 
+		long objectDefinitionId = objectDefinition.getObjectDefinitionId();
 		ObjectFolder objectFolder = _fetchRepeatableGroupsObjectFolder(
 			objectDefinition.getCompanyId());
-		long objectDefinitionId = objectDefinition.getObjectDefinitionId();
 
 		for (String name :
 				sourceFieldPath.subList(0, sourceFieldPath.size() - 1)) {
