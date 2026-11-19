@@ -175,6 +175,8 @@ public class DSRequestManagerTest {
 				).put(
 					"integrationKey", RandomTestUtil.randomString()
 				).put(
+					"remindersEnabled", true
+				).put(
 					"rsaPrivateKey", RandomTestUtil.randomString()
 				).put(
 					"siteSettingsStrategy", "always-inherit"
@@ -530,6 +532,79 @@ public class DSRequestManagerTest {
 	}
 
 	@Test
+	public void testSendDSRequestReminders() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		DSRecipient dsRecipient1 = _createDSRecipient(user);
+
+		dsRecipient1.setStatus(DSRequestConstants.STATUS_CREATED);
+
+		LocalDateTime localDateTime = LocalDateTime.now();
+
+		DSRecipient dsRecipient2 = _createDSRecipient(UserTestUtil.addUser());
+
+		dsRecipient2.setSentLocalDateTime(localDateTime.minusDays(3));
+		dsRecipient2.setStatus(DSRequestConstants.STATUS_SENT);
+
+		DSEnvelope dsEnvelope = _createDSEnvelope(dsRecipient1, dsRecipient2);
+
+		DSRequest dsRequest = _addDSRequestWithoutValidation(
+			dsEnvelope, TestPropsValues.getUserId(),
+			RandomTestUtil.randomInt());
+
+		dsRecipient1.setStatus(DSRequestConstants.STATUS_SENT);
+		dsRecipient2.setStatus(DSRequestConstants.STATUS_COMPLETED);
+
+		DSRecipient dsRecipient3 = _createDSRecipient(UserTestUtil.addUser());
+
+		dsRecipient3.setSentLocalDateTime(localDateTime.minusDays(3));
+		dsRecipient3.setStatus(DSRequestConstants.STATUS_SENT);
+
+		DSEnvelope voidedDSEnvelope = _createDSEnvelope(dsRecipient3);
+
+		voidedDSEnvelope.setStatus(DSRequestConstants.STATUS_VOIDED);
+
+		DSRequest voidedDSRequest = _addDSRequestWithoutValidation(
+			voidedDSEnvelope, TestPropsValues.getUserId(),
+			RandomTestUtil.randomInt());
+
+		List<String> dsEnvelopeIds = _sendDSRequestReminders(dsEnvelope);
+
+		Assert.assertTrue(dsEnvelopeIds.contains(dsEnvelope.getDSEnvelopeId()));
+		Assert.assertFalse(
+			dsEnvelopeIds.contains(voidedDSEnvelope.getDSEnvelopeId()));
+
+		List<NotificationQueueEntry> notificationQueueEntries =
+			_getNotificationQueueEntries(dsRequest);
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 1,
+			notificationQueueEntries.size());
+
+		Map<String, Object> notificationRecipientSettingsMap =
+			NotificationRecipientSettingUtil.
+				getNotificationRecipientSettingsMap(
+					notificationQueueEntries.get(0));
+
+		Assert.assertEquals(
+			user.getEmailAddress(),
+			notificationRecipientSettingsMap.get(
+				NotificationRecipientSettingConstants.NAME_TO));
+
+		notificationQueueEntries = _getNotificationQueueEntries(
+			voidedDSRequest);
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 0,
+			notificationQueueEntries.size());
+
+		_testSendDSRequestRemindersWithFailedDSEnvelopeGet();
+		_testSendDSRequestRemindersWithRecentlySentDSRecipient();
+		_testSendDSRequestRemindersWithRemindersDisabled();
+		_testSendDSRequestRemindersWithVoidedDSEnvelope();
+	}
+
+	@Test
 	public void testUpdateDSRequest() throws Exception {
 		LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(
 			System.currentTimeMillis() / 1000, 0, ZoneOffset.UTC);
@@ -832,6 +907,51 @@ public class DSRequestManagerTest {
 			objectDefinition.getObjectDefinitionId(),
 			_filterFactory.create(filterString, objectDefinition), null,
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+	}
+
+	private List<String> _sendDSRequestReminders(DSEnvelope... dsEnvelopes)
+		throws Exception {
+
+		List<String> dsEnvelopeIds = new ArrayList<>();
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> {
+						String dsEnvelopeId = (String)arguments[2];
+
+						dsEnvelopeIds.add(dsEnvelopeId);
+
+						for (DSEnvelope dsEnvelope : dsEnvelopes) {
+							if (Objects.equals(
+									dsEnvelope.getDSEnvelopeId(),
+									dsEnvelopeId)) {
+
+								return dsEnvelope;
+							}
+						}
+
+						DSEnvelope voidedDSEnvelope = _createDSEnvelope();
+
+						voidedDSEnvelope.setStatus(
+							DSRequestConstants.STATUS_VOIDED);
+
+						return voidedDSEnvelope;
+					}));
+
+		try {
+			_dsRequestManager.sendDSRequestReminders(
+				TestPropsValues.getCompanyId());
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager", dsEnvelopeManager);
+		}
+
+		return dsEnvelopeIds;
 	}
 
 	private void _testAddDSRequestWithCompletedExpiredDSEnvelope()
@@ -1537,6 +1657,171 @@ public class DSRequestManagerTest {
 				_dsRequestManager, "_notificationTemplateLocalService",
 				notificationTemplateLocalService);
 		}
+
+		List<NotificationQueueEntry> notificationQueueEntries =
+			_getNotificationQueueEntries(dsRequest);
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 0,
+			notificationQueueEntries.size());
+	}
+
+	private void _testSendDSRequestRemindersWithFailedDSEnvelopeGet()
+		throws Exception {
+
+		LocalDateTime localDateTime = LocalDateTime.now();
+
+		DSRecipient dsRecipient = _createDSRecipient(UserTestUtil.addUser());
+
+		dsRecipient.setSentLocalDateTime(localDateTime.minusDays(3));
+		dsRecipient.setStatus(DSRequestConstants.STATUS_SENT);
+
+		DSRequest dsRequest = _addDSRequestWithoutValidation(
+			_createDSEnvelope(dsRecipient), TestPropsValues.getUserId(),
+			RandomTestUtil.randomInt());
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> {
+						throw new PortalException();
+					}));
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.digital.signature.internal.manager." +
+					"DSRequestManagerImpl",
+				LoggerTestUtil.ERROR)) {
+
+			_dsRequestManager.sendDSRequestReminders(
+				TestPropsValues.getCompanyId());
+
+			List<LogEntry> logEntries = ListUtil.filter(
+				logCapture.getLogEntries(),
+				logEntry -> Objects.equals(
+					logEntry.getMessage(),
+					"Unable to update digital signature request " +
+						dsRequest.getDSRequestId()));
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_dsRequestManager, "_dsEnvelopeManager", dsEnvelopeManager);
+		}
+
+		List<NotificationQueueEntry> notificationQueueEntries =
+			_getNotificationQueueEntries(dsRequest);
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 1,
+			notificationQueueEntries.size());
+	}
+
+	private void _testSendDSRequestRemindersWithRecentlySentDSRecipient()
+		throws Exception {
+
+		LocalDateTime localDateTime = LocalDateTime.now();
+
+		DSRecipient dsRecipient1 = _createDSRecipient(UserTestUtil.addUser());
+
+		dsRecipient1.setSentLocalDateTime(localDateTime);
+		dsRecipient1.setStatus(DSRequestConstants.STATUS_SENT);
+
+		DSRecipient dsRecipient2 = _createDSRecipient(UserTestUtil.addUser());
+
+		dsRecipient2.setSentLocalDateTime(localDateTime.minusDays(1));
+		dsRecipient2.setStatus(DSRequestConstants.STATUS_SENT);
+
+		DSEnvelope dsEnvelope = _createDSEnvelope(dsRecipient1, dsRecipient2);
+
+		DSRequest dsRequest = _addDSRequestWithoutValidation(
+			dsEnvelope, TestPropsValues.getUserId(),
+			RandomTestUtil.randomInt());
+
+		_sendDSRequestReminders(dsEnvelope);
+
+		List<NotificationQueueEntry> notificationQueueEntries =
+			_getNotificationQueueEntries(dsRequest);
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 0,
+			notificationQueueEntries.size());
+	}
+
+	private void _testSendDSRequestRemindersWithRemindersDisabled()
+		throws Exception {
+
+		LocalDateTime localDateTime = LocalDateTime.now();
+
+		DSRecipient dsRecipient = _createDSRecipient(UserTestUtil.addUser());
+
+		dsRecipient.setSentLocalDateTime(localDateTime.minusDays(3));
+		dsRecipient.setStatus(DSRequestConstants.STATUS_SENT);
+
+		DSEnvelope dsEnvelope = _createDSEnvelope(dsRecipient);
+
+		DSRequest dsRequest = _addDSRequestWithoutValidation(
+			dsEnvelope, TestPropsValues.getUserId(),
+			RandomTestUtil.randomInt());
+
+		List<String> dsEnvelopeIds = null;
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						DigitalSignatureConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"embeddedViewEnabled", true
+						).put(
+							"enabled", true
+						).put(
+							"remindersEnabled", false
+						).put(
+							"siteSettingsStrategy", "always-inherit"
+						).build())) {
+
+			dsEnvelopeIds = _sendDSRequestReminders(dsEnvelope);
+		}
+
+		Assert.assertEquals(dsEnvelopeIds.toString(), 0, dsEnvelopeIds.size());
+
+		List<NotificationQueueEntry> notificationQueueEntries =
+			_getNotificationQueueEntries(dsRequest);
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 0,
+			notificationQueueEntries.size());
+	}
+
+	private void _testSendDSRequestRemindersWithVoidedDSEnvelope()
+		throws Exception {
+
+		LocalDateTime localDateTime = LocalDateTime.now();
+
+		DSRecipient dsRecipient = _createDSRecipient(UserTestUtil.addUser());
+
+		dsRecipient.setSentLocalDateTime(localDateTime.minusDays(3));
+		dsRecipient.setStatus(DSRequestConstants.STATUS_SENT);
+
+		DSEnvelope dsEnvelope = _createDSEnvelope(dsRecipient);
+
+		DSRequest dsRequest = _addDSRequestWithoutValidation(
+			dsEnvelope, TestPropsValues.getUserId(),
+			RandomTestUtil.randomInt());
+
+		dsEnvelope.setStatus(DSRequestConstants.STATUS_VOIDED);
+
+		_sendDSRequestReminders(dsEnvelope);
+
+		dsRequest = _dsRequestManager.fetchDSRequest(
+			TestPropsValues.getCompanyId(), dsRequest.getDSRequestId());
+
+		Assert.assertEquals(
+			DSRequestConstants.STATUS_VOIDED, dsRequest.getStatus());
 
 		List<NotificationQueueEntry> notificationQueueEntries =
 			_getNotificationQueueEntries(dsRequest);
