@@ -281,18 +281,18 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		Assert.assertEquals("PIM Basic Product", jsonObject.getString("label"));
 
-		jsonArray = jsonObject.getJSONArray("repeatableGroups");
-
-		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
-
 		jsonArray = jsonObject.getJSONArray("objectFields");
 
 		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
 
-		jsonObject = jsonArray.getJSONObject(0);
+		JSONObject objectFieldJSONObject = jsonArray.getJSONObject(0);
 
-		Assert.assertEquals("SKU", jsonObject.getString("label"));
-		Assert.assertEquals("sku", jsonObject.getString("name"));
+		Assert.assertEquals("SKU", objectFieldJSONObject.getString("label"));
+		Assert.assertEquals("sku", objectFieldJSONObject.getString("name"));
+
+		jsonArray = jsonObject.getJSONArray("repeatableGroups");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
 
 		_objectRelationshipLocalServiceUtilMockedStatic.when(
 			() ->
