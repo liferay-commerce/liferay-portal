@@ -558,7 +558,6 @@ public class PIMConnectorFieldMappingsUtil {
 
 		ObjectFolder objectFolder = _fetchRepeatableGroupsObjectFolder(
 			objectDefinition.getCompanyId());
-
 		long objectDefinitionId = objectDefinition.getObjectDefinitionId();
 
 		for (String name :
