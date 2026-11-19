@@ -321,6 +321,22 @@ create table CPDefinitionOptionValueRel (
 	primary key (CPDefinitionOptionValueRelId, ctCollectionId)
 );
 
+create table CPDefinitionVisibilityRel (
+	mvccVersion LONG default 0 not null,
+	ctCollectionId LONG default 0 not null,
+	externalReferenceCode VARCHAR(75) null,
+	CPDefinitionVisibilityRelId LONG not null,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	CPDefinitionId LONG,
+	classNameId LONG,
+	classPK LONG,
+	primary key (CPDefinitionVisibilityRelId, ctCollectionId)
+);
+
 create table CPDisplayLayout (
 	mvccVersion LONG default 0 not null,
 	ctCollectionId LONG default 0 not null,
