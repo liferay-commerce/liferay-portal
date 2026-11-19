@@ -13,6 +13,8 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 	readonly deleteMenuItem: Locator;
 	readonly optionActionsButton: (optionName: string) => Locator;
 	readonly optionLink: (optionName: string) => Locator;
+	readonly optionPriceTypeSelect: Locator;
+	readonly optionSaveButton: Locator;
 	readonly optionSidePanelCancelButton: Locator;
 	readonly optionSidePanelFrame: FrameLocator;
 	readonly optionValueDeltaPriceInput: Locator;
@@ -60,6 +62,12 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 		this.optionLink = (optionName: string) =>
 			page.getByRole('link', {exact: true, name: optionName});
 		this.optionSidePanelFrame = page.frameLocator(sidePanelIframe);
+		this.optionPriceTypeSelect =
+			this.optionSidePanelFrame.getByLabel('Price Type');
+		this.optionSaveButton = this.optionSidePanelFrame.getByRole('button', {
+			exact: true,
+			name: 'Save',
+		});
 		this.optionValueSidePanelFrame =
 			this.optionSidePanelFrame.frameLocator(sidePanelIframe);
 		this.optionSidePanelCancelButton = this.optionSidePanelFrame.getByRole(
