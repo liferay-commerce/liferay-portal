@@ -13,6 +13,7 @@ import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.exception.CommerceOrderValidatorException;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
@@ -29,6 +30,8 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
@@ -54,25 +57,33 @@ import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Region;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.LocalRepository;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Time;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -710,6 +721,49 @@ public class CommerceOrderLocalServiceTest {
 			commerceOrder2.getShippingAddressId());
 	}
 
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testReorderCommerceOrderWithRoleFilterEnabled()
+		throws Exception {
+
+		_commerceOrderItemLocalService.addCommerceOrderItem(
+			_user.getUserId(), _commerceOrder.getCommerceOrderId(),
+			_cpInstance.getCPInstanceId(), null, BigDecimal.ONE, 0,
+			BigDecimal.ZERO, StringPool.BLANK, _commerceContext,
+			_serviceContext);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(), _cpInstance.getCPDefinitionId(),
+			Role.class.getName(), role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			_cpInstance.getCPDefinitionId(), true);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
+
+		Assert.assertThrows(
+			CommerceOrderValidatorException.class,
+			() -> _commerceOrderLocalService.reorderCommerceOrder(
+				_user.getUserId(), _commerceOrder.getCommerceOrderId(),
+				_commerceContext));
+
+		_userLocalService.addRoleUser(role.getRoleId(), _user);
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.reorderCommerceOrder(
+				_user.getUserId(), _commerceOrder.getCommerceOrderId(),
+				_commerceContext);
+
+		List<CommerceOrderItem> commerceOrderItems =
+			commerceOrder.getCommerceOrderItems();
+
+		Assert.assertEquals(
+			commerceOrderItems.toString(), 1, commerceOrderItems.size());
+	}
+
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
@@ -843,6 +897,13 @@ public class CommerceOrderLocalServiceTest {
 	@Inject
 	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
 
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Inject
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
+
 	private CPInstance _cpInstance;
 
 	@Inject
@@ -855,5 +916,8 @@ public class CommerceOrderLocalServiceTest {
 
 	private ServiceContext _serviceContext;
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
