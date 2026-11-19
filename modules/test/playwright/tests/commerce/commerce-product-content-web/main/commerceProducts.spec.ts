@@ -1155,7 +1155,7 @@ test(
 	}) => {
 		test.setTimeout(120000);
 
-		await miniCartCheckoutSetUp(
+		const channel = await miniCartCheckoutSetUp(
 			apiHelpers,
 			commerceAdminChannelsPage,
 			page,
@@ -1279,6 +1279,15 @@ test(
 				commerceMiniCartPage.miniCartItem(bundleProductName)
 			).toBeVisible();
 
+			const orders =
+				await apiHelpers.headlessCommerceAdminOrder.getOrdersPage(
+					`channelId eq ${channel.id}`
+				);
+
+			for (const order of orders?.items || []) {
+				apiHelpers.data.push({id: order.id, type: 'order'});
+			}
+
 			await commerceMiniCartPage.submitButton.click();
 		});
 
@@ -1313,7 +1322,7 @@ test(
 		await commerceInstanceSettingsPage.toggleShowUnselectableOptions(true);
 
 		try {
-			await miniCartCheckoutSetUp(
+			const channel = await miniCartCheckoutSetUp(
 				apiHelpers,
 				commerceAdminChannelsPage,
 				page,
@@ -1469,6 +1478,15 @@ test(
 				await expect(
 					commerceMiniCartPage.miniCartItem(bundleProductName)
 				).toBeVisible();
+
+				const orders =
+					await apiHelpers.headlessCommerceAdminOrder.getOrdersPage(
+						`channelId eq ${channel.id}`
+					);
+
+				for (const order of orders?.items || []) {
+					apiHelpers.data.push({id: order.id, type: 'order'});
+				}
 
 				await commerceMiniCartPage.submitButton.click();
 			});
