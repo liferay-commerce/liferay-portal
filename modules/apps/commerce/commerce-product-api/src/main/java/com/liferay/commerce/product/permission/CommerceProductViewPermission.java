@@ -5,12 +5,16 @@
 
 package com.liferay.commerce.product.permission;
 
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * @author Marco Leo
  */
+@ProviderType
 public interface CommerceProductViewPermission {
 
 	public void check(
@@ -31,6 +35,11 @@ public interface CommerceProductViewPermission {
 	public boolean contains(
 			PermissionChecker permissionChecker, long commerceAccountId,
 			long commerceChannelGroupId, long cpDefinitionId)
+		throws PortalException;
+
+	public boolean isRoleEnabled(
+			PermissionChecker permissionChecker, long commerceAccountId,
+			CPDefinition cpDefinition)
 		throws PortalException;
 
 }
