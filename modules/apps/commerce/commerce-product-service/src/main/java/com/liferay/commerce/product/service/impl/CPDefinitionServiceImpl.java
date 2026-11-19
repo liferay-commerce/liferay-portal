@@ -525,6 +525,18 @@ public class CPDefinitionServiceImpl extends CPDefinitionServiceBaseImpl {
 	}
 
 	@Override
+	public CPDefinition updateCPDefinitionRoleFilter(
+			long cpDefinitionId, boolean enable)
+		throws PortalException {
+
+		_checkCommerceCatalogByCPDefinitionId(
+			cpDefinitionId, ActionKeys.UPDATE);
+
+		return cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinitionId, enable);
+	}
+
+	@Override
 	public CPDefinition updateExternalReferenceCode(
 			long cpDefinitionId, String externalReferenceCode)
 		throws PortalException {

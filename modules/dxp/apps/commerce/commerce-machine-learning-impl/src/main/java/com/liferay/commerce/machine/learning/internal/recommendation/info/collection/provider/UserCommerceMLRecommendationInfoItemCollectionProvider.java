@@ -114,9 +114,10 @@ public class UserCommerceMLRecommendationInfoItemCollectionProvider
 						pagination.getEnd()),
 					userCommerceMLRecommendation -> {
 						try {
-							return cpDefinitionService.fetchCPDefinition(
-								userCommerceMLRecommendation.
-									getRecommendedEntryClassPK());
+							return getVisibleCPDefinition(
+								cpDefinitionService.fetchCPDefinition(
+									userCommerceMLRecommendation.
+										getRecommendedEntryClassPK()));
 						}
 						catch (PortalException portalException) {
 							_log.error(portalException);

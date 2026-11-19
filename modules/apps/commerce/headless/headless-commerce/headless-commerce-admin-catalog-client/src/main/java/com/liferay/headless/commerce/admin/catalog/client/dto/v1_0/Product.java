@@ -791,6 +791,28 @@ public class Product implements Cloneable, Serializable {
 
 	protected ProductAccountGroup[] productAccountGroups;
 
+	public ProductAccount[] getProductAccounts() {
+		return productAccounts;
+	}
+
+	public void setProductAccounts(ProductAccount[] productAccounts) {
+		this.productAccounts = productAccounts;
+	}
+
+	public void setProductAccounts(
+		UnsafeSupplier<ProductAccount[], Exception>
+			productAccountsUnsafeSupplier) {
+
+		try {
+			productAccounts = productAccountsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ProductAccount[] productAccounts;
+
 	public Boolean getProductChannelFilter() {
 		return productChannelFilter;
 	}
@@ -922,6 +944,48 @@ public class Product implements Cloneable, Serializable {
 	}
 
 	protected ProductOption[] productOptions;
+
+	public Boolean getProductRoleFilter() {
+		return productRoleFilter;
+	}
+
+	public void setProductRoleFilter(Boolean productRoleFilter) {
+		this.productRoleFilter = productRoleFilter;
+	}
+
+	public void setProductRoleFilter(
+		UnsafeSupplier<Boolean, Exception> productRoleFilterUnsafeSupplier) {
+
+		try {
+			productRoleFilter = productRoleFilterUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean productRoleFilter;
+
+	public ProductRole[] getProductRoles() {
+		return productRoles;
+	}
+
+	public void setProductRoles(ProductRole[] productRoles) {
+		this.productRoles = productRoles;
+	}
+
+	public void setProductRoles(
+		UnsafeSupplier<ProductRole[], Exception> productRolesUnsafeSupplier) {
+
+		try {
+			productRoles = productRolesUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected ProductRole[] productRoles;
 
 	public ProductSpecification[] getProductSpecifications() {
 		return productSpecifications;
@@ -1326,4 +1390,4 @@ public class Product implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-636597727
+// LIFERAY-REST-BUILDER-HASH:431045921
