@@ -93,8 +93,8 @@ public class CommerceProductViewPermissionImpl
 			return false;
 		}
 
-		return _isRoleEnabled(
-			commerceAccountId, cpDefinition, permissionChecker);
+		return isRoleEnabled(
+			permissionChecker, commerceAccountId, cpDefinition);
 	}
 
 	@Override
@@ -118,8 +118,40 @@ public class CommerceProductViewPermissionImpl
 			return false;
 		}
 
-		return _isRoleEnabled(
-			commerceAccountId, cpDefinition, permissionChecker);
+		return isRoleEnabled(
+			permissionChecker, commerceAccountId, cpDefinition);
+	}
+
+	@Override
+	public boolean isRoleEnabled(
+			PermissionChecker permissionChecker, long commerceAccountId,
+			CPDefinition cpDefinition)
+		throws PortalException {
+
+		if (!cpDefinition.isRoleFilterEnabled() ||
+			!FeatureFlagManagerUtil.isEnabled(
+				cpDefinition.getCompanyId(), "LPD-112683")) {
+
+			return true;
+		}
+
+		long[] roleIds = CommerceRoleUtil.getRoleIds(
+			commerceAccountId, permissionChecker);
+
+		for (CPDefinitionVisibilityRel cpDefinitionVisibilityRel :
+				_cpDefinitionVisibilityRelLocalService.
+					getCPDefinitionVisibilityRels(
+						cpDefinition.getCPDefinitionId(), Role.class.getName(),
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+			if (ArrayUtil.contains(
+					roleIds, cpDefinitionVisibilityRel.getClassPK())) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private long _getCommerceChannelId(long groupId) {
@@ -242,37 +274,6 @@ public class CommerceProductViewPermissionImpl
 		for (CommerceChannel commerceChannel : commerceChannels) {
 			if (CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
 					commerceChannel.getGroupId())) {
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean _isRoleEnabled(
-			long commerceAccountId, CPDefinition cpDefinition,
-			PermissionChecker permissionChecker)
-		throws PortalException {
-
-		if (!cpDefinition.isRoleFilterEnabled() ||
-			!FeatureFlagManagerUtil.isEnabled(
-				cpDefinition.getCompanyId(), "LPD-112683")) {
-
-			return true;
-		}
-
-		long[] roleIds = CommerceRoleUtil.getRoleIds(
-			commerceAccountId, permissionChecker);
-
-		for (CPDefinitionVisibilityRel cpDefinitionVisibilityRel :
-				_cpDefinitionVisibilityRelLocalService.
-					getCPDefinitionVisibilityRels(
-						cpDefinition.getCPDefinitionId(), Role.class.getName(),
-						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
-			if (ArrayUtil.contains(
-					roleIds, cpDefinitionVisibilityRel.getClassPK())) {
 
 				return true;
 			}
