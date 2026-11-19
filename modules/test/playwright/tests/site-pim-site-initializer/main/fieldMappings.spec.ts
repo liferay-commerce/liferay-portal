@@ -186,7 +186,7 @@ test(
 
 test(
 	'Map a channel field to two fixed values at once',
-	{tag: ['@LPD-107968', '@LPD-112214']},
+	{tag: ['@LPD-107968', '@LPD-112214', '@LPD-112215']},
 	async ({
 		connectorsPage,
 		editFieldMappingsPage,
@@ -233,6 +233,19 @@ test(
 		await expect(page).toHaveURL(/\/field-mappings\?/);
 		await expect(fieldMappingsPage.sourceAttributes('SKU')).toHaveText(
 			'ABC-1+1'
+		);
+
+		await fieldMappingsPage.channelField('SKU').click();
+
+		await editFieldMappingsPage
+			.dragButton(1)
+			.dragTo(editFieldMappingsPage.source(0));
+
+		await editFieldMappingsPage.saveButton.click();
+
+		await expect(page).toHaveURL(/\/field-mappings\?/);
+		await expect(fieldMappingsPage.sourceAttributes('SKU')).toHaveText(
+			'ABC-2+1'
 		);
 	}
 );

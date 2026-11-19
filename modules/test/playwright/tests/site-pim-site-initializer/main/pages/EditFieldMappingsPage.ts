@@ -12,6 +12,7 @@ export class EditFieldMappingsPage {
 	readonly cancelButton: Locator;
 	readonly deleteRowButton: Locator;
 	readonly destinationHeading: Locator;
+	readonly dragButton: (index: number) => Locator;
 	readonly fallbackLogic: Locator;
 	readonly mappingRulesHeading: Locator;
 	readonly mappingRulesNavItem: Locator;
@@ -32,6 +33,8 @@ export class EditFieldMappingsPage {
 		this.destinationHeading = page.getByRole('heading', {
 			name: 'Destination',
 		});
+		this.dragButton = (index) =>
+			page.getByRole('button', {name: 'Drag Source'}).nth(index);
 		this.fallbackLogic = page.getByLabel('Fallback Logic', {exact: true});
 		this.mappingRulesHeading = page.getByRole('heading', {
 			name: 'Mapping Rules',
