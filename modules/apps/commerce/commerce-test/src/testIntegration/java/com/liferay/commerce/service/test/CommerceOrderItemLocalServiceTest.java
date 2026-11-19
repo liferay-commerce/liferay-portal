@@ -47,8 +47,10 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.option.CommerceOptionValue;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.CPOptionValueLocalService;
@@ -70,13 +72,20 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
@@ -84,6 +93,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -1884,6 +1894,60 @@ public class CommerceOrderItemLocalServiceTest {
 			BigDecimal.valueOf(6), childCommerceOrderItem.getQuantity());
 	}
 
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testUpdateCommerceOrderItemWithRoleFilterEnabled()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Update the quantity of an order item whose product is visible " +
+				"only to a role"
+		).given(
+			"An order item whose product is visible only to a role the user " +
+				"does not have"
+		).when(
+			"I update the quantity of the order item"
+		).then(
+			"The order item shall be updated only after the user gets the role"
+		);
+
+		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
+
+		_cpInstances.add(cpInstance);
+
+		CommerceOrderItem commerceOrderItem1 = _addCommerceOrderItemWithStock(
+			cpInstance, BigDecimal.ONE, BigDecimal.TEN);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(), cpInstance.getCPDefinitionId(),
+			Role.class.getName(), role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpInstance.getCPDefinitionId(), true);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
+
+		Assert.assertThrows(
+			CommerceOrderValidatorException.class,
+			() -> _commerceOrderItemLocalService.updateCommerceOrderItem(
+				_user.getUserId(), commerceOrderItem1.getCommerceOrderItemId(),
+				BigDecimal.valueOf(2), _commerceContext, _serviceContext));
+
+		_userLocalService.addRoleUser(role.getRoleId(), _user);
+
+		CommerceOrderItem commerceOrderItem2 =
+			_commerceOrderItemLocalService.updateCommerceOrderItem(
+				_user.getUserId(), commerceOrderItem1.getCommerceOrderItemId(),
+				BigDecimal.valueOf(2), _commerceContext, _serviceContext);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				BigDecimal.valueOf(2), commerceOrderItem2.getQuantity()));
+	}
+
 	@Test
 	public void testUpdateProductBundleWithDynamicOptionWithSKU()
 		throws Exception {
@@ -2813,6 +2877,9 @@ public class CommerceOrderItemLocalServiceTest {
 		_cpDefinitionInventoryLocalService;
 
 	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Inject
 	private CPDefinitionOptionRelLocalService
 		_cpDefinitionOptionRelLocalService;
 
@@ -2827,6 +2894,10 @@ public class CommerceOrderItemLocalServiceTest {
 	@DeleteAfterTestRun
 	private List<CPDefinitionOptionValueRel> _cpDefinitionOptionValueRels =
 		new ArrayList<>();
+
+	@Inject
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
 
 	@Inject
 	private CPInstanceHelper _cpInstanceHelper;
@@ -2856,5 +2927,8 @@ public class CommerceOrderItemLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
