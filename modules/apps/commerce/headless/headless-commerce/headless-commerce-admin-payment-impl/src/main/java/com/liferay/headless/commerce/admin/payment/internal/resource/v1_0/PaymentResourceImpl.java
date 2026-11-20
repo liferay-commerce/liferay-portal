@@ -11,8 +11,13 @@ import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.payment.constants.CommercePaymentEntryActionKeys;
+import com.liferay.commerce.payment.constants.CommercePaymentIntegrationConstants;
 import com.liferay.commerce.payment.exception.NoSuchPaymentEntryException;
 import com.liferay.commerce.payment.gateway.CommercePaymentGateway;
+import com.liferay.commerce.payment.integration.CommercePaymentIntegration;
+import com.liferay.commerce.payment.integration.CommercePaymentIntegrationRegistry;
+import com.liferay.commerce.payment.method.CommercePaymentMethod;
+import com.liferay.commerce.payment.method.CommercePaymentMethodRegistry;
 import com.liferay.commerce.payment.model.CommercePaymentEntry;
 import com.liferay.commerce.payment.service.CommercePaymentEntryService;
 import com.liferay.headless.commerce.admin.payment.dto.v1_0.Payment;
@@ -34,6 +39,7 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -369,7 +375,7 @@ public class PaymentResourceImpl extends BasePaymentResourceImpl {
 			commerceCurrency.getCode(), payment.getErrorMessages(),
 			payment.getLanguageId(), payment.getComment(), payment.getPayload(),
 			payment.getPaymentIntegrationKey(),
-			GetterUtil.getInteger(payment.getPaymentStatus()),
+			_getPaymentIntegrationType(payment.getPaymentIntegrationKey()),
 			GetterUtil.getInteger(
 				payment.getPaymentStatus(),
 				CommerceOrderPaymentConstants.STATUS_PENDING),
@@ -410,6 +416,32 @@ public class PaymentResourceImpl extends BasePaymentResourceImpl {
 		).build();
 	}
 
+	private int _getPaymentIntegrationType(String paymentIntegrationKey) {
+		if (Validator.isNull(paymentIntegrationKey)) {
+			return CommercePaymentIntegrationConstants.
+				TYPE_INTERNAL_ONLINE_STANDARD;
+		}
+
+		CommercePaymentIntegration commercePaymentIntegration =
+			_commercePaymentIntegrationRegistry.getCommercePaymentIntegration(
+				paymentIntegrationKey);
+
+		if (commercePaymentIntegration != null) {
+			return commercePaymentIntegration.getPaymentIntegrationType();
+		}
+
+		CommercePaymentMethod commercePaymentMethod =
+			_commercePaymentMethodRegistry.getCommercePaymentMethod(
+				paymentIntegrationKey);
+
+		if (commercePaymentMethod != null) {
+			return commercePaymentMethod.getPaymentType();
+		}
+
+		return CommercePaymentIntegrationConstants.
+			TYPE_INTERNAL_ONLINE_STANDARD;
+	}
+
 	private Payment _toPayment(
 			long commercePaymentEntryId, Locale locale,
 			boolean acceptAllLanguages, User contextUser,
@@ -443,6 +475,14 @@ public class PaymentResourceImpl extends BasePaymentResourceImpl {
 			}
 		}
 
+		int paymentIntegrationType =
+			commercePaymentEntry.getPaymentIntegrationType();
+
+		if (Validator.isNotNull(payment.getPaymentIntegrationKey())) {
+			paymentIntegrationType = _getPaymentIntegrationType(
+				payment.getPaymentIntegrationKey());
+		}
+
 		return _commercePaymentEntryService.updateCommercePaymentEntry(
 			GetterUtil.getString(
 				payment.getExternalReferenceCode(),
@@ -471,9 +511,7 @@ public class PaymentResourceImpl extends BasePaymentResourceImpl {
 			GetterUtil.getString(
 				payment.getPaymentIntegrationKey(),
 				commercePaymentEntry.getPaymentIntegrationKey()),
-			GetterUtil.getInteger(
-				payment.getPaymentIntegrationType(),
-				commercePaymentEntry.getPaymentIntegrationType()),
+			paymentIntegrationType,
 			GetterUtil.getInteger(
 				payment.getPaymentStatus(),
 				commercePaymentEntry.getPaymentStatus()),
@@ -511,6 +549,13 @@ public class PaymentResourceImpl extends BasePaymentResourceImpl {
 
 	@Reference
 	private CommercePaymentGateway _commercePaymentGateway;
+
+	@Reference
+	private CommercePaymentIntegrationRegistry
+		_commercePaymentIntegrationRegistry;
+
+	@Reference
+	private CommercePaymentMethodRegistry _commercePaymentMethodRegistry;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
