@@ -208,7 +208,12 @@ public class CPInstanceUnitOfMeasureServiceImpl
 			BigDecimal rate, String sku)
 		throws PortalException {
 
-		_checkCommerceCatalog(cpInstanceId, ActionKeys.UPDATE);
+		CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure =
+			cpInstanceUnitOfMeasurePersistence.findByPrimaryKey(
+				cpInstanceUnitOfMeasureId);
+
+		_checkCommerceCatalog(
+			cpInstanceUnitOfMeasure.getCPInstanceId(), ActionKeys.UPDATE);
 
 		return cpInstanceUnitOfMeasureLocalService.
 			updateCPInstanceUnitOfMeasure(

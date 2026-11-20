@@ -7,6 +7,7 @@ package com.liferay.commerce.product.service.impl;
 
 import com.liferay.commerce.constants.CommercePriceConstants;
 import com.liferay.commerce.product.constants.CPField;
+import com.liferay.commerce.product.exception.CPDefinitionGroupIdException;
 import com.liferay.commerce.product.exception.CPInstanceCostException;
 import com.liferay.commerce.product.exception.CPInstanceDeliverySubscriptionLengthException;
 import com.liferay.commerce.product.exception.CPInstanceDepthException;
@@ -336,6 +337,16 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 			int discontinuedDateDay, int discontinuedDateYear,
 			ServiceContext serviceContext)
 		throws PortalException {
+
+		CPDefinition cpDefinition = _cpDefinitionPersistence.findByPrimaryKey(
+			cpDefinitionId);
+
+		if (cpDefinition.getGroupId() != groupId) {
+			throw new CPDefinitionGroupIdException(
+				StringBundler.concat(
+					"Commerce product definition ", cpDefinitionId,
+					" does not belong to group ", groupId));
+		}
 
 		if (Validator.isNotNull(externalReferenceCode)) {
 			CPInstance cpInstance = cpInstancePersistence.fetchByERC_C(
