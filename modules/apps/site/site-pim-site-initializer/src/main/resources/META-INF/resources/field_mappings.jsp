@@ -14,7 +14,7 @@ PIMConnectorFieldMappingsDisplayContext pimConnectorFieldMappingsDisplayContext 
 <div class="pim-field-mappings">
 	<div>
 		<react:component
-			module="{FieldMappingsBreadcrumb} from site-pim-site-initializer"
+			module="{PIMFieldMappingsBreadcrumb} from site-pim-site-initializer"
 			props="<%= pimConnectorFieldMappingsDisplayContext.getBreadcrumbProps() %>"
 		/>
 	</div>
@@ -26,7 +26,7 @@ PIMConnectorFieldMappingsDisplayContext pimConnectorFieldMappingsDisplayContext 
 			emptyState="<%= pimConnectorFieldMappingsDisplayContext.getEmptyState() %>"
 			id="<%= PIMFDSNames.FIELD_MAPPINGS %>"
 			itemsPerPage="<%= 20 %>"
-			propsTransformer="{FieldMappingsFDSPropsTransformer} from site-pim-site-initializer"
+			propsTransformer="{PIMFieldMappingsFDSPropsTransformer} from site-pim-site-initializer"
 			showSearch="<%= true %>"
 		/>
 	</div>

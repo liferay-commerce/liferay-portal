@@ -8,14 +8,14 @@ import ClayPanel from '@clayui/panel';
 import React from 'react';
 
 import PIMFieldMappingRow from './PIMFieldMappingRow';
-import newFieldMapping from './newFieldMapping';
-import {IFieldMapping, IObjectDefinition} from './types';
+import newPIMFieldMapping from './newPIMFieldMapping';
+import {IObjectDefinition, IPIMFieldMapping} from './types';
 
 interface IProps {
 	channelFieldAdditionalFieldMappingTypes: string[];
-	fieldMappings: IFieldMapping[];
+	fieldMappings: IPIMFieldMapping[];
 	objectDefinitions: IObjectDefinition[];
-	setFieldMappings: React.Dispatch<React.SetStateAction<IFieldMapping[]>>;
+	setFieldMappings: React.Dispatch<React.SetStateAction<IPIMFieldMapping[]>>;
 	spritemap: string;
 }
 
@@ -29,10 +29,10 @@ export default function PIMFieldMappingsSection({
 	const handleAdd = () =>
 		setFieldMappings((previousFieldMappings) => [
 			...previousFieldMappings,
-			newFieldMapping(),
+			newPIMFieldMapping(),
 		]);
 
-	const handleChange = (index: number, fieldMapping: IFieldMapping) =>
+	const handleChange = (index: number, fieldMapping: IPIMFieldMapping) =>
 		setFieldMappings((previousFieldMappings) =>
 			previousFieldMappings.map((previousFieldMapping, previousIndex) =>
 				previousIndex === index ? fieldMapping : previousFieldMapping

@@ -11,25 +11,6 @@ export const TYPE_FIXED_VALUE = 'fixedValue';
 
 export const TYPE_TAGS = 'tags';
 
-export interface IFieldMapping {
-	id?: number;
-	key?: string;
-	sourceClassName: string;
-	sourceFieldName: string;
-	type: string;
-	value: string;
-}
-
-export interface IMappingRule {
-	id: number;
-	stripHTMLTags: boolean;
-	textCase: string;
-	trimWhitespace: boolean;
-	truncateLength: number;
-	urlEncode: boolean;
-	useFirstNonemptySource: boolean;
-}
-
 export interface IObjectDefinition {
 	className: string;
 	label: string;
@@ -39,4 +20,23 @@ export interface IObjectDefinition {
 export interface IObjectField {
 	label: string;
 	name: string;
+}
+
+export interface IPIMFieldMapping {
+	id?: number;
+	key?: string;
+	sourceClassName: string;
+	sourceFieldName: string;
+	type: string;
+	value: string;
+}
+
+export interface IPIMFieldMappingRule {
+	id: number;
+	stripHTMLTags: boolean;
+	textCase: string;
+	trimWhitespace: boolean;
+	truncateLength: number;
+	urlEncode: boolean;
+	useFirstNonemptySource: boolean;
 }

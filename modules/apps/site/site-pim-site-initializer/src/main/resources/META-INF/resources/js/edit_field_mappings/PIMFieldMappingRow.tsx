@@ -10,8 +10,8 @@ import React from 'react';
 
 import getObjectFields from './getObjectFields';
 import {
-	IFieldMapping,
 	IObjectDefinition,
+	IPIMFieldMapping,
 	TYPE_CATEGORIES,
 	TYPE_DYNAMIC_VALUE,
 	TYPE_FIXED_VALUE,
@@ -21,11 +21,11 @@ import {
 interface IProps {
 	channelFieldAdditionalFieldMappingTypes: string[];
 	deletable: boolean;
-	fieldMapping: IFieldMapping;
+	fieldMapping: IPIMFieldMapping;
 	index: number;
 	objectDefinitions: IObjectDefinition[];
 	onAdd: () => void;
-	onChange: (index: number, fieldMapping: IFieldMapping) => void;
+	onChange: (index: number, fieldMapping: IPIMFieldMapping) => void;
 	onDelete: (index: number) => void;
 	spritemap: string;
 }

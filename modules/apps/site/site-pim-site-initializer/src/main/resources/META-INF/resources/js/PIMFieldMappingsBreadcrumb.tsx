@@ -6,7 +6,7 @@
 import {Breadcrumb} from '@liferay/site-cms-site-initializer';
 import React, {ComponentProps, useEffect, useState} from 'react';
 
-import {EVENT_FIELD_MAPPINGS_CHANGE} from './FieldMappingsFDSPropsTransformer';
+import {EVENT_FIELD_MAPPINGS_CHANGE} from './PIMFieldMappingsFDSPropsTransformer';
 
 type MappingStatus = 'complete' | 'incomplete';
 
@@ -15,7 +15,7 @@ interface IActionItem {
 	[key: string]: any;
 }
 
-export default function FieldMappingsBreadcrumb({
+export default function PIMFieldMappingsBreadcrumb({
 	actionItems = [],
 	mappingStatus: initialMappingStatus,
 	...props

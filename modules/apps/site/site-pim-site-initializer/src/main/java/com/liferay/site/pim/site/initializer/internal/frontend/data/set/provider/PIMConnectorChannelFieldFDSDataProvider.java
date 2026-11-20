@@ -278,11 +278,10 @@ public class PIMConnectorChannelFieldFDSDataProvider
 					apiURL, _getLabel(locale, pimConnectorChannelField),
 					TransformUtil.transform(
 						objectEntries, ObjectEntry::getObjectEntryId),
+					pimFieldMappingRuleAPIURL, pimFieldMappingRuleObjectEntryId,
 					editFieldMappingsURL + "&channelField=" +
 						URLCodec.encodeURL(pimConnectorChannelField.getName()),
-					locale, pimFieldMappingRuleAPIURL,
-					pimFieldMappingRuleObjectEntryId,
-					pimConnectorChannelField.isRequired(),
+					locale, pimConnectorChannelField.isRequired(),
 					_getSourceAttributes(labelMap, locale, objectEntries),
 					_getTransformationRules(locale, pimFieldMappingRuleValues),
 					MapUtil.getBoolean(
