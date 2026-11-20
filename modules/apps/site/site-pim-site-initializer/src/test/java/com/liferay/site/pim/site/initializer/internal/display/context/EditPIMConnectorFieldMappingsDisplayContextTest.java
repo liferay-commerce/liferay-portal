@@ -6,15 +6,20 @@
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectFolder;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectFolderLocalServiceUtil;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
@@ -40,8 +45,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -180,6 +187,7 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 	public void tearDown() {
 		_objectDefinitionLocalServiceUtilMockedStatic.close();
 		_objectEntryLocalServiceUtilMockedStatic.close();
+		_objectFolderLocalServiceUtilMockedStatic.close();
 		_objectRelationshipLocalServiceUtilMockedStatic.close();
 	}
 
@@ -216,9 +224,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		EditPIMConnectorFieldMappingsDisplayContext
 			editPIMConnectorFieldMappingsDisplayContext =
 				new EditPIMConnectorFieldMappingsDisplayContext(
-					_httpServletRequest, _objectDefinitionService,
-					_objectEntryLocalService, _objectFieldLocalService,
-					_pimConnectorRegistry);
+					_httpServletRequest, _objectDefinitionLocalService,
+					_objectDefinitionService, _objectEntryLocalService,
+					_objectFieldLocalService, _pimConnectorRegistry);
 
 		Map<String, Object> reactData =
 			editPIMConnectorFieldMappingsDisplayContext.getReactData();
@@ -278,10 +286,14 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
 
-		jsonObject = jsonArray.getJSONObject(0);
+		JSONObject objectFieldJSONObject = jsonArray.getJSONObject(0);
 
-		Assert.assertEquals("SKU", jsonObject.getString("label"));
-		Assert.assertEquals("sku", jsonObject.getString("name"));
+		Assert.assertEquals("SKU", objectFieldJSONObject.getString("label"));
+		Assert.assertEquals("sku", objectFieldJSONObject.getString("name"));
+
+		jsonArray = jsonObject.getJSONArray("repeatableGroups");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
 
 		_objectRelationshipLocalServiceUtilMockedStatic.when(
 			() ->
@@ -305,9 +317,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectDefinitionService,
-				_objectEntryLocalService, _objectFieldLocalService,
-				_pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionLocalService,
+				_objectDefinitionService, _objectEntryLocalService,
+				_objectFieldLocalService, _pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -343,9 +355,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectDefinitionService,
-				_objectEntryLocalService, _objectFieldLocalService,
-				_pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionLocalService,
+				_objectDefinitionService, _objectEntryLocalService,
+				_objectFieldLocalService, _pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -366,9 +378,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectDefinitionService,
-				_objectEntryLocalService, _objectFieldLocalService,
-				_pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionLocalService,
+				_objectDefinitionService, _objectEntryLocalService,
+				_objectFieldLocalService, _pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -382,9 +394,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		editPIMConnectorFieldMappingsDisplayContext =
 			new EditPIMConnectorFieldMappingsDisplayContext(
-				_httpServletRequest, _objectDefinitionService,
-				_objectEntryLocalService, _objectFieldLocalService,
-				_pimConnectorRegistry);
+				_httpServletRequest, _objectDefinitionLocalService,
+				_objectDefinitionService, _objectEntryLocalService,
+				_objectFieldLocalService, _pimConnectorRegistry);
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
@@ -396,6 +408,56 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		jsonArray = (JSONArray)reactData.get("fieldMappings");
 
 		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
+
+		_mockRepeatableGroups();
+
+		editPIMConnectorFieldMappingsDisplayContext =
+			new EditPIMConnectorFieldMappingsDisplayContext(
+				_httpServletRequest, _objectDefinitionLocalService,
+				_objectDefinitionService, _objectEntryLocalService,
+				_objectFieldLocalService, _pimConnectorRegistry);
+
+		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
+
+		jsonArray = (JSONArray)reactData.get("objectDefinitions");
+
+		jsonObject = jsonArray.getJSONObject(0);
+
+		jsonArray = jsonObject.getJSONArray("repeatableGroups");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals("Images", jsonObject.getString("label"));
+		Assert.assertEquals("r_images", jsonObject.getString("name"));
+		_assertObjectFieldName(jsonObject, "title");
+
+		jsonArray = jsonObject.getJSONArray("repeatableGroups");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals("Sizes", jsonObject.getString("label"));
+		Assert.assertEquals("r_sizes", jsonObject.getString("name"));
+		_assertObjectFieldName(jsonObject, "width");
+
+		jsonArray = jsonObject.getJSONArray("repeatableGroups");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
+	}
+
+	private void _assertObjectFieldName(
+		JSONObject jsonObject, String objectFieldName) {
+
+		JSONArray jsonArray = jsonObject.getJSONArray("objectFields");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(objectFieldName, jsonObject.getString("name"));
 	}
 
 	private void _mockObjectDefinition(
@@ -496,6 +558,12 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 			productTypeObjectDefinition.getClassName()
 		).thenReturn(
 			"com.liferay.object.model.ObjectDefinition#P4R4"
+		);
+
+		Mockito.when(
+			productTypeObjectDefinition.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
 		);
 
 		Mockito.when(
@@ -658,6 +726,190 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		);
 	}
 
+	private ObjectDefinition _mockRepeatableGroupObjectDefinition(
+		String label, long objectDefinitionId, String objectFieldLabel,
+		String objectFieldName, long objectFolderId) {
+
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		Mockito.when(
+			objectDefinition.getLabel(LocaleUtil.US)
+		).thenReturn(
+			label
+		);
+
+		Mockito.when(
+			objectDefinition.getObjectDefinitionId()
+		).thenReturn(
+			objectDefinitionId
+		);
+
+		Mockito.when(
+			objectDefinition.getObjectFolderId()
+		).thenReturn(
+			objectFolderId
+		);
+
+		Mockito.when(
+			_objectDefinitionLocalService.fetchObjectDefinition(
+				objectDefinitionId)
+		).thenReturn(
+			objectDefinition
+		);
+
+		_objectDefinitionLocalServiceUtilMockedStatic.when(
+			() -> ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
+				objectDefinitionId)
+		).thenReturn(
+			objectDefinition
+		);
+
+		ObjectField objectField = Mockito.mock(ObjectField.class);
+
+		Mockito.when(
+			objectField.getLabel(LocaleUtil.US)
+		).thenReturn(
+			objectFieldLabel
+		);
+
+		Mockito.when(
+			objectField.getName()
+		).thenReturn(
+			objectFieldName
+		);
+
+		Mockito.when(
+			_objectFieldLocalService.getObjectFields(objectDefinitionId)
+		).thenReturn(
+			Collections.singletonList(objectField)
+		);
+
+		return objectDefinition;
+	}
+
+	private ObjectRelationship _mockRepeatableGroupObjectRelationship(
+		String name, long objectDefinitionId) {
+
+		long objectFieldId = RandomTestUtil.randomLong();
+
+		ObjectField objectField = Mockito.mock(ObjectField.class);
+
+		Mockito.when(
+			objectField.getObjectFieldId()
+		).thenReturn(
+			objectFieldId
+		);
+
+		List<ObjectField> objectFields = new ArrayList<>(
+			_objectFieldLocalService.getObjectFields(objectDefinitionId));
+
+		objectFields.add(objectField);
+
+		Mockito.when(
+			_objectFieldLocalService.getObjectFields(objectDefinitionId)
+		).thenReturn(
+			objectFields
+		);
+
+		ObjectRelationship objectRelationship = Mockito.mock(
+			ObjectRelationship.class);
+
+		Mockito.when(
+			objectRelationship.getName()
+		).thenReturn(
+			name
+		);
+
+		Mockito.when(
+			objectRelationship.getObjectDefinitionId2()
+		).thenReturn(
+			objectDefinitionId
+		);
+
+		Mockito.when(
+			objectRelationship.getObjectFieldId2()
+		).thenReturn(
+			objectFieldId
+		);
+
+		Mockito.when(
+			objectRelationship.getType()
+		).thenReturn(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY
+		);
+
+		Mockito.when(
+			objectRelationship.isEdge()
+		).thenReturn(
+			true
+		);
+
+		return objectRelationship;
+	}
+
+	private void _mockRepeatableGroups() {
+		ObjectFolder objectFolder = Mockito.mock(ObjectFolder.class);
+
+		Mockito.when(
+			objectFolder.getObjectFolderId()
+		).thenReturn(
+			_OBJECT_FOLDER_ID
+		);
+
+		_objectFolderLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectFolderLocalServiceUtil.
+					fetchObjectFolderByExternalReferenceCode(
+						ObjectFolderConstants.
+							EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
+						_COMPANY_ID)
+		).thenReturn(
+			objectFolder
+		);
+
+		_mockRepeatableGroupObjectDefinition(
+			"Images", _OBJECT_DEFINITION_ID_IMAGES,
+			RandomTestUtil.randomString(), "title", _OBJECT_FOLDER_ID);
+		_mockRepeatableGroupObjectDefinition(
+			"Sizes", _OBJECT_DEFINITION_ID_SIZES, RandomTestUtil.randomString(),
+			"width", _OBJECT_FOLDER_ID);
+		_mockRepeatableGroupObjectDefinition(
+			RandomTestUtil.randomString(), _OBJECT_DEFINITION_ID_REFERENCED,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomLong());
+
+		List<ObjectRelationship> objectRelationships = Arrays.asList(
+			_mockRepeatableGroupObjectRelationship(
+				"r_images", _OBJECT_DEFINITION_ID_IMAGES),
+			_mockRepeatableGroupObjectRelationship(
+				"r_referenced", _OBJECT_DEFINITION_ID_REFERENCED));
+
+		_objectRelationshipLocalServiceUtilMockedStatic.when(
+			() -> ObjectRelationshipLocalServiceUtil.getObjectRelationships(
+				_OBJECT_DEFINITION_ID, true)
+		).thenReturn(
+			objectRelationships
+		);
+
+		ObjectRelationship objectRelationship =
+			_mockRepeatableGroupObjectRelationship(
+				"r_sizes", _OBJECT_DEFINITION_ID_SIZES);
+
+		_objectRelationshipLocalServiceUtilMockedStatic.when(
+			() -> ObjectRelationshipLocalServiceUtil.getObjectRelationships(
+				_OBJECT_DEFINITION_ID_IMAGES, true)
+		).thenReturn(
+			Collections.singletonList(objectRelationship)
+		);
+	}
+
 	private static final String _CHANNEL_FIELD = "skus[].sku";
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
@@ -669,7 +921,18 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 	private static final long _OBJECT_DEFINITION_ID =
 		RandomTestUtil.randomLong();
 
+	private static final long _OBJECT_DEFINITION_ID_IMAGES =
+		RandomTestUtil.randomLong();
+
+	private static final long _OBJECT_DEFINITION_ID_REFERENCED =
+		RandomTestUtil.randomLong();
+
+	private static final long _OBJECT_DEFINITION_ID_SIZES =
+		RandomTestUtil.randomLong();
+
 	private static final long _OBJECT_ENTRY_ID = RandomTestUtil.randomLong();
+
+	private static final long _OBJECT_FOLDER_ID = RandomTestUtil.randomLong();
 
 	private static final long _PIM_CONNECTOR_OBJECT_DEFINITION_ID =
 		RandomTestUtil.randomLong();
@@ -681,6 +944,8 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		RandomTestUtil.randomLong();
 
 	private HttpServletRequest _httpServletRequest;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService =
+		Mockito.mock(ObjectDefinitionLocalService.class);
 	private final MockedStatic<ObjectDefinitionLocalServiceUtil>
 		_objectDefinitionLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ObjectDefinitionLocalServiceUtil.class);
@@ -693,6 +958,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 			ObjectEntryLocalServiceUtil.class);
 	private final ObjectFieldLocalService _objectFieldLocalService =
 		Mockito.mock(ObjectFieldLocalService.class);
+	private final MockedStatic<ObjectFolderLocalServiceUtil>
+		_objectFolderLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			ObjectFolderLocalServiceUtil.class);
 	private final MockedStatic<ObjectRelationshipLocalServiceUtil>
 		_objectRelationshipLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ObjectRelationshipLocalServiceUtil.class);

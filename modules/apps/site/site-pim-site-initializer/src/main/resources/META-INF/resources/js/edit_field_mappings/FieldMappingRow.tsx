@@ -8,7 +8,14 @@ import {ClayInput, ClaySelect} from '@clayui/form';
 import {RequiredMark} from '@liferay/site-cms-site-initializer';
 import React from 'react';
 
+import RepeatableGroupPanel from './RepeatableGroupPanel';
 import getObjectFields from './getObjectFields';
+import {
+	getRepeatableGroups,
+	joinSourceFieldPath,
+	parseSourceFieldPath,
+	resolveSourceFieldPath,
+} from './sourceFieldPath';
 import {
 	IFieldMapping,
 	IObjectDefinition,
@@ -43,6 +50,29 @@ export default function FieldMappingRow({
 		objectDefinitions,
 		fieldMapping.sourceClassName
 	);
+
+	const repeatableGroups = getRepeatableGroups(
+		objectDefinitions,
+		fieldMapping.sourceClassName
+	);
+
+	const segments = parseSourceFieldPath(fieldMapping.sourceFieldName);
+
+	const resolvedSourceFieldPath = resolveSourceFieldPath(
+		objectDefinitions,
+		fieldMapping.sourceClassName,
+		fieldMapping.sourceFieldName
+	);
+
+	const handleRepeatableGroupChange = (level: number, value: string) =>
+		onChange(index, {
+			...fieldMapping,
+			sourceFieldName: joinSourceFieldPath(
+				value
+					? [...segments.slice(0, level + 1), value]
+					: segments.slice(0, level + 1)
+			),
+		});
 
 	const handleSourceFieldNameChange = (value: string) => {
 		const nextFixedValue = value === TYPE_FIXED_VALUE;
@@ -127,9 +157,7 @@ export default function FieldMappingRow({
 							handleSourceFieldNameChange(event.target.value)
 						}
 						value={
-							fixedValue
-								? TYPE_FIXED_VALUE
-								: fieldMapping.sourceFieldName
+							fixedValue ? TYPE_FIXED_VALUE : segments[0] ?? ''
 						}
 					>
 						<ClaySelect.Option
@@ -145,6 +173,22 @@ export default function FieldMappingRow({
 							/>
 						))}
 
+						{!!repeatableGroups.length && (
+							<ClaySelect.OptGroup
+								label={Liferay.Language.get(
+									'repeatable-groups'
+								)}
+							>
+								{repeatableGroups.map((repeatableGroup) => (
+									<ClaySelect.Option
+										key={repeatableGroup.name}
+										label={repeatableGroup.label}
+										value={repeatableGroup.name}
+									/>
+								))}
+							</ClaySelect.OptGroup>
+						)}
+
 						<ClaySelect.Option
 							label={Liferay.Language.get('fixed-value')}
 							value={TYPE_FIXED_VALUE}
@@ -152,6 +196,20 @@ export default function FieldMappingRow({
 					</ClaySelect>
 				</ClayInput.GroupItem>
 			</ClayInput.Group>
+
+			{!fixedValue &&
+				resolvedSourceFieldPath.repeatableGroups.map(
+					(repeatableGroup, level) => (
+						<RepeatableGroupPanel
+							key={`${level}-${repeatableGroup.name}`}
+							onChange={(value) =>
+								handleRepeatableGroupChange(level, value)
+							}
+							repeatableGroup={repeatableGroup}
+							value={segments[level + 1] ?? ''}
+						/>
+					)
+				)}
 
 			{fixedValue && (
 				<ClayInput.Group>

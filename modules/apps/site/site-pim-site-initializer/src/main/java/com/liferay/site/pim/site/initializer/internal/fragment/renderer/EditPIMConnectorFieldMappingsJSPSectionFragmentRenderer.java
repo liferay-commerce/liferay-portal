@@ -5,6 +5,7 @@
 
 package com.liferay.site.pim.site.initializer.internal.fragment.renderer;
 
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
@@ -24,7 +25,9 @@ public class EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer
 		<EditPIMConnectorFieldMappingsDisplayContext> {
 
 	public EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer(
-		Language language, ObjectDefinitionService objectDefinitionService,
+		Language language,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		ObjectDefinitionService objectDefinitionService,
 		ObjectEntryLocalService objectEntryLocalService,
 		ObjectFieldLocalService objectFieldLocalService,
 		PIMConnectorRegistry pimConnectorRegistry,
@@ -32,6 +35,7 @@ public class EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer
 
 		super(language, servletContext);
 
+		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectDefinitionService = objectDefinitionService;
 		_objectEntryLocalService = objectEntryLocalService;
 		_objectFieldLocalService = objectFieldLocalService;
@@ -48,11 +52,12 @@ public class EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer
 		HttpServletRequest httpServletRequest) {
 
 		return new EditPIMConnectorFieldMappingsDisplayContext(
-			httpServletRequest, _objectDefinitionService,
-			_objectEntryLocalService, _objectFieldLocalService,
-			_pimConnectorRegistry);
+			httpServletRequest, _objectDefinitionLocalService,
+			_objectDefinitionService, _objectEntryLocalService,
+			_objectFieldLocalService, _pimConnectorRegistry);
 	}
 
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final ObjectDefinitionService _objectDefinitionService;
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final ObjectFieldLocalService _objectFieldLocalService;

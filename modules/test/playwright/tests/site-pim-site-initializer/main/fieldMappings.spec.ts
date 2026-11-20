@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {pimPagesTest} from './fixtures/pimPagesTest';
 
@@ -365,5 +366,113 @@ test(
 				connectorsPage.getConnectorMappingStatus(connectorName)
 			).toHaveText('Incomplete');
 		});
+	}
+);
+
+test(
+	'Map a channel field to a field inside a repeatable group',
+	{tag: ['@LPD-114146']},
+	async ({
+		apiHelpers,
+		connectorsPage,
+		editFieldMappingsPage,
+		fieldMappingsPage,
+		page,
+	}) => {
+		const repeatableGroupLabel = `Images${getRandomInt()}`;
+		const structureLabel = `ProductType${getRandomInt()}`;
+
+		const structureObjectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				enableObjectEntryDraft: true,
+				objectDefinitionExternalReferenceCode: structureLabel,
+				objectFolderExternalReferenceCode: 'L_PIM_PRODUCT_TYPES',
+				scope: 'depot',
+				status: {code: 0},
+			});
+
+		const repeatableGroupObjectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectDefinitionExternalReferenceCode: repeatableGroupLabel,
+				objectFields: [
+					{
+						DBType: 'String',
+						businessType: 'Text',
+						indexed: false,
+						label: {en_US: 'Caption'},
+						name: 'caption',
+						required: false,
+						type: 'String',
+					},
+				],
+				objectFolderExternalReferenceCode:
+					'L_CMS_STRUCTURE_REPEATABLE_GROUPS',
+				scope: 'depot',
+				status: {code: 0},
+			});
+
+		try {
+			const objectRelationship =
+				await apiHelpers.objectAdmin.postObjectDefinitionInheritanceRelationship(
+					structureObjectDefinition,
+					repeatableGroupObjectDefinition
+				);
+
+			const connectorName = getRandomString();
+
+			await test.step('Create a connector', async () => {
+				await connectorsPage.createConnector({
+					connector: 'Liferay Commerce',
+					name: connectorName,
+				});
+			});
+
+			await test.step('Map a channel field to a repeatable group field', async () => {
+				await connectorsPage.getConnector(connectorName).click();
+
+				await fieldMappingsPage.channelField('Tags[]').click();
+
+				await expect(
+					editFieldMappingsPage.destinationHeading
+				).toBeVisible();
+
+				await editFieldMappingsPage.source(0).selectOption({
+					label: structureLabel,
+				});
+
+				await editFieldMappingsPage.mapToRepeatableGroupField({
+					objectFieldLabel: 'Caption (caption)',
+					repeatableGroupLabel,
+				});
+
+				await editFieldMappingsPage.saveButton.click();
+
+				await expect(page).toHaveURL(/\/field-mappings\?/);
+				await expect(fieldMappingsPage.status('Tags[]')).toHaveText(
+					'Mapped'
+				);
+				await expect(
+					fieldMappingsPage.sourceAttributes('Tags[]')
+				).toHaveText(
+					`${structureLabel}/${repeatableGroupLabel} \u203A Caption`
+				);
+			});
+
+			await test.step('The mapping comes back on reopening', async () => {
+				await fieldMappingsPage.channelField('Tags[]').click();
+
+				await expect(
+					editFieldMappingsPage.sourceAttribute(0)
+				).toHaveValue(objectRelationship.name!);
+				await expect(
+					editFieldMappingsPage.repeatableGroup(repeatableGroupLabel)
+				).toHaveValue('caption');
+			});
+		}
+		finally {
+			await apiHelpers.deleteObjectDefinition(
+				structureObjectDefinition.id!
+			);
+		}
 	}
 );
