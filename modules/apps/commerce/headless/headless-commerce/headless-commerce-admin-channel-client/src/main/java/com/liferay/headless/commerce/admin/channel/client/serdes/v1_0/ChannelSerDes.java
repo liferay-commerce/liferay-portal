@@ -166,6 +166,26 @@ public class ChannelSerDes {
 			sb.append("\"");
 		}
 
+		if (channel.getGuestBrowsingEnabled() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"guestBrowsingEnabled\": ");
+
+			sb.append(channel.getGuestBrowsingEnabled());
+		}
+
+		if (channel.getGuestCheckoutEnabled() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"guestCheckoutEnabled\": ");
+
+			sb.append(channel.getGuestCheckoutEnabled());
+		}
+
 		if (channel.getId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -328,6 +348,24 @@ public class ChannelSerDes {
 				String.valueOf(channel.getExternalReferenceCode()));
 		}
 
+		if (channel.getGuestBrowsingEnabled() == null) {
+			map.put("guestBrowsingEnabled", null);
+		}
+		else {
+			map.put(
+				"guestBrowsingEnabled",
+				String.valueOf(channel.getGuestBrowsingEnabled()));
+		}
+
+		if (channel.getGuestCheckoutEnabled() == null) {
+			map.put("guestCheckoutEnabled", null);
+		}
+		else {
+			map.put(
+				"guestCheckoutEnabled",
+				String.valueOf(channel.getGuestCheckoutEnabled()));
+		}
+
 		if (channel.getId() == null) {
 			map.put("id", null);
 		}
@@ -413,6 +451,16 @@ public class ChannelSerDes {
 
 				return false;
 			}
+			else if (Objects.equals(
+						jsonParserFieldName, "guestBrowsingEnabled")) {
+
+				return false;
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "guestCheckoutEnabled")) {
+
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
 				return false;
 			}
@@ -494,6 +542,22 @@ public class ChannelSerDes {
 				if (jsonParserFieldValue != null) {
 					channel.setExternalReferenceCode(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "guestBrowsingEnabled")) {
+
+				if (jsonParserFieldValue != null) {
+					channel.setGuestBrowsingEnabled(
+						(Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "guestCheckoutEnabled")) {
+
+				if (jsonParserFieldValue != null) {
+					channel.setGuestCheckoutEnabled(
+						(Boolean)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "id")) {
@@ -624,4 +688,4 @@ public class ChannelSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1293681184
+// LIFERAY-REST-BUILDER-HASH:-1409145670
