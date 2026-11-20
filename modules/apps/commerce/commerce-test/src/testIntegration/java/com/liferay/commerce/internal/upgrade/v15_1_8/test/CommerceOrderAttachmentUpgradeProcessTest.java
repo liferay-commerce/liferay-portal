@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.commerce.internal.upgrade.v15_1_5.test;
+package com.liferay.commerce.internal.upgrade.v15_1_8.test;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
@@ -201,7 +201,7 @@ public class CommerceOrderAttachmentUpgradeProcessTest {
 	}
 
 	private static final String _CLASS_NAME =
-		"com.liferay.commerce.internal.upgrade.v15_1_5." +
+		"com.liferay.commerce.internal.upgrade.v15_1_8." +
 			"CommerceOrderAttachmentUpgradeProcess";
 
 	private AccountEntry _accountEntry;

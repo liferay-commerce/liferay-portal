@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.commerce.internal.upgrade.v15_1_7;
+package com.liferay.commerce.internal.upgrade.v15_1_10;
 
 import com.liferay.account.constants.AccountRoleConstants;
 import com.liferay.object.model.ObjectDefinition;
