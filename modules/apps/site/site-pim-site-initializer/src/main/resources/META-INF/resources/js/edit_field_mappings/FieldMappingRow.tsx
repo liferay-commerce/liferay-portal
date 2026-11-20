@@ -20,10 +20,12 @@ interface IProps {
 	deletable: boolean;
 	fieldMapping: IFieldMapping;
 	index: number;
+	last: boolean;
 	objectDefinitions: IObjectDefinition[];
 	onAdd: () => void;
 	onChange: (index: number, fieldMapping: IFieldMapping) => void;
 	onDelete: (index: number) => void;
+	onMove: (index: number, offset: number) => void;
 	spritemap: string;
 }
 
@@ -31,10 +33,12 @@ export default function FieldMappingRow({
 	deletable,
 	fieldMapping,
 	index,
+	last,
 	objectDefinitions,
 	onAdd,
 	onChange,
 	onDelete,
+	onMove,
 	spritemap,
 }: IProps) {
 	const fixedValue = fieldMapping.type === TYPE_FIXED_VALUE;
@@ -101,8 +105,28 @@ export default function FieldMappingRow({
 
 						<div className="ml-auto">
 							<ClayButtonWithIcon
-								aria-label={Liferay.Language.get('delete-row')}
+								aria-label={Liferay.Language.get('move-up')}
 								className="rounded-circle"
+								disabled={!index}
+								onClick={() => onMove(index, -1)}
+								size="xs"
+								spritemap={spritemap}
+								symbol="angle-up"
+							/>
+
+							<ClayButtonWithIcon
+								aria-label={Liferay.Language.get('move-down')}
+								className="ml-1 rounded-circle"
+								disabled={last}
+								onClick={() => onMove(index, 1)}
+								size="xs"
+								spritemap={spritemap}
+								symbol="angle-down"
+							/>
+
+							<ClayButtonWithIcon
+								aria-label={Liferay.Language.get('delete-row')}
+								className="ml-1 rounded-circle"
 								disabled={!deletable}
 								onClick={() => onDelete(index)}
 								size="xs"

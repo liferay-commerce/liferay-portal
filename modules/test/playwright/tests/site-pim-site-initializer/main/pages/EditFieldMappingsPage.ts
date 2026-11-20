@@ -15,6 +15,7 @@ export class EditFieldMappingsPage {
 	readonly fallbackLogic: Locator;
 	readonly mappingRulesHeading: Locator;
 	readonly mappingRulesNavItem: Locator;
+	readonly moveUpButton: (index: number) => Locator;
 	readonly page: Page;
 	readonly saveButton: Locator;
 	readonly source: (index: number) => Locator;
@@ -39,6 +40,8 @@ export class EditFieldMappingsPage {
 		this.mappingRulesNavItem = page.getByRole('menuitem', {
 			name: 'Mapping Rules',
 		});
+		this.moveUpButton = (index) =>
+			page.getByRole('button', {name: 'Move Up'}).nth(index);
 		this.page = page;
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.source = (index) =>
