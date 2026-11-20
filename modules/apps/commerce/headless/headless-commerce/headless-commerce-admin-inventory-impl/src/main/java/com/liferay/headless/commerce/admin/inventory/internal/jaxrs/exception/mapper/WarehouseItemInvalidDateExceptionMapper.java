@@ -5,7 +5,7 @@
 
 package com.liferay.headless.commerce.admin.inventory.internal.jaxrs.exception.mapper;
 
-import com.liferay.commerce.inventory.exception.CommerceInventoryReplenishmentQuantityException;
+import com.liferay.commerce.inventory.exception.CommerceInventoryInvalidDateException;
 import com.liferay.headless.commerce.core.exception.mapper.BaseExceptionMapper;
 
 import jakarta.ws.rs.core.Response;
@@ -15,24 +15,23 @@ import jakarta.ws.rs.ext.Provider;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Crescenzo Rega
+ * @author Andrea Sbarra
  */
 @Component(
 	property = {
 		"osgi.jaxrs.application.select=(osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory)",
 		"osgi.jaxrs.extension=true",
-		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory.CommerceInventoryReplenishmentQuantityExceptionMapper"
+		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory.WarehouseItemInvalidDateExceptionMapper"
 	},
 	service = ExceptionMapper.class
 )
 @Provider
-public class CommerceInventoryReplenishmentQuantityExceptionMapper
-	extends BaseExceptionMapper
-		<CommerceInventoryReplenishmentQuantityException> {
+public class WarehouseItemInvalidDateExceptionMapper
+	extends BaseExceptionMapper<CommerceInventoryInvalidDateException> {
 
 	@Override
 	public String getErrorDescription() {
-		return "Invalid quantity";
+		return "Unable to find warehouse items";
 	}
 
 	@Override

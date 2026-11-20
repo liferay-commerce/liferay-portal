@@ -21,12 +21,12 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"osgi.jaxrs.application.select=(osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory)",
 		"osgi.jaxrs.extension=true",
-		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory.DuplicateInventoryWarehouseItemExceptionMapper"
+		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory.DuplicateWarehouseItemExceptionMapper"
 	},
 	service = ExceptionMapper.class
 )
 @Provider
-public class DuplicateInventoryWarehouseItemExceptionMapper
+public class DuplicateWarehouseItemExceptionMapper
 	extends BaseExceptionMapper
 		<DuplicateCommerceInventoryWarehouseItemException> {
 

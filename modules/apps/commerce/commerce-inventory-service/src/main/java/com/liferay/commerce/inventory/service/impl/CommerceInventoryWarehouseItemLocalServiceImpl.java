@@ -9,6 +9,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.commerce.inventory.constants.CommerceInventoryConstants;
+import com.liferay.commerce.inventory.exception.CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException;
 import com.liferay.commerce.inventory.exception.CommerceInventoryWarehouseItemSkuException;
 import com.liferay.commerce.inventory.exception.DuplicateCommerceInventoryWarehouseItemException;
 import com.liferay.commerce.inventory.exception.MVCCException;
@@ -142,6 +143,16 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 		}
 
 		if (commerceInventoryWarehouseItem != null) {
+			long commerceInventoryWarehouseItemWarehouseId =
+				commerceInventoryWarehouseItem.
+					getCommerceInventoryWarehouseId();
+
+			if (commerceInventoryWarehouseItemWarehouseId !=
+					commerceInventoryWarehouseId) {
+
+				throw new CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException();
+			}
+
 			return commerceInventoryWarehouseItemLocalService.
 				updateCommerceInventoryWarehouseItem(
 					userId,
