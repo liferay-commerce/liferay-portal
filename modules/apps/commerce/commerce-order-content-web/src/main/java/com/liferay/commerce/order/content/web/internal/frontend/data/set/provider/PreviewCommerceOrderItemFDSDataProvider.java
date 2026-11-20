@@ -79,15 +79,17 @@ public class PreviewCommerceOrderItemFDSDataProvider
 
 		IndexStatusManagerThreadLocal.setIndexReadOnly(true);
 
+		List<CommerceOrderImporterItem> commerceOrderImporterItems = null;
+
 		try {
-			_commerceOrderImporterItems = _getCommerceOrderImporterItems(
+			commerceOrderImporterItems = _getCommerceOrderImporterItems(
 				httpServletRequest, fdsPagination);
 		}
 		finally {
 			IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
 		}
 
-		if (_commerceOrderImporterItems == null) {
+		if (commerceOrderImporterItems == null) {
 			return Collections.emptyList();
 		}
 
@@ -112,7 +114,7 @@ public class PreviewCommerceOrderItemFDSDataProvider
 		Locale locale = _portal.getLocale(httpServletRequest);
 
 		return TransformUtil.transform(
-			_commerceOrderImporterItems,
+			commerceOrderImporterItems,
 			commerceOrderImporterItem -> {
 				String externalReferenceCode = StringPool.BLANK;
 
@@ -158,6 +160,9 @@ public class PreviewCommerceOrderItemFDSDataProvider
 		throws PortalException {
 
 		try {
+			_commerceOrderService.getCommerceOrder(
+				ParamUtil.getLong(httpServletRequest, "commerceOrderId"));
+
 			CommerceOrderImporterType commerceOrderImporterType =
 				_commerceOrderImporterTypeRegistry.getCommerceOrderImporterType(
 					ParamUtil.getString(
@@ -353,8 +358,6 @@ public class PreviewCommerceOrderItemFDSDataProvider
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
-
-	private List<CommerceOrderImporterItem> _commerceOrderImporterItems;
 
 	@Reference
 	private CommerceOrderImporterTypeRegistry
