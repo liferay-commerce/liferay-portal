@@ -4,6 +4,8 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
+import {createReadStream} from 'fs';
+import path from 'node:path';
 
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
@@ -13,10 +15,17 @@ import {isolatedSiteTest} from '../../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import getRandomString from '../../../../utils/getRandomString';
-import performLogin, {performLogout} from '../../../../utils/performLogin';
+import performLogin, {
+	performLogout,
+	performUserSwitch,
+} from '../../../../utils/performLogin';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {templatesPageTest} from '../../../template-web/main/fixtures/templatesPageTest';
+import {
+	createAccountWithBuyerUser,
+	productComparisonSetUp,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -29,6 +38,242 @@ export const test = mergeTests(
 	loginTest(),
 	templatesPageTest,
 	pageViewModePagesTest
+);
+
+test(
+	'Buyer adds, limits and removes products in the comparison bar and the comparison table',
+	{
+		tag: [
+			'@COMMERCE-5911',
+			'@COMMERCE-5912',
+			'@COMMERCE-5914',
+			'@COMMERCE-5915',
+			'@COMMERCE-5916',
+			'@COMMERCE-5918',
+			'@COMMERCE-5919',
+			'@LPD-108792',
+		],
+	},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceThemeMiniumCatalogPage,
+		page,
+		productComparisonPage,
+		site,
+	}) => {
+		const {catalogLayout, compareLayout} = await productComparisonSetUp(
+			apiHelpers,
+			commerceAdminChannelsPage,
+			site
+		);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const option = await apiHelpers.headlessCommerceAdminCatalog.postOption(
+			'select',
+			getRandomString(),
+			'Color'
+		);
+
+		const specification =
+			await apiHelpers.headlessCommerceAdminCatalog.postSpecification();
+
+		const imageIds = {};
+		const productNames = {};
+		const productURLs = {};
+
+		for (const productKey of ['Alpha', 'Beta', 'Delta', 'Gamma']) {
+			productNames[productKey] = getRandomString();
+
+			const product =
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: productNames[productKey]},
+					productOptions: [
+						{
+							fieldType: 'select',
+							key: option.key,
+							name: {en_US: 'Color'},
+							optionId: option.id,
+							priority: 1,
+							productOptionValues: [
+								{
+									key: 'black',
+									name: {en_US: `Black ${productKey}`},
+									priority: 1,
+								},
+								{
+									key: 'white',
+									name: {en_US: `White ${productKey}`},
+									priority: 2,
+								},
+							],
+						},
+					],
+					productSpecifications: [
+						{
+							specificationKey: specification.key,
+							value: {en_US: `${productKey} Specification`},
+						},
+					],
+				});
+
+			const document = await apiHelpers.headlessDelivery.postDocument(
+				site.id,
+				createReadStream(
+					path.join(__dirname, '/dependencies/liferay.png')
+				),
+				{
+					fileName: getRandomString(),
+					title: getRandomString(),
+				}
+			);
+
+			apiHelpers.data.push({id: document.id, type: 'document'});
+
+			const image =
+				await apiHelpers.headlessCommerceAdminCatalog.postImage(
+					product.productId,
+					document.id
+				);
+
+			imageIds[productKey] = String(image.id);
+			productURLs[productKey] =
+				`/web/${site.name}/p/${product.urls.en_US}`;
+		}
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		await performUserSwitch(page, buyerUser.alternateName);
+
+		await test.step('Select products from the product cards up to the comparison bar limit', async () => {
+			await page.goto(
+				`/web/${site.name}/${catalogLayout.friendlyUrlPath}`
+			);
+
+			await commerceThemeMiniumCatalogPage
+				.productCardCompareCheckbox(productNames['Alpha'])
+				.check();
+			await commerceThemeMiniumCatalogPage
+				.productCardCompareCheckbox(productNames['Beta'])
+				.check();
+			await commerceThemeMiniumCatalogPage
+				.productCardCompareCheckbox(productNames['Gamma'])
+				.check();
+
+			await expect(
+				productComparisonPage.compareBarActiveItems
+			).toHaveCount(3);
+			await expect(productComparisonPage.compareBarItems).toHaveCount(3);
+
+			await expect(
+				productComparisonPage.compareBarItemThumbnail(imageIds['Alpha'])
+			).toBeVisible();
+			await expect(
+				productComparisonPage.compareBarItemThumbnail(imageIds['Beta'])
+			).toBeVisible();
+			await expect(
+				productComparisonPage.compareBarItemThumbnail(imageIds['Gamma'])
+			).toBeVisible();
+
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardCompareCheckbox(
+					productNames['Delta']
+				)
+			).toBeDisabled();
+		});
+
+		await test.step('Select a product from its product details page', async () => {
+			await page.goto(productURLs['Delta']);
+
+			await productComparisonPage.compareCheckbox.check();
+
+			await expect(
+				productComparisonPage.compareBarActiveItems
+			).toHaveCount(4);
+			await expect(
+				productComparisonPage.compareBarItemThumbnail(imageIds['Delta'])
+			).toBeVisible();
+		});
+
+		await test.step('Compare only the products allowed by the comparison table limit', async () => {
+			await productComparisonPage.compareBarLink.click();
+
+			await expect(page).toHaveURL(
+				new RegExp(compareLayout.friendlyUrlPath)
+			);
+			await expect(
+				productComparisonPage.comparisonTableRowCells('Color')
+			).toHaveText([
+				'Color',
+				'Black Alpha, White Alpha',
+				'Black Beta, White Beta',
+				'Black Gamma, White Gamma',
+			]);
+			await expect(
+				productComparisonPage.comparisonTableRowCells(
+					specification.title.en_US
+				)
+			).toHaveText([
+				specification.title.en_US,
+				'Alpha Specification',
+				'Beta Specification',
+				'Gamma Specification',
+			]);
+		});
+
+		await test.step('Deselect a product from its product details page', async () => {
+			await page.goto(productURLs['Gamma']);
+
+			await productComparisonPage.compareCheckbox.uncheck();
+
+			await expect(
+				productComparisonPage.compareBarActiveItems
+			).toHaveCount(3);
+			await expect(
+				productComparisonPage.compareBarItemThumbnail(imageIds['Gamma'])
+			).toBeHidden();
+
+			await productComparisonPage.compareBarLink.click();
+
+			await expect(
+				productComparisonPage.comparisonTableRowCells('Color')
+			).toHaveText([
+				'Color',
+				'Black Alpha, White Alpha',
+				'Black Beta, White Beta',
+				'Black Delta, White Delta',
+			]);
+		});
+
+		await test.step('Deselect a product from the comparison table', async () => {
+			await expect(
+				commerceThemeMiniumCatalogPage.productCardCompareCheckbox(
+					productNames['Delta']
+				)
+			).toBeChecked();
+
+			await commerceThemeMiniumCatalogPage
+				.productCardCompareCheckbox(productNames['Delta'])
+				.click();
+
+			await expect(
+				productComparisonPage.comparisonTableRowCells('Color')
+			).toHaveText([
+				'Color',
+				'Black Alpha, White Alpha',
+				'Black Beta, White Beta',
+			]);
+			await expect(
+				productComparisonPage.compareBarActiveItems
+			).toHaveCount(2);
+		});
+	}
 );
 
 test(

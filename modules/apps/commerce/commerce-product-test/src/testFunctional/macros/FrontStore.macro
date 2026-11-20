@@ -151,69 +151,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro assertMiniCompareItems(products = null) {
-		for (var product : list ${products}) {
-			var productImageId = CommerceJSONProductsAPI._getCommerceProductImageIds(productName = ${product});
-
-			AssertElementPresent(
-				key_productMediaId = ${productImageId},
-				locator1 = "CommerceFrontStore#MINI_COMPARE_ITEM_CUSTOM_IMAGE");
-		}
-	}
-
-	@summary = "Default summary"
-	macro assertProductComparisonTable(products = null) {
-		AssertLocation.assertPartialLocation(value1 = "web/minium/compare");
-
-		var columNumber = 1;
-
-		for (var product : list ${products}) {
-			var productSpecifications = CommerceJSONProductsAPI._getCommerceProductSpecifications(productName = ${product});
-			var productOptions = CommerceJSONProductsAPI._getCommerceProductOptions(productName = ${product});
-			var productName = StringUtil.lowerCase(${product});
-
-			var productName = StringUtil.replace(${productName}, " ", "-");
-
-			AssertElementPresent(
-				key_productName = ${productName},
-				locator1 = "CommerceFrontStore#PRODUCT_CARD_IMAGE");
-
-			for (var productOption : list ${productOptions}) {
-				if (${productOption} != "") {
-					var productOptionId = CommerceJSONProductsAPI._getCommerceProductOptionId(
-						productName = ${product},
-						productOptionName = ${productOption});
-
-					var productOptionValues = CommerceJSONProductsAPI._getCommerceProductOptionValues(productOptionId = ${productOptionId});
-
-					var productOptionValues = StringUtil.replace(${productOptionValues}, ",", ", ");
-
-					AssertElementPresent(
-						key_columnNumber = ${columNumber},
-						key_specification = ${productOption},
-						key_value = ${productOptionValues},
-						locator1 = "CommerceFrontStore#PRODUCT_COMPARISON_TABLE_SPECIFICATION");
-				}
-			}
-
-			for (var productSpecification : list ${productSpecifications}) {
-				var key_specification = StringUtil.extractFirst(${productSpecification}, ":");
-				var key_value = StringUtil.extractLast(${productSpecification}, ":");
-
-				var key_value = StringUtil.replace(${key_value}, "&comma;", ",");
-
-				AssertElementPresent(
-					key_columnNumber = ${columNumber},
-					key_specification = ${key_specification},
-					key_value = ${key_value},
-					locator1 = "CommerceFrontStore#PRODUCT_COMPARISON_TABLE_SPECIFICATION");
-			}
-
-			var columNumber = ${columNumber} + 1;
-		}
-	}
-
-	@summary = "Default summary"
 	macro assertProductDetails(productAvailability = null, productMPN = null, sampleFileName = null, deliverySubscriptionPeriod = null, productName = null, productGTIN = null, discountPercentage = null, productSKU = null, minQuantity = null, productNetPrice = null, groupedProductEntryNames = null, productStockQuantity = null, paymentSubscriptionPeriod = null, productSpecifications = null, endOfLifeDate = null, productListPrice = null, productSalePriceInactive = null, productSalePrice = null, productImages = null, productShortDescription = null, productListPriceInactive = null, productFullDescription = null) {
 		if (isSet(productName)) {
 			AssertElementPresent(
@@ -392,37 +329,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro compareProducts(products = null, clickCompare = null) {
-		var comparisonItems = 0;
-
-		for (var product : list ${products}) {
-			if (!(IsElementPresent(key_productName = ${product}, locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX"))) {
-				CommerceNavigator.searchEntry(entryName = ${product});
-			}
-
-			ScrollWebElementIntoView(
-				key_productName = ${product},
-				locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX");
-
-			Check.checkToggleSwitch(
-				key_productName = ${product},
-				locator1 = "CommerceEntry#PRODUCT_CARD_COMPARE_CHECKBOX");
-
-			var comparisonItems = ${comparisonItems} + 1;
-
-			AssertElementPresent(
-				key_value = ${comparisonItems},
-				locator1 = "CommerceFrontStore#MINI_COMPARE_ITEM_ACTIVE_N");
-
-			FrontStore.assertMiniCompareItems(products = ${product});
-		}
-
-		if (${clickCompare} != "false") {
-			Click(locator1 = "CommerceFrontStore#MINI_COMPARE_COMPARE_BUTTON");
-		}
-	}
-
-	@summary = "Default summary"
 	macro editUOMAndQuantityInMiniCart(quantity = null, uomKey = null, uomName = null) {
 		Click(
 			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS_WITH_UOM",
@@ -558,26 +464,6 @@ definition {
 				locator1 = "TextInput#ANY",
 				value1 = ${text});
 		}
-	}
-
-	@summary = "Default summary"
-	macro setMaxComparisonItems(maxItems = null) {
-		Portlet.gotoPortletOptions(
-			portletName = "Product Comparison",
-			portletOption = "Configuration");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		Type(
-			key_fieldLabel = "Products Limit",
-			locator1 = "TextInput#GENERIC_NUMBER_INPUT",
-			value1 = ${maxItems});
-
-		Button.clickSave();
-
-		AssertElementPresent(locator1 = "Message#SUCCESS");
-
-		Button.clickCancel();
 	}
 
 	@summary = "Default summary"
