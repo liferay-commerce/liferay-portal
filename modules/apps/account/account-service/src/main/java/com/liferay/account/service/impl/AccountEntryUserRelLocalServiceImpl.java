@@ -206,11 +206,6 @@ public class AccountEntryUserRelLocalServiceImpl
 
 			long[] groupIds = {group.getGroupId()};
 
-			if (serviceContext.getScopeGroupId() > 0) {
-				groupIds = ArrayUtil.append(
-					groupIds, serviceContext.getScopeGroupId());
-			}
-
 			user = _userLocalService.addUserWithWorkflow(
 				serviceContext.getUserId(), serviceContext.getCompanyId(), true,
 				StringPool.BLANK, StringPool.BLANK, true, StringPool.BLANK,
