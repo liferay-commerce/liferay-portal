@@ -7,6 +7,7 @@ package com.liferay.commerce.product.internal.search.spi.model.query.contributor
 
 import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
+import com.liferay.commerce.product.internal.util.CommerceRoleUtil;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
@@ -71,6 +72,7 @@ public class CPDefinitionModelPreFilterContributor
 			_filterByAccountGroupIds(booleanFilter, searchContext);
 			_filterByCommerceChannelId(booleanFilter, searchContext);
 			_filterByGuestBrowsing(booleanFilter, searchContext);
+			_filterByRoleIds(booleanFilter, searchContext);
 		}
 		else {
 			_filterByGuestBrowsingEnabledCommerceChannels(
@@ -94,22 +96,35 @@ public class CPDefinitionModelPreFilterContributor
 			CPField.ACCOUNT_GROUP_FILTER_ENABLED, Boolean.TRUE.toString(),
 			BooleanClauseOccur.MUST);
 
-		long[] accountGroupIds = GetterUtil.getLongValues(
-			searchContext.getAttribute("commerceAccountGroupIds"), null);
+		BooleanFilter accountEntryAndGroupIdsBooleanFilter =
+			new BooleanFilter();
 
-		if ((accountGroupIds != null) && (accountGroupIds.length > 0)) {
-			BooleanFilter accountGroupIdsBooleanFilter = new BooleanFilter();
+		for (long accountGroupId :
+				GetterUtil.getLongValues(
+					searchContext.getAttribute("commerceAccountGroupIds"))) {
 
-			for (long accountGroupId : accountGroupIds) {
-				accountGroupIdsBooleanFilter.add(
-					new TermFilter(
-						"commerceAccountGroupIds",
-						String.valueOf(accountGroupId)),
-					BooleanClauseOccur.SHOULD);
-			}
+			accountEntryAndGroupIdsBooleanFilter.add(
+				new TermFilter(
+					"commerceAccountGroupIds", String.valueOf(accountGroupId)),
+				BooleanClauseOccur.SHOULD);
+		}
 
+		long accountEntryId = GetterUtil.getLong(
+			searchContext.getAttribute("accountEntryId"));
+
+		if ((accountEntryId > 0) &&
+			FeatureFlagManagerUtil.isEnabled(
+				searchContext.getCompanyId(), "LPD-112683")) {
+
+			accountEntryAndGroupIdsBooleanFilter.add(
+				new TermFilter(
+					"commerceAccountIds", String.valueOf(accountEntryId)),
+				BooleanClauseOccur.SHOULD);
+		}
+
+		if (accountEntryAndGroupIdsBooleanFilter.hasClauses()) {
 			accountGroupsFilterEnableBooleanFilter.add(
-				accountGroupIdsBooleanFilter, BooleanClauseOccur.MUST);
+				accountEntryAndGroupIdsBooleanFilter, BooleanClauseOccur.MUST);
 		}
 		else {
 			accountGroupsFilterEnableBooleanFilter.addTerm(
@@ -387,6 +402,43 @@ public class CPDefinitionModelPreFilterContributor
 		if (published) {
 			booleanFilter.addRequiredTerm(CPField.PUBLISHED, true);
 		}
+	}
+
+	private void _filterByRoleIds(
+		BooleanFilter booleanFilter, SearchContext searchContext) {
+
+		if (GetterUtil.getBoolean(
+				searchContext.getAttribute("ignoreCommerceAccountGroup")) ||
+			!FeatureFlagManagerUtil.isEnabled(
+				searchContext.getCompanyId(), "LPD-112683")) {
+
+			return;
+		}
+
+		BooleanFilter roleIdsBooleanFilter = new BooleanFilter();
+
+		BooleanFilter roleFilterDisabledBooleanFilter = new BooleanFilter();
+
+		roleFilterDisabledBooleanFilter.addTerm(
+			"roleFilterEnabled", Boolean.TRUE.toString(),
+			BooleanClauseOccur.MUST_NOT);
+
+		roleIdsBooleanFilter.add(
+			roleFilterDisabledBooleanFilter, BooleanClauseOccur.SHOULD);
+
+		long[] roleIds = CommerceRoleUtil.getRoleIds(
+			GetterUtil.getLong(searchContext.getAttribute("accountEntryId")),
+			PermissionThreadLocal.getPermissionChecker());
+
+		if (ArrayUtil.isNotEmpty(roleIds)) {
+			TermsFilter termsFilter = new TermsFilter("commerceRoleIds");
+
+			termsFilter.addValues(ArrayUtil.toStringArray(roleIds));
+
+			roleIdsBooleanFilter.add(termsFilter, BooleanClauseOccur.SHOULD);
+		}
+
+		booleanFilter.add(roleIdsBooleanFilter, BooleanClauseOccur.MUST);
 	}
 
 	private void _filterByStatuses(

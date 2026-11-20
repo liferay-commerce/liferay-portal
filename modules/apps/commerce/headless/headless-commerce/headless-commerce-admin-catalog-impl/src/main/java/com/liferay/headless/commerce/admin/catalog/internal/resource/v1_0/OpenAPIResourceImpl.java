@@ -115,6 +115,8 @@ public class OpenAPIResourceImpl {
 
 			add(ProductResourceImpl.class);
 
+			add(ProductAccountResourceImpl.class);
+
 			add(ProductAccountGroupResourceImpl.class);
 
 			add(ProductChannelResourceImpl.class);
@@ -140,6 +142,8 @@ public class OpenAPIResourceImpl {
 			add(ProductOptionValueResourceImpl.class);
 
 			add(ProductProductGroupResourceImpl.class);
+
+			add(ProductRoleResourceImpl.class);
 
 			add(ProductShippingConfigurationResourceImpl.class);
 
@@ -172,4 +176,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-826305425
+// LIFERAY-REST-BUILDER-HASH:-1907584194

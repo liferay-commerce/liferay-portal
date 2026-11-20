@@ -2578,6 +2578,14 @@ public abstract class BaseProductResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("productAccounts", additionalAssertFieldName)) {
+				if (product.getProductAccounts() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"productChannelFilter", additionalAssertFieldName)) {
 
@@ -2624,6 +2632,24 @@ public abstract class BaseProductResourceTestCase {
 
 			if (Objects.equals("productOptions", additionalAssertFieldName)) {
 				if (product.getProductOptions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"productRoleFilter", additionalAssertFieldName)) {
+
+				if (product.getProductRoleFilter() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productRoles", additionalAssertFieldName)) {
+				if (product.getProductRoles() == null) {
 					valid = false;
 				}
 
@@ -3275,6 +3301,17 @@ public abstract class BaseProductResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("productAccounts", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						product1.getProductAccounts(),
+						product2.getProductAccounts())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"productChannelFilter", additionalAssertFieldName)) {
 
@@ -3337,6 +3374,30 @@ public abstract class BaseProductResourceTestCase {
 				if (!Objects.deepEquals(
 						product1.getProductOptions(),
 						product2.getProductOptions())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"productRoleFilter", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						product1.getProductRoleFilter(),
+						product2.getProductRoleFilter())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("productRoles", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						product1.getProductRoles(),
+						product2.getProductRoles())) {
 
 					return false;
 				}
@@ -4164,6 +4225,11 @@ public abstract class BaseProductResourceTestCase {
 				"Invalid entity field " + entityFieldName);
 		}
 
+		if (entityFieldName.equals("productAccounts")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("productChannelFilter")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
@@ -4190,6 +4256,16 @@ public abstract class BaseProductResourceTestCase {
 		}
 
 		if (entityFieldName.equals("productOptions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("productRoleFilter")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("productRoles")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -4515,6 +4591,7 @@ public abstract class BaseProductResourceTestCase {
 				productAccountGroupFilter = RandomTestUtil.randomBoolean();
 				productChannelFilter = RandomTestUtil.randomBoolean();
 				productId = RandomTestUtil.randomLong();
+				productRoleFilter = RandomTestUtil.randomBoolean();
 				productStatus = RandomTestUtil.randomInt();
 				productType = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
@@ -4795,4 +4872,4 @@ public abstract class BaseProductResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1588111285
+// LIFERAY-REST-BUILDER-HASH:2132486448

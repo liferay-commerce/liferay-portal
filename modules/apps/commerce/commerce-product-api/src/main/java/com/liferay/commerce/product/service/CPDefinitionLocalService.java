@@ -666,6 +666,11 @@ public interface CPDefinitionLocalService
 			Map<String, String> shortDescriptionMap)
 		throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public CPDefinition updateCPDefinitionRoleFilter(
+			long cpDefinitionId, boolean enable)
+		throws PortalException;
+
 	public void updateCPDefinitionsByCPTaxCategoryId(long cpTaxCategoryId)
 		throws PortalException;
 
@@ -720,4 +725,4 @@ public interface CPDefinitionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:10443816
+// LIFERAY-SERVICE-BUILDER-HASH:1759207279
