@@ -8,10 +8,11 @@ package com.liferay.commerce.product.definitions.web.internal.frontend.data.set.
 import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
+import com.liferay.account.service.AccountGroupService;
 import com.liferay.commerce.product.definitions.web.internal.constants.CommerceProductFDSNames;
 import com.liferay.commerce.product.definitions.web.internal.model.CProductAccountGroup;
 import com.liferay.commerce.product.model.CPDefinition;
-import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.frontend.data.set.provider.FDSDataProvider;
 import com.liferay.frontend.data.set.provider.search.FDSKeywords;
 import com.liferay.frontend.data.set.provider.search.FDSPagination;
@@ -24,7 +25,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -46,14 +47,20 @@ public class CommerceProductAccountGroupFDSDataProvider
 			HttpServletRequest httpServletRequest, Sort sort)
 		throws PortalException {
 
+		List<AccountGroup> accountGroups = _getAccountGroups(
+			httpServletRequest);
+
+		if (accountGroups.isEmpty()) {
+			return Collections.emptyList();
+		}
+
 		long cpDefinitionId = ParamUtil.getLong(
 			httpServletRequest, "cpDefinitionId");
 
 		return TransformUtil.transform(
 			_accountGroupRelLocalService.getAccountGroupRels(
 				TransformUtil.transformToLongArray(
-					_getAccountGroups(httpServletRequest),
-					AccountGroup::getAccountGroupId),
+					accountGroups, AccountGroup::getAccountGroupId),
 				CPDefinition.class.getName(), cpDefinitionId,
 				fdsKeywords.getKeywords(), fdsPagination.getStartPosition(),
 				fdsPagination.getEndPosition()),
@@ -73,13 +80,19 @@ public class CommerceProductAccountGroupFDSDataProvider
 			FDSKeywords fdsKeywords, HttpServletRequest httpServletRequest)
 		throws PortalException {
 
+		List<AccountGroup> accountGroups = _getAccountGroups(
+			httpServletRequest);
+
+		if (accountGroups.isEmpty()) {
+			return 0;
+		}
+
 		long cpDefinitionId = ParamUtil.getLong(
 			httpServletRequest, "cpDefinitionId");
 
 		return _accountGroupRelLocalService.getAccountGroupRelsCount(
 			TransformUtil.transformToLongArray(
-				_getAccountGroups(httpServletRequest),
-				AccountGroup::getAccountGroupId),
+				accountGroups, AccountGroup::getAccountGroupId),
 			CPDefinition.class.getName(), cpDefinitionId,
 			fdsKeywords.getKeywords());
 	}
@@ -91,21 +104,12 @@ public class CommerceProductAccountGroupFDSDataProvider
 		long cpDefinitionId = ParamUtil.getLong(
 			httpServletRequest, "cpDefinitionId");
 
-		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
+		CPDefinition cpDefinition = _cpDefinitionService.getCPDefinition(
 			cpDefinitionId);
 
-		LinkedHashMap<String, Object> params = new LinkedHashMap<>();
-
-		long permissionUserId = ParamUtil.getLong(
-			httpServletRequest, "permissionUserId");
-
-		if (permissionUserId > 0) {
-			params.put("permissionUserId", permissionUserId);
-		}
-
 		BaseModelSearchResult<AccountGroup> baseModelSearchResult =
-			_accountGroupLocalService.searchAccountGroups(
-				cpDefinition.getCompanyId(), null, params, QueryUtil.ALL_POS,
+			_accountGroupService.searchAccountGroups(
+				cpDefinition.getCompanyId(), null, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null);
 
 		return baseModelSearchResult.getBaseModels();
@@ -118,6 +122,9 @@ public class CommerceProductAccountGroupFDSDataProvider
 	private AccountGroupRelLocalService _accountGroupRelLocalService;
 
 	@Reference
-	private CPDefinitionLocalService _cpDefinitionLocalService;
+	private AccountGroupService _accountGroupService;
+
+	@Reference
+	private CPDefinitionService _cpDefinitionService;
 
 }
