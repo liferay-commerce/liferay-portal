@@ -286,6 +286,51 @@ public class AccountRoleServiceTest {
 		}
 	}
 
+	@Test
+	public void testUpdateAccountRole() throws Exception {
+		AccountRole accountRole = _addAccountRole();
+
+		UserRoleTestUtil.addResourcePermission(
+			ActionKeys.UPDATE, AccountRole.class.getName(), _user.getUserId());
+
+		String name = RandomTestUtil.randomString();
+
+		_accountRoleService.updateAccountRole(
+			accountRole.getAccountRoleId(), name,
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap());
+
+		Role role = accountRole.getRole();
+
+		Assert.assertEquals(name, role.getName());
+	}
+
+	@Test(expected = PrincipalException.class)
+	public void testUpdateAccountRoleWhenAccountRoleIsShared()
+		throws Exception {
+
+		AccountRole accountRole = _addAccountRole(
+			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT);
+
+		UserRoleTestUtil.addResourcePermission(
+			ActionKeys.UPDATE, AccountRole.class.getName(), _user.getUserId());
+
+		_accountRoleService.updateAccountRole(
+			accountRole.getAccountRoleId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap());
+	}
+
+	@Test(expected = PrincipalException.class)
+	public void testUpdateAccountRoleWithoutPermission() throws Exception {
+		AccountRole accountRole = _addAccountRole();
+
+		_accountRoleService.updateAccountRole(
+			accountRole.getAccountRoleId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomLocaleStringMap(),
+			RandomTestUtil.randomLocaleStringMap());
+	}
+
 	private AccountRole _addAccountRole() throws Exception {
 		return _addAccountRole(_accountEntry.getAccountEntryId());
 	}
