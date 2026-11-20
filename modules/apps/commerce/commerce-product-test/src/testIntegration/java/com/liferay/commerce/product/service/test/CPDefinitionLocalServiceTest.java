@@ -672,6 +672,55 @@ public class CPDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testCloneCPDefinitionCommercePriceEntries()
+		throws PortalException {
+
+		frutillaRule.scenario(
+			"Change the price of a duplicated product"
+		).given(
+			"A product with a price and its duplicate"
+		).when(
+			"The price of the original product changes"
+		).then(
+			"The duplicate keeps the price copied from the original product"
+		);
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceWithRandomSku(
+			_commerceCatalog.getGroupId(), new BigDecimal(5));
+
+		CPDefinition clonedCPDefinition =
+			_cpDefinitionLocalService.cloneCPDefinition(
+				TestPropsValues.getUserId(), cpInstance.getCPDefinitionId(),
+				cpInstance.getGroupId(), _serviceContext);
+
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCatalogBaseCommercePriceList(
+				cpInstance.getGroupId());
+
+		CommercePriceEntry commercePriceEntry =
+			_commercePriceEntryLocalService.fetchCommercePriceEntry(
+				commercePriceList.getCommercePriceListId(),
+				cpInstance.getCPInstanceUuid(), StringPool.BLANK);
+
+		_commercePriceEntryLocalService.updatePricingInfo(
+			commercePriceEntry.getCommercePriceEntryId(),
+			commercePriceEntry.isBulkPricing(), BigDecimal.TEN, false,
+			BigDecimal.ZERO, null, _serviceContext);
+
+		CPInstance clonedCPInstance = _cpInstanceLocalService.getCPInstance(
+			clonedCPDefinition.getCPDefinitionId(), cpInstance.getSku());
+
+		CommercePriceEntry clonedCommercePriceEntry =
+			_commercePriceEntryLocalService.fetchCommercePriceEntry(
+				commercePriceList.getCommercePriceListId(),
+				clonedCPInstance.getCPInstanceUuid(), StringPool.BLANK);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				new BigDecimal(5), clonedCommercePriceEntry.getPrice()));
+	}
+
+	@Test
 	public void testCloneCPDefinitionOptionRelExternalReferenceCodes()
 		throws Exception {
 

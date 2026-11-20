@@ -95,18 +95,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editPriceListEntryPrice(priceListEntryPrice = null) {
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Type(
-			key_text = "Price List Price",
-			locator1 = "TextInput#ANY",
-			value1 = ${priceListEntryPrice});
-
-		Button.clickSave();
-	}
-
-	@summary = "Default summary"
 	macro editTierPriceEntryDirectlyInsideProductSKU(quantity = null, price = null, entryName = null) {
 		SelectFrame.selectFrame(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 

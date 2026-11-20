@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-// @ts-ignore
-
 import {expect, mergeTests} from '@playwright/test';
 
 import {commercePagesTest} from '../../../../fixtures/commercePagesTest';
@@ -238,5 +236,172 @@ test(
 		await commerceAdminProductDetailsProductOptionsPage.deleteMenuItem.click();
 
 		await waitForAlert(page);
+	}
+);
+
+test(
+	'Change the price type of a bundle option and link its values to SKUs of other catalogs',
+	{
+		tag: [
+			'@COMMERCE-6018',
+			'@COMMERCE-6020',
+			'@COMMERCE-10798',
+			'@LPD-108805',
+		],
+	},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsProductOptionsPage,
+		commerceAdminProductPage,
+		page,
+	}) => {
+		await page.goto('/');
+
+		const bundleCatalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+		const otherCatalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const bundleCatalogProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: bundleCatalog.id,
+				name: {en_US: getRandomString()},
+			});
+		const otherCatalogProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: otherCatalog.id,
+				name: {en_US: getRandomString()},
+			});
+
+		const optionKey = getRandomString();
+
+		const option = await apiHelpers.headlessCommerceAdminCatalog.postOption(
+			'select',
+			optionKey,
+			'Color'
+		);
+
+		const bundleName = getRandomString();
+
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: bundleCatalog.id,
+			name: {en_US: bundleName},
+			productOptions: [
+				{
+					fieldType: 'select',
+					key: optionKey,
+					name: {en_US: 'Color'},
+					optionId: option.id,
+					priceType: '',
+					priority: 1,
+					productOptionValues: [
+						{
+							key: 'black',
+							name: {en_US: 'Black'},
+							priority: 1,
+						},
+					],
+					required: true,
+					skuContributor: true,
+				},
+			],
+		});
+
+		await commerceAdminProductPage.gotoProduct(bundleName);
+
+		await commerceAdminProductDetailsPage.goToProductOptions();
+
+		await commerceAdminProductDetailsProductOptionsPage.openOption('Color');
+
+		// Dynamic price type
+
+		await commerceAdminProductDetailsProductOptionsPage.optionPriceTypeSelect.selectOption(
+			'dynamic'
+		);
+		await commerceAdminProductDetailsProductOptionsPage.optionSaveButton.click();
+
+		await waitForAlert(
+			commerceAdminProductDetailsProductOptionsPage.optionSidePanelFrame
+		);
+
+		await commerceAdminProductDetailsProductOptionsPage.editOptionValue(
+			'Black',
+			{
+				quantity: '1',
+				sku: otherCatalogProduct.skus[0].sku,
+			}
+		);
+
+		// Static price type
+
+		await commerceAdminProductDetailsProductOptionsPage.optionPriceTypeSelect.selectOption(
+			'static'
+		);
+		await commerceAdminProductDetailsProductOptionsPage.optionSaveButton.click();
+
+		await waitForAlert(
+			commerceAdminProductDetailsProductOptionsPage.optionSidePanelFrame
+		);
+
+		await commerceAdminProductDetailsProductOptionsPage.editOptionValue(
+			'Black',
+			{
+				deltaPrice: '60',
+				quantity: '1',
+				sku: bundleCatalogProduct.skus[0].sku,
+			}
+		);
+
+		// Change the price type after deleting the linked value
+
+		await commerceAdminProductDetailsProductOptionsPage
+			.optionValueRowActionsButton('Black')
+			.click();
+		await commerceAdminProductDetailsProductOptionsPage
+			.optionValueRowMenuItem('Delete')
+			.click();
+
+		await waitForAlert(
+			commerceAdminProductDetailsProductOptionsPage.optionSidePanelFrame
+		);
+
+		await expect(
+			commerceAdminProductDetailsProductOptionsPage.optionValueRow(
+				'Black'
+			)
+		).toHaveCount(0);
+
+		await commerceAdminProductDetailsProductOptionsPage.optionPriceTypeSelect.selectOption(
+			'dynamic'
+		);
+		await commerceAdminProductDetailsProductOptionsPage.optionSaveButton.click();
+
+		await waitForAlert(
+			commerceAdminProductDetailsProductOptionsPage.optionSidePanelFrame
+		);
+
+		await expect(
+			commerceAdminProductDetailsProductOptionsPage.optionSidePanelFrame.locator(
+				'.alert-danger'
+			)
+		).toHaveCount(0);
+
+		await commerceAdminProductDetailsProductOptionsPage.optionPriceTypeSelect.selectOption(
+			'static'
+		);
+		await commerceAdminProductDetailsProductOptionsPage.optionSaveButton.click();
+
+		await waitForAlert(
+			commerceAdminProductDetailsProductOptionsPage.optionSidePanelFrame
+		);
+
+		await commerceAdminProductDetailsProductOptionsPage.closeOption();
+
+		await commerceAdminProductDetailsProductOptionsPage.openOption('Color');
+
+		await expect(
+			commerceAdminProductDetailsProductOptionsPage.optionPriceTypeSelect
+		).toHaveValue('static');
 	}
 );

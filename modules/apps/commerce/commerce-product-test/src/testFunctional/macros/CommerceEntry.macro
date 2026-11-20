@@ -661,17 +661,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addSKUsEntry(productSku = null, noOption = null, optionValue = null) {
-		Type(
-			locator1 = "CommerceEntry#SKU_FIELD",
-			value1 = ${productSku});
-
-		CommerceEntry.selectAssociatedOptionsValue(
-			noOption = ${noOption},
-			optionValue = ${optionValue});
-	}
-
-	@summary = "Default summary"
 	macro addTaxCategory(keyDescription = null, keyName = null, keyReferenceCode = null) {
 		Click(locator1 = "Button#PLUS");
 
