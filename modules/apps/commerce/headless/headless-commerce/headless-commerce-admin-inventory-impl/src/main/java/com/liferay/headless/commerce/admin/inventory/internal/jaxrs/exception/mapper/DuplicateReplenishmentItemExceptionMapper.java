@@ -5,11 +5,12 @@
 
 package com.liferay.headless.commerce.admin.inventory.internal.jaxrs.exception.mapper;
 
-import com.liferay.commerce.inventory.exception.CommerceInventoryWarehouseNameException;
+import com.liferay.commerce.inventory.exception.DuplicateCommerceInventoryReplenishmentItemException;
 import com.liferay.headless.commerce.core.exception.mapper.BaseExceptionMapper;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -20,30 +21,23 @@ import org.osgi.service.component.annotations.Component;
 	property = {
 		"osgi.jaxrs.application.select=(osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory)",
 		"osgi.jaxrs.extension=true",
-		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory.CommerceInventoryWarehouseNameExceptionMapper"
+		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory.DuplicateReplenishmentItemExceptionMapper"
 	},
 	service = ExceptionMapper.class
 )
-public class CommerceInventoryWarehouseNameExceptionMapper
-	extends BaseExceptionMapper<CommerceInventoryWarehouseNameException> {
+@Provider
+public class DuplicateReplenishmentItemExceptionMapper
+	extends BaseExceptionMapper
+		<DuplicateCommerceInventoryReplenishmentItemException> {
 
 	@Override
 	public String getErrorDescription() {
-		return "Invalid name";
+		return "Duplicated replenishment item";
 	}
 
 	@Override
 	public Response.Status getStatus() {
 		return Response.Status.BAD_REQUEST;
-	}
-
-	@Override
-	protected String toJSON(
-		CommerceInventoryWarehouseNameException
-			commerceInventoryWarehouseNameException,
-		int status) {
-
-		return super.toJSON("please-enter-a-valid-name", status);
 	}
 
 }

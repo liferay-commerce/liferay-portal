@@ -26,15 +26,14 @@ import org.osgi.service.component.annotations.Reference;
 	property = {
 		"osgi.jaxrs.application.select=(osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory)",
 		"osgi.jaxrs.extension=true",
-		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory.CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdExceptionMapper"
+		"osgi.jaxrs.name=Liferay.Headless.Commerce.Admin.Inventory.WarehouseItemWarehouseIdExceptionMapper"
 	},
 	service = ExceptionMapper.class
 )
 @Provider
-public class
-	CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdExceptionMapper
-		extends BaseExceptionMapper
-			<CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException> {
+public class WarehouseItemWarehouseIdExceptionMapper
+	extends BaseExceptionMapper
+		<CommerceInventoryWarehouseItemCommerceInventoryWarehouseIdException> {
 
 	@Override
 	protected Problem getProblem(
