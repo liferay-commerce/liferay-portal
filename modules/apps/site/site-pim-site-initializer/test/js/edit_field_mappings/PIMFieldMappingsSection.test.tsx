@@ -9,7 +9,7 @@ import userEvent from '@testing-library/user-event';
 import React, {useState} from 'react';
 
 import PIMFieldMappingsSection from '../../../src/main/resources/META-INF/resources/js/edit_field_mappings/PIMFieldMappingsSection';
-import {IFieldMapping} from '../../../src/main/resources/META-INF/resources/js/edit_field_mappings/types';
+import {IPIMFieldMapping} from '../../../src/main/resources/META-INF/resources/js/edit_field_mappings/types';
 
 jest.mock('@liferay/site-cms-site-initializer', () => ({
 	RequiredMark: () => <span>required</span>,
@@ -58,10 +58,10 @@ function PIMFieldMappingsSectionWrapper({
 	initialFieldMappings,
 }: {
 	channelFieldAdditionalFieldMappingTypes?: string[];
-	initialFieldMappings: IFieldMapping[];
+	initialFieldMappings: IPIMFieldMapping[];
 }) {
 	const [fieldMappings, setFieldMappings] =
-		useState<IFieldMapping[]>(initialFieldMappings);
+		useState<IPIMFieldMapping[]>(initialFieldMappings);
 
 	return (
 		<PIMFieldMappingsSection

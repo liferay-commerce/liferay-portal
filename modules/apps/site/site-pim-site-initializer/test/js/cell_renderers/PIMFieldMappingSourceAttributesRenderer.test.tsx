@@ -7,12 +7,12 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import FieldMappingSourceAttributesRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingSourceAttributesRenderer';
+import PIMFieldMappingSourceAttributesRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/PIMFieldMappingSourceAttributesRenderer';
 
-describe('FieldMappingSourceAttributesRenderer', () => {
+describe('PIMFieldMappingSourceAttributesRenderer', () => {
 	it('shows a chip for every mapped source attribute', () => {
 		render(
-			<FieldMappingSourceAttributesRenderer value={['Code', 'Name']} />
+			<PIMFieldMappingSourceAttributesRenderer value={['Code', 'Name']} />
 		);
 
 		expect(screen.getByText('Code')).toBeInTheDocument();
@@ -21,7 +21,7 @@ describe('FieldMappingSourceAttributesRenderer', () => {
 
 	it('counts the source attributes it cannot fit', () => {
 		render(
-			<FieldMappingSourceAttributesRenderer
+			<PIMFieldMappingSourceAttributesRenderer
 				value={['a', 'b', 'c', 'd', 'e']}
 			/>
 		);
@@ -34,7 +34,7 @@ describe('FieldMappingSourceAttributesRenderer', () => {
 
 	it('shows only the first source attribute when the first nonempty source is used', () => {
 		render(
-			<FieldMappingSourceAttributesRenderer
+			<PIMFieldMappingSourceAttributesRenderer
 				itemData={{useFirstNonemptySource: true}}
 				value={['a', 'b', 'c']}
 			/>
@@ -47,7 +47,7 @@ describe('FieldMappingSourceAttributesRenderer', () => {
 
 	it('shows nothing when the channel field is not mapped', () => {
 		const {container} = render(
-			<FieldMappingSourceAttributesRenderer value={[]} />
+			<PIMFieldMappingSourceAttributesRenderer value={[]} />
 		);
 
 		expect(container).toBeEmptyDOMElement();

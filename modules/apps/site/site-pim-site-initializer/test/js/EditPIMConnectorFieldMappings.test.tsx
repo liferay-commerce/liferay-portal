@@ -45,7 +45,7 @@ jest.mock('@liferay/site-cms-site-initializer', () => {
 	};
 });
 
-const MAPPING_RULE = {
+const FIELD_MAPPING_RULE = {
 	id: 0,
 	stripHTMLTags: false,
 	textCase: '',
@@ -64,11 +64,11 @@ const PROPS = {
 	channelField: 'skus[].sku',
 	channelFieldAdditionalFieldMappingTypes: [],
 	channelFieldLabel: 'SKU',
-	fieldMappings: [],
-	mappingRule: null,
-	mappingRuleAPIURL: '/o/pim/connector-field-mapping-rules',
-	mappingRuleObjectRelationshipObjectFieldName:
+	fieldMappingRule: null,
+	fieldMappingRuleAPIURL: '/o/pim/connector-field-mapping-rules',
+	fieldMappingRuleObjectRelationshipObjectFieldName:
 		'r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId',
+	fieldMappings: [],
 	objectDefinitions: [
 		{
 			className: PIM_BASIC_PRODUCT_CLASS_NAME,
@@ -338,7 +338,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 		render(
 			<EditPIMConnectorFieldMappings
 				{...PROPS}
-				mappingRule={MAPPING_RULE}
+				fieldMappingRule={FIELD_MAPPING_RULE}
 			/>
 		);
 
@@ -377,7 +377,11 @@ describe('EditPIMConnectorFieldMappings', () => {
 		render(
 			<EditPIMConnectorFieldMappings
 				{...PROPS}
-				mappingRule={{...MAPPING_RULE, id: 9, stripHTMLTags: true}}
+				fieldMappingRule={{
+					...FIELD_MAPPING_RULE,
+					id: 9,
+					stripHTMLTags: true,
+				}}
 			/>
 		);
 
@@ -406,7 +410,11 @@ describe('EditPIMConnectorFieldMappings', () => {
 		render(
 			<EditPIMConnectorFieldMappings
 				{...PROPS}
-				mappingRule={{...MAPPING_RULE, id: 9, stripHTMLTags: true}}
+				fieldMappingRule={{
+					...FIELD_MAPPING_RULE,
+					id: 9,
+					stripHTMLTags: true,
+				}}
 			/>
 		);
 
@@ -426,7 +434,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 		render(
 			<EditPIMConnectorFieldMappings
 				{...PROPS}
-				mappingRule={MAPPING_RULE}
+				fieldMappingRule={FIELD_MAPPING_RULE}
 			/>
 		);
 
@@ -443,7 +451,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 		render(
 			<EditPIMConnectorFieldMappings
 				{...PROPS}
-				mappingRule={MAPPING_RULE}
+				fieldMappingRule={FIELD_MAPPING_RULE}
 			/>
 		);
 

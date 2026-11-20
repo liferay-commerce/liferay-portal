@@ -7,17 +7,17 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import ConnectorStatusRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/ConnectorStatusRenderer';
+import PIMConnectorStatusRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/PIMConnectorStatusRenderer';
 
-describe('ConnectorStatusRenderer', () => {
+describe('PIMConnectorStatusRenderer', () => {
 	it('labels an active connector as active', () => {
-		render(<ConnectorStatusRenderer value={true} />);
+		render(<PIMConnectorStatusRenderer value={true} />);
 
 		expect(screen.getByText('active')).toBeInTheDocument();
 	});
 
 	it('labels an inactive connector as inactive', () => {
-		render(<ConnectorStatusRenderer value={false} />);
+		render(<PIMConnectorStatusRenderer value={false} />);
 
 		expect(screen.getByText('inactive')).toBeInTheDocument();
 	});

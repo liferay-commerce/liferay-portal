@@ -5,10 +5,10 @@
 
 import {waitFor} from '@testing-library/react';
 
-import propsTransformer from '../../src/main/resources/META-INF/resources/js/FieldMappingsFDSPropsTransformer';
-import FieldMappingChannelFieldRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingChannelFieldRenderer';
-import FieldMappingSourceAttributesRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingSourceAttributesRenderer';
-import FieldMappingTransformationRulesRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingTransformationRulesRenderer';
+import propsTransformer from '../../src/main/resources/META-INF/resources/js/PIMFieldMappingsFDSPropsTransformer';
+import PIMFieldMappingChannelFieldRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/PIMFieldMappingChannelFieldRenderer';
+import PIMFieldMappingSourceAttributesRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/PIMFieldMappingSourceAttributesRenderer';
+import PIMFieldMappingTransformationRulesRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/PIMFieldMappingTransformationRulesRenderer';
 
 const mockFetch = jest.fn();
 const mockOpenToast = jest.fn();
@@ -24,14 +24,14 @@ jest.mock('frontend-js-web', () => ({
 const CLEAR_ACTION = {
 	data: {
 		apiURL: '/o/pim/connector-field-mappings',
+		fieldMappingRuleAPIURL: '/o/pim/connector-field-mapping-rules',
 		id: 'clear',
-		mappingRuleAPIURL: '/o/pim/connector-field-mapping-rules',
 	},
 };
 
 const ITEM_DATA = {channelField: 'SKU', fieldMappingIds: [7, 11]};
 
-describe('FieldMappingsFDSPropsTransformer', () => {
+describe('PIMFieldMappingsFDSPropsTransformer', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 
@@ -45,17 +45,17 @@ describe('FieldMappingsFDSPropsTransformer', () => {
 
 		expect(result.customRenderers.tableCell).toEqual([
 			{
-				component: FieldMappingChannelFieldRenderer,
+				component: PIMFieldMappingChannelFieldRenderer,
 				name: 'channelFieldTableCellRenderer',
 				type: 'internal',
 			},
 			{
-				component: FieldMappingSourceAttributesRenderer,
+				component: PIMFieldMappingSourceAttributesRenderer,
 				name: 'sourceAttributesTableCellRenderer',
 				type: 'internal',
 			},
 			{
-				component: FieldMappingTransformationRulesRenderer,
+				component: PIMFieldMappingTransformationRulesRenderer,
 				name: 'transformationRulesTableCellRenderer',
 				type: 'internal',
 			},
@@ -125,7 +125,7 @@ describe('FieldMappingsFDSPropsTransformer', () => {
 			itemData: {
 				channelField: 'SKU',
 				fieldMappingIds: [],
-				mappingRuleId: 5,
+				fieldMappingRuleId: 5,
 			},
 			loadData,
 		});

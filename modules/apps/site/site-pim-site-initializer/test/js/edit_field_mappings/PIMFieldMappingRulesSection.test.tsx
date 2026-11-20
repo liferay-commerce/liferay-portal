@@ -10,7 +10,7 @@ import React from 'react';
 
 import PIMFieldMappingRulesSection from '../../../src/main/resources/META-INF/resources/js/edit_field_mappings/PIMFieldMappingRulesSection';
 
-const MAPPING_RULE = {
+const FIELD_MAPPING_RULE = {
 	id: 0,
 	stripHTMLTags: false,
 	textCase: '',
@@ -25,7 +25,7 @@ describe('PIMFieldMappingRulesSection', () => {
 		render(
 			<PIMFieldMappingRulesSection
 				disabled={true}
-				mappingRule={MAPPING_RULE}
+				fieldMappingRule={FIELD_MAPPING_RULE}
 				onChange={jest.fn()}
 				useFirstNonemptySourceSupported={true}
 			/>
@@ -48,7 +48,7 @@ describe('PIMFieldMappingRulesSection', () => {
 	it('hides the fallback of a channel field that does not support it', () => {
 		render(
 			<PIMFieldMappingRulesSection
-				mappingRule={MAPPING_RULE}
+				fieldMappingRule={FIELD_MAPPING_RULE}
 				onChange={jest.fn()}
 				useFirstNonemptySourceSupported={false}
 			/>
@@ -64,7 +64,7 @@ describe('PIMFieldMappingRulesSection', () => {
 
 		render(
 			<PIMFieldMappingRulesSection
-				mappingRule={MAPPING_RULE}
+				fieldMappingRule={FIELD_MAPPING_RULE}
 				onChange={onChange}
 				useFirstNonemptySourceSupported={true}
 			/>
@@ -73,14 +73,14 @@ describe('PIMFieldMappingRulesSection', () => {
 		await userEvent.click(screen.getByLabelText('trim-whitespace'));
 
 		expect(onChange).toHaveBeenLastCalledWith({
-			...MAPPING_RULE,
+			...FIELD_MAPPING_RULE,
 			trimWhitespace: true,
 		});
 
 		await userEvent.click(screen.getByLabelText('url-encode'));
 
 		expect(onChange).toHaveBeenLastCalledWith({
-			...MAPPING_RULE,
+			...FIELD_MAPPING_RULE,
 			urlEncode: true,
 		});
 
@@ -90,7 +90,7 @@ describe('PIMFieldMappingRulesSection', () => {
 		);
 
 		expect(onChange).toHaveBeenLastCalledWith({
-			...MAPPING_RULE,
+			...FIELD_MAPPING_RULE,
 			useFirstNonemptySource: true,
 		});
 	});

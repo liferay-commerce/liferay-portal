@@ -329,9 +329,9 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 
 		Assert.assertEquals(
 			"/o/pim/connector-field-mapping-rules",
-			pimConnectorChannelFieldDisplay.getMappingRuleAPIURL());
+			pimConnectorChannelFieldDisplay.getFieldMappingRuleAPIURL());
 		Assert.assertEquals(
-			4, pimConnectorChannelFieldDisplay.getMappingRuleId());
+			4, pimConnectorChannelFieldDisplay.getFieldMappingRuleId());
 		Assert.assertEquals(
 			Arrays.asList(
 				"strip-html-tags", "uppercase", "trim-whitespace",

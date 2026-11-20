@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 import {act, render} from '@testing-library/react';
 import React from 'react';
 
-import FieldMappingsBreadcrumb from '../../src/main/resources/META-INF/resources/js/FieldMappingsBreadcrumb';
+import PIMFieldMappingsBreadcrumb from '../../src/main/resources/META-INF/resources/js/PIMFieldMappingsBreadcrumb';
 
 const mockBreadcrumb = jest.fn();
 
@@ -32,7 +32,7 @@ function getActionItemLabels() {
 	return props.actionItems.map(({label}: {label: string}) => label);
 }
 
-describe('FieldMappingsBreadcrumb', () => {
+describe('PIMFieldMappingsBreadcrumb', () => {
 	let handlers: Record<string, Function>;
 
 	beforeEach(() => {
@@ -48,7 +48,7 @@ describe('FieldMappingsBreadcrumb', () => {
 
 	it('keeps execute while the mapping is complete', () => {
 		render(
-			<FieldMappingsBreadcrumb
+			<PIMFieldMappingsBreadcrumb
 				actionItems={ACTION_ITEMS}
 				breadcrumbItems={[]}
 				mappingStatus="complete"
@@ -69,7 +69,7 @@ describe('FieldMappingsBreadcrumb', () => {
 
 	it('hides execute once a field mapping change leaves the mapping incomplete', () => {
 		render(
-			<FieldMappingsBreadcrumb
+			<PIMFieldMappingsBreadcrumb
 				actionItems={ACTION_ITEMS}
 				breadcrumbItems={[]}
 				mappingStatus="complete"
@@ -87,7 +87,7 @@ describe('FieldMappingsBreadcrumb', () => {
 
 	it('stops listening when it unmounts', () => {
 		const {unmount} = render(
-			<FieldMappingsBreadcrumb
+			<PIMFieldMappingsBreadcrumb
 				actionItems={ACTION_ITEMS}
 				breadcrumbItems={[]}
 				mappingStatus="complete"
