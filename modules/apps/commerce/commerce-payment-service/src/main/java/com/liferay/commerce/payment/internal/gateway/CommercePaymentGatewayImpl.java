@@ -8,6 +8,7 @@ package com.liferay.commerce.payment.internal.gateway;
 import com.liferay.commerce.payment.audit.CommercePaymentEntryAuditType;
 import com.liferay.commerce.payment.configuration.CommercePaymentEntryAuditConfiguration;
 import com.liferay.commerce.payment.constants.CommercePaymentEntryAuditConstants;
+import com.liferay.commerce.payment.exception.CommercePaymentEntryPaymentIntegrationKeyException;
 import com.liferay.commerce.payment.gateway.CommercePaymentGateway;
 import com.liferay.commerce.payment.helper.CommercePaymentHelper;
 import com.liferay.commerce.payment.integration.CommercePaymentIntegration;
@@ -16,6 +17,7 @@ import com.liferay.commerce.payment.service.CommercePaymentEntryAuditLocalServic
 import com.liferay.commerce.payment.service.CommercePaymentEntryLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.ORMException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -348,6 +350,15 @@ public class CommercePaymentGatewayImpl implements CommercePaymentGateway {
 			_commercePaymentHelper.getCommercePaymentIntegration(
 				commercePaymentEntry.getCommerceChannelId(),
 				commercePaymentEntry.getPaymentIntegrationKey());
+
+		if (commercePaymentIntegration == null) {
+			throw new CommercePaymentEntryPaymentIntegrationKeyException(
+				StringBundler.concat(
+					"No payment integration supports refunds for channel ",
+					commercePaymentEntry.getCommerceChannelId(),
+					" and payment integration key ",
+					commercePaymentEntry.getPaymentIntegrationKey()));
+		}
 
 		CommercePaymentEntry refundedCommercePaymentEntry =
 			commercePaymentIntegration.refund(
