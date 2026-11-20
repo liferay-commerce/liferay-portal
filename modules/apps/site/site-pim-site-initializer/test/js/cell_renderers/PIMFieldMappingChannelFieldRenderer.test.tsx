@@ -7,12 +7,12 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import FieldMappingChannelFieldRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingChannelFieldRenderer';
+import PIMFieldMappingChannelFieldRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/PIMFieldMappingChannelFieldRenderer';
 
-describe('FieldMappingChannelFieldRenderer', () => {
+describe('PIMFieldMappingChannelFieldRenderer', () => {
 	it('links the channel field to its mapping page', () => {
 		render(
-			<FieldMappingChannelFieldRenderer
+			<PIMFieldMappingChannelFieldRenderer
 				itemData={{href: '/edit-field-mappings?channelField=name'}}
 				value="Name"
 			/>

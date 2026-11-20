@@ -7,11 +7,11 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import LastExecutionStatusRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/LastExecutionStatusRenderer';
+import PIMConnectorLastExecutionStatusRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/PIMConnectorLastExecutionStatusRenderer';
 
-describe('LastExecutionStatusRenderer', () => {
+describe('PIMConnectorLastExecutionStatusRenderer', () => {
 	it('labels a failed execution as failed', () => {
-		render(<LastExecutionStatusRenderer value="failed" />);
+		render(<PIMConnectorLastExecutionStatusRenderer value="failed" />);
 
 		expect(screen.getByText('failed').closest('.label')).toHaveClass(
 			'label-danger'
@@ -19,7 +19,9 @@ describe('LastExecutionStatusRenderer', () => {
 	});
 
 	it('labels a connector that never ran as never executed', () => {
-		render(<LastExecutionStatusRenderer value="never-executed" />);
+		render(
+			<PIMConnectorLastExecutionStatusRenderer value="never-executed" />
+		);
 
 		expect(
 			screen.getByText('never-executed').closest('.label')
@@ -27,7 +29,7 @@ describe('LastExecutionStatusRenderer', () => {
 	});
 
 	it('labels a successful execution as success', () => {
-		render(<LastExecutionStatusRenderer value="success" />);
+		render(<PIMConnectorLastExecutionStatusRenderer value="success" />);
 
 		expect(screen.getByText('success').closest('.label')).toHaveClass(
 			'label-success'

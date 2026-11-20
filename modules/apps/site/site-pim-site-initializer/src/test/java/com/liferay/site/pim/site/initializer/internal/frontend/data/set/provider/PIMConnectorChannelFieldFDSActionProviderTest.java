@@ -57,9 +57,9 @@ public class PIMConnectorChannelFieldFDSActionProviderTest {
 			_pimConnectorChannelFieldFDSActionProvider.getDropdownItems(
 				_GROUP_ID, _httpServletRequest,
 				new PIMConnectorChannelFieldDisplay(
-					_API_URL, "SKU", Collections.emptyList(), _HREF,
-					LocaleUtil.US, _API_URL_MAPPING_RULE,
-					RandomTestUtil.randomLong(), false, Collections.emptyList(),
+					_API_URL, "SKU", Collections.emptyList(),
+					_API_URL_FIELD_MAPPING_RULE, RandomTestUtil.randomLong(),
+					_HREF, LocaleUtil.US, false, Collections.emptyList(),
 					Collections.emptyList(), RandomTestUtil.randomBoolean()));
 
 		Assert.assertEquals(dropdownItems.toString(), 2, dropdownItems.size());
@@ -75,9 +75,9 @@ public class PIMConnectorChannelFieldFDSActionProviderTest {
 			_pimConnectorChannelFieldFDSActionProvider.getDropdownItems(
 				_GROUP_ID, _httpServletRequest,
 				new PIMConnectorChannelFieldDisplay(
-					_API_URL, "SKU", Arrays.asList(1L, 2L), _HREF,
-					LocaleUtil.US, _API_URL_MAPPING_RULE,
-					RandomTestUtil.randomLong(), false, Collections.emptyList(),
+					_API_URL, "SKU", Arrays.asList(1L, 2L),
+					_API_URL_FIELD_MAPPING_RULE, RandomTestUtil.randomLong(),
+					_HREF, LocaleUtil.US, false, Collections.emptyList(),
 					Collections.emptyList(), RandomTestUtil.randomBoolean()));
 
 		Assert.assertEquals(dropdownItems.toString(), 2, dropdownItems.size());
@@ -91,10 +91,10 @@ public class PIMConnectorChannelFieldFDSActionProviderTest {
 		Assert.assertEquals(
 			"are-you-sure-you-want-to-clear-this-mapping",
 			_getDataValue(dropdownItem, "confirmationMessage"));
-		Assert.assertEquals("clear", _getDataValue(dropdownItem, "id"));
 		Assert.assertEquals(
-			_API_URL_MAPPING_RULE,
-			_getDataValue(dropdownItem, "mappingRuleAPIURL"));
+			_API_URL_FIELD_MAPPING_RULE,
+			_getDataValue(dropdownItem, "fieldMappingRuleAPIURL"));
+		Assert.assertEquals("clear", _getDataValue(dropdownItem, "id"));
 	}
 
 	private Object _getDataValue(DropdownItem dropdownItem, String key) {
@@ -106,7 +106,7 @@ public class PIMConnectorChannelFieldFDSActionProviderTest {
 
 	private static final String _API_URL = "/o/pim/connector-field-mappings";
 
-	private static final String _API_URL_MAPPING_RULE =
+	private static final String _API_URL_FIELD_MAPPING_RULE =
 		"/o/pim/connector-field-mapping-rules";
 
 	private static final long _GROUP_ID = RandomTestUtil.randomLong();

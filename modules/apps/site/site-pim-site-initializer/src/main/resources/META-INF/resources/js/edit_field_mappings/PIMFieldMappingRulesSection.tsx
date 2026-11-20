@@ -8,7 +8,7 @@ import ClayForm, {ClayCheckbox, ClaySelect} from '@clayui/form';
 import ClayPanel from '@clayui/panel';
 import React from 'react';
 
-import {IMappingRule} from './types';
+import {IPIMFieldMappingRule} from './types';
 
 const TEXT_CASES = [
 	{label: Liferay.Language.get('lowercase'), value: 'lower'},
@@ -18,20 +18,20 @@ const TEXT_CASES = [
 const TRUNCATE_LENGTHS = [40, 80, 200, 1000];
 
 interface IProps {
-	channelFieldMultiple: boolean;
 	disabled?: boolean;
-	mappingRule: IMappingRule;
-	onChange: (mappingRule: IMappingRule) => void;
+	fieldMappingRule: IPIMFieldMappingRule;
+	onChange: (fieldMappingRule: IPIMFieldMappingRule) => void;
+	useFirstNonemptySourceSupported: boolean;
 }
 
-export default function MappingRulesSection({
-	channelFieldMultiple,
+export default function PIMFieldMappingRulesSection({
 	disabled,
-	mappingRule,
+	fieldMappingRule,
 	onChange,
+	useFirstNonemptySourceSupported,
 }: IProps) {
-	const handleChange = (values: Partial<IMappingRule>) =>
-		onChange({...mappingRule, ...values});
+	const handleChange = (values: Partial<IPIMFieldMappingRule>) =>
+		onChange({...fieldMappingRule, ...values});
 
 	return (
 		<div className="container-fluid container-fluid-max-md p-0 p-md-4">
@@ -65,7 +65,7 @@ export default function MappingRulesSection({
 						</h3>
 
 						<ClayCheckbox
-							checked={mappingRule.stripHTMLTags}
+							checked={fieldMappingRule.stripHTMLTags}
 							disabled={disabled}
 							label={Liferay.Language.get('strip-html-tags')}
 							onChange={(event) =>
@@ -76,7 +76,7 @@ export default function MappingRulesSection({
 						/>
 
 						<ClayCheckbox
-							checked={mappingRule.trimWhitespace}
+							checked={fieldMappingRule.trimWhitespace}
 							disabled={disabled}
 							label={Liferay.Language.get('trim-whitespace')}
 							onChange={(event) =>
@@ -93,7 +93,7 @@ export default function MappingRulesSection({
 						</h3>
 
 						<ClayCheckbox
-							checked={mappingRule.urlEncode}
+							checked={fieldMappingRule.urlEncode}
 							disabled={disabled}
 							label={Liferay.Language.get('url-encode')}
 							onChange={(event) =>
@@ -115,7 +115,7 @@ export default function MappingRulesSection({
 									textCase: event.target.value,
 								})
 							}
-							value={mappingRule.textCase}
+							value={fieldMappingRule.textCase}
 						>
 							<ClaySelect.Option
 								label={Liferay.Language.get('none')}
@@ -143,7 +143,7 @@ export default function MappingRulesSection({
 									truncateLength: Number(event.target.value),
 								})
 							}
-							value={mappingRule.truncateLength}
+							value={fieldMappingRule.truncateLength}
 						>
 							<ClaySelect.Option
 								label={Liferay.Language.get('none')}
@@ -160,7 +160,7 @@ export default function MappingRulesSection({
 						</ClaySelect>
 					</div>
 
-					{!channelFieldMultiple && (
+					{useFirstNonemptySourceSupported && (
 						<div className="c-gap-1 d-flex flex-column">
 							<label>
 								{Liferay.Language.get('fallback-logic')}
@@ -178,7 +178,7 @@ export default function MappingRulesSection({
 									})
 								}
 								value={String(
-									mappingRule.useFirstNonemptySource
+									fieldMappingRule.useFirstNonemptySource
 								)}
 							>
 								<ClaySelect.Option

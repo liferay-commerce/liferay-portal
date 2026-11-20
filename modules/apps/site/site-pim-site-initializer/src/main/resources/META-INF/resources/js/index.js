@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-export {default as ConnectorsFDSPropsTransformer} from './ConnectorsFDSPropsTransformer';
 export {default as EditPIMConnector} from './EditPIMConnector';
 export {default as EditPIMConnectorFieldMappings} from './EditPIMConnectorFieldMappings';
-export {default as FieldMappingsBreadcrumb} from './FieldMappingsBreadcrumb';
-export {default as FieldMappingsFDSPropsTransformer} from './FieldMappingsFDSPropsTransformer';
+export {default as PIMConnectorsFDSPropsTransformer} from './PIMConnectorsFDSPropsTransformer';
+export {default as PIMFieldMappingsBreadcrumb} from './PIMFieldMappingsBreadcrumb';
+export {default as PIMFieldMappingsFDSPropsTransformer} from './PIMFieldMappingsFDSPropsTransformer';
 export {default as ProductRelationshipsFDSPropsTransformer} from './ProductRelationshipsFDSPropsTransformer';
 export {default as ProductsFDSPropsTransformer} from './ProductsFDSPropsTransformer';

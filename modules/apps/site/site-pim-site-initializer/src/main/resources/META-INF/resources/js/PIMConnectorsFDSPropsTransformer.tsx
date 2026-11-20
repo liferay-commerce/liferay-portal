@@ -9,10 +9,10 @@ import {
 } from '@liferay/site-cms-site-initializer';
 import {sub} from 'frontend-js-web';
 
-import ConnectorNameRenderer from './cell_renderers/ConnectorNameRenderer';
-import ConnectorStatusRenderer from './cell_renderers/ConnectorStatusRenderer';
-import LastExecutionStatusRenderer from './cell_renderers/LastExecutionStatusRenderer';
-import MappingStatusRenderer from './cell_renderers/MappingStatusRenderer';
+import PIMConnectorLastExecutionStatusRenderer from './cell_renderers/PIMConnectorLastExecutionStatusRenderer';
+import PIMConnectorMappingStatusRenderer from './cell_renderers/PIMConnectorMappingStatusRenderer';
+import PIMConnectorNameRenderer from './cell_renderers/PIMConnectorNameRenderer';
+import PIMConnectorStatusRenderer from './cell_renderers/PIMConnectorStatusRenderer';
 
 export default function propsTransformer({
 	itemsActions,
@@ -26,22 +26,22 @@ export default function propsTransformer({
 		customRenderers: {
 			tableCell: [
 				{
-					component: ConnectorNameRenderer,
+					component: PIMConnectorNameRenderer,
 					name: 'nameTableCellRenderer',
 					type: 'internal',
 				},
 				{
-					component: ConnectorStatusRenderer,
+					component: PIMConnectorStatusRenderer,
 					name: 'statusTableCellRenderer',
 					type: 'internal',
 				},
 				{
-					component: MappingStatusRenderer,
+					component: PIMConnectorMappingStatusRenderer,
 					name: 'mappingStatusTableCellRenderer',
 					type: 'internal',
 				},
 				{
-					component: LastExecutionStatusRenderer,
+					component: PIMConnectorLastExecutionStatusRenderer,
 					name: 'lastExecutionStatusTableCellRenderer',
 					type: 'internal',
 				},

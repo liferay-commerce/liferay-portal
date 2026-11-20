@@ -3,28 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+export const TYPE_CATEGORIES = 'categories';
+
 export const TYPE_DYNAMIC_VALUE = 'dynamicValue';
 
 export const TYPE_FIXED_VALUE = 'fixedValue';
 
-export interface IFieldMapping {
-	id?: number;
-	key?: string;
-	sourceClassName: string;
-	sourceFieldName: string;
-	type: string;
-	value: string;
-}
-
-export interface IMappingRule {
-	id: number;
-	stripHTMLTags: boolean;
-	textCase: string;
-	trimWhitespace: boolean;
-	truncateLength: number;
-	urlEncode: boolean;
-	useFirstNonemptySource: boolean;
-}
+export const TYPE_TAGS = 'tags';
 
 export interface IObjectDefinition {
 	className: string;
@@ -35,4 +20,23 @@ export interface IObjectDefinition {
 export interface IObjectField {
 	label: string;
 	name: string;
+}
+
+export interface IPIMFieldMapping {
+	id?: number;
+	key?: string;
+	sourceClassName: string;
+	sourceFieldName: string;
+	type: string;
+	value: string;
+}
+
+export interface IPIMFieldMappingRule {
+	id: number;
+	stripHTMLTags: boolean;
+	textCase: string;
+	trimWhitespace: boolean;
+	truncateLength: number;
+	urlEncode: boolean;
+	useFirstNonemptySource: boolean;
 }
