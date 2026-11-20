@@ -1431,6 +1431,13 @@ public class CPDefinitionLocalServiceImpl
 
 		cpDefinitionPersistence.remove(cpDefinition);
 
+		_accountGroupRelLocalService.deleteAccountGroupRels(
+			CPDefinition.class.getName(),
+			new long[] {cpDefinition.getCPDefinitionId()});
+
+		_commerceChannelRelLocalService.deleteCommerceChannelRels(
+			CPDefinition.class.getName(), cpDefinition.getCPDefinitionId());
+
 		// Asset
 
 		_assetEntryLocalService.deleteEntry(
