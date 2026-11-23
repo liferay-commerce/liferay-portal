@@ -150,6 +150,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.GroupService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
@@ -1134,9 +1135,16 @@ public class ProductResourceImpl
 			(serviceContext.getWorkflowAction() ==
 				WorkflowConstants.ACTION_SAVE_DRAFT)) {
 
-			return _cpDefinitionService.copyCPDefinition(
-				cpDefinition.getCPDefinitionId(), cpDefinition.getGroupId(),
-				WorkflowConstants.STATUS_DRAFT);
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+			try {
+				return _cpDefinitionService.copyCPDefinition(
+					cpDefinition.getCPDefinitionId(), cpDefinition.getGroupId(),
+					WorkflowConstants.STATUS_DRAFT);
+			}
+			finally {
+				ServiceContextThreadLocal.popServiceContext();
+			}
 		}
 
 		return cpDefinition;
