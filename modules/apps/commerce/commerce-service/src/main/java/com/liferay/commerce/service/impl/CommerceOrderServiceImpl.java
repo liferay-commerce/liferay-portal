@@ -15,13 +15,16 @@ import com.liferay.commerce.helper.CommerceAccountHelper;
 import com.liferay.commerce.internal.order.comparator.CommerceOrderModifiedDateComparator;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.service.base.CommerceOrderServiceBaseImpl;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -190,8 +193,24 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 			long attachmentFileEntryId, long commerceOrderId)
 		throws PortalException {
 
+		CommerceOrder commerceOrder = commerceOrderPersistence.findByPrimaryKey(
+			commerceOrderId);
+
 		_commerceOrderModelResourcePermission.check(
-			getPermissionChecker(), commerceOrderId, ActionKeys.UPDATE);
+			getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
+
+		FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
+			attachmentFileEntryId);
+		Folder folder = commerceOrder.getFolder(
+			commerceOrder.getLocalRepository());
+
+		if ((fileEntry == null) || (folder == null) ||
+			(fileEntry.getFolderId() != folder.getFolderId())) {
+
+			throw new PrincipalException.MustHavePermission(
+				getPermissionChecker(), FileEntry.class.getName(),
+				attachmentFileEntryId, ActionKeys.DELETE);
+		}
 
 		commerceOrderLocalService.deleteAttachmentFileEntry(
 			attachmentFileEntryId, commerceOrderId);
@@ -1257,6 +1276,9 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 	)
 	private ModelResourcePermission<CommerceOrder>
 		_commerceOrderModelResourcePermission;
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
