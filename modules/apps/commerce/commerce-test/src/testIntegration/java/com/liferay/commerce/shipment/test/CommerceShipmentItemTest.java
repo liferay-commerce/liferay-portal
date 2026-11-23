@@ -25,6 +25,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceShipmentItemLocalService;
+import com.liferay.commerce.service.CommerceShipmentItemService;
 import com.liferay.commerce.service.CommerceShipmentLocalService;
 import com.liferay.commerce.shipment.test.util.CommerceShipmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
@@ -32,11 +33,23 @@ import com.liferay.commerce.test.util.context.TestCommerceContext;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
@@ -46,6 +59,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.math.BigDecimal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.frutilla.FrutillaRule;
@@ -416,8 +430,90 @@ public class CommerceShipmentItemTest {
 			newCommerceShipmentItem.getQuantity());
 	}
 
+	@Test
+	@TestInfo("LPD-116177")
+	public void testUpdateCommerceShipmentItemPermission() throws Exception {
+		CommerceShipmentItem commerceShipmentItem =
+			CommerceShipmentTestUtil.addCommerceShipmentItem(
+				_commerceContext,
+				CPTestUtil.addCPInstanceWithRandomSku(_group.getGroupId()),
+				_group.getGroupId(), _user.getUserId(),
+				_commerceOrder.getCommerceOrderId(),
+				_commerceShipment.getCommerceShipmentId(), 2, 1);
+
+		CommerceShipment commerceShipment = _setUpPermissionChecker();
+
+		try {
+			_commerceShipmentItemService.updateCommerceShipmentItem(
+				commerceShipment.getCommerceShipmentId(),
+				commerceShipmentItem.getCommerceShipmentItemId(),
+				commerceShipmentItem.getCommerceInventoryWarehouseId(),
+				commerceShipmentItem.getQuantity(), false);
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+			Assert.assertNotNull(principalException);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-116177")
+	public void testUpdateExternalReferenceCode() throws Exception {
+		CommerceShipmentItem commerceShipmentItem =
+			CommerceShipmentTestUtil.addCommerceShipmentItem(
+				_commerceContext,
+				CPTestUtil.addCPInstanceWithRandomSku(_group.getGroupId()),
+				_group.getGroupId(), _user.getUserId(),
+				_commerceOrder.getCommerceOrderId(),
+				_commerceShipment.getCommerceShipmentId(), 2, 1);
+
+		CommerceShipment commerceShipment = _setUpPermissionChecker();
+
+		try {
+			_commerceShipmentItemService.updateExternalReferenceCode(
+				commerceShipment.getCommerceShipmentId(),
+				commerceShipmentItem.getCommerceShipmentItemId(),
+				RandomTestUtil.randomString());
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+			Assert.assertNotNull(principalException);
+		}
+	}
+
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
+
+	private CommerceShipment _setUpPermissionChecker() throws Exception {
+		CommerceShipment commerceShipment =
+			CommerceShipmentTestUtil.createEmptyOrderShipment(
+				_group.getGroupId(), _commerceOrder.getCommerceOrderId());
+
+		_commerceShipments.add(commerceShipment);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_roles.add(role);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			role.getCompanyId(), CommerceShipment.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(commerceShipment.getCommerceShipmentId()),
+			role.getRoleId(), new String[] {ActionKeys.UPDATE});
+
+		User user = UserTestUtil.addUser();
+
+		_users.add(user);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		return commerceShipment;
+	}
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
@@ -453,9 +549,28 @@ public class CommerceShipmentItemTest {
 	private CommerceShipmentItemLocalService _commerceShipmentItemLocalService;
 
 	@Inject
+	private CommerceShipmentItemService _commerceShipmentItemService;
+
+	@Inject
 	private CommerceShipmentLocalService _commerceShipmentLocalService;
 
+	@DeleteAfterTestRun
+	private final List<CommerceShipment> _commerceShipments = new ArrayList<>();
+
 	private Group _group;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@DeleteAfterTestRun
+	private final List<Role> _roles = new ArrayList<>();
+
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
+
+	@DeleteAfterTestRun
+	private final List<User> _users = new ArrayList<>();
 
 }
