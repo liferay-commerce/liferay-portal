@@ -12,8 +12,10 @@ import com.liferay.commerce.constants.CommercePaymentEntryConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.payment.constants.CommercePaymentEntryActionKeys;
 import com.liferay.commerce.payment.model.CommercePaymentEntry;
 import com.liferay.commerce.payment.service.CommercePaymentEntryLocalService;
+import com.liferay.commerce.payment.service.CommercePaymentEntryService;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -24,13 +26,23 @@ import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -106,6 +118,73 @@ public class CommercePaymentEntryLocalServiceTest {
 
 		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
 			_commerceOrder);
+	}
+
+	@Test
+	@TestInfo("LPD-116176")
+	public void testAddCommercePaymentEntry() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		_groups.add(group);
+
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR,
+			CommercePaymentEntryConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP, String.valueOf(group.getGroupId()),
+			CommercePaymentEntryActionKeys.ADD_PAYMENT);
+
+		_roles.add(role);
+
+		User user = UserTestUtil.addUser();
+
+		_users.add(user);
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+		PrincipalThreadLocal.setName(user.getUserId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group.getGroupId(), user.getUserId());
+
+		try {
+			_commercePaymentEntryService.addCommercePaymentEntry(
+				_classNameLocalService.getClassNameId(CommerceOrder.class),
+				_commerceOrder.getCommerceOrderId(),
+				_commerceChannel.getCommerceChannelId(), BigDecimal.TEN,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				_commerceCurrency.getCode(), user.getLanguageId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				null, 0, null, RandomTestUtil.randomString(),
+				CommercePaymentEntryConstants.TYPE_PAYMENT, serviceContext);
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			Assert.assertNotNull(principalException);
+		}
+
+		try {
+			_commercePaymentEntryService.addOrUpdateCommercePaymentEntry(
+				null,
+				_classNameLocalService.getClassNameId(CommerceOrder.class),
+				_commerceOrder.getCommerceOrderId(),
+				_commerceChannel.getCommerceChannelId(), BigDecimal.TEN,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				_commerceCurrency.getCode(), RandomTestUtil.randomString(),
+				user.getLanguageId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), null, 0,
+				CommercePaymentEntryConstants.STATUS_PENDING, null,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				CommercePaymentEntryConstants.TYPE_PAYMENT, serviceContext);
+
+			Assert.fail();
+		}
+		catch (PrincipalException.MustHavePermission principalException) {
+			Assert.assertNotNull(principalException);
+		}
 	}
 
 	@Test
@@ -669,15 +748,30 @@ public class CommercePaymentEntryLocalServiceTest {
 	@Inject
 	private CommercePaymentEntryLocalService _commercePaymentEntryLocalService;
 
+	@Inject
+	private CommercePaymentEntryService _commercePaymentEntryService;
+
 	@DeleteAfterTestRun
 	private CPInstance _cpInstance;
 
 	@DeleteAfterTestRun
 	private Group _group;
 
+	@DeleteAfterTestRun
+	private List<Group> _groups = new ArrayList<>();
+
+	@DeleteAfterTestRun
+	private List<Role> _roles = new ArrayList<>();
+
 	private ServiceContext _serviceContext;
 
 	@DeleteAfterTestRun
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
+
+	@DeleteAfterTestRun
+	private List<User> _users = new ArrayList<>();
 
 }
