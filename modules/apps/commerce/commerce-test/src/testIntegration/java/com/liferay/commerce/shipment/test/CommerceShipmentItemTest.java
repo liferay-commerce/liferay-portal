@@ -441,7 +441,8 @@ public class CommerceShipmentItemTest {
 				_commerceOrder.getCommerceOrderId(),
 				_commerceShipment.getCommerceShipmentId(), 2, 1);
 
-		CommerceShipment commerceShipment = _addCommerceShipmentWithUpdatePermission();
+		CommerceShipment commerceShipment =
+			_addCommerceShipmentWithUpdatePermission();
 
 		try {
 			_commerceShipmentItemService.updateCommerceShipmentItem(
@@ -468,7 +469,8 @@ public class CommerceShipmentItemTest {
 				_commerceOrder.getCommerceOrderId(),
 				_commerceShipment.getCommerceShipmentId(), 2, 1);
 
-		CommerceShipment commerceShipment = _addCommerceShipmentWithUpdatePermission();
+		CommerceShipment commerceShipment =
+			_addCommerceShipmentWithUpdatePermission();
 
 		try {
 			_commerceShipmentItemService.updateExternalReferenceCode(
@@ -486,7 +488,9 @@ public class CommerceShipmentItemTest {
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
-	private CommerceShipment _addCommerceShipmentWithUpdatePermission() throws Exception {
+	private CommerceShipment _addCommerceShipmentWithUpdatePermission()
+		throws Exception {
+
 		CommerceShipment commerceShipment =
 			CommerceShipmentTestUtil.createEmptyOrderShipment(
 				_group.getGroupId(), _commerceOrder.getCommerceOrderId());
