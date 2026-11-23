@@ -17,6 +17,7 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.service.CommercePricingClassLocalService;
+import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -95,6 +96,7 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
@@ -135,6 +137,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -419,6 +422,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(
 			getProduct.getExpirationDate(), postProduct.getExpirationDate());
 
+		_testPatchProductWhenProductStatusIsDraft();
 		_testPatchProductWithInvalidCommerceCatalog();
 		_testPatchProductWithNegativeValue("cost");
 		_testPatchProductWithNegativeValue("depth");
@@ -428,6 +432,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPatchProductWithNegativeValue("weight");
 		_testPatchProductWithNegativeValue("width");
 		_testPatchProductWithObjectField();
+		_testPatchProductWithProductVersioningWhenProductStatusIsDraft();
 	}
 
 	@Override
@@ -469,6 +474,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductProductTaxConfigurationFromProductConfiguration();
 		_testPostProductVirtual();
 		_testPostProductVirtualWithLazyReferencingEnabled();
+		_testPostProductWhenProductStatusIsDraft();
 		_testPostProductWithCategoriesWhenLazyReferencingEnabled();
 		_testPostProductWithCreator();
 		_testPostProductWithDiagramImageExternalReferenceCode();
@@ -490,9 +496,11 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	@Test
 	public void testPutProductByExternalReferenceCode() throws Exception {
 		_testPutProductByExternalReferenceCodeBatch();
+		_testPutProductByExternalReferenceCodeWhenProductStatusIsDraft();
 		_testPutProductByExternalReferenceCodeWithFutureDisplayDate();
 		_testPutProductByExternalReferenceCodeWithGroupedProducts();
 		_testPutProductByExternalReferenceCodeWithInvalidCommerceCatalog();
+		_testPutProductByExternalReferenceCodeWithProductVersioningWhenProductStatusIsDraft();
 
 		_testPutProductByExternalReferenceCodeWithURLsWhenImportInProcess();
 	}
@@ -649,6 +657,21 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Problem problem = problemException.getProblem();
 
 		Assert.assertEquals(expectedStatus, problem.getStatus());
+	}
+
+	private CPDefinition _copyCPDefinition(long cpDefinitionId)
+		throws Exception {
+
+		ServiceContextThreadLocal.pushServiceContext(
+			ServiceContextTestUtil.getServiceContext(
+				_commerceCatalog.getGroupId()));
+
+		try {
+			return _cpDefinitionLocalService.copyCPDefinition(cpDefinitionId);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	private ProductResource _getProductResource(String nestedFields)
@@ -1415,6 +1438,60 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			productOption2.getOptionId());
 	}
 
+	private void _testPatchProductWhenProductStatusIsDraft() throws Exception {
+		Product randomProduct = randomProduct();
+
+		randomProduct.setProductStatus(WorkflowConstants.STATUS_DRAFT);
+
+		Product postProduct1 = productResource.postProduct(randomProduct);
+
+		productResource.patchProduct(
+			postProduct1.getProductId(),
+			new Product() {
+				{
+					description = LanguageUtils.getLanguageIdMap(
+						RandomTestUtil.randomLocaleStringMap());
+				}
+			});
+
+		Product postProduct2 = productResource.postProduct(randomProduct());
+
+		productResource.patchProduct(
+			postProduct2.getProductId(),
+			new Product() {
+				{
+					description = LanguageUtils.getLanguageIdMap(
+						RandomTestUtil.randomLocaleStringMap());
+				}
+			});
+
+		CPDefinition cpDefinition1 = _cpDefinitionLocalService.getCPDefinition(
+			postProduct1.getId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, cpDefinition1.getStatus());
+
+		CPDefinition cpDefinition2 = _cpDefinitionLocalService.getCPDefinition(
+			postProduct2.getId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpDefinition2.getStatus());
+
+		productResource.patchProduct(
+			postProduct1.getProductId(),
+			new Product() {
+				{
+					productStatus = WorkflowConstants.STATUS_APPROVED;
+				}
+			});
+
+		cpDefinition1 = _cpDefinitionLocalService.getCPDefinition(
+			postProduct1.getId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpDefinition1.getStatus());
+	}
+
 	private void _testPatchProductWithInvalidCommerceCatalog()
 		throws Exception {
 
@@ -1541,6 +1618,51 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			null, endpoint, Http.Method.GET);
 
 		Assert.assertEquals(value, jsonObject.getString(objectField.getName()));
+	}
+
+	private void _testPatchProductWithProductVersioningWhenProductStatusIsDraft()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			Product postProduct = productResource.postProduct(randomProduct());
+
+			CPDefinition cpDefinition = _copyCPDefinition(postProduct.getId());
+
+			Map<String, String> descriptionMap = LanguageUtils.getLanguageIdMap(
+				RandomTestUtil.randomLocaleStringMap());
+
+			productResource.patchProduct(
+				postProduct.getProductId(),
+				new Product() {
+					{
+						description = descriptionMap;
+					}
+				});
+
+			cpDefinition = _cpDefinitionLocalService.getCPDefinition(
+				cpDefinition.getCPDefinitionId());
+
+			Assert.assertEquals(
+				descriptionMap,
+				LanguageUtils.getLanguageIdMap(
+					cpDefinition.getDescriptionMap()));
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, cpDefinition.getStatus());
+
+			CProduct cProduct = cpDefinition.getCProduct();
+
+			Assert.assertEquals(
+				GetterUtil.getLong(postProduct.getId()),
+				cProduct.getPublishedCPDefinitionId());
+		}
 	}
 
 	private void _testPostProductAttachmentWithLazyReferencingEnabled()
@@ -1708,6 +1830,24 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(
 			Arrays.toString(productVirtualSettingsFileEntries), 1,
 			productVirtualSettingsFileEntries.length);
+	}
+
+	private void _testPostProductWhenProductStatusIsDraft() throws Exception {
+		Product randomProduct = randomProduct();
+
+		randomProduct.setProductStatus(WorkflowConstants.STATUS_DRAFT);
+
+		Product postProduct = productResource.postProduct(randomProduct);
+
+		randomProduct.setProductStatus((Integer)null);
+
+		productResource.postProduct(randomProduct);
+
+		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
+			postProduct.getId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, cpDefinition.getStatus());
 	}
 
 	private void _testPostProductWithCategoriesWhenLazyReferencingEnabled()
@@ -2265,6 +2405,51 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(product1.getProductId(), product2.getProductId());
 	}
 
+	private void _testPutProductByExternalReferenceCodeWhenProductStatusIsDraft()
+		throws Exception {
+
+		Product randomProduct1 = randomProduct();
+
+		randomProduct1.setProductStatus(WorkflowConstants.STATUS_DRAFT);
+
+		Product postProduct1 = productResource.postProduct(randomProduct1);
+
+		randomProduct1.setProductStatus((Integer)null);
+
+		productResource.putProductByExternalReferenceCode(
+			randomProduct1.getExternalReferenceCode(), randomProduct1);
+
+		Product randomProduct2 = randomProduct();
+
+		Product postProduct2 = productResource.postProduct(randomProduct2);
+
+		productResource.putProductByExternalReferenceCode(
+			randomProduct2.getExternalReferenceCode(), randomProduct2);
+
+		CPDefinition cpDefinition1 = _cpDefinitionLocalService.getCPDefinition(
+			postProduct1.getId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_DRAFT, cpDefinition1.getStatus());
+
+		CPDefinition cpDefinition2 = _cpDefinitionLocalService.getCPDefinition(
+			postProduct2.getId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpDefinition2.getStatus());
+
+		randomProduct1.setProductStatus(WorkflowConstants.STATUS_APPROVED);
+
+		productResource.putProductByExternalReferenceCode(
+			randomProduct1.getExternalReferenceCode(), randomProduct1);
+
+		cpDefinition1 = _cpDefinitionLocalService.getCPDefinition(
+			postProduct1.getId());
+
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, cpDefinition1.getStatus());
+	}
+
 	private void _testPutProductByExternalReferenceCodeWithFutureDisplayDate()
 		throws Exception {
 
@@ -2362,6 +2547,49 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(
 			_commerceCatalog.getCommerceCatalogId(),
 			GetterUtil.getLong(getProduct.getCatalogId()));
+	}
+
+	private void _testPutProductByExternalReferenceCodeWithProductVersioningWhenProductStatusIsDraft()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			Product randomProduct = randomProduct();
+
+			Product postProduct = productResource.postProduct(randomProduct);
+
+			CPDefinition cpDefinition = _copyCPDefinition(postProduct.getId());
+
+			randomProduct.setDescription(
+				LanguageUtils.getLanguageIdMap(
+					RandomTestUtil.randomLocaleStringMap()));
+
+			productResource.putProductByExternalReferenceCode(
+				randomProduct.getExternalReferenceCode(), randomProduct);
+
+			cpDefinition = _cpDefinitionLocalService.getCPDefinition(
+				cpDefinition.getCPDefinitionId());
+
+			Assert.assertEquals(
+				randomProduct.getDescription(),
+				LanguageUtils.getLanguageIdMap(
+					cpDefinition.getDescriptionMap()));
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_DRAFT, cpDefinition.getStatus());
+
+			CProduct cProduct = cpDefinition.getCProduct();
+
+			Assert.assertEquals(
+				GetterUtil.getLong(postProduct.getId()),
+				cProduct.getPublishedCPDefinitionId());
+		}
 	}
 
 	private void _testPutProductByExternalReferenceCodeWithURLsWhenImportInProcess()
