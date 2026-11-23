@@ -441,7 +441,7 @@ public class CommerceShipmentItemTest {
 				_commerceOrder.getCommerceOrderId(),
 				_commerceShipment.getCommerceShipmentId(), 2, 1);
 
-		CommerceShipment commerceShipment = _setUpPermissionChecker();
+		CommerceShipment commerceShipment = _addCommerceShipmentWithUpdatePermission();
 
 		try {
 			_commerceShipmentItemService.updateCommerceShipmentItem(
@@ -452,7 +452,7 @@ public class CommerceShipmentItemTest {
 
 			Assert.fail();
 		}
-		catch (PrincipalException principalException) {
+		catch (PrincipalException.MustHavePermission principalException) {
 			Assert.assertNotNull(principalException);
 		}
 	}
@@ -468,7 +468,7 @@ public class CommerceShipmentItemTest {
 				_commerceOrder.getCommerceOrderId(),
 				_commerceShipment.getCommerceShipmentId(), 2, 1);
 
-		CommerceShipment commerceShipment = _setUpPermissionChecker();
+		CommerceShipment commerceShipment = _addCommerceShipmentWithUpdatePermission();
 
 		try {
 			_commerceShipmentItemService.updateExternalReferenceCode(
@@ -478,7 +478,7 @@ public class CommerceShipmentItemTest {
 
 			Assert.fail();
 		}
-		catch (PrincipalException principalException) {
+		catch (PrincipalException.MustHavePermission principalException) {
 			Assert.assertNotNull(principalException);
 		}
 	}
@@ -486,7 +486,7 @@ public class CommerceShipmentItemTest {
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
 
-	private CommerceShipment _setUpPermissionChecker() throws Exception {
+	private CommerceShipment _addCommerceShipmentWithUpdatePermission() throws Exception {
 		CommerceShipment commerceShipment =
 			CommerceShipmentTestUtil.createEmptyOrderShipment(
 				_group.getGroupId(), _commerceOrder.getCommerceOrderId());
