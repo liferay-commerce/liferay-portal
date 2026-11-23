@@ -30,6 +30,7 @@ import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.CPDefinitionGroupIdException;
 import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
+import com.liferay.commerce.product.exception.DuplicateCProductExternalReferenceCodeException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
@@ -684,6 +685,12 @@ public class ProductResourceImpl
 
 		if (StringUtil.equalsIgnoreCase(updateStrategy, "PARTIAL_UPDATE")) {
 			unsafeFunction = product -> {
+				CPDefinition cpDefinition = _fetchCPDefinition(product);
+
+				if (cpDefinition != null) {
+					return patchProduct(cpDefinition.getCProductId(), product);
+				}
+
 				if (product.getProductId() != null) {
 					return patchProduct(product.getProductId(), product);
 				}
@@ -1040,6 +1047,43 @@ public class ProductResourceImpl
 		_updateNestedResources(product, cpDefinition, serviceContext);
 
 		serviceContext.setWorkflowAction(currentWorkflowAction);
+
+		return cpDefinition;
+	}
+
+	private CPDefinition _fetchCPDefinition(Product product) throws Exception {
+		CPDefinition externalReferenceCodeCPDefinition = null;
+
+		if (Validator.isNotNull(product.getExternalReferenceCode())) {
+			externalReferenceCodeCPDefinition =
+				ProductUtil.fetchCPDefinitionByCProductExternalReferenceCode(
+					product.getExternalReferenceCode(),
+					contextCompany.getCompanyId(), _cpDefinitionService);
+		}
+
+		if (product.getProductId() == null) {
+			return externalReferenceCodeCPDefinition;
+		}
+
+		CPDefinition cpDefinition = ProductUtil.fetchCPDefinitionByCProductId(
+			product.getProductId(), _cpDefinitionService);
+
+		if (cpDefinition == null) {
+			return externalReferenceCodeCPDefinition;
+		}
+
+		if ((externalReferenceCodeCPDefinition != null) &&
+			(externalReferenceCodeCPDefinition.getCProductId() !=
+				cpDefinition.getCProductId())) {
+
+			throw new DuplicateCProductExternalReferenceCodeException(
+				StringBundler.concat(
+					"Unable to use external reference code ",
+					product.getExternalReferenceCode(), " for product ",
+					cpDefinition.getCProductId(),
+					" because it belongs to product ",
+					externalReferenceCodeCPDefinition.getCProductId()));
+		}
 
 		return cpDefinition;
 	}
