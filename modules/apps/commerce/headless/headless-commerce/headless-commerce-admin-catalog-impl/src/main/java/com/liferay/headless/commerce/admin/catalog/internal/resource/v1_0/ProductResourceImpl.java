@@ -958,7 +958,11 @@ public class ProductResourceImpl
 			ignoreSKUCombinations = cpDefinition.isIgnoreSKUCombinations();
 		}
 
-		int productStatus = GetterUtil.getInteger(product.getProductStatus());
+		int productStatus = GetterUtil.getInteger(
+			product.getProductStatus(),
+			((cpDefinition != null) && cpDefinition.isDraft()) ?
+				WorkflowConstants.STATUS_DRAFT :
+					WorkflowConstants.STATUS_APPROVED);
 
 		if ((productStatus != WorkflowConstants.STATUS_APPROVED) &&
 			(productStatus != WorkflowConstants.STATUS_PENDING)) {
@@ -1953,7 +1957,10 @@ public class ProductResourceImpl
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			cpDefinition.getGroupId());
 
-		int productStatus = GetterUtil.getInteger(product.getProductStatus());
+		int productStatus = GetterUtil.getInteger(
+			product.getProductStatus(),
+			cpDefinition.isDraft() ? WorkflowConstants.STATUS_DRAFT :
+				WorkflowConstants.STATUS_APPROVED);
 
 		if (productStatus == WorkflowConstants.STATUS_DRAFT) {
 			serviceContext.setWorkflowAction(
