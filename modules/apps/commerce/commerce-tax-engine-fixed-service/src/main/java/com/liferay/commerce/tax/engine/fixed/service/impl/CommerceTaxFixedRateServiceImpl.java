@@ -9,6 +9,8 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.tax.engine.fixed.model.CommerceTaxFixedRate;
 import com.liferay.commerce.tax.engine.fixed.service.base.CommerceTaxFixedRateServiceBaseImpl;
+import com.liferay.commerce.tax.model.CommerceTaxMethod;
+import com.liferay.commerce.tax.service.CommerceTaxMethodLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -57,6 +59,12 @@ public class CommerceTaxFixedRateServiceImpl
 		throws PortalException {
 
 		_checkCommerceChannel(groupId);
+
+		CommerceTaxMethod commerceTaxMethod =
+			_commerceTaxMethodLocalService.getCommerceTaxMethod(
+				commerceTaxMethodId);
+
+		_checkCommerceChannel(commerceTaxMethod.getGroupId());
 
 		return commerceTaxFixedRateLocalService.addCommerceTaxFixedRate(
 			getUserId(), groupId, commerceTaxMethodId, cpTaxCategoryId, rate);
@@ -162,5 +170,8 @@ public class CommerceTaxFixedRateServiceImpl
 	)
 	private ModelResourcePermission<CommerceChannel>
 		_commerceChannelModelResourcePermission;
+
+	@Reference
+	private CommerceTaxMethodLocalService _commerceTaxMethodLocalService;
 
 }
