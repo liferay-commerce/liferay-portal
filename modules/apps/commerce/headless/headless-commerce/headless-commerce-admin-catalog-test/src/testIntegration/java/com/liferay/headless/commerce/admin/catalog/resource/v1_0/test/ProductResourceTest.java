@@ -17,6 +17,7 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.service.CommercePricingClassLocalService;
+import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -40,7 +41,10 @@ import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.headless.batch.engine.client.dto.v1_0.FailedItem;
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
 import com.liferay.headless.batch.engine.client.http.HttpInvoker;
+import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Category;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Creator;
@@ -117,6 +121,8 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
@@ -135,6 +141,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -428,6 +435,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPatchProductWithNegativeValue("weight");
 		_testPatchProductWithNegativeValue("width");
 		_testPatchProductWithObjectField();
+		_testPatchProductWithProductVersioning();
 	}
 
 	@Override
@@ -436,6 +444,11 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		super.testPatchProductByExternalReferenceCode();
 
 		_testPatchProductByExternalReferenceCodeBatch();
+		_testPatchProductByExternalReferenceCodeBatchWithExternalReferenceCodeOfAnotherProduct();
+		_testPatchProductByExternalReferenceCodeBatchWithNewExternalReferenceCode();
+		_testPatchProductByExternalReferenceCodeBatchWithNonexistentProductId();
+		_testPatchProductByExternalReferenceCodeBatchWithNonexistentProductIdWithoutExternalReferenceCode();
+		_testPatchProductByExternalReferenceCodeBatchWithProductVersioning();
 		_testPatchProductByExternalReferenceCodeWithOptionExternalReferenceCode();
 	}
 
@@ -1364,6 +1377,248 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(value, jsonObject.getString(objectField.getName()));
 	}
 
+	private void _testPatchProductByExternalReferenceCodeBatchWithExternalReferenceCodeOfAnotherProduct()
+		throws Exception {
+
+		Product product1 = productResource.postProduct(randomProduct());
+		Product product2 = productResource.postProduct(randomProduct());
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			HttpInvoker.HttpResponse httpResponse =
+				importTaskResource.putImportTaskHttpResponse(
+					"com.liferay.headless.commerce.admin.catalog.dto.v1_0." +
+						"Product",
+					null, null, "ON_ERROR_CONTINUE", null, "PARTIAL_UPDATE",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode",
+							product1.getExternalReferenceCode()
+						).put(
+							"name",
+							JSONUtil.put("en_US", RandomTestUtil.randomString())
+						).put(
+							"productId", product2.getProductId()
+						)));
+
+			Assert.assertEquals(200, httpResponse.getStatusCode());
+
+			JSONObject jsonObject = waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			FailedItem[] failedItems = importTask.getFailedItems();
+
+			Assert.assertEquals(
+				Arrays.toString(failedItems), 1, failedItems.length);
+
+			FailedItem failedItem = failedItems[0];
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"Unable to use external reference code ",
+					product1.getExternalReferenceCode(), " for product ",
+					product2.getProductId(), " because it belongs to product ",
+					product1.getProductId()),
+				failedItem.getMessage());
+		}
+
+		Product getProduct1 = productResource.getProduct(
+			product1.getProductId());
+
+		Assert.assertEquals(product1.getName(), getProduct1.getName());
+
+		Product getProduct2 = productResource.getProduct(
+			product2.getProductId());
+
+		Assert.assertEquals(
+			product2.getExternalReferenceCode(),
+			getProduct2.getExternalReferenceCode());
+		Assert.assertEquals(product2.getName(), getProduct2.getName());
+	}
+
+	private void _testPatchProductByExternalReferenceCodeBatchWithNewExternalReferenceCode()
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+		Product product = productResource.postProduct(randomProduct());
+
+		HttpInvoker.HttpResponse httpResponse =
+			importTaskResource.putImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
+				null, null, null, null, "PARTIAL_UPDATE",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode", externalReferenceCode
+					).put(
+						"productId", product.getProductId()
+					)));
+
+		Assert.assertEquals(200, httpResponse.getStatusCode());
+
+		waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+		Product getProduct = productResource.getProduct(product.getProductId());
+
+		Assert.assertEquals(
+			externalReferenceCode, getProduct.getExternalReferenceCode());
+	}
+
+	private void _testPatchProductByExternalReferenceCodeBatchWithNonexistentProductId()
+		throws Exception {
+
+		String name = RandomTestUtil.randomString();
+		Product product = productResource.postProduct(randomProduct());
+
+		HttpInvoker.HttpResponse httpResponse =
+			importTaskResource.putImportTaskHttpResponse(
+				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
+				null, null, null, null, "PARTIAL_UPDATE",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"externalReferenceCode",
+						product.getExternalReferenceCode()
+					).put(
+						"name", JSONUtil.put("en_US", name)
+					).put(
+						"productId", RandomTestUtil.randomLong()
+					)));
+
+		Assert.assertEquals(200, httpResponse.getStatusCode());
+
+		waitForFinish(
+			"COMPLETED",
+			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+		Product getProduct = productResource.getProduct(product.getProductId());
+
+		Map<String, String> nameMap = getProduct.getName();
+
+		Assert.assertEquals(name, nameMap.get("en_US"));
+	}
+
+	private void _testPatchProductByExternalReferenceCodeBatchWithNonexistentProductIdWithoutExternalReferenceCode()
+		throws Exception {
+
+		long productId = RandomTestUtil.randomLong();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			HttpInvoker.HttpResponse httpResponse =
+				importTaskResource.putImportTaskHttpResponse(
+					"com.liferay.headless.commerce.admin.catalog.dto.v1_0." +
+						"Product",
+					null, null, "ON_ERROR_CONTINUE", null, "PARTIAL_UPDATE",
+					JSONUtil.putAll(JSONUtil.put("productId", productId)));
+
+			Assert.assertEquals(200, httpResponse.getStatusCode());
+
+			JSONObject jsonObject = waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			FailedItem[] failedItems = importTask.getFailedItems();
+
+			Assert.assertEquals(
+				Arrays.toString(failedItems), 1, failedItems.length);
+
+			FailedItem failedItem = failedItems[0];
+
+			Assert.assertEquals(
+				"Unable to find product with ID " + productId,
+				failedItem.getMessage());
+		}
+	}
+
+	private void _testPatchProductByExternalReferenceCodeBatchWithProductVersioning()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+		User user = UserTestUtil.addUser(testCompany);
+
+		_userLocalService.updatePassword(
+			user.getUserId(), password, password, false, true);
+
+		CommerceCatalog commerceCatalog =
+			CommerceCatalogLocalServiceUtil.addCommerceCatalog(
+				RandomTestUtil.randomString(), 0, RandomTestUtil.randomString(),
+				"USD", LocaleUtil.toLanguageId(LocaleUtil.US), false,
+				ServiceContextTestUtil.getServiceContext(
+					testCompany.getGroupId(), user.getUserId()));
+
+		Product randomProduct = randomProduct();
+
+		randomProduct.setCatalogId(commerceCatalog.getCommerceCatalogId());
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			Product product = productResource.postProduct(randomProduct);
+
+			ImportTaskResource importTaskResource = ImportTaskResource.builder(
+			).authentication(
+				user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+			HttpInvoker.HttpResponse httpResponse =
+				importTaskResource.putImportTaskHttpResponse(
+					"com.liferay.headless.commerce.admin.catalog.dto.v1_0." +
+						"Product",
+					null, null, null, null, "PARTIAL_UPDATE",
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode",
+							product.getExternalReferenceCode()
+						).put(
+							"productAccountGroupFilter", true
+						).put(
+							"productId", product.getProductId()
+						)));
+
+			Assert.assertEquals(200, httpResponse.getStatusCode());
+
+			waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+			Product getProduct = productResource.getProduct(
+				product.getProductId());
+
+			Assert.assertTrue(getProduct.getProductAccountGroupFilter());
+			Assert.assertEquals(Integer.valueOf(2), getProduct.getVersion());
+
+			CPDefinition cpDefinition =
+				_cpDefinitionLocalService.getCPDefinition(getProduct.getId());
+
+			Assert.assertEquals(user.getUserId(), cpDefinition.getUserId());
+		}
+	}
+
 	private void _testPatchProductByExternalReferenceCodeWithOptionExternalReferenceCode()
 		throws Exception {
 
@@ -1541,6 +1796,28 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			null, endpoint, Http.Method.GET);
 
 		Assert.assertEquals(value, jsonObject.getString(objectField.getName()));
+	}
+
+	private void _testPatchProductWithProductVersioning() throws Exception {
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			Product product = productResource.postProduct(randomProduct());
+			Product randomProduct = randomProduct();
+
+			Product patchProduct = productResource.patchProduct(
+				product.getProductId(), randomProduct);
+
+			Assert.assertEquals(
+				randomProduct.getName(), patchProduct.getName());
+			Assert.assertEquals(Integer.valueOf(2), patchProduct.getVersion());
+		}
 	}
 
 	private void _testPostProductAttachmentWithLazyReferencingEnabled()
