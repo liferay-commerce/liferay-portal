@@ -6,9 +6,11 @@
 package com.liferay.commerce.payment.service.impl;
 
 import com.liferay.commerce.constants.CommercePaymentEntryConstants;
+import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.payment.constants.CommercePaymentEntryActionKeys;
 import com.liferay.commerce.payment.model.CommercePaymentEntry;
 import com.liferay.commerce.payment.service.base.CommercePaymentEntryServiceBaseImpl;
+import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
@@ -21,6 +23,7 @@ import com.liferay.portal.kernel.security.permission.resource.PortletResourcePer
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.Portal;
 
 import java.math.BigDecimal;
 
@@ -60,7 +63,8 @@ public class CommercePaymentEntryServiceImpl
 		}
 
 		_portletResourcePermission.check(
-			getPermissionChecker(), serviceContext.getScopeGroupId(), actionId);
+			getPermissionChecker(),
+			_getGroupId(classNameId, classPK, serviceContext), actionId);
 
 		return commercePaymentEntryLocalService.addCommercePaymentEntry(
 			getUserId(), classNameId, classPK, commerceChannelId, amount,
@@ -92,8 +96,8 @@ public class CommercePaymentEntryServiceImpl
 			}
 
 			_portletResourcePermission.check(
-				getPermissionChecker(), serviceContext.getScopeGroupId(),
-				actionId);
+				getPermissionChecker(),
+				_getGroupId(classNameId, classPK, serviceContext), actionId);
 		}
 		else {
 			_commercePaymentEntryModelResourcePermission.check(
@@ -340,11 +344,31 @@ public class CommercePaymentEntryServiceImpl
 			commercePaymentEntryId, reasonKey);
 	}
 
+	private long _getGroupId(
+			long classNameId, long classPK, ServiceContext serviceContext)
+		throws PortalException {
+
+		if (classNameId == _portal.getClassNameId(CommerceOrder.class)) {
+			CommerceOrder commerceOrder =
+				_commerceOrderLocalService.getCommerceOrder(classPK);
+
+			return commerceOrder.getGroupId();
+		}
+
+		return serviceContext.getScopeGroupId();
+	}
+
+	@Reference
+	private CommerceOrderLocalService _commerceOrderLocalService;
+
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.payment.model.CommercePaymentEntry)"
 	)
 	private ModelResourcePermission<CommercePaymentEntry>
 		_commercePaymentEntryModelResourcePermission;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference(
 		target = "(resource.name=" + CommercePaymentEntryConstants.RESOURCE_NAME + ")"
