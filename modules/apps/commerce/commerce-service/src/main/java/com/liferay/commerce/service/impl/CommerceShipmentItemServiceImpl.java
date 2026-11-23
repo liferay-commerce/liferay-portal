@@ -223,8 +223,13 @@ public class CommerceShipmentItemServiceImpl
 			boolean validateInventory)
 		throws PortalException {
 
+		CommerceShipmentItem commerceShipmentItem =
+			commerceShipmentItemPersistence.findByPrimaryKey(
+				commerceShipmentItemId);
+
 		_commerceShipmentModelResourcePermission.check(
-			getPermissionChecker(), commerceShipmentId, ActionKeys.UPDATE);
+			getPermissionChecker(),
+			commerceShipmentItem.getCommerceShipmentId(), ActionKeys.UPDATE);
 
 		return commerceShipmentItemLocalService.updateCommerceShipmentItem(
 			commerceShipmentItemId, commerceInventoryWarehouseId, quantity,
@@ -237,8 +242,13 @@ public class CommerceShipmentItemServiceImpl
 			String externalReferenceCode)
 		throws PortalException {
 
+		CommerceShipmentItem commerceShipmentItem =
+			commerceShipmentItemPersistence.findByPrimaryKey(
+				commerceShipmentItemId);
+
 		_commerceShipmentModelResourcePermission.check(
-			getPermissionChecker(), commerceShipmentId, ActionKeys.UPDATE);
+			getPermissionChecker(),
+			commerceShipmentItem.getCommerceShipmentId(), ActionKeys.UPDATE);
 
 		return commerceShipmentItemLocalService.updateExternalReferenceCode(
 			commerceShipmentItemId, externalReferenceCode);
