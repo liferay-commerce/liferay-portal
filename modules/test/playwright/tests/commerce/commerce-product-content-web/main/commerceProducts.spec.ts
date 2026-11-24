@@ -2085,3 +2085,258 @@ for (const {
 		}
 	);
 }
+
+test(
+	'Bundle option values follow the bundle product relations in the mini cart edit panel',
+	{tag: ['@COMMERCE-12808', '@LPD-108801']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceAdminProductPage,
+		commerceInstanceSettingsPage,
+		commerceMiniCartPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
+		await commerceInstanceSettingsPage.toggleShowUnselectableOptions(true);
+
+		try {
+			const channel = await miniCartCheckoutSetUp(
+				apiHelpers,
+				commerceAdminChannelsPage,
+				page,
+				site
+			);
+
+			const {
+				bundleProduct,
+				buyerUser,
+				product1,
+				product2,
+				product3,
+				product4,
+			} =
+				await test.step('Create four products, the bundle relations between them and a bundle product with an option value for each product', async () => {
+					const catalog =
+						await apiHelpers.headlessCommerceAdminCatalog.postCatalog(
+							{
+								name: getRandomString(),
+							}
+						);
+
+					const products = [];
+
+					for (let i = 0; i < 4; i++) {
+						products.push(
+							await apiHelpers.headlessCommerceAdminCatalog.postProduct(
+								{
+									catalogId: catalog.id,
+									name: {en_US: getRandomString()},
+									productConfiguration: {
+										allowBackOrder: true,
+									},
+								}
+							)
+						);
+					}
+
+					const [product1, product2, product3, product4] = products;
+
+					await apiHelpers.headlessCommerceAdminCatalog.postProductRelatedProduct(
+						product1.productId,
+						{
+							productId: product3.productId,
+							type: 'requires-in-bundle',
+						}
+					);
+					await apiHelpers.headlessCommerceAdminCatalog.postProductRelatedProduct(
+						product2.productId,
+						{
+							productId: product4.productId,
+							type: 'incompatible-in-bundle',
+						}
+					);
+
+					const {product: bundleProduct} =
+						await createProductWithOptions(
+							apiHelpers,
+							commerceAdminProductPage,
+							{
+								catalogId: catalog.id,
+								optionSpecs: [
+									{
+										fieldType: 'select',
+										name: 'Option1',
+										required: true,
+										skuContributor: true,
+										values: [
+											{
+												key: 'value1',
+												name: 'Value1',
+												skuId: product1.skus[0].id,
+											},
+											{
+												key: 'value2',
+												name: 'Value2',
+												skuId: product2.skus[0].id,
+											},
+										],
+									},
+									{
+										fieldType: 'select',
+										name: 'Option2',
+										required: true,
+										skuContributor: true,
+										values: [
+											{
+												key: 'value3',
+												name: 'Value3',
+												skuId: product3.skus[0].id,
+											},
+											{
+												key: 'value4',
+												name: 'Value4',
+												skuId: product4.skus[0].id,
+											},
+										],
+									},
+								],
+								productConfiguration: {allowBackOrder: true},
+							}
+						);
+
+					const {buyerUser} = await createAccountWithBuyerUser(
+						apiHelpers,
+						site.id
+					);
+
+					return {
+						bundleProduct,
+						buyerUser,
+						product1,
+						product2,
+						product3,
+						product4,
+					};
+				});
+
+			await test.step('Add the bundle product with Value1 and Value3 to the cart as the buyer', async () => {
+				await performUserSwitch(page, buyerUser.alternateName);
+
+				await page.goto(
+					`/web/${site.name}/p/${bundleProduct.name.en_US}`
+				);
+
+				await expect(
+					productDetailsPage.optionSelector('Option1')
+				).toHaveText('Value1');
+				await expect(
+					productDetailsPage.optionSelector('Option2')
+				).toHaveText('Value3');
+
+				await productDetailsPage.addToCartButton.click();
+
+				await expect(commerceMiniCartPage.miniCartButton).toHaveClass(
+					'has-badge mini-cart-opener'
+				);
+
+				const orders =
+					await apiHelpers.headlessCommerceAdminOrder.getOrdersPage(
+						`channelId eq ${channel.id}`
+					);
+
+				for (const order of orders?.items || []) {
+					apiHelpers.data.push({id: order.id, type: 'order'});
+				}
+			});
+
+			await test.step('Select Value4 in the edit panel and check that Value1 and Value2 cannot be saved', async () => {
+				await commerceMiniCartPage.open();
+
+				await commerceMiniCartPage
+					.miniCartItemActionsButton(bundleProduct.name.en_US)
+					.click();
+
+				await commerceMiniCartPage.editMenuItem.click();
+
+				await commerceMiniCartPage.selectEditItemPickerOption(
+					'Value4',
+					'Option2'
+				);
+
+				await expect(
+					commerceMiniCartPage.miniCartSaveButton
+				).toBeDisabled();
+
+				await commerceMiniCartPage.assertEditItemPickerOptions(
+					[
+						{
+							disabled: true,
+							message: `${product1.name.en_US} requires ${product3.name.en_US} to be purchased also.`,
+							name: 'Value1',
+						},
+						{
+							disabled: true,
+							message: `${product2.name.en_US} cannot be combined with ${product4.name.en_US}.`,
+							name: 'Value2',
+						},
+					],
+					'Option1'
+				);
+				await commerceMiniCartPage.assertEditItemPickerOptions(
+					[
+						{disabled: false, name: 'Value3'},
+						{disabled: false, name: 'Value4'},
+					],
+					'Option2'
+				);
+
+				await commerceMiniCartPage.miniCartCancelButton.click();
+			});
+
+			await test.step('Select Value2 and Value3 in the edit panel and check that only Value4 is flagged', async () => {
+				await commerceMiniCartPage
+					.miniCartItemActionsButton(bundleProduct.name.en_US)
+					.click();
+
+				await commerceMiniCartPage.editMenuItem.click();
+
+				await commerceMiniCartPage.selectEditItemPickerOption(
+					'Value2',
+					'Option1'
+				);
+
+				await expect(
+					commerceMiniCartPage.miniCartSaveButton
+				).toBeEnabled();
+
+				await commerceMiniCartPage.assertEditItemPickerOptions(
+					[
+						{disabled: false, name: 'Value3'},
+						{
+							disabled: true,
+							message: `${product4.name.en_US} cannot be combined with ${product2.name.en_US}.`,
+							name: 'Value4',
+						},
+					],
+					'Option2'
+				);
+				await commerceMiniCartPage.assertEditItemPickerOptions(
+					[
+						{disabled: false, name: 'Value1'},
+						{disabled: false, name: 'Value2'},
+					],
+					'Option1'
+				);
+			});
+		}
+		finally {
+			await performUserSwitch(page, 'test');
+
+			await commerceInstanceSettingsPage.toggleShowUnselectableOptions(
+				false
+			);
+		}
+	}
+);
