@@ -15,6 +15,7 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {pageEditorPagesTest} from '../../../../fixtures/pageEditorPagesTest';
 import {pageViewModePagesTest} from '../../../../fixtures/pageViewModePagesTest';
 import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
+import getGlobalSiteId from '../../../../utils/getGlobalSiteId';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {
@@ -31,6 +32,7 @@ import {
 	configureBuyerUserForSite,
 	createAccountWithBuyerUser,
 	deployProductFragmentsOnDefaultDPT,
+	miniCartCheckoutSetUp,
 } from '../../utils/commerce';
 
 export const test = mergeTests(
@@ -2055,5 +2057,608 @@ test(
 				);
 			}
 		});
+	}
+);
+
+test(
+	'Check out a product whose option values are defined externally by a category',
+	{
+		tag: [
+			'@COMMERCE-12094',
+			'@COMMERCE-12095',
+			'@COMMERCE-12111',
+			'@COMMERCE-12699',
+			'@LPD-108805',
+		],
+	},
+	async ({
+		apiHelpers,
+		checkoutPage,
+		commerceAdminChannelsPage,
+		commerceMiniCartPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
+		const channel = await miniCartCheckoutSetUp(
+			apiHelpers,
+			commerceAdminChannelsPage,
+			page,
+			site
+		);
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const vocabulary =
+			await apiHelpers.headlessAdminTaxonomy.postSiteTaxonomyVocabulary({
+				name: getRandomString(),
+				siteId: await getGlobalSiteId(apiHelpers),
+				viewableBy: 'Anyone',
+			});
+
+		const category =
+			await apiHelpers.headlessAdminTaxonomy.postTaxonomyVocabularyTaxonomyCategory(
+				{
+					name: getRandomString(),
+					viewableBy: 'Anyone',
+					vocabularyId: vocabulary.id,
+				}
+			);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const {product1Name, product2Name, product3Name} =
+			await test.step('Add two products with a SKU and one product without SKUs to the category', async () => {
+				const product1Name = getRandomString();
+
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					categories: [{id: category.id, name: category.name}],
+					name: {en_US: product1Name},
+					productConfiguration: {allowBackOrder: true},
+					skus: [
+						{
+							cost: 0,
+							price: 10,
+							published: true,
+							purchasable: true,
+							sku: getRandomString(),
+						},
+					],
+				});
+
+				const product2Name = getRandomString();
+
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					categories: [{id: category.id, name: category.name}],
+					name: {en_US: product2Name},
+					productConfiguration: {allowBackOrder: true},
+					skus: [
+						{
+							cost: 0,
+							price: 5,
+							published: true,
+							purchasable: true,
+							sku: getRandomString(),
+						},
+					],
+				});
+
+				const product3Name = getRandomString();
+
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					categories: [{id: category.id, name: category.name}],
+					name: {en_US: product3Name},
+					skus: [],
+				});
+
+				return {product1Name, product2Name, product3Name};
+			});
+
+		const optionKey = getRandomString();
+		const optionName = getRandomString();
+
+		const option = await apiHelpers.headlessCommerceAdminCatalog.postOption(
+			'select',
+			optionKey,
+			optionName
+		);
+
+		const productName = getRandomString();
+		const productSku = getRandomString();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				categories: [{id: category.id, name: category.name}],
+				name: {en_US: productName},
+				productConfiguration: {allowBackOrder: true},
+				productOptions: [
+					{
+						definedExternally: true,
+						fieldType: 'select',
+						infoItemServiceKey:
+							'com.liferay.commerce.product.content.web.internal.info.collection.provider.CPDefinitionOptionValueRelRelatedInfoItemCollectionProvider',
+						key: optionKey,
+						name: {en_US: optionName},
+						optionId: option.id,
+						priceType: 'dynamic',
+						priority: 1,
+						required: true,
+						typeSettings: `categoryIds=${category.id}`,
+					},
+				],
+				skus: [
+					{
+						cost: 0,
+						price: 20,
+						published: true,
+						purchasable: true,
+						sku: productSku,
+					},
+				],
+			});
+
+		await apiHelpers.headlessCommerceAdminPricing.postDiscount({
+			discountProducts: [{productId: product.productId}],
+			percentageLevel1: 50,
+			usePercentage: true,
+		});
+
+		try {
+			await test.step('List the category products in Product Details', async () => {
+				await performLogout(page);
+				await performLoginViaApi({
+					page,
+					screenName: buyerUser.alternateName,
+				});
+
+				await page.goto(`/web/${site.name}/p/${productName}`, {
+					waitUntil: 'networkidle',
+				});
+
+				const optionSelectorValues =
+					productDetailsPage.optionSelectorValues(optionName);
+
+				await expect(optionSelectorValues).toHaveCount(3);
+				await expect(
+					optionSelectorValues.filter({hasText: product1Name})
+				).toHaveCount(1);
+				await expect(
+					optionSelectorValues.filter({hasText: product2Name})
+				).toHaveCount(1);
+				await expect(
+					optionSelectorValues.filter({hasText: productName})
+				).toHaveCount(0);
+				await expect(
+					optionSelectorValues.filter({
+						hasText: product3Name,
+					})
+				).toHaveCount(0);
+			});
+
+			await test.step('Add an item for each option value to the cart', async () => {
+				await productDetailsPage.selectOptionContaining(
+					product1Name,
+					optionName
+				);
+
+				await productDetailsPage.addToCartButton.click();
+
+				await expect(commerceMiniCartPage.miniCartButton).toHaveClass(
+					'has-badge mini-cart-opener'
+				);
+
+				await productDetailsPage.selectOptionContaining(
+					product2Name,
+					optionName
+				);
+
+				await productDetailsPage.addToCartButton.click();
+
+				await commerceMiniCartPage.miniCartButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartItem(productName)
+				).toHaveCount(2);
+			});
+
+			await test.step('Check the option values and prices in the mini cart', async () => {
+				const miniCartItem1 = commerceMiniCartPage
+					.miniCartItem(productName)
+					.filter({hasText: product1Name});
+
+				await commerceMiniCartPage
+					.miniCartItemShowOptionsButton(miniCartItem1)
+					.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartItemOption(
+						miniCartItem1,
+						optionName
+					)
+				).toContainText(product1Name);
+				await expect(miniCartItem1).toContainText('$ 30.00');
+				await expect(miniCartItem1).toContainText('$ 20.00');
+
+				const miniCartItem2 = commerceMiniCartPage
+					.miniCartItem(productName)
+					.filter({hasText: product2Name});
+
+				await commerceMiniCartPage
+					.miniCartItemShowOptionsButton(miniCartItem2)
+					.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartItemOption(
+						miniCartItem2,
+						optionName
+					)
+				).toContainText(product2Name);
+				await expect(miniCartItem2).toContainText('$ 25.00');
+				await expect(miniCartItem2).toContainText('$ 15.00');
+
+				await expect(
+					commerceMiniCartPage.miniCartTotalPrice
+				).toHaveText('$ 35.00');
+			});
+
+			await test.step('Check out the order', async () => {
+				await commerceMiniCartPage.submitButton.click();
+
+				await checkoutPage.performCheckout({
+					shippingAddress: {
+						city: 'testCity',
+						countryLabel: 'United States',
+						name: 'John Doe',
+						regionLabel: 'Florida',
+						street: 'testStreet',
+						zip: '12345',
+					},
+				});
+			});
+		}
+		finally {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
+
+			const orders =
+				await apiHelpers.headlessCommerceAdminOrder.getOrdersPage(
+					`channelId eq ${channel.id}`
+				);
+
+			for (const order of orders?.items || []) {
+				apiHelpers.data.push({id: order.id, type: 'order'});
+			}
+		}
+	}
+);
+
+test(
+	'Preselect the default option value in Product Details and show it in the mini cart',
+	{tag: ['@COMMERCE-9815', '@LPD-108805']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsProductOptionsPage,
+		commerceAdminProductPage,
+		commerceMiniCartPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
+		const channel = await miniCartCheckoutSetUp(
+			apiHelpers,
+			commerceAdminChannelsPage,
+			page,
+			site
+		);
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const optionKey = getRandomString();
+		const optionName = getRandomString();
+
+		const option = await apiHelpers.headlessCommerceAdminCatalog.postOption(
+			'radio',
+			optionKey,
+			optionName
+		);
+
+		const productName = getRandomString();
+
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			name: {en_US: productName},
+			productConfiguration: {allowBackOrder: true},
+			productOptions: [
+				{
+					fieldType: 'radio',
+					key: optionKey,
+					name: {en_US: optionName},
+					optionId: option.id,
+					priority: 1,
+					productOptionValues: [
+						{
+							key: 'value1',
+							name: {en_US: 'Value1'},
+							priority: 1,
+						},
+						{
+							key: 'value2',
+							name: {en_US: 'Value2'},
+							priority: 2,
+						},
+					],
+				},
+			],
+			skus: [
+				{
+					cost: 0,
+					price: 10,
+					published: true,
+					purchasable: true,
+					sku: getRandomString(),
+				},
+			],
+		});
+
+		try {
+			await test.step('Set Value2 as the default option value', async () => {
+				await commerceAdminProductPage.gotoProduct(productName);
+
+				await commerceAdminProductDetailsPage.goToProductOptions();
+
+				await commerceAdminProductDetailsProductOptionsPage.openOption(
+					optionName
+				);
+
+				await commerceAdminProductDetailsProductOptionsPage
+					.optionValueLink('Value2')
+					.click();
+
+				await commerceAdminProductDetailsProductOptionsPage.optionValueDefaultToggle.setChecked(
+					true
+				);
+				await commerceAdminProductDetailsProductOptionsPage.optionValueSaveButton.click();
+
+				await waitForAlert(
+					commerceAdminProductDetailsProductOptionsPage.optionValueSidePanelFrame
+				);
+
+				await expect(
+					commerceAdminProductDetailsProductOptionsPage.optionValueDefaultToggle
+				).toBeChecked({checked: true});
+			});
+
+			await test.step('Add the product to the cart with the default value preselected', async () => {
+				await performLogout(page);
+				await performLoginViaApi({
+					page,
+					screenName: buyerUser.alternateName,
+				});
+
+				await page.goto(`/web/${site.name}/p/${productName}`, {
+					waitUntil: 'networkidle',
+				});
+
+				await expect(
+					productDetailsPage.optionRadio('Value2')
+				).toBeChecked();
+				await expect(
+					productDetailsPage.optionRadio('Value1')
+				).not.toBeChecked();
+
+				await productDetailsPage.addToCartButton.click();
+
+				await expect(commerceMiniCartPage.miniCartButton).toHaveClass(
+					'has-badge mini-cart-opener'
+				);
+
+				await commerceMiniCartPage.miniCartButton.click();
+
+				const miniCartItem =
+					commerceMiniCartPage.miniCartItem(productName);
+
+				await commerceMiniCartPage
+					.miniCartItemShowOptionsButton(miniCartItem)
+					.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartItemOption(
+						miniCartItem,
+						optionName
+					)
+				).toHaveText('Value2');
+			});
+		}
+		finally {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
+
+			const orders =
+				await apiHelpers.headlessCommerceAdminOrder.getOrdersPage(
+					`channelId eq ${channel.id}`
+				);
+
+			for (const order of orders?.items || []) {
+				apiHelpers.data.push({id: order.id, type: 'order'});
+			}
+		}
+	}
+);
+
+test(
+	'Preselect the first option value when the default is removed',
+	{tag: ['@COMMERCE-9815', '@LPD-108805']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsProductOptionsPage,
+		commerceAdminProductPage,
+		commerceMiniCartPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
+		const channel = await miniCartCheckoutSetUp(
+			apiHelpers,
+			commerceAdminChannelsPage,
+			page,
+			site
+		);
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const optionKey = getRandomString();
+		const optionName = getRandomString();
+
+		const option = await apiHelpers.headlessCommerceAdminCatalog.postOption(
+			'radio',
+			optionKey,
+			optionName
+		);
+
+		const productName = getRandomString();
+
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			name: {en_US: productName},
+			productConfiguration: {allowBackOrder: true},
+			productOptions: [
+				{
+					fieldType: 'radio',
+					key: optionKey,
+					name: {en_US: optionName},
+					optionId: option.id,
+					priority: 1,
+					productOptionValues: [
+						{
+							key: 'value1',
+							name: {en_US: 'Value1'},
+							priority: 1,
+						},
+						{
+							key: 'value2',
+							name: {en_US: 'Value2'},
+							preselected: true,
+							priority: 2,
+						},
+					],
+				},
+			],
+			skus: [
+				{
+					cost: 0,
+					price: 10,
+					published: true,
+					purchasable: true,
+					sku: getRandomString(),
+				},
+			],
+		});
+
+		try {
+			await test.step('Remove the default option value', async () => {
+				await commerceAdminProductPage.gotoProduct(productName);
+
+				await commerceAdminProductDetailsPage.goToProductOptions();
+
+				await commerceAdminProductDetailsProductOptionsPage.openOption(
+					optionName
+				);
+
+				await commerceAdminProductDetailsProductOptionsPage
+					.optionValueLink('Value2')
+					.click();
+
+				await commerceAdminProductDetailsProductOptionsPage.optionValueDefaultToggle.setChecked(
+					false
+				);
+				await commerceAdminProductDetailsProductOptionsPage.optionValueSaveButton.click();
+
+				await waitForAlert(
+					commerceAdminProductDetailsProductOptionsPage.optionValueSidePanelFrame
+				);
+
+				await expect(
+					commerceAdminProductDetailsProductOptionsPage.optionValueDefaultToggle
+				).toBeChecked({checked: false});
+			});
+
+			await test.step('Add the product to the cart with the first value preselected', async () => {
+				await performLogout(page);
+				await performLoginViaApi({
+					page,
+					screenName: buyerUser.alternateName,
+				});
+
+				await page.goto(`/web/${site.name}/p/${productName}`, {
+					waitUntil: 'networkidle',
+				});
+
+				await expect(
+					productDetailsPage.optionRadio('Value1')
+				).toBeChecked();
+				await expect(
+					productDetailsPage.optionRadio('Value2')
+				).not.toBeChecked();
+
+				await productDetailsPage.addToCartButton.click();
+
+				await expect(commerceMiniCartPage.miniCartButton).toHaveClass(
+					'has-badge mini-cart-opener'
+				);
+
+				await commerceMiniCartPage.miniCartButton.click();
+
+				const miniCartItem =
+					commerceMiniCartPage.miniCartItem(productName);
+
+				await commerceMiniCartPage
+					.miniCartItemShowOptionsButton(miniCartItem)
+					.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartItemOption(
+						miniCartItem,
+						optionName
+					)
+				).toHaveText('Value1');
+			});
+		}
+		finally {
+			await performLogout(page);
+			await performLoginViaApi({page, screenName: 'test'});
+
+			const orders =
+				await apiHelpers.headlessCommerceAdminOrder.getOrdersPage(
+					`channelId eq ${channel.id}`
+				);
+
+			for (const order of orders?.items || []) {
+				apiHelpers.data.push({id: order.id, type: 'order'});
+			}
+		}
 	}
 );
