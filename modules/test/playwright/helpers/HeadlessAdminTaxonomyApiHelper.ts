@@ -15,6 +15,7 @@ interface postSiteTaxonomyVocabularyProps {
 	name: string;
 	siteId: string;
 	system?: boolean;
+	viewableBy?: string;
 	visibilityType?: string;
 }
 
@@ -38,6 +39,7 @@ export interface postTaxonomyVocabularyTaxonomyCategoryProps {
 	name: string;
 	name_i18n?: {[key: string]: string};
 	system?: boolean;
+	viewableBy?: string;
 	vocabularyId: number;
 }
 
@@ -279,6 +281,7 @@ export class HeadlessAdminTaxonomyApiHelper {
 		name,
 		siteId,
 		system,
+		viewableBy,
 		visibilityType,
 	}: postSiteTaxonomyVocabularyProps): Promise<TTaxonomyVocabulary> {
 		const taxonomyVocabulary = await this.apiHelpers.post(
@@ -291,6 +294,7 @@ export class HeadlessAdminTaxonomyApiHelper {
 					multiValued,
 					name,
 					system,
+					viewableBy,
 					visibilityType,
 				},
 			}
@@ -373,6 +377,7 @@ export class HeadlessAdminTaxonomyApiHelper {
 		name,
 		name_i18n,
 		system,
+		viewableBy,
 		vocabularyId,
 	}: postTaxonomyVocabularyTaxonomyCategoryProps): Promise<{
 		externalReferenceCode: string;
@@ -381,7 +386,7 @@ export class HeadlessAdminTaxonomyApiHelper {
 	}> {
 		return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/taxonomy-vocabularies/${vocabularyId}/taxonomy-categories`,
-			{data: {description, name, name_i18n, system}}
+			{data: {description, name, name_i18n, system, viewableBy}}
 		);
 	}
 
