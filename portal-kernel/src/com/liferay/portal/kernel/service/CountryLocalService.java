@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.service;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -259,7 +260,16 @@ public interface CountryLocalService
 	public List<Country> getCompanyCountries(long companyId, boolean active);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Country> getCompanyCountries(
+		long companyId, Boolean active, String keywords, Predicate predicate,
+		int start, int end, OrderByComparator<Country> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCompanyCountriesCount(long companyId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getCompanyCountriesCount(
+		long companyId, Boolean active, String keywords, Predicate predicate);
 
 	/**
 	 * Returns a range of all the countries.
@@ -408,4 +418,4 @@ public interface CountryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-545526683
+// LIFERAY-SERVICE-BUILDER-HASH:1374496960

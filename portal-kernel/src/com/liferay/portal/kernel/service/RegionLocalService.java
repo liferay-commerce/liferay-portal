@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.service;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -322,6 +323,12 @@ public interface RegionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Region> getRegions(
+		long companyId, Boolean active, String keywords,
+		LinkedHashMap<String, Object> params, Predicate predicate, int start,
+		int end, OrderByComparator<Region> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Region> getRegions(
 		long countryId, int start, int end,
 		OrderByComparator<Region> orderByComparator);
 
@@ -336,6 +343,11 @@ public interface RegionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getRegionsCount();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getRegionsCount(
+		long companyId, Boolean active, String keywords,
+		LinkedHashMap<String, Object> params, Predicate predicate);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<Region> searchRegions(
@@ -388,4 +400,4 @@ public interface RegionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:487937251
+// LIFERAY-SERVICE-BUILDER-HASH:-1107106000
