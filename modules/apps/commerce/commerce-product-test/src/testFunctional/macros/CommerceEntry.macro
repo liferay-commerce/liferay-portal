@@ -1096,39 +1096,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro createNewSpecificationGroups(specificationTitle = null, specificationDescription = null) {
-		Click(locator1 = "Button#PLUS");
-
-		Type(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${specificationTitle});
-
-		Type(
-			key_fieldLabel = "Description",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${specificationDescription});
-
-		Button.clickSave();
-	}
-
-	@summary = "Default summary"
-	macro createNewSpecificationLabels(specificationTitle = null, specificationDescription = null) {
-		Click(locator1 = "Button#PLUS");
-
-		Type(
-			key_fieldLabel = "Label",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${specificationTitle});
-
-		Type(
-			locator1 = "CommerceEntry#DESCRIPTION_FIELD",
-			value1 = ${specificationDescription});
-
-		Button.clickSave();
-	}
-
-	@summary = "Default summary"
 	macro deleteCommerceEntry(entryName = null) {
 		WaitForElementPresent(locator1 = "CommerceEntry#PAGINATION_RESULTS");
 
@@ -2224,17 +2191,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewProductsEntry(productShortDescription = null, productName = null) {
-		AssertTextEquals(
-			locator1 = "CommerceEntry#NAME_FIELD",
-			value1 = ${productName});
-
-		AssertTextEquals(
-			locator1 = "CommerceEntry#SHORT_DESCRIPTION_FIELD",
-			value1 = ${productShortDescription});
-	}
-
-	@summary = "Default summary"
 	macro viewProductSkus() {
 		for (var skusList : list ${skusList}) {
 			var sku = StringUtil.extractFirst(${skusList}, ":");
@@ -2261,55 +2217,12 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewSpecificationGroups(specificationTitle = null, specificationDescription = null) {
-		Click(
-			key_entry = ${specificationTitle},
-			locator1 = "CommerceNavigation#ANY_ENTRY_NAME");
-
-		AssertTextEquals(
-			key_fieldLabel = "Title",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${specificationTitle});
-
-		AssertTextEquals(
-			key_fieldLabel = "Description",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${specificationDescription});
-
-		AssertTextEquals(
-			key_fieldLabel = "Key",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${specificationTitle});
-	}
-
-	@summary = "Default summary"
 	macro viewSpecificationGroupsEntries(specificationGroupsEntries = null) {
 		for (var specificationGroupsEntry : list ${specificationGroupsEntries}) {
 			AssertElementPresent(
 				key_rowEntry = ${specificationGroupsEntry},
 				locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME_LINK");
 		}
-	}
-
-	@summary = "Default summary"
-	macro viewSpecificationLabels(specificationTitle = null, specificationDescription = null) {
-		Click(
-			key_entry = ${specificationTitle},
-			locator1 = "CommerceNavigation#ANY_ENTRY_NAME");
-
-		AssertTextEquals(
-			key_fieldLabel = "Label",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${specificationTitle});
-
-		AssertTextEquals(
-			locator1 = "CommerceEntry#DESCRIPTION_FIELD",
-			value1 = ${specificationDescription});
-
-		AssertTextEquals(
-			key_fieldLabel = "Key",
-			locator1 = "TextInput#GENERIC_TEXT_INPUT",
-			value1 = ${specificationTitle});
 	}
 
 	@summary = "Default summary"
