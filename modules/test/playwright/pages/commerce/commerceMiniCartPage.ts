@@ -246,6 +246,7 @@ export class CommerceMiniCartPage {
 				exact: true,
 				name: transitionName,
 			});
+		this.page = page;
 		this.priceField = async (price: string, container = this.page) => {
 			return container.getByText(price);
 		};
@@ -352,11 +353,56 @@ export class CommerceMiniCartPage {
 		await this.quickAddToCartButton.click();
 	}
 
+	async assertEditItemPickerOptions(
+		pickerOptions: {disabled?: boolean; message?: string; name: string}[],
+		optionName: string
+	) {
+		await this.miniCartEditItemPanel.getByLabel(optionName).click();
+
+		const listbox = this.page.getByRole('listbox');
+
+		const options = listbox.getByRole('option');
+
+		await expect(options).toHaveCount(pickerOptions.length + 1);
+
+		for (const {disabled, message, name} of pickerOptions) {
+			const option = options.filter({hasText: new RegExp(`^${name}`)});
+
+			await expect(option.locator('.label')).toHaveText(
+				message ? [message] : []
+			);
+
+			if (disabled === true) {
+				await expect(option).toBeDisabled();
+			}
+			else if (disabled === false) {
+				await expect(option).toBeEnabled();
+			}
+		}
+
+		await this.page.keyboard.press('Escape');
+
+		await expect(listbox).toBeHidden();
+	}
+
 	async selectEditItemOption(optionLabel: string, optionName: string) {
 		await selectOptionContaining(
 			this.miniCartEditItemPanel.getByLabel(optionName),
 			optionLabel
 		);
+	}
+
+	async selectEditItemPickerOption(optionLabel: string, optionName: string) {
+		const optionSelector =
+			this.miniCartEditItemPanel.getByLabel(optionName);
+
+		await optionSelector.click();
+
+		await this.page
+			.getByRole('option', {exact: true, name: optionLabel})
+			.click();
+
+		await expect(optionSelector).toHaveText(optionLabel);
 	}
 
 	async showItemOptions(product: string | Locator) {
