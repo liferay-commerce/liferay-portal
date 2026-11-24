@@ -91,11 +91,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>LABEL_SELECT_BY_INDEX</td>
-	<td>xpath=(//label[contains(text(),'${key_fieldLabel}')]/..//select)[${key_index}]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>LABEL_GENERIC_SELECT_POSITION</td>
 	<td>//label[contains(text(),'${key_fieldLabel}')]/..//select/option['${row}']</td>
 	<td></td>
@@ -503,11 +498,6 @@
 <tr>
 	<td>SKU_FIELD</td>
 	<td>//div/input[contains(@id,'sku')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>SKU_ERC_FIELD</td>
-	<td>//div/input[contains(@id,'externalReferenceCode')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1319,11 +1309,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>DELIVERY_SUBSCRIPTION_TOGGLE</td>
-	<td>//div[contains(@class,'h4') and contains(text(), 'Delivery Subscription')]//following-sibling::span[contains(@class,'toggle-switch-handle')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>SUBSCRIPTION_TOGGLE</td>
 	<td>//div[contains(@class,'h4') and contains(text(), '${key_subscriptionName}')]//following-sibling::span[contains(@class,'toggle-switch-handle')]</td>
 	<td></td>
@@ -1474,11 +1459,6 @@
 <tr>
 	<td>LAST_CURRENCY_PRIORITY_ELEMENT</td>
 	<td>xpath=(//tr[contains(@data-qa-id,'row') and not(contains(@class, 'd-none'))])[last()]//td//a[text()='${key_entryName}']//..//..//td[contains(@class,"lfr-priority-column")]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>CHECK_PRICE_LIST_CURRENCY</td>
-	<td>//div[@class ="input-group-append input-group-item-shrink"]//span[contains(@class,'input-group-text') and contains(text(),'${key_currency}')]</td>
 	<td></td>
 </tr>
 <tr>
