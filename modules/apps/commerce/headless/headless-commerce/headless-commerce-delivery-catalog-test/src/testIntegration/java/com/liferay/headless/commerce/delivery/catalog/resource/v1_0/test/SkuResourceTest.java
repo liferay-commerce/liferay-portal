@@ -17,6 +17,7 @@ import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListAccountRelLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalServiceUtil;
+import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
@@ -26,6 +27,7 @@ import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
@@ -44,14 +46,17 @@ import com.liferay.headless.commerce.delivery.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.delivery.catalog.client.pagination.Pagination;
 import com.liferay.headless.commerce.delivery.catalog.client.problem.Problem;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 
@@ -68,6 +73,7 @@ import java.util.Objects;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.junit.runner.RunWith;
 
 /**
@@ -105,7 +111,10 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 
 		_testGetChannelProductSkuAllowMultiplePriceEntriesInTheSamePriceList();
 		_testGetChannelProductSkuAllowMultiplePriceEntriesInTheSamePromotion();
+		_testGetChannelProductSkuWithAnotherCPDefinition();
+		_testGetChannelProductSkuWithCPDefinitionVersions();
 		_testGetChannelProductSkuWithCurrencyCode();
+		_testGetChannelProductSkuWithDraftCPInstance();
 		_testGetChannelProductSkuWithUnitOfMeasurePrice();
 	}
 
@@ -122,16 +131,12 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	@Override
 	@Test
 	public void testPostChannelProductSku() throws Exception {
-		try {
-			super.testPostChannelProductSku();
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class, super::testPostChannelProductSku);
 
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
+		Problem problem = problemException.getProblem();
 
-			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
-		}
+		Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 	}
 
 	@Override
@@ -366,6 +371,15 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 			RandomTestUtil.nextDouble(), BigDecimal.ONE, sku.getSku());
 	}
 
+	private void _assertNotFound(ThrowingRunnable throwingRunnable) {
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class, throwingRunnable);
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals("NOT_FOUND", problem.getStatus());
+	}
+
 	private void _testGetChannelProductSkuAllowMultiplePriceEntriesInTheSamePriceList()
 		throws Exception {
 
@@ -516,7 +530,96 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 				price.getPromoPrice(), commercePriceEntryPrice.doubleValue()));
 	}
 
+	private void _testGetChannelProductSkuWithAnotherCPDefinition()
+		throws Exception {
+
+		CommerceCatalog commerceCatalog = _cpDefinition.getCommerceCatalog();
+
+		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
+			commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition1 = cpInstance1.getCPDefinition();
+
+		Sku sku = skuResource.getChannelProductSku(
+			_commerceChannel.getCommerceChannelId(),
+			cpDefinition1.getCProductId(), cpInstance1.getCPInstanceId(), -1L,
+			null);
+
+		Assert.assertEquals(cpInstance1.getSku(), sku.getSku());
+
+		CPInstance cpInstance2 = CPTestUtil.addCPInstanceFromCatalog(
+			commerceCatalog.getGroupId());
+
+		_assertNotFound(
+			() -> skuResource.getChannelProductSku(
+				_commerceChannel.getCommerceChannelId(),
+				cpDefinition1.getCProductId(), cpInstance2.getCPInstanceId(),
+				-1L, null));
+	}
+
+	private void _testGetChannelProductSkuWithCPDefinitionVersions()
+		throws Exception {
+
+		CommerceCatalog commerceCatalog = _cpDefinition.getCommerceCatalog();
+
+		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
+			commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition1 = cpInstance1.getCPDefinition();
+
+		ServiceContextThreadLocal.pushServiceContext(_serviceContext);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						testCompany.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId());
+
+			CPInstance cpInstance2 = _cpInstanceLocalService.getCPInstance(
+				cpDefinition2.getCPDefinitionId(), cpInstance1.getSku());
+
+			_assertNotFound(
+				() -> skuResource.getChannelProductSku(
+					_commerceChannel.getCommerceChannelId(),
+					cpDefinition1.getCProductId(),
+					cpInstance2.getCPInstanceId(), -1L, null));
+
+			_cpDefinitionLocalService.updateStatus(
+				_user.getUserId(), cpDefinition2.getCPDefinitionId(),
+				WorkflowConstants.STATUS_APPROVED, _serviceContext,
+				Collections.emptyMap());
+
+			Sku sku = skuResource.getChannelProductSku(
+				_commerceChannel.getCommerceChannelId(),
+				cpDefinition1.getCProductId(), cpInstance1.getCPInstanceId(),
+				-1L, null);
+
+			Assert.assertEquals(cpInstance1.getSku(), sku.getSku());
+
+			sku = skuResource.getChannelProductSku(
+				_commerceChannel.getCommerceChannelId(),
+				cpDefinition1.getCProductId(), cpInstance2.getCPInstanceId(),
+				-1L, null);
+
+			Assert.assertEquals(cpInstance2.getSku(), sku.getSku());
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
 	private void _testGetChannelProductSkuWithCurrencyCode() throws Exception {
+		_serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
+
 		CommerceCurrency commerceCurrency =
 			CommerceCurrencyTestUtil.addCommerceCurrency(
 				testCompany.getCompanyId(), RandomTestUtil.randomString());
@@ -578,6 +681,37 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 
 		Assert.assertEquals(
 			convertedPrice.doubleValue(), tierPrices[0].getPrice(), 0);
+	}
+
+	private void _testGetChannelProductSkuWithDraftCPInstance()
+		throws Exception {
+
+		CommerceCatalog commerceCatalog = _cpDefinition.getCommerceCatalog();
+
+		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
+			commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition1 = cpInstance1.getCPDefinition();
+
+		Sku sku = skuResource.getChannelProductSku(
+			_commerceChannel.getCommerceChannelId(),
+			cpDefinition1.getCProductId(), cpInstance1.getCPInstanceId(), -1L,
+			null);
+
+		Assert.assertEquals(cpInstance1.getSku(), sku.getSku());
+
+		CPInstance cpInstance2 = CPTestUtil.addCPDefinitionCPInstance(
+			cpDefinition1.getCPDefinitionId(), null);
+
+		_cpInstanceLocalService.updateStatus(
+			_user.getUserId(), cpInstance2.getCPInstanceId(),
+			WorkflowConstants.STATUS_DRAFT);
+
+		_assertNotFound(
+			() -> skuResource.getChannelProductSku(
+				_commerceChannel.getCommerceChannelId(),
+				cpDefinition1.getCProductId(), cpInstance2.getCPInstanceId(),
+				-1L, null));
 	}
 
 	private void _testGetChannelProductSkuWithUnitOfMeasurePrice()
@@ -920,6 +1054,9 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 
 	@DeleteAfterTestRun
 	private CPDefinition _cpDefinition;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@DeleteAfterTestRun
 	private CPDefinitionOptionRel _cpDefinitionOptionRel;
