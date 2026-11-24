@@ -380,9 +380,9 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		);
 	}
 
-	async getOptions() {
+	async getOptions(search = '') {
 		return this.apiHelpers.get(
-			`${this.apiHelpers.baseUrl}${this.basePath}/options`
+			`${this.apiHelpers.baseUrl}${this.basePath}/options?search=${search}`
 		);
 	}
 
