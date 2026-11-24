@@ -5,7 +5,7 @@
 
 package com.liferay.headless.admin.address.internal.odata.entity.v1_0;
 
-import com.liferay.portal.kernel.search.Field;
+import com.liferay.portal.kernel.model.CountryTable;
 import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.DoubleEntityField;
 import com.liferay.portal.odata.entity.EntityField;
@@ -24,15 +24,18 @@ public class CountryEntityModel implements EntityModel {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(
 			new DateTimeEntityField(
 				"dateCreated",
-				locale -> Field.getSortableFieldName(Field.CREATE_DATE),
-				locale -> Field.CREATE_DATE),
+				locale -> CountryTable.INSTANCE.createDate.getName(),
+				locale -> CountryTable.INSTANCE.createDate.getName()),
 			new DateTimeEntityField(
 				"dateModified",
-				locale -> Field.getSortableFieldName(Field.MODIFIED_DATE),
-				locale -> Field.MODIFIED_DATE),
-			new DoubleEntityField("position", locale -> "position"),
-			new IntegerEntityField("id", locale -> Field.ENTRY_CLASS_PK),
-			new StringEntityField("name", locale -> "name"));
+				locale -> CountryTable.INSTANCE.modifiedDate.getName(),
+				locale -> CountryTable.INSTANCE.modifiedDate.getName()),
+			new DoubleEntityField(
+				"position", locale -> CountryTable.INSTANCE.position.getName()),
+			new IntegerEntityField(
+				"id", locale -> CountryTable.INSTANCE.countryId.getName()),
+			new StringEntityField(
+				"name", locale -> CountryTable.INSTANCE.name.getName()));
 	}
 
 	@Override

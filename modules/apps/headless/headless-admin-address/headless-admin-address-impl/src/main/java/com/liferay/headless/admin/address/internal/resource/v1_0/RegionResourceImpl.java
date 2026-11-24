@@ -10,7 +10,9 @@ import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngin
 import com.liferay.headless.admin.address.dto.v1_0.Region;
 import com.liferay.headless.admin.address.internal.dto.v1_0.converter.constants.DTOConverterConstants;
 import com.liferay.headless.admin.address.internal.odata.entity.v1_0.RegionEntityModel;
+import com.liferay.headless.admin.address.internal.odata.filter.expression.PredicateExpressionVisitorImpl;
 import com.liferay.headless.admin.address.resource.v1_0.RegionResource;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Country;
@@ -30,7 +32,13 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.odata.filter.FilterParser;
+import com.liferay.portal.odata.filter.FilterParserProvider;
+import com.liferay.portal.odata.filter.InvalidFilterException;
+import com.liferay.portal.odata.filter.expression.Expression;
+import com.liferay.portal.odata.filter.expression.ExpressionVisitException;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
@@ -187,15 +195,19 @@ public class RegionResourceImpl
 			Sort[] sorts)
 		throws Exception {
 
-		BaseModelSearchResult<com.liferay.portal.kernel.model.Region>
-			baseModelSearchResult = _regionService.searchRegions(
-				contextCompany.getCompanyId(), active, search, null,
-				pagination.getStartPosition(), pagination.getEndPosition(),
-				_toOrderByComparator(sorts));
+		Predicate predicate = _getPredicate(filter);
 
 		return Page.of(
-			transform(baseModelSearchResult.getBaseModels(), this::_toRegion),
-			pagination, baseModelSearchResult.getLength());
+			transform(
+				_regionLocalService.getRegions(
+					contextCompany.getCompanyId(), active, search, null,
+					predicate, pagination.getStartPosition(),
+					pagination.getEndPosition(), _toOrderByComparator(sorts)),
+				this::_toRegion),
+			pagination,
+			_regionLocalService.getRegionsCount(
+				contextCompany.getCompanyId(), active, search, null,
+				predicate));
 	}
 
 	@Override
@@ -286,6 +298,43 @@ public class RegionResourceImpl
 		return putRegion(serviceBuilderRegion.getRegionId(), region);
 	}
 
+	private Predicate _getPredicate(Filter filter) {
+		String filterString = null;
+
+		if (contextUriInfo != null) {
+			MultivaluedMap<String, String> queryParameters =
+				contextUriInfo.getQueryParameters();
+
+			filterString = queryParameters.getFirst("filter");
+		}
+
+		if (Validator.isNull(filterString)) {
+			if (filter != null) {
+				throw new InvalidFilterException(
+					"Regions can only be filtered with the \"filter\" query " +
+						"parameter");
+			}
+
+			return null;
+		}
+
+		try {
+			FilterParser filterParser = _filterParserProvider.provide(
+				_entityModel);
+
+			Expression expression = filterParser.parse(filterString);
+
+			return (Predicate)expression.accept(
+				new PredicateExpressionVisitorImpl(
+					_entityModel, RegionTable.INSTANCE));
+		}
+		catch (ExpressionVisitException expressionVisitException) {
+			throw new InvalidFilterException(
+				expressionVisitException.getMessage(),
+				expressionVisitException);
+		}
+	}
+
 	private ServiceContext _getServiceContext() throws Exception {
 		if (contextHttpServletRequest != null) {
 			ServiceContext serviceContext = ServiceContextFactory.getInstance(
@@ -349,6 +398,9 @@ public class RegionResourceImpl
 
 	@Reference
 	private CountryService _countryService;
+
+	@Reference
+	private FilterParserProvider _filterParserProvider;
 
 	@Reference
 	private Language _language;
