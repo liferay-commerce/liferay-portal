@@ -17,6 +17,7 @@ import com.liferay.headless.admin.address.client.resource.v1_0.CountryResource;
 import com.liferay.headless.admin.address.client.serdes.v1_0.CountrySerDes;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.CountryA2Exception;
 import com.liferay.portal.kernel.exception.CountryA3Exception;
 import com.liferay.portal.kernel.exception.DuplicateCountryException;
@@ -516,6 +517,24 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 
 		Assert.assertEquals(1, page.getTotalCount());
 		assertContains(country2, (List<Country>)page.getItems());
+
+		page = countryResource.getCountriesPage(
+			null, country1.getName(),
+			StringBundler.concat(
+				"id eq ", country1.getId(), " or id eq ", country2.getId()),
+			Pagination.of(1, 2), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+		assertContains(country1, (List<Country>)page.getItems());
+
+		HttpInvoker.HttpResponse httpResponse =
+			countryResource.getCountriesPageHttpResponse(
+				null, keywords, "dateModified le now()", Pagination.of(1, 2),
+				null);
+
+		Assert.assertEquals(
+			Response.Status.BAD_REQUEST.getStatusCode(),
+			httpResponse.getStatusCode());
 	}
 
 	private void _testGetCountriesPageWithRegions() throws Exception {
