@@ -16,12 +16,8 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.RegionTable;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.BooleanClauseOccur;
-import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
-import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CountryService;
 import com.liferay.portal.kernel.service.RegionLocalService;
@@ -38,12 +34,10 @@ import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
-import com.liferay.portal.vulcan.util.SearchUtil;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -193,36 +187,15 @@ public class RegionResourceImpl
 			Sort[] sorts)
 		throws Exception {
 
-		return SearchUtil.search(
-			Collections.emptyMap(),
-			booleanQuery -> {
-				if (active != null) {
-					BooleanFilter booleanFilter =
-						booleanQuery.getPreBooleanFilter();
+		BaseModelSearchResult<com.liferay.portal.kernel.model.Region>
+			baseModelSearchResult = _regionService.searchRegions(
+				contextCompany.getCompanyId(), active, search, null,
+				pagination.getStartPosition(), pagination.getEndPosition(),
+				_toOrderByComparator(sorts));
 
-					booleanFilter.add(
-						new TermFilter("active", String.valueOf(active)),
-						BooleanClauseOccur.MUST);
-				}
-			},
-			filter, com.liferay.portal.kernel.model.Region.class.getName(),
-			search, pagination,
-			queryConfig -> queryConfig.setSelectedFieldNames(
-				Field.ENTRY_CLASS_PK),
-			searchContext -> searchContext.setCompanyId(
-				contextCompany.getCompanyId()),
-			sorts,
-			document -> {
-				com.liferay.portal.kernel.model.Region serviceBuilderRegion =
-					_regionLocalService.fetchRegion(
-						GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)));
-
-				if (serviceBuilderRegion == null) {
-					return null;
-				}
-
-				return _toRegion(serviceBuilderRegion);
-			});
+		return Page.of(
+			transform(baseModelSearchResult.getBaseModels(), this::_toRegion),
+			pagination, baseModelSearchResult.getLength());
 	}
 
 	@Override

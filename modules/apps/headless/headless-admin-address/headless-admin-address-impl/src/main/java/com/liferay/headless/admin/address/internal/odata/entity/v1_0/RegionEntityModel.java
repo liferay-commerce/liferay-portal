@@ -7,6 +7,7 @@ package com.liferay.headless.admin.address.internal.odata.entity.v1_0;
 
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.odata.entity.DateTimeEntityField;
+import com.liferay.portal.odata.entity.DoubleEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.odata.entity.StringEntityField;
@@ -28,10 +29,7 @@ public class RegionEntityModel implements EntityModel {
 				"dateModified",
 				locale -> Field.getSortableFieldName(Field.MODIFIED_DATE),
 				locale -> Field.MODIFIED_DATE),
-			new EntityField(
-				"position", EntityField.Type.DOUBLE,
-				locale -> Field.getSortableFieldName("position"),
-				locale -> "position", String::valueOf),
+			new DoubleEntityField("position", locale -> "position"),
 			new StringEntityField("name", locale -> "name"));
 	}
 
