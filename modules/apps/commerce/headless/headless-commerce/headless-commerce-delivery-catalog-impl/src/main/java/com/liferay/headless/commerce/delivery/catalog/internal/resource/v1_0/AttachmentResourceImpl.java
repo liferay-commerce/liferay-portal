@@ -13,10 +13,10 @@ import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
-import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Attachment;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.internal.dto.v1_0.converter.AttachmentDTOConverterContext;
@@ -58,25 +58,26 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
 				productId, true);
 
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannel(channelId);
-
-		if ((cpDefinition == null) ||
-			!CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
-				PermissionThreadLocal.getPermissionChecker(),
-				commerceChannel.getGroupId())) {
-
+		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
 				"Unable to find product with ID " + productId);
 		}
 
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(channelId);
+
+		accountId = AccountUtil.getAccountId(
+			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+			contextUser.getUserId(), _accountEntryLocalService,
+			_accountEntryService, accountId, _commerceAccountHelper, null);
+
+		_commerceProductViewPermission.check(
+			PermissionThreadLocal.getPermissionChecker(), accountId,
+			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
+
 		return _getAttachmentPage(
-			cpDefinition,
-			AccountUtil.getAccountId(
-				contextCompany.getCompanyId(), commerceChannel.getGroupId(),
-				contextUser.getUserId(), _accountEntryLocalService,
-				_accountEntryService, accountId, _commerceAccountHelper, null),
-			CPAttachmentFileEntryConstants.TYPE_OTHER, pagination);
+			cpDefinition, accountId, CPAttachmentFileEntryConstants.TYPE_OTHER,
+			pagination);
 	}
 
 	@NestedField(parentClass = Product.class, value = "images")
@@ -90,25 +91,26 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 			_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
 				productId, true);
 
-		CommerceChannel commerceChannel =
-			_commerceChannelLocalService.getCommerceChannel(channelId);
-
-		if ((cpDefinition == null) ||
-			!CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
-				PermissionThreadLocal.getPermissionChecker(),
-				commerceChannel.getGroupId())) {
-
+		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
 				"Unable to find product with ID " + productId);
 		}
 
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(channelId);
+
+		accountId = AccountUtil.getAccountId(
+			contextCompany.getCompanyId(), commerceChannel.getGroupId(),
+			contextUser.getUserId(), _accountEntryLocalService,
+			_accountEntryService, accountId, _commerceAccountHelper, null);
+
+		_commerceProductViewPermission.check(
+			PermissionThreadLocal.getPermissionChecker(), accountId,
+			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
+
 		return _getAttachmentPage(
-			cpDefinition,
-			AccountUtil.getAccountId(
-				contextCompany.getCompanyId(), commerceChannel.getGroupId(),
-				contextUser.getUserId(), _accountEntryLocalService,
-				_accountEntryService, accountId, _commerceAccountHelper, null),
-			CPAttachmentFileEntryConstants.TYPE_IMAGE, pagination);
+			cpDefinition, accountId, CPAttachmentFileEntryConstants.TYPE_IMAGE,
+			pagination);
 	}
 
 	private Page<Attachment> _getAttachmentPage(
@@ -164,6 +166,9 @@ public class AttachmentResourceImpl extends BaseAttachmentResourceImpl {
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
+	private CommerceProductViewPermission _commerceProductViewPermission;
 
 	@Reference
 	private CPAttachmentFileEntryLocalService

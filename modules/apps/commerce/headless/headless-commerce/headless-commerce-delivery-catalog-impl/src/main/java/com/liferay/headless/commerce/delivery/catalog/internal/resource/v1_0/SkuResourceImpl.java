@@ -149,7 +149,15 @@ public class SkuResourceImpl extends BaseSkuResourceImpl {
 
 		CPInstance cpInstance = _cpInstanceLocalService.fetchCPInstance(skuId);
 
-		if (cpInstance == null) {
+		if ((cpInstance == null) || !cpInstance.isApproved()) {
+			throw new NoSuchCPInstanceException();
+		}
+
+		CPDefinition skuCPDefinition = cpInstance.getCPDefinition();
+
+		if ((skuCPDefinition.getCProductId() != cpDefinition.getCProductId()) ||
+			!skuCPDefinition.isApproved()) {
+
 			throw new NoSuchCPInstanceException();
 		}
 
