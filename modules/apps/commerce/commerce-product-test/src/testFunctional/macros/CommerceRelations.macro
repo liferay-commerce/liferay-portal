@@ -1,35 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro addAnyProductRelation(key_relation = null, key_product = null) {
-		Click(locator1 = "Button#PLUS");
-
-		Click(
-			key_selectAction = "Add ${key_relation}",
-			locator1 = "FormViewBuilder#FIELD_ELLIPSIS_ACTION_FIELDSET");
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_IFRAME");
-
-		Type(
-			locator1 = "CommerceEntry#SEARCH_PRODUCT_RELATIONS",
-			value1 = ${key_product});
-
-		KeyPress(
-			locator1 = "CommerceEntry#SEARCH_PRODUCT_RELATIONS",
-			value1 = "\RETURN");
-
-		Check.checkToggleSwitch(
-			locator1 = "CommerceAccelerators#SELECT_PRODUCT_RELATIONS",
-			productName = ${key_product});
-
-		SelectFrameTop();
-
-		Button.clickAdd();
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro assignAllRelationsToProductsEntry() {
 		Click(locator1 = "CommerceEntry#ADD_BUTTON");
 

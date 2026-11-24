@@ -546,16 +546,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>COMBOBOX_DROPDOWN_OPTION_NAME</td>
-	<td>//div[contains(@class, 'dropdown-menu-select')]//*[contains(text(),'${key_optionName}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>DROPDOWN_OPTION_NAME_WITH_WARNING_MESSAGE</td>
-	<td>//div[contains(@class, 'dropdown-menu-select')]//span[contains(text(),'${key_warning}')]/../../..//*[contains(text(),'${key_optionName}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>FIX_ISSUE_BUTTON</td>
 	<td>//tr/td[contains(.,'${key_fixIssueButtonName}')]/..//td[contains(@class,'entry-action-column') or contains(@class,'cell-item-actions')]/* | //div[text()='${key_fixIssueButtonName}']/following-sibling::div/a[text()='Fix Issue']</td>
 	<td></td>
@@ -1454,11 +1444,6 @@
 <tr>
 	<td>TABLE_SEARCH_BY_NAME_AND_CONTENT</td>
 	<td>//td[contains(.,'${key_productName}')]/following-sibling::td[contains(text(),'${key_value}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>VALUE_PRODUCT_RELATIONS</td>
-	<td>//a[contains(text(),'${key_productName}')]/../../..//td[(text()='${key_value}')]</td>
 	<td></td>
 </tr>
 <tr>

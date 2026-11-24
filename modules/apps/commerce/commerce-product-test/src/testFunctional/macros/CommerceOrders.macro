@@ -1,81 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro addOrderRule(orderRuleDescription = null, applyTo = null, amount = null, orderRuleCurrency = null, orderRuleType = null, orderRuleName = null, active = null) {
-		LexiconEntry.gotoAdd();
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		Type(
-			locator1 = "TextInput#NAME",
-			value1 = ${orderRuleName});
-
-		Type(
-			locator1 = "CommerceEntry#DESCRIPTION_FIELD",
-			value1 = ${orderRuleDescription});
-
-		Select(
-			locator1 = "Select#TYPE",
-			value1 = ${orderRuleType});
-
-		Button.clickSubmitButton();
-
-		if (${orderRuleType} == "Minimum Order Amount") {
-			if (isSet(amount)) {
-				Type(
-					key_text = ${orderRuleType},
-					locator1 = "TextInput#ANY",
-					value1 = ${amount});
-			}
-
-			if (isSet(orderRuleCurrency)) {
-				Select(
-					key_selectFieldLabel = "Currency",
-					locator1 = "Select#ANY",
-					value1 = ${orderRuleCurrency});
-			}
-
-			if (isSet(applyTo)) {
-				Select(
-					key_selectFieldLabel = "Apply To",
-					locator1 = "Select#ANY",
-					value1 = ${applyTo});
-			}
-		}
-		else if (${orderRuleType} == "Products Limit") {
-			if (isSet(quantity)) {
-				Type(
-					key_fieldLabel = "Quantity",
-					locator1 = "TextInput#GENERIC_TEXT_INPUT",
-					value1 = ${quantity});
-			}
-
-			if (isSet(productNames)) {
-				for (var productName : list ${productNames}) {
-					CommerceRelations.assignSingleRelationToProductsEntry(
-						entryName = ${productName},
-						title = "Add Products");
-				}
-			}
-		}
-
-		if (${active} == "true") {
-			ClickNoError(locator1 = "ToggleSwitch#ACTIVE");
-		}
-
-		if (isSet(priority)) {
-			Type(
-				key_fieldLabel = "Priority",
-				locator1 = "TextInput#GENERIC_TEXT_INPUT",
-				value1 = ${priority});
-		}
-
-		Button.clickPublish();
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro addOrderType(orderTypeDescription = null, orderTypeName = null) {
 		LexiconEntry.gotoAdd();
 
@@ -862,13 +787,6 @@ definition {
 		var orderCreationDate = selenium.getText("CommerceEntry#TABLE_ENTRY_ROW_FIELD_GENERIC");
 
 		return ${orderCreationDate};
-	}
-
-	@summary = "Default summary"
-	macro openOrderRulesAdmin(baseURL = null) {
-		Navigator.openWithAppendToBaseURL(
-			baseURL = ${baseURL},
-			urlAppend = "group/control_panel/manage?p_p_id=com_liferay_commerce_order_rule_web_internal_portlet_COREntryPortlet");
 	}
 
 	@summary = "Default summary"
