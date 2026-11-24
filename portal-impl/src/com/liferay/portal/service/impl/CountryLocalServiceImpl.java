@@ -188,8 +188,35 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 	}
 
 	@Override
+	public List<Country> getCompanyCountries(
+		long companyId, Boolean active, String keywords, Predicate predicate,
+		int start, int end, OrderByComparator<Country> orderByComparator) {
+
+		return countryPersistence.dslQuery(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.selectDistinct(CountryTable.INSTANCE),
+				companyId, active, keywords, predicate
+			).orderBy(
+				CountryTable.INSTANCE, orderByComparator
+			).limit(
+				start, end
+			));
+	}
+
+	@Override
 	public int getCompanyCountriesCount(long companyId) {
 		return countryPersistence.countByCompanyId(companyId);
+	}
+
+	@Override
+	public int getCompanyCountriesCount(
+		long companyId, Boolean active, String keywords, Predicate predicate) {
+
+		return countryPersistence.dslQueryCount(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.countDistinct(
+					CountryTable.INSTANCE.countryId),
+				companyId, active, keywords, predicate));
 	}
 
 	@Override
@@ -308,6 +335,13 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 	private GroupByStep _getGroupByStep(
 		FromStep fromStep, long companyId, Boolean active, String keywords) {
 
+		return _getGroupByStep(fromStep, companyId, active, keywords, null);
+	}
+
+	private GroupByStep _getGroupByStep(
+		FromStep fromStep, long companyId, Boolean active, String keywords,
+		Predicate predicate) {
+
 		JoinStep joinStep = fromStep.from(
 			CountryTable.INSTANCE
 		).leftJoinOn(
@@ -359,6 +393,8 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 
 					return Predicate.withParentheses(keywordsPredicate);
 				}
+			).and(
+				Predicate.withParentheses(predicate)
 			));
 	}
 
