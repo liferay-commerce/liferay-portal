@@ -10,10 +10,12 @@ import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration
 import com.liferay.digital.signature.manager.DSEnvelopeManager;
 import com.liferay.digital.signature.manager.DSRequestManager;
 import com.liferay.digital.signature.model.DSEnvelope;
+import com.liferay.digital.signature.model.DSRecipient;
 import com.liferay.digital.signature.model.DSRequest;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -60,6 +62,7 @@ import jakarta.portlet.ResourceResponse;
 
 import java.io.ByteArrayOutputStream;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -105,7 +108,8 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 		mockLiferayResourceRequest.setParameter(
 			"expireAfter", String.valueOf(days));
 
-		mockLiferayResourceRequest.setParameter("recipients", "[]");
+		mockLiferayResourceRequest.setParameter(
+			"recipients", _getRecipientsJSON());
 
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
@@ -133,6 +137,11 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 								DSEnvelope dsEnvelope =
 									(DSEnvelope)arguments[1];
 
+								Assert.assertEquals(
+									Arrays.asList(1, 2),
+									TransformUtil.transform(
+										dsEnvelope.getDSRecipients(),
+										DSRecipient::getRoutingOrder));
 								Assert.assertEquals(
 									days, dsEnvelope.getExpireAfter());
 
@@ -184,7 +193,23 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 		}
 
 		_testDoTransactionalCommandWithFeatureFlagDisabled();
+		_testDoTransactionalCommandWithParallelSigning();
 		_testDoTransactionalCommandWithoutFileEntryPermission();
+	}
+
+	private String _getRecipientsJSON() {
+		return JSONUtil.putAll(
+			JSONUtil.put(
+				"email", RandomTestUtil.randomString() + "@liferay.com"
+			).put(
+				"fullName", RandomTestUtil.randomString()
+			),
+			JSONUtil.put(
+				"email", RandomTestUtil.randomString() + "@liferay.com"
+			).put(
+				"fullName", RandomTestUtil.randomString()
+			)
+		).toString();
 	}
 
 	private void _invokeTransactionalCommand(
@@ -248,6 +273,78 @@ public class AddDSEnvelopeMVCResourceCommandTest {
 						DigitalSignatureConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
 							"embeddedViewEnabled", true
+						).build())) {
+
+			_invokeTransactionalCommand(
+				mockLiferayResourceRequest, mockLiferayResourceResponse);
+		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				_mvcResourceCommand, "_dsEnvelopeManager", dsEnvelopeManager);
+		}
+
+		ByteArrayOutputStream byteArrayOutputStream =
+			(ByteArrayOutputStream)
+				mockLiferayResourceResponse.getPortletOutputStream();
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			byteArrayOutputStream.toString());
+
+		Assert.assertEquals(dsEnvelopeId, jsonObject.getString("dsEnvelopeId"));
+	}
+
+	private void _testDoTransactionalCommandWithParallelSigning()
+		throws Exception {
+
+		MockLiferayResourceRequest mockLiferayResourceRequest =
+			new MockLiferayResourceRequest();
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		themeDisplay.setCompany(
+			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setSiteGroupId(TestPropsValues.getGroupId());
+		themeDisplay.setUser(TestPropsValues.getUser());
+
+		mockLiferayResourceRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		mockLiferayResourceRequest.setParameter(
+			"recipients", _getRecipientsJSON());
+		mockLiferayResourceRequest.setParameter("sequential", "false");
+
+		String dsEnvelopeId = RandomTestUtil.randomString();
+
+		DSEnvelopeManager dsEnvelopeManager =
+			(DSEnvelopeManager)ReflectionTestUtil.getAndSetFieldValue(
+				_mvcResourceCommand, "_dsEnvelopeManager",
+				ProxyUtil.newProxyInstance(
+					DSEnvelopeManager.class.getClassLoader(),
+					new Class<?>[] {DSEnvelopeManager.class},
+					(proxy, method, arguments) -> {
+						DSEnvelope dsEnvelope = (DSEnvelope)arguments[2];
+
+						Assert.assertEquals(
+							Arrays.asList(1, 1),
+							TransformUtil.transform(
+								dsEnvelope.getDSRecipients(),
+								DSRecipient::getRoutingOrder));
+
+						dsEnvelope.setDSEnvelopeId(dsEnvelopeId);
+
+						return dsEnvelope;
+					}));
+
+		MockLiferayResourceResponse mockLiferayResourceResponse =
+			new MockLiferayResourceResponse();
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						DigitalSignatureConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"embeddedViewEnabled", false
 						).build())) {
 
 			_invokeTransactionalCommand(
