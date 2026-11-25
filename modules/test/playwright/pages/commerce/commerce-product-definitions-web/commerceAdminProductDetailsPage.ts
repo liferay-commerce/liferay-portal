@@ -54,10 +54,22 @@ export class CommerceAdminProductDetailsPage {
 	readonly productOptionsLink: Locator;
 	readonly productRelationsLink: Locator;
 	readonly productSkusLink: Locator;
+	readonly productSubscriptionLink: Locator;
 	readonly productTitle: (productName: string) => Locator;
 	readonly productVisibilityLink: Locator;
 	readonly publishLink: Locator;
 	readonly saveAsDraftLink: Locator;
+	readonly subscriptionEnableToggle: (subscriptionName: string) => Locator;
+	readonly subscriptionInput: (
+		subscriptionName: string,
+		inputLabel: string
+	) => Locator;
+	readonly subscriptionLengthUnit: (subscriptionName: string) => Locator;
+	readonly subscriptionSection: (subscriptionName: string) => Locator;
+	readonly subscriptionSelect: (
+		subscriptionName: string,
+		selectLabel: string
+	) => Locator;
 	readonly textTableCell: (text: string) => Locator;
 	readonly visibleToggle: Locator;
 	readonly workflowStatusLabel: (status: string) => Locator;
@@ -193,6 +205,10 @@ export class CommerceAdminProductDetailsPage {
 		this.productSkusLink = page.getByRole('link', {
 			name: 'Skus',
 		});
+		this.productSubscriptionLink = page.getByRole('link', {
+			exact: true,
+			name: 'Subscription',
+		});
 		this.productTitle = (productName: string) =>
 			page.getByRole('heading', {exact: true, name: productName});
 		this.productVisibilityLink = page.getByRole('link', {
@@ -203,6 +219,42 @@ export class CommerceAdminProductDetailsPage {
 			exact: true,
 			name: 'Save as Draft',
 		});
+		this.subscriptionEnableToggle = (subscriptionName: string) =>
+			this.subscriptionSection(subscriptionName).getByText('Enable', {
+				exact: true,
+			});
+		this.subscriptionInput = (
+			subscriptionName: string,
+			inputLabel: string
+		) =>
+			this.subscriptionSection(subscriptionName).getByRole('textbox', {
+				exact: true,
+				name: inputLabel,
+			});
+		this.subscriptionLengthUnit = (subscriptionName: string) =>
+			this.subscriptionSection(subscriptionName)
+				.locator('.input-group')
+				.filter({
+					has: page.getByRole('textbox', {
+						exact: true,
+						name: 'Subscription Length',
+					}),
+				})
+				.locator('.input-group-text');
+		this.subscriptionSection = (subscriptionName: string) =>
+			page
+				.locator(
+					'#_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fm > .card'
+				)
+				.filter({hasText: subscriptionName});
+		this.subscriptionSelect = (
+			subscriptionName: string,
+			selectLabel: string
+		) =>
+			this.subscriptionSection(subscriptionName).getByRole('combobox', {
+				exact: true,
+				name: selectLabel,
+			});
 		this.textTableCell = (text: string) =>
 			this.page.getByRole('cell', {
 				exact: true,
@@ -343,6 +395,10 @@ export class CommerceAdminProductDetailsPage {
 		await this.productSkusLink.click();
 	}
 
+	async goToProductSubscription() {
+		await this.productSubscriptionLink.click();
+	}
+
 	async goToProductVisibility() {
 		await this.productVisibilityLink.click();
 	}
@@ -366,11 +422,49 @@ export class CommerceAdminProductDetailsPage {
 		return publishAlert;
 	}
 
+	async assertSubscriptionSettings(
+		subscriptionName: string,
+		{
+			inputValues = {},
+			selectValues = {},
+		}: {
+			inputValues?: {[inputLabel: string]: string};
+			selectValues?: {[selectLabel: string]: string};
+		}
+	) {
+		for (const [inputLabel, inputValue] of Object.entries(inputValues)) {
+			await expect(
+				this.subscriptionInput(subscriptionName, inputLabel)
+			).toHaveValue(inputValue);
+		}
+
+		for (const [selectLabel, selectValue] of Object.entries(selectValues)) {
+			await expect(
+				this.subscriptionSelect(subscriptionName, selectLabel)
+			).toHaveValue(selectValue);
+		}
+	}
+
 	async saveAsDraft() {
 		await this.page.waitForLoadState('networkidle');
 
 		await this.saveAsDraftLink.click();
 
 		await expect(this.workflowStatusLabel('Draft')).toBeVisible();
+	}
+
+	async setSubscription(
+		subscriptionName: string,
+		subscriptionType: string,
+		subscriptionLength: string
+	) {
+		await this.subscriptionSelect(
+			subscriptionName,
+			'Subscription Type'
+		).selectOption(subscriptionType);
+		await this.subscriptionInput(
+			subscriptionName,
+			'Subscription Length'
+		).fill(subscriptionLength);
 	}
 }
