@@ -31,6 +31,7 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDisplayLayout;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDisplayLayoutLocalService;
 import com.liferay.commerce.product.service.CProductLocalService;
@@ -58,6 +59,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -67,6 +69,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutFriendlyURLComposite;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -132,8 +135,11 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolver
 		HttpServletRequest httpServletRequest =
 			(HttpServletRequest)requestContext.get("request");
 
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
 		if (!CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
-				PermissionThreadLocal.getPermissionChecker(), groupId)) {
+				permissionChecker, groupId)) {
 
 			if (AuthLoginGroupSettingsUtil.isPromptEnabled(groupId)) {
 				return _getLoginURL(
@@ -145,9 +151,22 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolver
 					cpDefinition.getCPDefinitionId());
 		}
 
+		long commerceAccountId = _getCommerceAccountId(
+			groupId, httpServletRequest);
+
+		if (!permissionChecker.isSignedIn() &&
+			AuthLoginGroupSettingsUtil.isPromptEnabled(groupId) &&
+			FeatureFlagManagerUtil.isEnabled(companyId, "LPD-112683") &&
+			!_commerceProductViewPermission.contains(
+				permissionChecker, commerceAccountId, groupId,
+				cpDefinition.getCPDefinitionId())) {
+
+			return _getLoginURL(
+				groupId, privateLayout, mainPath, httpServletRequest);
+		}
+
 		CPCatalogEntry cpCatalogEntry = _cpDefinitionHelper.getCPCatalogEntry(
-			_getCommerceAccountId(groupId, httpServletRequest), groupId,
-			cpDefinition.getCPDefinitionId(),
+			commerceAccountId, groupId, cpDefinition.getCPDefinitionId(),
 			_portal.getLocale(httpServletRequest));
 
 		httpServletRequest.setAttribute(
@@ -612,6 +631,9 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolver
 
 	@Reference
 	private CommerceContextFactory _commerceContextFactory;
+
+	@Reference
+	private CommerceProductViewPermission _commerceProductViewPermission;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
