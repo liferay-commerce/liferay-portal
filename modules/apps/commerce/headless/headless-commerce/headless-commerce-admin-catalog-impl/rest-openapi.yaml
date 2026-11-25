@@ -3090,7 +3090,7 @@ components:
             properties:
                 externalReferenceCode:
                     description:
-                        External reference code of the role; when set, it is resolved first and `roleId` is ignored.
+                        External reference code of the role; when set, it is resolved first and `roleId` is ignored. Use `L_GUESTS` for guests and `L_SIGNED_IN_USERS` for any signed in user; the Guest role is rejected, whether sent by its own external reference code or by its ID.
                     example: DAB-34098-789-N
                     type: string
                 id:
@@ -3109,7 +3109,7 @@ components:
                     type: string
                 roleId:
                     description:
-                        Identifier of the role; used when `externalReferenceCode` is not set.
+                        Identifier of the role; used when `externalReferenceCode` is not set. The Guest role's ID is rejected: use `L_GUESTS` instead.
                     example: 30324
                     format: int64
                     minimum: 0
