@@ -29,6 +29,7 @@ import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelL
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelService;
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
+import com.liferay.commerce.product.constants.CPDefinitionVisibilityRelConstants;
 import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.exception.CPDefinitionGroupIdException;
 import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
@@ -150,6 +151,7 @@ import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
@@ -1345,7 +1347,23 @@ public class ProductResourceImpl
 
 		Role role = null;
 
-		if (Validator.isNull(externalReferenceCode)) {
+		if (Objects.equals(
+				externalReferenceCode,
+				CPDefinitionVisibilityRelConstants.
+					EXTERNAL_REFERENCE_CODE_GUESTS)) {
+
+			role = _roleService.getRole(
+				contextCompany.getCompanyId(), RoleConstants.GUEST);
+		}
+		else if (Objects.equals(
+					externalReferenceCode,
+					CPDefinitionVisibilityRelConstants.
+						EXTERNAL_REFERENCE_CODE_SIGNED_IN_USERS)) {
+
+			role = _roleService.getRole(
+				contextCompany.getCompanyId(), RoleConstants.USER);
+		}
+		else if (Validator.isNull(externalReferenceCode)) {
 			role = _roleService.fetchRole(
 				GetterUtil.getLong(productRole.getRoleId()));
 
@@ -1363,6 +1381,20 @@ public class ProductResourceImpl
 					"Unable to find role with external reference code " +
 						externalReferenceCode);
 			}
+		}
+
+		if (Objects.equals(role.getName(), RoleConstants.GUEST) &&
+			!Objects.equals(
+				externalReferenceCode,
+				CPDefinitionVisibilityRelConstants.
+					EXTERNAL_REFERENCE_CODE_GUESTS)) {
+
+			throw new CPDefinitionVisibilityRelClassPKException(
+				StringBundler.concat(
+					"Use ",
+					CPDefinitionVisibilityRelConstants.
+						EXTERNAL_REFERENCE_CODE_GUESTS,
+					" instead of the Guest role"));
 		}
 
 		ProductRole.RoleType roleType = productRole.getRoleType();

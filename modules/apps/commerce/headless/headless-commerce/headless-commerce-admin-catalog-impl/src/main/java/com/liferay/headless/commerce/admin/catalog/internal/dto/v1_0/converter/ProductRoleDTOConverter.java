@@ -5,12 +5,16 @@
 
 package com.liferay.headless.commerce.admin.catalog.internal.dto.v1_0.converter;
 
+import com.liferay.commerce.product.constants.CPDefinitionVisibilityRelConstants;
 import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.headless.commerce.admin.catalog.dto.v1_0.ProductRole;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
+
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -41,7 +45,7 @@ public class ProductRoleDTOConverter
 
 		return new ProductRole() {
 			{
-				setExternalReferenceCode(role::getExternalReferenceCode);
+				setExternalReferenceCode(() -> _getExternalReferenceCode(role));
 				setId(
 					cpDefinitionVisibilityRel::getCPDefinitionVisibilityRelId);
 				setName(role::getName);
@@ -50,6 +54,20 @@ public class ProductRoleDTOConverter
 					() -> ProductRole.RoleType.create(role.getTypeLabel()));
 			}
 		};
+	}
+
+	private String _getExternalReferenceCode(Role role) {
+		if (Objects.equals(role.getName(), RoleConstants.GUEST)) {
+			return CPDefinitionVisibilityRelConstants.
+				EXTERNAL_REFERENCE_CODE_GUESTS;
+		}
+
+		if (Objects.equals(role.getName(), RoleConstants.USER)) {
+			return CPDefinitionVisibilityRelConstants.
+				EXTERNAL_REFERENCE_CODE_SIGNED_IN_USERS;
+		}
+
+		return role.getExternalReferenceCode();
 	}
 
 	@Reference
