@@ -449,15 +449,17 @@ public class CountryResourceImpl
 	private OrderByComparator<com.liferay.portal.kernel.model.Country>
 		_toOrderByComparator(Sort[] sorts) {
 
-		if (ArrayUtil.isEmpty(sorts)) {
-			return null;
-		}
-
 		List<Object> objects = new ArrayList<>();
 
-		for (Sort sort : sorts) {
-			objects.add(sort.getFieldName());
-			objects.add(!sort.isReverse());
+		if (ArrayUtil.isEmpty(sorts)) {
+			objects.add(CountryTable.INSTANCE.countryId.getName());
+			objects.add(true);
+		}
+		else {
+			for (Sort sort : sorts) {
+				objects.add(sort.getFieldName());
+				objects.add(!sort.isReverse());
+			}
 		}
 
 		return OrderByComparatorFactoryUtil.create(

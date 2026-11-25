@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.address.internal.odata.filter.expression;
 
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.Table;
@@ -28,7 +29,6 @@ import com.liferay.portal.odata.filter.expression.UnaryExpression;
 
 import java.time.Instant;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -107,11 +107,8 @@ public class PredicateExpressionVisitorImpl
 
 		Column<?, Object> column = (Column<?, Object>)left;
 
-		List<Object> values = new ArrayList<>();
-
-		for (Object right : rights) {
-			values.add(_toValue(column, right));
-		}
+		List<Object> values = TransformUtil.unsafeTransform(
+			rights, right -> _toValue(column, right));
 
 		return column.in(values.toArray());
 	}
@@ -226,13 +223,15 @@ public class PredicateExpressionVisitorImpl
 	private Object _toValue(Column<?, Object> column, Object value)
 		throws ExpressionVisitException {
 
-		Class<?> clazz = column.getJavaType();
+		Class<?> javaTypeClass = column.getJavaType();
 
-		if (Objects.equals(clazz, Double.class) && (value instanceof Long)) {
-			return Double.valueOf((Long)value);
+		if (Objects.equals(javaTypeClass, Double.class) &&
+			(value instanceof Long)) {
+
+			return GetterUtil.getDouble(value);
 		}
 
-		if (!clazz.isInstance(value)) {
+		if (!javaTypeClass.isInstance(value)) {
 			throw new ExpressionVisitException(
 				StringBundler.concat(
 					"Invalid value ", value, " for ", column.getName()));
