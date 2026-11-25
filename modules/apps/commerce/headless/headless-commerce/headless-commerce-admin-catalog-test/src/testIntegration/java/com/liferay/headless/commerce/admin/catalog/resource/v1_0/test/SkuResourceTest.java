@@ -557,6 +557,20 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	private void _testPatchSkuExternalReferenceCode() throws Exception {
 		Sku sku = testPatchSku_addSku();
 
+		for (String blankExternalReferenceCode : new String[] {"", " "}) {
+			Sku patchSku = skuResource.patchSku(
+				sku.getId(),
+				new Sku() {
+					{
+						externalReferenceCode = blankExternalReferenceCode;
+					}
+				});
+
+			Assert.assertEquals(
+				sku.getExternalReferenceCode(),
+				patchSku.getExternalReferenceCode());
+		}
+
 		Sku randomSku = new Sku() {
 			{
 				externalReferenceCode = RandomTestUtil.randomString();
