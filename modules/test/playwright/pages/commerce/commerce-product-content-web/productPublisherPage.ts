@@ -30,6 +30,7 @@ export class ProductPublisherPage {
 	readonly page: Page;
 	readonly productCard: (productName: string) => Locator;
 	readonly productCardAddToCartButton: (productName: string) => Locator;
+	readonly productCardDiscontinuedLabel: (productName: string) => Locator;
 	readonly productCardPrice: (
 		productName: string,
 		productPrice: string
@@ -107,6 +108,10 @@ export class ProductPublisherPage {
 			this.productCard(productName).getByRole('button', {
 				exact: true,
 				name: 'Add to Cart',
+			});
+		this.productCardDiscontinuedLabel = (productName: string) =>
+			this.productCard(productName).getByText('Discontinued', {
+				exact: true,
 			});
 		this.productCardPrice = (productName, productPrice) =>
 			this.productCard(productName).getByText(productPrice, {

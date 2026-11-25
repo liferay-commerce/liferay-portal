@@ -27,9 +27,15 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 	readonly priceTierModalQuantityInput: Locator;
 	readonly priceTierModalSubmitButton: Locator;
 	readonly pricinQuantity: Locator;
+	readonly sidePanelDetailsSkuDiscontinuedToggle: Locator;
+	readonly sidePanelDetailsSkuEndOfLifeDateInput: Locator;
 	readonly sidePanelDetailsSkuExternalReferenceCodeInput: Locator;
 	readonly sidePanelDetailsSkuFieldName: Locator;
 	readonly sidePanelDetailsSkuPublishButton: Locator;
+	readonly sidePanelDetailsSkuReplacement: Locator;
+	readonly sidePanelDetailsSkuReplacementDeleteButton: Locator;
+	readonly sidePanelDetailsSkuReplacementInput: Locator;
+	readonly sidePanelDetailsSkuReplacementItem: (sku: string) => Locator;
 	readonly sidePanelFrame: FrameLocator;
 	readonly sidePanelInventoryTable: Locator;
 	readonly sidePanelNestedAddPriceTierButton: Locator;
@@ -170,6 +176,10 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 			.first()
 			.frameLocator('iframe')
 			.getByLabel('Pricing Quantity');
+		this.sidePanelDetailsSkuDiscontinuedToggle =
+			this.sidePanelFrame.getByLabel('Mark the SKU as Discontinued');
+		this.sidePanelDetailsSkuEndOfLifeDateInput =
+			this.sidePanelFrame.locator('input[id$="_discontinuedDate"]');
 		this.sidePanelDetailsSkuExternalReferenceCodeInput =
 			this.sidePanelFrame.getByLabel('External Reference Code', {
 				exact: true,
@@ -180,6 +190,17 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 			'button',
 			{exact: true, name: 'Publish'}
 		);
+		this.sidePanelDetailsSkuReplacement = this.sidePanelFrame.locator(
+			'[id$="_replacementAutocompleteWrapper"]'
+		);
+		this.sidePanelDetailsSkuReplacementDeleteButton =
+			this.sidePanelDetailsSkuReplacement.getByRole('button');
+		this.sidePanelDetailsSkuReplacementInput =
+			this.sidePanelDetailsSkuReplacement.getByRole('textbox');
+		this.sidePanelDetailsSkuReplacementItem = (sku: string) =>
+			this.sidePanelFrame
+				.locator('.autocomplete-items')
+				.getByText(sku, {exact: true});
 		this.sidePanelInventoryTable = this.sidePanelFrame.locator(
 			'#p_p_id_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_ table'
 		);
@@ -461,5 +482,26 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 		await (await this.closeSidePanelFrame(true)).click();
 
 		await this.openPriceEntry(priceListName);
+	}
+
+	async reopenSkuWithReplacement(sku: string, replacementSku: string) {
+		await (await this.closeSidePanelFrame(false)).click();
+
+		await expect(await this.closeSidePanelFrame(false)).toBeHidden();
+
+		await Promise.all([
+			this.page.waitForResponse(
+				(response) =>
+					response.status() === 200 &&
+					response.url().includes('_cpInstanceId=')
+			),
+			this.skusTableRowLink(sku).click(),
+		]);
+
+		await this.page.waitForResponse(
+			(response) =>
+				response.status() === 200 &&
+				response.url().includes(`/skus?search=${replacementSku}`)
+		);
 	}
 }
