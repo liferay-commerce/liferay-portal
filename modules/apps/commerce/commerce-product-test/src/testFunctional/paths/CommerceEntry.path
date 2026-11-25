@@ -66,11 +66,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>VIEW_ITEM_FROM_LIST</td>
-	<td>//div[contains(@class,'table-list-title')]/a[contains(.,'${key_itemName}')]//following::td//a[contains(.,'View')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>WISH_LIST_NAME</td>
 	<td>//td[contains(@class,'lfr-name-column')]//*[contains(.,'${wishListName}')]</td>
 	<td></td>
@@ -1331,11 +1326,6 @@
 <tr>
 	<td>TOGGLE_SWITCH_BUTTON</td>
 	<td>xpath=(//label[(contains(.,'${key_buttonName}')) or (contains(@for,'${key_buttonName}'))])[${key_indexNumber}]//input</td>
-	<td></td>
-</tr>
-<tr>
-	<td>SKU_DISCONTINUED_TOGGLE</td>
-	<td>//label[contains(.,'Mark the SKU as Discontinued')]//span[contains(@class,'toggle-switch-handle')]</td>
 	<td></td>
 </tr>
 <tr>
