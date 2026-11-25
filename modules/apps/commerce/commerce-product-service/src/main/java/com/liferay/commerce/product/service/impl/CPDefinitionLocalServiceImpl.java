@@ -47,6 +47,7 @@ import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.model.CPDefinitionTable;
 import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
+import com.liferay.commerce.product.model.CPDefinitionVisibilityRelTable;
 import com.liferay.commerce.product.model.CPDisplayLayout;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceOptionValueRel;
@@ -119,8 +120,10 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Document;
@@ -138,6 +141,7 @@ import com.liferay.portal.kernel.search.facet.Facet;
 import com.liferay.portal.kernel.search.facet.MultiValueFacet;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -3440,8 +3444,7 @@ public class CPDefinitionLocalServiceImpl
 		}
 
 		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-112683")) {
-			predicate = predicate.and(
-				CPDefinitionTable.INSTANCE.roleFilterEnabled.eq(false));
+			predicate = predicate.and(_getGuestRolePredicate(companyId));
 		}
 
 		predicate = predicate.and(
@@ -3452,6 +3455,30 @@ public class CPDefinitionLocalServiceImpl
 		);
 
 		return joinStep.where(predicate);
+	}
+
+	private Predicate _getGuestRolePredicate(long companyId) {
+		Role role = _roleLocalService.fetchRole(companyId, RoleConstants.GUEST);
+
+		return Predicate.withParentheses(
+			CPDefinitionTable.INSTANCE.roleFilterEnabled.eq(
+				false
+			).or(
+				CPDefinitionTable.INSTANCE.CPDefinitionId.in(
+					DSLQueryFactoryUtil.select(
+						CPDefinitionVisibilityRelTable.INSTANCE.CPDefinitionId
+					).from(
+						CPDefinitionVisibilityRelTable.INSTANCE
+					).where(
+						CPDefinitionVisibilityRelTable.INSTANCE.classNameId.eq(
+							_classNameLocalService.getClassNameId(
+								Role.class.getName())
+						).and(
+							CPDefinitionVisibilityRelTable.INSTANCE.classPK.eq(
+								role.getRoleId())
+						)
+					))
+			));
 	}
 
 	private String _getIndexFieldName(String optionKey, String languageId) {
@@ -3987,6 +4014,9 @@ public class CPDefinitionLocalServiceImpl
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
