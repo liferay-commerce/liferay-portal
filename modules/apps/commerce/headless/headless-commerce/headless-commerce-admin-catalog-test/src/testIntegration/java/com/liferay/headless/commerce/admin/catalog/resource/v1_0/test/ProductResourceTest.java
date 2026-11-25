@@ -24,6 +24,7 @@ import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.service.CommercePricingClassLocalService;
 import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPConstants;
+import com.liferay.commerce.product.constants.CPDefinitionVisibilityRelConstants;
 import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
@@ -105,6 +106,7 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
@@ -505,6 +507,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPostProductWithProductChannelExternalReferenceCode();
 		_testPostProductWithProductGroupExternalReferenceCode();
 		_testPostProductWithProductRoles();
+		_testPostProductWithProductRolesForGuestsAndSignedInUsers();
 		_testPostProductWithProductRolesWhenFeatureFlagDisabled();
 		_testPostProductWithTermsOfUseJournalArticleExternalReferenceCode();
 		_testPostProductWithTermsOfUseJournalArticleGroupExternalReferenceCode();
@@ -1659,6 +1662,44 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				patchProduct -> productResource.patchProduct(
 					postProduct.getProductId(), patchProduct));
 
+			Role role1 = _roleLocalService.getRole(
+				testCompany.getCompanyId(), RoleConstants.GUEST);
+
+			_assertProblemException(
+				"BAD_REQUEST",
+				new Product() {
+					{
+						setProductRoles(
+							new ProductRole[] {
+								new ProductRole() {
+									{
+										externalReferenceCode =
+											role1.getExternalReferenceCode();
+									}
+								}
+							});
+					}
+				},
+				patchProduct -> productResource.patchProduct(
+					postProduct.getProductId(), patchProduct));
+
+			_assertProblemException(
+				"BAD_REQUEST",
+				new Product() {
+					{
+						setProductRoles(
+							new ProductRole[] {
+								new ProductRole() {
+									{
+										roleId = role1.getRoleId();
+									}
+								}
+							});
+					}
+				},
+				patchProduct -> productResource.patchProduct(
+					postProduct.getProductId(), patchProduct));
+
 			_assertProblemException(
 				"BAD_REQUEST",
 				new Product() {
@@ -1676,7 +1717,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				patchProduct -> productResource.patchProduct(
 					postProduct.getProductId(), patchProduct));
 
-			Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+			Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 			_assertProblemException(
 				"BAD_REQUEST",
@@ -1686,7 +1727,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 							new ProductRole[] {
 								new ProductRole() {
 									{
-										roleId = role.getRoleId();
+										roleId = role2.getRoleId();
 										roleType = ProductRole.RoleType.ACCOUNT;
 									}
 								}
@@ -2877,6 +2918,82 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		}
 	}
 
+	private void _testPostProductWithProductRolesForGuestsAndSignedInUsers()
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			Product product = randomProduct();
+
+			product.setProductRoles(
+				new ProductRole[] {
+					new ProductRole() {
+						{
+							externalReferenceCode =
+								CPDefinitionVisibilityRelConstants.
+									EXTERNAL_REFERENCE_CODE_GUESTS;
+						}
+					},
+					new ProductRole() {
+						{
+							externalReferenceCode =
+								CPDefinitionVisibilityRelConstants.
+									EXTERNAL_REFERENCE_CODE_SIGNED_IN_USERS;
+						}
+					}
+				});
+
+			Product postProduct = productResource.postProduct(product);
+
+			Role role1 = _roleLocalService.getRole(
+				testCompany.getCompanyId(), RoleConstants.GUEST);
+			Role role2 = _roleLocalService.getRole(
+				testCompany.getCompanyId(), RoleConstants.USER);
+
+			_assertProductRoles(postProduct, role1, role2);
+
+			productResource.patchProduct(
+				postProduct.getProductId(),
+				new Product() {
+					{
+						setProductRoles(postProduct.getProductRoles());
+					}
+				});
+
+			Product getProduct = productResource.getProduct(
+				postProduct.getProductId());
+
+			_assertProductRoles(getProduct, role1, role2);
+
+			Assert.assertEquals(
+				SetUtil.fromArray(
+					CPDefinitionVisibilityRelConstants.
+						EXTERNAL_REFERENCE_CODE_GUESTS,
+					CPDefinitionVisibilityRelConstants.
+						EXTERNAL_REFERENCE_CODE_SIGNED_IN_USERS),
+				SetUtil.fromList(
+					TransformUtil.transformToList(
+						getProduct.getProductRoles(),
+						ProductRole::getExternalReferenceCode)));
+
+			product = randomProduct();
+
+			product.setProductRoles(
+				new ProductRole[] {
+					new ProductRole() {
+						{
+							externalReferenceCode =
+								role2.getExternalReferenceCode();
+						}
+					}
+				});
+
+			_assertProductRoles(productResource.postProduct(product), role2);
+		}
+	}
+
 	private void _testPostProductWithProductRolesWhenFeatureFlagDisabled()
 		throws Exception {
 
@@ -3483,6 +3600,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private SystemEventLocalService _systemEventLocalService;

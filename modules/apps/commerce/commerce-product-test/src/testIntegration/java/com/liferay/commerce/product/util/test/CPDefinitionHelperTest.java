@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -774,6 +775,71 @@ public class CPDefinitionHelperTest {
 		Assert.assertEquals(
 			Collections.singletonList(cpDefinition.getCPDefinitionId()),
 			_getCPDefinitionIds(0));
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testSearchCPDefinitionsWhenRoleFilterIsEnabledForGuestsAndSignedInUsers()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Search for CPDefinitions visible to guests or to signed in users"
+		).given(
+			"A CPDefinition visible to guests and a CPDefinition visible to " +
+				"signed in users"
+		).when(
+			"A guest and a signed in user search for CPDefinitions"
+		).then(
+			"The guest finds only the CPDefinition visible to guests, and " +
+				"the signed in user finds both"
+		);
+
+		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition1 = cpInstance1.getCPDefinition();
+
+		Role role1 = _roleLocalService.getRole(
+			_company.getCompanyId(), RoleConstants.GUEST);
+		User user = UserTestUtil.addUser(_company);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition1.getCPDefinitionId(),
+			Role.class.getName(), role1.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition1.getCPDefinitionId(), true);
+
+		CPInstance cpInstance2 = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition2 = cpInstance2.getCPDefinition();
+
+		Role role2 = _roleLocalService.getRole(
+			_company.getCompanyId(), RoleConstants.USER);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition2.getCPDefinitionId(),
+			Role.class.getName(), role2.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition2.getCPDefinitionId(), true);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_company.getGuestUser()));
+
+		Assert.assertEquals(
+			Collections.singletonList(cpDefinition1.getCPDefinitionId()),
+			_getCPDefinitionIds(AccountConstants.ACCOUNT_ENTRY_ID_GUEST));
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				cpDefinition1.getCPDefinitionId(),
+				cpDefinition2.getCPDefinitionId()),
+			SetUtil.fromList(_getCPDefinitionIds(0)));
 	}
 
 	@Rule

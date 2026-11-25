@@ -23,6 +23,7 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.url.CPFriendlyURL;
@@ -43,11 +44,14 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -578,12 +582,38 @@ public class CommerceSitemapURLProviderTest {
 
 		CPDefinition cpDefinition2 = _addCPDefinition();
 
+		Role role1 = _roleLocalService.getRole(
+			_company.getCompanyId(), RoleConstants.GUEST);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, _user.getUserId(), cpDefinition2.getCPDefinitionId(),
+			Role.class.getName(), role1.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition2.getCPDefinitionId(), true);
+
+		CPDefinition cpDefinition3 = _addCPDefinition();
+
+		Role role2 = _roleLocalService.getRole(
+			_company.getCompanyId(), RoleConstants.USER);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, _user.getUserId(), cpDefinition3.getCPDefinitionId(),
+			Role.class.getName(), role2.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition3.getCPDefinitionId(), true);
+
+		CPDefinition cpDefinition4 = _addCPDefinition();
+
 		Element element = _visitLayoutSet();
 
 		String xml = element.asXML();
 
 		Assert.assertFalse(xml.contains(_getURLTitle(cpDefinition1)));
 		Assert.assertTrue(xml.contains(_getURLTitle(cpDefinition2)));
+		Assert.assertFalse(xml.contains(_getURLTitle(cpDefinition3)));
+		Assert.assertTrue(xml.contains(_getURLTitle(cpDefinition4)));
 	}
 
 	@Test
@@ -881,6 +911,10 @@ public class CommerceSitemapURLProviderTest {
 	private SitemapURLProvider _cpDefinitionSitemapURLProvider;
 
 	@Inject
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
+
+	@Inject
 	private CPFileImporter _cpFileImporter;
 
 	@Inject
@@ -908,6 +942,9 @@ public class CommerceSitemapURLProviderTest {
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private SAXReader _saxReader;

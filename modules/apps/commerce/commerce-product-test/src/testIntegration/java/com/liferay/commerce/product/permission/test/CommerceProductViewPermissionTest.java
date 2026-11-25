@@ -290,6 +290,114 @@ public class CommerceProductViewPermissionTest {
 
 	@FeatureFlag("LPD-112683")
 	@Test
+	public void testContainsWhenRoleFilterIsEnabledForGuests()
+		throws Exception {
+
+		Role role = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.GUEST);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			_cpDefinition.getCPDefinitionId(), Role.class.getName(),
+			role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			_cpDefinition.getCPDefinitionId(), true);
+
+		Assert.assertTrue(
+			_commerceProductViewPermission.contains(
+				_guestPermissionChecker,
+				AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+				_commerceChannel.getGroupId(),
+				_cpDefinition.getCPDefinitionId()));
+		Assert.assertTrue(
+			_commerceProductViewPermission.contains(
+				PermissionCheckerFactoryUtil.create(UserTestUtil.addUser()), 0,
+				_commerceChannel.getGroupId(),
+				_cpDefinition.getCPDefinitionId()));
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testContainsWhenRoleFilterIsEnabledForGuestsAndGuestBrowsingIsDisabled()
+		throws Exception {
+
+		Role role = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.GUEST);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			_cpDefinition.getCPDefinitionId(), Role.class.getName(),
+			role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			_cpDefinition.getCPDefinitionId(), true);
+
+		CommerceTestUtil.runWithGuestBrowsingDisabled(
+			_commerceChannel.getGroupId(),
+			() -> {
+				Assert.assertFalse(
+					_commerceProductViewPermission.contains(
+						_guestPermissionChecker,
+						AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+						_commerceChannel.getGroupId(),
+						_cpDefinition.getCPDefinitionId()));
+				Assert.assertTrue(
+					_commerceProductViewPermission.contains(
+						PermissionCheckerFactoryUtil.create(
+							UserTestUtil.addUser()),
+						0, _commerceChannel.getGroupId(),
+						_cpDefinition.getCPDefinitionId()));
+			});
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testContainsWhenRoleFilterIsEnabledForSignedInUsers()
+		throws Exception {
+
+		Role role = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.USER);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			_cpDefinition.getCPDefinitionId(), Role.class.getName(),
+			role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			_cpDefinition.getCPDefinitionId(), true);
+
+		Assert.assertFalse(
+			_commerceProductViewPermission.contains(
+				_guestPermissionChecker,
+				AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+				_commerceChannel.getGroupId(),
+				_cpDefinition.getCPDefinitionId()));
+		Assert.assertTrue(
+			_commerceProductViewPermission.contains(
+				PermissionCheckerFactoryUtil.create(UserTestUtil.addUser()), 0,
+				_commerceChannel.getGroupId(),
+				_cpDefinition.getCPDefinitionId()));
+
+		User user = UserTestUtil.addUser();
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com",
+				RandomTestUtil.randomString(), new long[] {user.getUserId()},
+				null,
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		Assert.assertTrue(
+			_commerceProductViewPermission.contains(
+				PermissionCheckerFactoryUtil.create(user),
+				accountEntry.getAccountEntryId(), _commerceChannel.getGroupId(),
+				_cpDefinition.getCPDefinitionId()));
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
 	public void testContainsWithCPDefinitionVisibilityRel() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
