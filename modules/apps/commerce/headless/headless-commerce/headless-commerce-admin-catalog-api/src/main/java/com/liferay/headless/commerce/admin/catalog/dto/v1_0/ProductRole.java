@@ -62,7 +62,7 @@ public class ProductRole implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "External reference code of the role; when set, it is resolved first and `roleId` is ignored.",
+		description = "External reference code of the role; when set, it is resolved first and `roleId` is ignored. Use `L_GUESTS` for guests and `L_SIGNED_IN_USERS` for any signed in user; the Guest role is rejected, whether sent by its own external reference code or by its ID.",
 		example = "DAB-34098-789-N"
 	)
 	public String getExternalReferenceCode() {
@@ -99,7 +99,7 @@ public class ProductRole implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "External reference code of the role; when set, it is resolved first and `roleId` is ignored."
+		description = "External reference code of the role; when set, it is resolved first and `roleId` is ignored. Use `L_GUESTS` for guests and `L_SIGNED_IN_USERS` for any signed in user; the Guest role is rejected, whether sent by its own external reference code or by its ID."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected String externalReferenceCode;
@@ -196,8 +196,7 @@ public class ProductRole implements Serializable {
 
 	@DecimalMin("0")
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Identifier of the role; used when `externalReferenceCode` is not set.",
-		example = "30324"
+		description = "", example = "30324"
 	)
 	public Long getRoleId() {
 		if (_roleIdSupplier != null) {
@@ -232,9 +231,7 @@ public class ProductRole implements Serializable {
 		};
 	}
 
-	@GraphQLField(
-		description = "Identifier of the role; used when `externalReferenceCode` is not set."
-	)
+	@GraphQLField(description = "")
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long roleId;
 
@@ -552,4 +549,4 @@ public class ProductRole implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1604987779
+// LIFERAY-REST-BUILDER-HASH:440905769
