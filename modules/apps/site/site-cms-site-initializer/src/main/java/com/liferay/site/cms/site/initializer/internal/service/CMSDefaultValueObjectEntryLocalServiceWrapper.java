@@ -17,6 +17,7 @@ import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.constants.ObjectFieldSettingConstants;
+import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.field.setting.util.ObjectFieldSettingUtil;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
@@ -29,15 +30,20 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalServiceWrapper;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONException;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -84,7 +90,7 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 				(objectDefinition.getObjectDefinitionId() ==
 					objectDefinitionId)) {
 
-				_putTreePath(
+				_validateValues(
 					MapUtil.getString(values, "classExternalReferenceCode"),
 					MapUtil.getString(values, "className"),
 					objectDefinition.getCompanyId(), groupId, values);
@@ -110,7 +116,7 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 		if (FeatureFlagManagerUtil.isEnabled(
 				CompanyThreadLocal.getCompanyId(), "LPD-112761")) {
 
-			_putTreePath(objectEntryId, values);
+			_validateValues(objectEntryId, values);
 		}
 
 		return super.partialUpdateObjectEntry(
@@ -126,7 +132,7 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 		if (FeatureFlagManagerUtil.isEnabled(
 				CompanyThreadLocal.getCompanyId(), "LPD-112761")) {
 
-			_putTreePath(objectEntryId, values);
+			_validateValues(objectEntryId, values);
 		}
 
 		return super.updateObjectEntry(
@@ -189,96 +195,120 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 	}
 
 	private boolean _isValid(ObjectField objectField, Object value) {
-		String valueString = String.valueOf(value);
-
-		if (Objects.equals(
-				objectField.getDBType(),
-				ObjectFieldConstants.DB_TYPE_BIG_DECIMAL) ||
-			Objects.equals(
-				objectField.getDBType(), ObjectFieldConstants.DB_TYPE_DOUBLE)) {
-
-			try {
-				new BigDecimal(valueString);
-
-				return true;
-			}
-			catch (NumberFormatException numberFormatException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(numberFormatException);
-				}
-
-				return false;
-			}
-		}
-
-		if (Objects.equals(
-				objectField.getDBType(), ObjectFieldConstants.DB_TYPE_DATE) ||
-			Objects.equals(
-				objectField.getDBType(),
-				ObjectFieldConstants.DB_TYPE_DATE_TIME)) {
-
-			try {
-				DateUtil.parseDate(
-					ObjectFieldUtil.getDateTimePattern(valueString),
-					valueString, LocaleUtil.getSiteDefault());
-
-				return true;
-			}
-			catch (Exception exception) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(exception);
-				}
-
-				return false;
-			}
-		}
-
-		if (Objects.equals(
-				objectField.getDBType(),
-				ObjectFieldConstants.DB_TYPE_INTEGER)) {
-
-			if ((GetterUtil.getInteger(valueString) != 0) ||
-				Objects.equals(valueString, "0")) {
-
-				return true;
-			}
-
+		if (!_isValid(objectField.getBusinessType(), value)) {
 			return false;
 		}
 
-		if (Objects.equals(
-				objectField.getDBType(), ObjectFieldConstants.DB_TYPE_LONG)) {
-
-			if ((GetterUtil.getLong(valueString) != 0) ||
-				Objects.equals(valueString, "0")) {
-
-				return true;
-			}
-
-			return false;
-		}
-
-		if (Objects.equals(
+		if (!Objects.equals(
 				objectField.getBusinessType(),
-				ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT) ||
-			Objects.equals(
+				ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT) &&
+			!Objects.equals(
 				objectField.getBusinessType(),
 				ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
 
-			int maxLength = GetterUtil.getInteger(
+			return true;
+		}
+
+		String valueString = (String)value;
+
+		if (valueString.length() <= GetterUtil.getInteger(
 				ObjectFieldSettingUtil.getValue(
 					ObjectFieldSettingConstants.NAME_MAX_LENGTH, objectField),
 				DynamicObjectDefinitionTableUtil.getMaxLength(
-					objectField.getBusinessType()));
+					objectField.getBusinessType()))) {
 
-			if (valueString.length() <= maxLength) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isValid(String businessType, Object value) {
+		if (Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN)) {
+
+			return value instanceof Boolean;
+		}
+
+		if (Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+
+			if (value instanceof JSONObject) {
+				JSONObject jsonObject = (JSONObject)value;
+
+				return Validator.isNotNull(jsonObject.getString("key"));
+			}
+
+			if ((value instanceof String) &&
+				Validator.isNotNull((String)value)) {
+
 				return true;
 			}
 
 			return false;
 		}
 
-		return true;
+		if (Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT) ||
+			Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_RICH_TEXT) ||
+			Objects.equals(
+				businessType, ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
+
+			return value instanceof String;
+		}
+
+		if (value instanceof Boolean || value instanceof JSONArray ||
+			value instanceof JSONObject) {
+
+			return false;
+		}
+
+		try {
+			String valueString = String.valueOf(value);
+
+			if (Objects.equals(
+					businessType, ObjectFieldConstants.BUSINESS_TYPE_DATE) ||
+				Objects.equals(
+					businessType,
+					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME)) {
+
+				DateUtil.parseDate(
+					ObjectFieldUtil.getDateTimePattern(valueString),
+					valueString, LocaleUtil.getSiteDefault());
+			}
+			else if (Objects.equals(
+						businessType,
+						ObjectFieldConstants.BUSINESS_TYPE_DECIMAL) ||
+					 Objects.equals(
+						 businessType,
+						 ObjectFieldConstants.
+							 BUSINESS_TYPE_PRECISION_DECIMAL)) {
+
+				new BigDecimal(valueString);
+			}
+			else if (Objects.equals(
+						businessType,
+						ObjectFieldConstants.BUSINESS_TYPE_INTEGER)) {
+
+				Integer.parseInt(valueString);
+			}
+			else if (Objects.equals(
+						businessType,
+						ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER)) {
+
+				Long.parseLong(valueString);
+			}
+
+			return true;
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return false;
+		}
 	}
 
 	private void _putDefaultValues(
@@ -337,56 +367,6 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 		}
 	}
 
-	private void _putTreePath(
-			long objectEntryId, Map<String, Serializable> values)
-		throws PortalException {
-
-		ObjectEntry objectEntry = getObjectEntry(objectEntryId);
-
-		ObjectDefinition objectDefinition =
-			CMSDefaultValueUtil.fetchObjectDefinition(
-				objectEntry.getCompanyId());
-
-		if ((objectDefinition == null) ||
-			(objectDefinition.getObjectDefinitionId() !=
-				objectEntry.getObjectDefinitionId())) {
-
-			return;
-		}
-
-		Map<String, Serializable> objectEntryValues = objectEntry.getValues();
-
-		_putTreePath(
-			MapUtil.getString(
-				values, "classExternalReferenceCode",
-				MapUtil.getString(
-					objectEntryValues, "classExternalReferenceCode")),
-			MapUtil.getString(
-				values, "className",
-				MapUtil.getString(objectEntryValues, "className")),
-			objectEntry.getCompanyId(), objectEntry.getGroupId(), values);
-	}
-
-	private void _putTreePath(
-		String classExternalReferenceCode, String className, long companyId,
-		long groupId, Map<String, Serializable> values) {
-
-		values.put("treePath", StringPool.BLANK);
-
-		if (!Objects.equals(className, ObjectEntryFolder.class.getName())) {
-			return;
-		}
-
-		ObjectEntryFolder objectEntryFolder =
-			_objectEntryFolderLocalService.
-				fetchObjectEntryFolderByExternalReferenceCode(
-					classExternalReferenceCode, groupId, companyId);
-
-		if (objectEntryFolder != null) {
-			values.put("treePath", objectEntryFolder.getTreePath());
-		}
-	}
-
 	private void _putValue(
 		String defaultLanguageId, long groupId, ObjectField objectField,
 		Object value, Map<String, Serializable> values) {
@@ -440,6 +420,217 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 			(Serializable)localizedValues);
 	}
 
+	private void _validateDefaultValues(
+			Serializable defaultValues, long groupId)
+		throws PortalException {
+
+		JSONArray jsonArray = null;
+
+		if (defaultValues instanceof String) {
+			try {
+				jsonArray = _jsonFactory.createJSONArray((String)defaultValues);
+			}
+			catch (JSONException jsonException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(jsonException);
+				}
+			}
+		}
+
+		if (jsonArray == null) {
+			throw new ObjectEntryValuesException.InvalidValue(
+				"Default values must be a JSON array serialized as a string",
+				"defaultValues");
+		}
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			Object item = jsonArray.get(i);
+
+			if (!(item instanceof JSONObject)) {
+				throw new ObjectEntryValuesException.InvalidValue(
+					"Each default value must be a JSON object",
+					"defaultValues");
+			}
+
+			JSONObject jsonObject = (JSONObject)item;
+
+			String name = jsonObject.getString("name");
+			String type = jsonObject.getString("type");
+
+			if (Validator.isNull(name) || Validator.isNull(type)) {
+				throw new ObjectEntryValuesException.InvalidValue(
+					"Each default value must have a name and a type",
+					"defaultValues");
+			}
+
+			if (!ArrayUtil.contains(_BUSINESS_TYPES, type) ||
+				jsonObject.isNull("value")) {
+
+				continue;
+			}
+
+			if (Objects.equals(
+					type, ObjectFieldConstants.BUSINESS_TYPE_PICKLIST) &&
+				Validator.isNull(
+					jsonObject.getString("listTypeDefinitionERC"))) {
+
+				throw new ObjectEntryValuesException.InvalidValue(
+					StringBundler.concat(
+						"Default value \"", name,
+						"\" must have a list type definition external ",
+						"reference code"),
+					"defaultValues");
+			}
+
+			Object value = jsonObject.get("value");
+
+			if (!(value instanceof JSONObject)) {
+				_validateValue(name, type, value);
+
+				continue;
+			}
+
+			JSONObject valueJSONObject = (JSONObject)value;
+
+			if (Objects.equals(
+					type, ObjectFieldConstants.BUSINESS_TYPE_PICKLIST) &&
+				valueJSONObject.has("key")) {
+
+				_validateValue(name, type, valueJSONObject);
+
+				continue;
+			}
+
+			for (String languageId : valueJSONObject.keySet()) {
+				if (!_language.isAvailableLocale(groupId, languageId)) {
+					throw new ObjectEntryValuesException.InvalidLanguageId(
+						languageId, "defaultValues");
+				}
+
+				if (valueJSONObject.isNull(languageId)) {
+					continue;
+				}
+
+				_validateValue(name, type, valueJSONObject.get(languageId));
+			}
+		}
+	}
+
+	private void _validateValue(String name, String type, Object value)
+		throws PortalException {
+
+		if ((value instanceof String) && Validator.isNull((String)value)) {
+			return;
+		}
+
+		if (Objects.equals(type, ObjectFieldConstants.BUSINESS_TYPE_PICKLIST) &&
+			(value instanceof JSONObject)) {
+
+			JSONObject jsonObject = (JSONObject)value;
+
+			if (Validator.isNull(jsonObject.getString("key"))) {
+				return;
+			}
+		}
+
+		if (!_isValid(type, value)) {
+			throw new ObjectEntryValuesException.InvalidValue(
+				StringBundler.concat(
+					"Default value \"", name, "\" is not a valid ", type,
+					" value"),
+				"defaultValues");
+		}
+	}
+
+	private void _validateValues(
+			long objectEntryId, Map<String, Serializable> values)
+		throws PortalException {
+
+		ObjectEntry objectEntry = getObjectEntry(objectEntryId);
+
+		ObjectDefinition objectDefinition =
+			CMSDefaultValueUtil.fetchObjectDefinition(
+				objectEntry.getCompanyId());
+
+		if ((objectDefinition == null) ||
+			(objectDefinition.getObjectDefinitionId() !=
+				objectEntry.getObjectDefinitionId())) {
+
+			return;
+		}
+
+		Map<String, Serializable> objectEntryValues = objectEntry.getValues();
+
+		_validateValues(
+			MapUtil.getString(
+				values, "classExternalReferenceCode",
+				MapUtil.getString(
+					objectEntryValues, "classExternalReferenceCode")),
+			MapUtil.getString(
+				values, "className",
+				MapUtil.getString(objectEntryValues, "className")),
+			objectEntry.getCompanyId(), objectEntry.getGroupId(), values);
+	}
+
+	private void _validateValues(
+			String classExternalReferenceCode, String className, long companyId,
+			long groupId, Map<String, Serializable> values)
+		throws PortalException {
+
+		values.put("treePath", StringPool.BLANK);
+
+		if (Objects.equals(className, DepotEntry.class.getName())) {
+			Group group = _groupLocalService.getGroup(groupId);
+
+			if (ExportImportThreadLocal.isImportInProcess()) {
+				values.put(
+					"classExternalReferenceCode",
+					group.getExternalReferenceCode());
+			}
+			else if (!Objects.equals(
+						classExternalReferenceCode,
+						group.getExternalReferenceCode())) {
+
+				throw new ObjectEntryValuesException.InvalidValue(
+					"Class external reference code must be the external " +
+						"reference code of the space",
+					"classExternalReferenceCode");
+			}
+		}
+		else if (Objects.equals(className, ObjectEntryFolder.class.getName())) {
+			ObjectEntryFolder objectEntryFolder =
+				_objectEntryFolderLocalService.
+					fetchObjectEntryFolderByExternalReferenceCode(
+						classExternalReferenceCode, groupId, companyId);
+
+			if (objectEntryFolder != null) {
+				values.put("treePath", objectEntryFolder.getTreePath());
+			}
+			else if (!BatchEngineThreadLocal.isBatchImportInProcess() &&
+					 !ExportImportThreadLocal.isImportInProcess()) {
+
+				throw new ObjectEntryValuesException.InvalidValue(
+					StringBundler.concat(
+						"No folder exists with external reference code \"",
+						classExternalReferenceCode, "\" in the space"),
+					"classExternalReferenceCode");
+			}
+		}
+		else {
+			throw new ObjectEntryValuesException.InvalidValue(
+				StringBundler.concat(
+					"Class name must be ", DepotEntry.class.getName(), " or ",
+					ObjectEntryFolder.class.getName()),
+				"className");
+		}
+
+		Serializable defaultValues = values.get("defaultValues");
+
+		if (defaultValues != null) {
+			_validateDefaultValues(defaultValues, groupId);
+		}
+	}
+
 	private static final String[] _BUSINESS_TYPES = {
 		ObjectFieldConstants.BUSINESS_TYPE_BOOLEAN,
 		ObjectFieldConstants.BUSINESS_TYPE_DATE,
@@ -464,6 +655,12 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 		target = "(filter.factory.key=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT + ")"
 	)
 	private FilterFactory<Predicate> _filterFactory;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Language _language;

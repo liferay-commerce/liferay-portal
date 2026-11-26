@@ -121,6 +121,32 @@
 				}
 			],
 			"objectFolderExternalReferenceCode": "L_CMS_CONTENT_SETTINGS",
+			"objectValidationRules": [
+				{
+					"active": true,
+					"engine": "compositeKey",
+					"errorLabel": {
+						"en_US": "This folder or space already has default values."
+					},
+					"externalReferenceCode": "L_CMS_DEFAULT_VALUE_UNIQUE",
+					"name": {
+						"en_US": "CMS Default Value Unique"
+					},
+					"objectDefinitionExternalReferenceCode": "L_CMS_DEFAULT_VALUE",
+					"objectValidationRuleSettings": [
+						{
+							"name": "compositeKeyObjectFieldExternalReferenceCode",
+							"value": "CLASS_EXTERNAL_REFERENCE_CODE"
+						},
+						{
+							"name": "compositeKeyObjectFieldExternalReferenceCode",
+							"value": "CLASS_NAME"
+						}
+					],
+					"outputType": "fullValidation",
+					"system": true
+				}
+			],
 			"panelCategoryKey": "",
 			"parameterRequired": false,
 			"pluralLabel": {
