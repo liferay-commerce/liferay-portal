@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.internal.order;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
@@ -13,12 +14,15 @@ import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.order.CommerceOrderValidator;
 import com.liferay.commerce.order.CommerceOrderValidatorResult;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
@@ -141,6 +145,23 @@ public class VisibilityCommerceOrderValidatorImpl
 			}
 		}
 
+		if (!FeatureFlagManagerUtil.isEnabled(
+				cpDefinition.getCompanyId(), "LPD-112683")) {
+
+			return false;
+		}
+
+		CPDefinitionVisibilityRel cpDefinitionVisibilityRel =
+			_cpDefinitionVisibilityRelLocalService.
+				fetchCPDefinitionVisibilityRel(
+					cpDefinition.getCPDefinitionId(),
+					AccountEntry.class.getName(),
+					commerceOrder.getCommerceAccountId());
+
+		if (cpDefinitionVisibilityRel != null) {
+			return true;
+		}
+
 		return false;
 	}
 
@@ -178,6 +199,10 @@ public class VisibilityCommerceOrderValidatorImpl
 
 	@Reference
 	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
+
+	@Reference
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
 
 	@Reference
 	private Language _language;

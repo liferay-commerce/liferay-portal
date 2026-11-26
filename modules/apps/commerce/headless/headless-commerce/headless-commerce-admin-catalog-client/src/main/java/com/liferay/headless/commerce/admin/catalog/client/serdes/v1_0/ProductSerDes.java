@@ -12,6 +12,7 @@ import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.LinkedProduct
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.MappedProduct;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Pin;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.Product;
+import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccount;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductAccountGroup;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductChannel;
 import com.liferay.headless.commerce.admin.catalog.client.dto.v1_0.ProductOption;
@@ -545,6 +546,26 @@ public class ProductSerDes {
 				sb.append(String.valueOf(product.getProductAccountGroups()[i]));
 
 				if ((i + 1) < product.getProductAccountGroups().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
+		if (product.getProductAccounts() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"productAccounts\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < product.getProductAccounts().length; i++) {
+				sb.append(String.valueOf(product.getProductAccounts()[i]));
+
+				if ((i + 1) < product.getProductAccounts().length) {
 					sb.append(", ");
 				}
 			}
@@ -1168,6 +1189,15 @@ public class ProductSerDes {
 				String.valueOf(product.getProductAccountGroups()));
 		}
 
+		if (product.getProductAccounts() == null) {
+			map.put("productAccounts", null);
+		}
+		else {
+			map.put(
+				"productAccounts",
+				String.valueOf(product.getProductAccounts()));
+		}
+
 		if (product.getProductChannelFilter() == null) {
 			map.put("productChannelFilter", null);
 		}
@@ -1489,6 +1519,9 @@ public class ProductSerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "productAccountGroups")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "productAccounts")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -1894,6 +1927,22 @@ public class ProductSerDes {
 					product.setProductAccountGroups(productAccountGroupsArray);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "productAccounts")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					ProductAccount[] productAccountsArray =
+						new ProductAccount[jsonParserFieldValues.length];
+
+					for (int i = 0; i < productAccountsArray.length; i++) {
+						productAccountsArray[i] = ProductAccountSerDes.toDTO(
+							(String)jsonParserFieldValues[i]);
+					}
+
+					product.setProductAccounts(productAccountsArray);
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "productChannelFilter")) {
 
@@ -2195,4 +2244,4 @@ public class ProductSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:223042506
+// LIFERAY-REST-BUILDER-HASH:672379910

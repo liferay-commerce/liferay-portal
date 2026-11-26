@@ -54,6 +54,7 @@ import com.liferay.headless.commerce.admin.catalog.resource.v1_0.OptionResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.OptionValueResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.PinResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductAccountGroupResource;
+import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductAccountResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductChannelResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductConfigurationListAccountGroupResource;
 import com.liferay.headless.commerce.admin.catalog.resource.v1_0.ProductConfigurationListAccountResource;
@@ -217,6 +218,14 @@ public class Mutation {
 
 		_productResourceComponentServiceObjects =
 			productResourceComponentServiceObjects;
+	}
+
+	public static void setProductAccountResourceComponentServiceObjects(
+		ComponentServiceObjects<ProductAccountResource>
+			productAccountResourceComponentServiceObjects) {
+
+		_productAccountResourceComponentServiceObjects =
+			productAccountResourceComponentServiceObjects;
 	}
 
 	public static void setProductAccountGroupResourceComponentServiceObjects(
@@ -2000,6 +2009,37 @@ public class Mutation {
 			productResource ->
 				productResource.putProductByExternalReferenceCode(
 					externalReferenceCode, product));
+	}
+
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-112683")
+	@GraphQLField(
+		description = "Removes the account assignment identified by ID from its product. Returns 404 when the record is not found. Side effects -- Removes the account <-> product association."
+	)
+	public boolean deleteProductAccount(@GraphQLName("id") Long id)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_productAccountResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productAccountResource ->
+				productAccountResource.deleteProductAccount(id));
+
+		return true;
+	}
+
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-112683")
+	@GraphQLField
+	public Response deleteProductAccountBatch(
+			@GraphQLName("callbackURL") String callbackURL,
+			@GraphQLName("object") Object object)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_productAccountResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			productAccountResource ->
+				productAccountResource.deleteProductAccountBatch(
+					callbackURL, object));
 	}
 
 	@GraphQLField(
@@ -4302,6 +4342,28 @@ public class Mutation {
 	}
 
 	private void _populateResourceContext(
+			ProductAccountResource productAccountResource)
+		throws Exception {
+
+		productAccountResource.setContextAcceptLanguage(_acceptLanguage);
+		productAccountResource.setContextCompany(_company);
+		productAccountResource.setContextHttpServletRequest(
+			_httpServletRequest);
+		productAccountResource.setContextHttpServletResponse(
+			_httpServletResponse);
+		productAccountResource.setContextUriInfo(_uriInfo);
+		productAccountResource.setContextUser(_user);
+		productAccountResource.setGroupLocalService(_groupLocalService);
+		productAccountResource.setRoleLocalService(_roleLocalService);
+
+		productAccountResource.setVulcanBatchEngineExportTaskResource(
+			_vulcanBatchEngineExportTaskResource);
+
+		productAccountResource.setVulcanBatchEngineImportTaskResource(
+			_vulcanBatchEngineImportTaskResource);
+	}
+
+	private void _populateResourceContext(
 			ProductAccountGroupResource productAccountGroupResource)
 		throws Exception {
 
@@ -4839,6 +4901,8 @@ public class Mutation {
 		_pinResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ProductResource>
 		_productResourceComponentServiceObjects;
+	private static ComponentServiceObjects<ProductAccountResource>
+		_productAccountResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ProductAccountGroupResource>
 		_productAccountGroupResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ProductChannelResource>
@@ -4909,4 +4973,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:918071939
+// LIFERAY-REST-BUILDER-HASH:880534228

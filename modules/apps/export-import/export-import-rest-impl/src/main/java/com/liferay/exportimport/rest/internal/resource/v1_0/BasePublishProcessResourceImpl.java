@@ -560,10 +560,13 @@ public abstract class BasePublishProcessResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			if (parameters.containsKey("siteExternalReferenceCode")) {
+			Serializable siteExternalReferenceCode = parameters.get(
+				"siteExternalReferenceCode");
+
+			if (siteExternalReferenceCode != null) {
 				publishProcessUnsafeFunction =
 					publishProcess -> postSitePublishProcess(
-						(String)parameters.get("siteExternalReferenceCode"),
+						(String)siteExternalReferenceCode,
 						(PublishProcessRequest)parameters.get(
 							"publishProcessRequest"));
 			}
@@ -654,9 +657,12 @@ public abstract class BasePublishProcessResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("siteExternalReferenceCode")) {
+		Serializable siteExternalReferenceCode = parameters.get(
+			"siteExternalReferenceCode");
+
+		if (siteExternalReferenceCode != null) {
 			return getSitePublishProcessesPage(
-				(String)parameters.get("siteExternalReferenceCode"),
+				(String)siteExternalReferenceCode,
 				_parseLong((String)parameters.get("creatorId")), search,
 				_parseInteger((String)parameters.get("status")), pagination,
 				sorts);
@@ -1291,4 +1297,4 @@ public abstract class BasePublishProcessResourceImpl
 		LogFactoryUtil.getLog(BasePublishProcessResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2030878482
+// LIFERAY-REST-BUILDER-HASH:1191725956
