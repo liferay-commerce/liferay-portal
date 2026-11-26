@@ -31,7 +31,9 @@ import com.liferay.info.collection.provider.RelatedInfoItemCollectionProvider;
 import com.liferay.info.pagination.InfoPage;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -138,6 +140,57 @@ public class UserCommerceMLRecommendationRelatedInfoItemCollectionProviderTest
 			});
 	}
 
+	@Override
+	@Test
+	public void testGetRelatedItemsInfoPageWhenAccountGroupFilterIsEnabledAndFeatureFlagIsDisabled()
+		throws Exception {
+
+		UserCommerceMLRecommendation userCommerceMLRecommendation =
+			_userCommerceMLRecommendations.get(0);
+
+		ServiceContextThreadLocal.pushServiceContext(
+			_getServiceContext(userCommerceMLRecommendation.getEntryClassPK()));
+
+		try {
+			InfoCollectionProvider<CPDefinition> infoCollectionProvider =
+				infoItemServiceRegistry.getInfoItemService(
+					InfoCollectionProvider.class,
+					getInfoItemCollectionProviderName());
+
+			List<? extends CPDefinition> pageItems =
+				IdempotentRetryAssert.retryAssert(
+					5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+					() -> {
+						InfoPage<CPDefinition> infoPage =
+							infoCollectionProvider.getCollectionInfoPage(
+								new CollectionQuery());
+
+						List<? extends CPDefinition> cpDefinitions =
+							infoPage.getPageItems();
+
+						Assert.assertFalse(cpDefinitions.isEmpty());
+
+						return cpDefinitions;
+					});
+
+			CPDefinition cpDefinition = pageItems.get(0);
+
+			cpDefinitionLocalService.updateCPDefinitionAccountGroupFilter(
+				cpDefinition.getCPDefinitionId(), true);
+
+			InfoPage<CPDefinition> infoPage =
+				infoCollectionProvider.getCollectionInfoPage(
+					new CollectionQuery());
+
+			pageItems = infoPage.getPageItems();
+
+			Assert.assertTrue(pageItems.contains(cpDefinition));
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
 	@FeatureFlag("LPD-109588")
 	@Override
 	@Test
@@ -174,6 +227,76 @@ public class UserCommerceMLRecommendationRelatedInfoItemCollectionProviderTest
 					Assert.assertTrue(
 						pageItems.toString(), pageItems.isEmpty());
 				});
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Override
+	@Test
+	public void testGetRelatedItemsInfoPageWhenRoleFilterIsEnabled()
+		throws Exception {
+
+		UserCommerceMLRecommendation userCommerceMLRecommendation =
+			_userCommerceMLRecommendations.get(0);
+
+		ServiceContextThreadLocal.pushServiceContext(
+			_getServiceContext(userCommerceMLRecommendation.getEntryClassPK()));
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
+
+		try {
+			InfoCollectionProvider<CPDefinition> infoCollectionProvider =
+				infoItemServiceRegistry.getInfoItemService(
+					InfoCollectionProvider.class,
+					getInfoItemCollectionProviderName());
+
+			List<? extends CPDefinition> pageItems =
+				IdempotentRetryAssert.retryAssert(
+					5, TimeUnit.SECONDS, 1, TimeUnit.SECONDS,
+					() -> {
+						InfoPage<CPDefinition> infoPage =
+							infoCollectionProvider.getCollectionInfoPage(
+								new CollectionQuery());
+
+						List<? extends CPDefinition> cpDefinitions =
+							infoPage.getPageItems();
+
+						Assert.assertFalse(cpDefinitions.isEmpty());
+
+						return cpDefinitions;
+					});
+
+			CPDefinition cpDefinition = pageItems.get(0);
+
+			cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+				cpDefinition.getCPDefinitionId(), true);
+
+			InfoPage<CPDefinition> infoPage =
+				infoCollectionProvider.getCollectionInfoPage(
+					new CollectionQuery());
+
+			pageItems = infoPage.getPageItems();
+
+			Assert.assertFalse(pageItems.contains(cpDefinition));
+
+			Role role = roleLocalService.getRole(
+				cpDefinition.getCompanyId(), RoleConstants.ADMINISTRATOR);
+
+			cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+				null, TestPropsValues.getUserId(),
+				cpDefinition.getCPDefinitionId(), Role.class.getName(),
+				role.getRoleId());
+
+			infoPage = infoCollectionProvider.getCollectionInfoPage(
+				new CollectionQuery());
+
+			pageItems = infoPage.getPageItems();
+
+			Assert.assertTrue(pageItems.contains(cpDefinition));
 		}
 		finally {
 			ServiceContextThreadLocal.popServiceContext();

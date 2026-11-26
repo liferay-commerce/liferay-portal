@@ -203,6 +203,7 @@ create table CPDefinition (
 	maxSubscriptionCycles LONG,
 	productTypeName VARCHAR(75) null,
 	published BOOLEAN,
+	roleFilterEnabled BOOLEAN,
 	shipSeparately BOOLEAN,
 	shippable BOOLEAN,
 	shippingExtraPrice DOUBLE,
@@ -319,6 +320,22 @@ create table CPDefinitionOptionValueRel (
 	unitOfMeasureKey VARCHAR(75) null,
 	status INTEGER,
 	primary key (CPDefinitionOptionValueRelId, ctCollectionId)
+);
+
+create table CPDefinitionVisibilityRel (
+	mvccVersion LONG default 0 not null,
+	ctCollectionId LONG default 0 not null,
+	externalReferenceCode VARCHAR(75) null,
+	CPDefinitionVisibilityRelId LONG not null,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	CPDefinitionId LONG,
+	classNameId LONG,
+	classPK LONG,
+	primary key (CPDefinitionVisibilityRelId, ctCollectionId)
 );
 
 create table CPDisplayLayout (

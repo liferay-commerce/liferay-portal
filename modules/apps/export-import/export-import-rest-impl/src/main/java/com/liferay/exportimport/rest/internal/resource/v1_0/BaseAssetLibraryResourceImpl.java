@@ -259,7 +259,7 @@ public abstract class BaseAssetLibraryResourceImpl
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
 
-		if (parameters.containsKey("search")) {
+		if (parameters.get("search") != null) {
 			if (!FeatureFlagManagerUtil.isEnabled(
 					CompanyThreadLocal.getCompanyId(), "LPD-41307")) {
 
@@ -877,4 +877,4 @@ public abstract class BaseAssetLibraryResourceImpl
 		LogFactoryUtil.getLog(BaseAssetLibraryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:181523624
+// LIFERAY-REST-BUILDER-HASH:-1038705765

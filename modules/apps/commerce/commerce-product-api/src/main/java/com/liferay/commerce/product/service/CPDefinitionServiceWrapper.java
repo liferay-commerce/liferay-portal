@@ -417,6 +417,15 @@ public class CPDefinitionServiceWrapper
 	}
 
 	@Override
+	public CPDefinition updateCPDefinitionRoleFilter(
+			long cpDefinitionId, boolean enable)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _cpDefinitionService.updateCPDefinitionRoleFilter(
+			cpDefinitionId, enable);
+	}
+
+	@Override
 	public CPDefinition updateExternalReferenceCode(
 			long cpDefinitionId, String externalReferenceCode)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -494,4 +503,4 @@ public class CPDefinitionServiceWrapper
 	private CPDefinitionService _cpDefinitionService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:644371511
+// LIFERAY-SERVICE-BUILDER-HASH:604587932

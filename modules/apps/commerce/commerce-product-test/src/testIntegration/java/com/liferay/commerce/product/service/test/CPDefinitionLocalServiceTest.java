@@ -45,6 +45,7 @@ import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPInstanceOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
@@ -676,6 +677,49 @@ public class CPDefinitionLocalServiceTest {
 	}
 
 	@Test
+	public void testCloneCPDefinitionWithCPDefinitionVisibilityRels()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Duplicate a product visible to a specific account"
+		).given(
+			"A product visible to a specific account"
+		).when(
+			"The product is duplicated"
+		).then(
+			"The duplicated product is visible to the same account"
+		);
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com",
+				RandomTestUtil.randomString(),
+				new long[] {TestPropsValues.getUserId()}, null,
+				_serviceContext);
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			cpDefinition1.getCPDefinitionId(), AccountEntry.class.getName(),
+			accountEntry.getAccountEntryId());
+
+		CPDefinition cpDefinition2 =
+			_cpDefinitionLocalService.cloneCPDefinition(
+				TestPropsValues.getUserId(), cpDefinition1.getCPDefinitionId(),
+				_commerceCatalog.getGroupId(), _serviceContext);
+
+		Assert.assertNotNull(
+			_cpDefinitionVisibilityRelLocalService.
+				fetchCPDefinitionVisibilityRel(
+					cpDefinition2.getCPDefinitionId(),
+					AccountEntry.class.getName(),
+					accountEntry.getAccountEntryId()));
+	}
+
+	@Test
 	public void testClonedProductPriceChangeDoesNotAffectParent()
 		throws PortalException {
 
@@ -738,6 +782,7 @@ public class CPDefinitionLocalServiceTest {
 		_testCopyCPDefinitionDoesNotCopyDraftCPDefinition();
 		_testCopyCPDefinitionOptionRelExternalReferenceCodes();
 		_testCopyCPDefinitionReturnsExistingDraftCPDefinition();
+		_testCopyCPDefinitionWithCPDefinitionVisibilityRels();
 		_testCopyCPDefinitionWithDifferentGroupId();
 		_testCopyCPDefinitionWithSKUCombinations();
 		_testCopyCPDefinitionWithVersioningDisabled();
@@ -745,6 +790,7 @@ public class CPDefinitionLocalServiceTest {
 
 	@Test
 	public void testDeleteCPDefinition() throws Exception {
+		_testDeleteCPDefinitionWithCPDefinitionVisibilityRels();
 		_testDeleteCPDefinitionWithClonedCPDefinitions();
 		_testDeleteCPDefinitionWithExistingDraftCPDefinition();
 		_testDeleteCPDefinitionWithVersioningEnabled();
@@ -1888,6 +1934,60 @@ public class CPDefinitionLocalServiceTest {
 		}
 	}
 
+	private void _testCopyCPDefinitionWithCPDefinitionVisibilityRels()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Version a product visible to a specific account"
+		).given(
+			"A published product visible to a specific account"
+		).when(
+			"A new version of the product is created"
+		).then(
+			"The new version is visible to the same account"
+		);
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com",
+				RandomTestUtil.randomString(),
+				new long[] {TestPropsValues.getUserId()}, null,
+				_serviceContext);
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			cpDefinition1.getCPDefinitionId(), AccountEntry.class.getName(),
+			accountEntry.getAccountEntryId());
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId());
+
+			Assert.assertNotEquals(
+				cpDefinition1.getCPDefinitionId(),
+				cpDefinition2.getCPDefinitionId());
+			Assert.assertNotNull(
+				_cpDefinitionVisibilityRelLocalService.
+					fetchCPDefinitionVisibilityRel(
+						cpDefinition2.getCPDefinitionId(),
+						AccountEntry.class.getName(),
+						accountEntry.getAccountEntryId()));
+		}
+	}
+
 	private void _testCopyCPDefinitionWithDifferentGroupId() throws Exception {
 		frutillaRule.scenario(
 			"Copy a product definition into a different group"
@@ -2070,6 +2170,68 @@ public class CPDefinitionLocalServiceTest {
 			1,
 			CPDefinitionTestUtil.getCProductCPDefinitionsCount(
 				cpDefinition1.getCProductId(), WorkflowConstants.STATUS_DRAFT));
+	}
+
+	private void _testDeleteCPDefinitionWithCPDefinitionVisibilityRels()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Delete a version of a product visible to a specific account"
+		).given(
+			"A product visible to a specific account, and a draft version of it"
+		).when(
+			"The original version is deleted"
+		).then(
+			"The original version is no longer visible to the account"
+		).and(
+			"The draft version is still visible to the account"
+		);
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com",
+				RandomTestUtil.randomString(),
+				new long[] {TestPropsValues.getUserId()}, null,
+				_serviceContext);
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			cpDefinition1.getCPDefinitionId(), AccountEntry.class.getName(),
+			accountEntry.getAccountEntryId());
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId());
+
+			_cpDefinitionLocalService.deleteCPDefinition(
+				cpDefinition1.getCPDefinitionId());
+
+			Assert.assertNull(
+				_cpDefinitionVisibilityRelLocalService.
+					fetchCPDefinitionVisibilityRel(
+						cpDefinition1.getCPDefinitionId(),
+						AccountEntry.class.getName(),
+						accountEntry.getAccountEntryId()));
+			Assert.assertNotNull(
+				_cpDefinitionVisibilityRelLocalService.
+					fetchCPDefinitionVisibilityRel(
+						cpDefinition2.getCPDefinitionId(),
+						AccountEntry.class.getName(),
+						accountEntry.getAccountEntryId()));
+		}
 	}
 
 	private void _testDeleteCPDefinitionWithClonedCPDefinitions()
@@ -3346,6 +3508,10 @@ public class CPDefinitionLocalServiceTest {
 	@Inject
 	private CPDefinitionSpecificationOptionValueLocalService
 		_cpDefinitionSpecificationOptionValueLocalService;
+
+	@Inject
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
 
 	@Inject
 	private CPInstanceLocalService _cpInstanceLocalService;

@@ -10,21 +10,26 @@ import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -46,6 +51,7 @@ import org.junit.runner.RunWith;
 
 /**
  * @author Andrea Sbarra
+ * @author Fabio Monaco
  */
 @RunWith(Arquillian.class)
 public class CPDefinitionServiceTest {
@@ -70,6 +76,56 @@ public class CPDefinitionServiceTest {
 	@After
 	public void tearDown() throws Exception {
 		ServiceContextThreadLocal.popServiceContext();
+	}
+
+	@Test
+	public void testCloneCPDefinition() throws Exception {
+		CommerceCatalog commerceCatalog1 = _addCommerceCatalog();
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			commerceCatalog1.getCompanyId(), CommerceCatalog.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(commerceCatalog1.getCommerceCatalogId()),
+			_role.getRoleId(),
+			new String[] {ActionKeys.UPDATE, ActionKeys.VIEW});
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			commerceCatalog1.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		CommerceCatalog commerceCatalog2 = _addCommerceCatalog();
+
+		CPDefinition cpDefinition2 = CPTestUtil.addCPDefinitionFromCatalog(
+			commerceCatalog2.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			ServiceContext serviceContext =
+				ServiceContextTestUtil.getServiceContext(
+					commerceCatalog1.getGroupId(), _user.getUserId());
+
+			PrincipalException.MustHavePermission principalException =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> _cpDefinitionService.cloneCPDefinition(
+						cpDefinition2.getCPDefinitionId(),
+						commerceCatalog1.getGroupId(), serviceContext));
+
+			Assert.assertEquals(
+				commerceCatalog2.getCommerceCatalogId(),
+				principalException.resourceId);
+
+			CPDefinition cpDefinition3 = _cpDefinitionService.cloneCPDefinition(
+				cpDefinition1.getCPDefinitionId(),
+				commerceCatalog1.getGroupId(), serviceContext);
+
+			Assert.assertNotEquals(
+				cpDefinition1.getCProductId(), cpDefinition3.getCProductId());
+			Assert.assertEquals(
+				commerceCatalog1.getGroupId(), cpDefinition3.getGroupId());
+		}
 	}
 
 	@Test
@@ -139,6 +195,61 @@ public class CPDefinitionServiceTest {
 		}
 	}
 
+	@Test
+	public void testUpdateCPDefinitionRoleFilter() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogLocalService.addCommerceCatalog(
+				null, RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(),
+				LocaleUtil.US.getDisplayLanguage(),
+				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		User user = UserTestUtil.addUser();
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			commerceCatalog.getCompanyId(), CommerceCatalog.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(commerceCatalog.getCommerceCatalogId()),
+			role.getRoleId(), new String[] {ActionKeys.VIEW});
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _cpDefinitionService.updateCPDefinitionRoleFilter(
+					cpDefinition.getCPDefinitionId(), true));
+		}
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			commerceCatalog.getCompanyId(), CommerceCatalog.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(commerceCatalog.getCommerceCatalogId()),
+			role.getRoleId(), new String[] {ActionKeys.UPDATE});
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_cpDefinitionService.updateCPDefinitionRoleFilter(
+				cpDefinition.getCPDefinitionId(), true);
+		}
+
+		CPDefinition updatedCPDefinition =
+			_cpDefinitionLocalService.getCPDefinition(
+				cpDefinition.getCPDefinitionId());
+
+		Assert.assertTrue(updatedCPDefinition.isRoleFilterEnabled());
+	}
+
 	private CommerceCatalog _addCommerceCatalog() throws Exception {
 		return _commerceCatalogLocalService.addCommerceCatalog(
 			null, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -149,6 +260,9 @@ public class CPDefinitionServiceTest {
 
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Inject
 	private CPDefinitionService _cpDefinitionService;
