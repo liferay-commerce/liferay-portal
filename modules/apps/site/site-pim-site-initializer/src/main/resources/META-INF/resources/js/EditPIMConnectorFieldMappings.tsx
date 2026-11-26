@@ -8,14 +8,18 @@ import {Toolbar, VerticalNavLayout} from '@liferay/site-cms-site-initializer';
 import {fetch, navigate, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import FieldMappingsSection from './edit_field_mappings/FieldMappingsSection';
-import MappingRulesSection from './edit_field_mappings/MappingRulesSection';
-import getObjectFields from './edit_field_mappings/getObjectFields';
+import PIMFieldMappingRulesSection from './edit_field_mappings/PIMFieldMappingRulesSection';
+import PIMFieldMappingsSection from './edit_field_mappings/PIMFieldMappingsSection';
 import newFieldMapping from './edit_field_mappings/newFieldMapping';
+import {
+	SOURCE_FIELD_NAME_MAX_LENGTH,
+	resolveSourceFieldPath,
+} from './edit_field_mappings/sourceFieldPath';
 import {
 	IFieldMapping,
 	IMappingRule,
 	IObjectDefinition,
+	TYPE_DYNAMIC_VALUE,
 	TYPE_FIXED_VALUE,
 } from './edit_field_mappings/types';
 
@@ -33,8 +37,8 @@ interface IProps {
 	apiURL: string;
 	backURL: string;
 	channelField: string;
+	channelFieldAdditionalFieldMappingTypes: string[];
 	channelFieldLabel: string;
-	channelFieldMultiple: boolean;
 	fieldMappings: IFieldMapping[];
 	mappingRule: IMappingRule | null;
 	mappingRuleAPIURL: string;
@@ -44,14 +48,26 @@ interface IProps {
 	objectRelationshipObjectFieldName: string;
 	spritemap: string;
 	title: string;
+	useFirstNonemptySourceSupported: boolean;
 }
 
-function isComplete({sourceFieldName, type, value}: IFieldMapping) {
+function isComplete(
+	{sourceClassName, sourceFieldName, type, value}: IFieldMapping,
+	objectDefinitions: IObjectDefinition[]
+) {
+	if (type === TYPE_DYNAMIC_VALUE) {
+		return resolveSourceFieldPath(
+			objectDefinitions,
+			sourceClassName,
+			sourceFieldName
+		).complete;
+	}
+
 	if (type === TYPE_FIXED_VALUE) {
 		return Boolean(value);
 	}
 
-	return Boolean(sourceFieldName);
+	return true;
 }
 
 function isEmpty({
@@ -76,8 +92,8 @@ export default function EditPIMConnectorFieldMappings({
 	apiURL,
 	backURL,
 	channelField,
+	channelFieldAdditionalFieldMappingTypes = [],
 	channelFieldLabel,
-	channelFieldMultiple,
 	fieldMappings: initialFieldMappings = [],
 	mappingRule: initialMappingRule,
 	mappingRuleAPIURL,
@@ -87,16 +103,18 @@ export default function EditPIMConnectorFieldMappings({
 	objectRelationshipObjectFieldName,
 	spritemap,
 	title,
+	useFirstNonemptySourceSupported,
 }: IProps) {
 	const [fieldMappings, setFieldMappings] = useState<IFieldMapping[]>(() => {
 		const currentFieldMappings = initialFieldMappings
 			.filter(
 				(fieldMapping) =>
-					fieldMapping.type === TYPE_FIXED_VALUE ||
-					getObjectFields(
+					fieldMapping.type !== TYPE_DYNAMIC_VALUE ||
+					resolveSourceFieldPath(
 						objectDefinitions,
-						fieldMapping.sourceClassName
-					).some(({name}) => name === fieldMapping.sourceFieldName)
+						fieldMapping.sourceClassName,
+						fieldMapping.sourceFieldName
+					).complete
 			)
 			.map((fieldMapping) => ({
 				...fieldMapping,
@@ -150,7 +168,28 @@ export default function EditPIMConnectorFieldMappings({
 	};
 
 	const handleSave = async () => {
-		const nextFieldMappings = fieldMappings.filter(isComplete);
+		const nextFieldMappings = fieldMappings.filter((fieldMapping) =>
+			isComplete(fieldMapping, objectDefinitions)
+		);
+
+		if (
+			nextFieldMappings.some(
+				({sourceFieldName}) =>
+					sourceFieldName.length > SOURCE_FIELD_NAME_MAX_LENGTH
+			)
+		) {
+			Liferay.Util.openToast({
+				message: sub(
+					Liferay.Language.get(
+						'source-attribute-path-cannot-exceed-x-characters'
+					),
+					SOURCE_FIELD_NAME_MAX_LENGTH
+				),
+				type: 'danger',
+			});
+
+			return;
+		}
 
 		if (!nextFieldMappings.length && !isEmpty(mappingRule)) {
 			Liferay.Util.openToast({
@@ -180,17 +219,19 @@ export default function EditPIMConnectorFieldMappings({
 
 			const saveResponses = await Promise.all(
 				nextFieldMappings.map((fieldMapping, index) => {
-					const fixedValue = fieldMapping.type === TYPE_FIXED_VALUE;
-
 					const body: {[key: string]: unknown} = {
 						channelFieldName: channelField,
 						priority: index,
 						sourceClassName: fieldMapping.sourceClassName,
-						sourceFieldName: fixedValue
-							? ''
-							: fieldMapping.sourceFieldName,
+						sourceFieldName:
+							fieldMapping.type === TYPE_DYNAMIC_VALUE
+								? fieldMapping.sourceFieldName
+								: '',
 						type: fieldMapping.type,
-						value: fixedValue ? fieldMapping.value : '',
+						value:
+							fieldMapping.type === TYPE_FIXED_VALUE
+								? fieldMapping.value
+								: '',
 					};
 
 					if (!fieldMapping.id) {
@@ -267,7 +308,10 @@ export default function EditPIMConnectorFieldMappings({
 				items={[
 					{
 						component: (
-							<FieldMappingsSection
+							<PIMFieldMappingsSection
+								channelFieldAdditionalFieldMappingTypes={
+									channelFieldAdditionalFieldMappingTypes
+								}
 								fieldMappings={fieldMappings}
 								objectDefinitions={objectDefinitions}
 								setFieldMappings={setFieldMappings}
@@ -279,11 +323,13 @@ export default function EditPIMConnectorFieldMappings({
 					},
 					{
 						component: (
-							<MappingRulesSection
-								channelFieldMultiple={channelFieldMultiple}
+							<PIMFieldMappingRulesSection
 								disabled={!initialMappingRule}
 								mappingRule={mappingRule}
 								onChange={setMappingRule}
+								useFirstNonemptySourceSupported={
+									useFirstNonemptySourceSupported
+								}
 							/>
 						),
 						id: 'mappingRules',

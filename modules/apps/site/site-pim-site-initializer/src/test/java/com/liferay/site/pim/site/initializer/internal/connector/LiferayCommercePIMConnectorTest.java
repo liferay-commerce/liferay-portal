@@ -5,25 +5,45 @@
 
 package com.liferay.site.pim.site.initializer.internal.connector;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
+import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectFolderConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectFolder;
+import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionLocalService;
-import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
+import com.liferay.object.service.ObjectFolderLocalServiceUtil;
+import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
@@ -35,10 +55,10 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
-import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
 
 import java.io.Serializable;
 
@@ -82,6 +102,17 @@ public class LiferayCommercePIMConnectorTest {
 		);
 
 		Mockito.when(
+			_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
+				Mockito.anyString())
+		).thenAnswer(
+			invocationOnMock -> StringUtil.toLowerCase(
+				StringUtil.replace(
+					invocationOnMock.getArgument(0, String.class),
+					new char[] {CharPool.PERIOD, CharPool.SLASH},
+					new char[] {CharPool.DASH, CharPool.DASH}))
+		);
+
+		Mockito.when(
 			_language.get(Mockito.eq(LocaleUtil.US), Mockito.anyString())
 		).thenAnswer(
 			invocationOnMock -> invocationOnMock.getArgument(1)
@@ -92,8 +123,20 @@ public class LiferayCommercePIMConnectorTest {
 		languageUtil.setLanguage(_language);
 
 		ReflectionTestUtil.setFieldValue(
+			_liferayCommercePIMConnector, "_assetCategoryLocalService",
+			_assetCategoryLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_liferayCommercePIMConnector, "_assetTagLocalService",
+			_assetTagLocalService);
+		ReflectionTestUtil.setFieldValue(
+			_liferayCommercePIMConnector, "_assetVocabularyLocalService",
+			_assetVocabularyLocalService);
+		ReflectionTestUtil.setFieldValue(
 			_liferayCommercePIMConnector, "_friendlyURLNormalizer",
 			_friendlyURLNormalizer);
+		ReflectionTestUtil.setFieldValue(
+			_liferayCommercePIMConnector, "_groupLocalService",
+			_groupLocalService);
 		ReflectionTestUtil.setFieldValue(
 			_liferayCommercePIMConnector, "_http", _http);
 		ReflectionTestUtil.setFieldValue(
@@ -104,9 +147,13 @@ public class LiferayCommercePIMConnectorTest {
 		ReflectionTestUtil.setFieldValue(
 			_liferayCommercePIMConnector, "objectDefinitionLocalService",
 			_objectDefinitionLocalService);
-		ReflectionTestUtil.setFieldValue(
-			_liferayCommercePIMConnector, "objectEntryLocalService",
-			_objectEntryLocalService);
+
+		_modelHintsUtilMockedStatic.when(
+			() -> ModelHintsUtil.getMaxLength(
+				AssetCategory.class.getName(), "externalReferenceCode")
+		).thenReturn(
+			75
+		);
 
 		Mockito.when(
 			_objectDefinition.getClassName()
@@ -134,7 +181,12 @@ public class LiferayCommercePIMConnectorTest {
 	public void tearDown() {
 		_htmlParserUtilMockedStatic.close();
 		_listTypeEntryLocalServiceUtilMockedStatic.close();
+		_modelHintsUtilMockedStatic.close();
+		_objectDefinitionLocalServiceUtilMockedStatic.close();
+		_objectEntryLocalServiceUtilMockedStatic.close();
 		_objectFieldLocalServiceUtilMockedStatic.close();
+		_objectFolderLocalServiceUtilMockedStatic.close();
+		_objectRelationshipLocalServiceUtilMockedStatic.close();
 	}
 
 	@Test
@@ -142,6 +194,7 @@ public class LiferayCommercePIMConnectorTest {
 		_testExecute();
 		_testExecuteWithBooleanProductType();
 		_testExecuteWithCatalogs();
+		_testExecuteWithCategories();
 		_testExecuteWithErrors();
 		_testExecuteWithFieldMappingRules();
 		_testExecuteWithFirstNonemptySourceFieldMappingRule();
@@ -152,6 +205,9 @@ public class LiferayCommercePIMConnectorTest {
 		_testExecuteWithPicklistProductSpecification();
 		_testExecuteWithProductOptions();
 		_testExecuteWithProductSpecifications();
+		_testExecuteWithRepeatableGroupFieldMappings();
+		_testExecuteWithTags();
+		_testExecuteWithTopicVocabulary();
 		_testExecuteWithTrailingSlashURL();
 		_testExecuteWithVariantPIMLinks();
 		_testExecuteWithoutUnitOfMeasure();
@@ -176,12 +232,29 @@ public class LiferayCommercePIMConnectorTest {
 			_liferayCommercePIMConnector.getPIMConnectorChannelFields();
 
 		Assert.assertEquals(
-			pimConnectorChannelFields.toString(), 15,
+			pimConnectorChannelFields.toString(), 16,
 			pimConnectorChannelFields.size());
 		Assert.assertEquals(
+			Arrays.asList("categories=[categories]", "tags=[tags]"),
+			TransformUtil.transform(
+				pimConnectorChannelFields,
+				pimConnectorChannelField -> {
+					List<String> additionalPIMFieldMappingTypes =
+						pimConnectorChannelField.
+							getAdditionalPIMFieldMappingTypes();
+
+					if (additionalPIMFieldMappingTypes.isEmpty()) {
+						return null;
+					}
+
+					return StringBundler.concat(
+						pimConnectorChannelField.getName(), StringPool.EQUAL,
+						additionalPIMFieldMappingTypes);
+				}));
+		Assert.assertEquals(
 			Arrays.asList(
-				"catalog-external-reference-code", "depth", "description",
-				"height", "name", "precision", "product-options",
+				"catalog-external-reference-code", "categories", "depth",
+				"description", "height", "name", "precision", "product-options",
 				"product-specifications", "product-type", "sku", "tags",
 				"unit-of-measure-key", "unit-of-measure-name", "weight",
 				"width"),
@@ -191,10 +264,11 @@ public class LiferayCommercePIMConnectorTest {
 					LocaleUtil.US)));
 		Assert.assertEquals(
 			Arrays.asList(
-				"catalogExternalReferenceCode", "skus[].depth", "description",
-				"skus[].height", "name", "skus[].skuUnitOfMeasures[].precision",
-				"productOptions", "productSpecifications", "productType",
-				"skus[].sku", "tags", "skus[].skuUnitOfMeasures[].key",
+				"catalogExternalReferenceCode", "categories", "skus[].depth",
+				"description", "skus[].height", "name",
+				"skus[].skuUnitOfMeasures[].precision", "productOptions",
+				"productSpecifications", "productType", "skus[].sku", "tags",
+				"skus[].skuUnitOfMeasures[].key",
 				"skus[].skuUnitOfMeasures[].name", "skus[].weight",
 				"skus[].width"),
 			TransformUtil.transform(
@@ -214,13 +288,15 @@ public class LiferayCommercePIMConnectorTest {
 				}));
 		Assert.assertEquals(
 			Arrays.asList(
-				"Text", "Decimal", "Text", "Decimal", "Text", "Integer", "Text",
-				"Text", "Text", "Text", "Text", "Text", "Text", "Decimal",
-				"Decimal"),
+				"Text", "Text", "Decimal", "Text", "Decimal", "Text", "Integer",
+				"Text", "Text", "Text", "Text", "Text", "Text", "Text",
+				"Decimal", "Decimal"),
 			TransformUtil.transform(
 				pimConnectorChannelFields, PIMConnectorChannelField::getType));
 		Assert.assertEquals(
-			Arrays.asList("productOptions", "productSpecifications", "tags"),
+			Arrays.asList(
+				"categories", "productOptions", "productSpecifications",
+				"tags"),
 			TransformUtil.transform(
 				pimConnectorChannelFields,
 				pimConnectorChannelField -> {
@@ -326,21 +402,30 @@ public class LiferayCommercePIMConnectorTest {
 		return jsonArray.getJSONObject(0);
 	}
 
+	private JSONObject _getRequestBodyJSONObject(String location)
+		throws Exception {
+
+		Http.Options options = _getOptions(location);
+
+		Http.Body body = options.getBody();
+
+		return JSONFactoryUtil.createJSONObject(body.getContent());
+	}
+
 	private List<ObjectEntry> _getRequiredObjectEntries(
 		ObjectEntry... objectEntries) {
 
 		List<ObjectEntry> requiredObjectEntries = ListUtil.fromArray(
 			_mockPIMFieldMappingObjectEntry(
 				"catalogExternalReferenceCode", StringPool.BLANK,
-				StringPool.BLANK,
-				PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE,
+				StringPool.BLANK, "fixedValue",
 				_CATALOG_EXTERNAL_REFERENCE_CODE_1),
 			_mockPIMFieldMappingObjectEntry(
 				"name", StringPool.BLANK, "title", "dynamicValue",
 				StringPool.BLANK),
 			_mockPIMFieldMappingObjectEntry(
-				"productType", StringPool.BLANK, StringPool.BLANK,
-				PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE, "simple"),
+				"productType", StringPool.BLANK, StringPool.BLANK, "fixedValue",
+				"simple"),
 			_mockPIMFieldMappingObjectEntry(
 				"skus[].sku", StringPool.BLANK, "sku", "dynamicValue",
 				StringPool.BLANK));
@@ -358,6 +443,171 @@ public class LiferayCommercePIMConnectorTest {
 		return jsonArray.getJSONObject(index);
 	}
 
+	private List<String> _getTaxonomyRequestPaths() {
+		return TransformUtil.transform(
+			_options,
+			options -> {
+				String location = options.getLocation();
+
+				int index = location.indexOf("/taxonomy-");
+
+				if (index == -1) {
+					return null;
+				}
+
+				return StringBundler.concat(
+					options.getMethod(), StringPool.SPACE,
+					location.substring(index));
+			});
+	}
+
+	private void _mockAssetCategories(
+		ObjectEntry pimProductObjectEntry, AssetCategory... assetCategories) {
+
+		long objectEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			pimProductObjectEntry.getObjectEntryId()
+		).thenReturn(
+			objectEntryId
+		);
+
+		Mockito.when(
+			_assetCategoryLocalService.getCategories(_CLASS_NAME, objectEntryId)
+		).thenReturn(
+			Arrays.asList(assetCategories)
+		);
+	}
+
+	private AssetCategory _mockAssetCategory(
+			AssetVocabulary assetVocabulary, String externalReferenceCode,
+			AssetCategory... ancestorAssetCategories)
+		throws Exception {
+
+		AssetCategory assetCategory = Mockito.mock(AssetCategory.class);
+
+		Mockito.when(
+			assetCategory.getAncestors()
+		).thenReturn(
+			Arrays.asList(ancestorAssetCategories)
+		);
+
+		Mockito.when(
+			assetCategory.getExternalReferenceCode()
+		).thenReturn(
+			externalReferenceCode
+		);
+
+		if (ancestorAssetCategories.length > 0) {
+			Mockito.when(
+				assetCategory.getParentCategory()
+			).thenReturn(
+				ancestorAssetCategories[0]
+			);
+		}
+
+		Mockito.when(
+			assetCategory.getTitle(LocaleUtil.US)
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		long assetVocabularyId = assetVocabulary.getVocabularyId();
+
+		Mockito.when(
+			assetCategory.getVocabularyId()
+		).thenReturn(
+			assetVocabularyId
+		);
+
+		Mockito.when(
+			assetCategory.isRootCategory()
+		).thenReturn(
+			ancestorAssetCategories.length == 0
+		);
+
+		return assetCategory;
+	}
+
+	private void _mockAssetTags(
+		ObjectEntry pimProductObjectEntry, String... assetTagNames) {
+
+		long objectEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			pimProductObjectEntry.getObjectEntryId()
+		).thenReturn(
+			objectEntryId
+		);
+
+		List<AssetTag> assetTags = TransformUtil.transformToList(
+			assetTagNames,
+			assetTagName -> {
+				AssetTag assetTag = Mockito.mock(AssetTag.class);
+
+				Mockito.when(
+					assetTag.getName()
+				).thenReturn(
+					assetTagName
+				);
+
+				return assetTag;
+			});
+
+		Mockito.when(
+			_assetTagLocalService.getTags(_CLASS_NAME, objectEntryId)
+		).thenReturn(
+			assetTags
+		);
+	}
+
+	private AssetVocabulary _mockAssetVocabulary(
+			String externalReferenceCode, int visibilityType)
+		throws Exception {
+
+		AssetVocabulary assetVocabulary = Mockito.mock(AssetVocabulary.class);
+
+		Mockito.when(
+			assetVocabulary.getExternalReferenceCode()
+		).thenReturn(
+			externalReferenceCode
+		);
+
+		Mockito.when(
+			assetVocabulary.getTitle(LocaleUtil.US)
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Mockito.when(
+			assetVocabulary.getVisibilityType()
+		).thenReturn(
+			visibilityType
+		);
+
+		long assetVocabularyId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			assetVocabulary.getVocabularyId()
+		).thenReturn(
+			assetVocabularyId
+		);
+
+		Mockito.when(
+			assetVocabulary.isMultiValued()
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			_assetVocabularyLocalService.getVocabulary(assetVocabularyId)
+		).thenReturn(
+			assetVocabulary
+		);
+
+		return assetVocabulary;
+	}
+
 	private void _mockHttp(Map<String, Integer> responseCodes)
 		throws Exception {
 
@@ -373,10 +623,13 @@ public class LiferayCommercePIMConnectorTest {
 				String location = options.getLocation();
 				Http.Response response = options.getResponse();
 
+				String request = StringBundler.concat(
+					options.getMethod(), StringPool.SPACE, location);
+
 				for (Map.Entry<String, Integer> entry :
 						responseCodes.entrySet()) {
 
-					if (location.contains(entry.getKey())) {
+					if (request.contains(entry.getKey())) {
 						response.setResponseCode(entry.getValue());
 
 						return JSONUtil.put(
@@ -480,8 +733,8 @@ public class LiferayCommercePIMConnectorTest {
 			_OBJECT_DEFINITION_ID
 		);
 
-		Mockito.when(
-			_objectEntryLocalService.getValues(objectEntry)
+		_objectEntryLocalServiceUtilMockedStatic.when(
+			() -> ObjectEntryLocalServiceUtil.getValues(objectEntry)
 		).thenReturn(
 			HashMapBuilder.<String, Serializable>put(
 				"sku", sku
@@ -492,6 +745,26 @@ public class LiferayCommercePIMConnectorTest {
 			).putAll(
 				values
 			).build()
+		);
+
+		return objectEntry;
+	}
+
+	private ObjectEntry _mockRepeatableGroupObjectEntry(String title)
+		throws Exception {
+
+		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+
+		Mockito.when(
+			objectEntry.getObjectEntryId()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
+
+		_objectEntryLocalServiceUtilMockedStatic.when(
+			() -> ObjectEntryLocalServiceUtil.getValues(objectEntry)
+		).thenReturn(
+			Collections.singletonMap("title", title)
 		);
 
 		return objectEntry;
@@ -509,15 +782,16 @@ public class LiferayCommercePIMConnectorTest {
 			_CATALOG_EXTERNAL_REFERENCE_CODE_1,
 			jsonObject.getString("catalogExternalReferenceCode"));
 		Assert.assertFalse(jsonObject.has("catalogId"));
-		Assert.assertEquals(
-			"SKU-1", jsonObject.getString("externalReferenceCode"));
-		Assert.assertEquals("simple", jsonObject.getString("productType"));
+		Assert.assertFalse(jsonObject.toString(), jsonObject.has("categories"));
 		Assert.assertFalse(
 			jsonObject.toString(), jsonObject.has("description"));
+		Assert.assertEquals(
+			"SKU-1", jsonObject.getString("externalReferenceCode"));
 		Assert.assertFalse(
 			jsonObject.toString(), jsonObject.has("productOptions"));
 		Assert.assertFalse(
 			jsonObject.toString(), jsonObject.has("productSpecifications"));
+		Assert.assertEquals("simple", jsonObject.getString("productType"));
 		Assert.assertFalse(jsonObject.toString(), jsonObject.has("tags"));
 
 		JSONObject nameJSONObject = jsonObject.getJSONObject("name");
@@ -539,8 +813,7 @@ public class LiferayCommercePIMConnectorTest {
 		List<ObjectEntry> objectEntries = ListUtil.fromArray(
 			_mockPIMFieldMappingObjectEntry(
 				"catalogExternalReferenceCode", StringPool.BLANK,
-				StringPool.BLANK,
-				PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE,
+				StringPool.BLANK, "fixedValue",
 				_CATALOG_EXTERNAL_REFERENCE_CODE_1),
 			_mockPIMFieldMappingObjectEntry(
 				"name", StringPool.BLANK, "title", "dynamicValue",
@@ -587,8 +860,8 @@ public class LiferayCommercePIMConnectorTest {
 				"productOptions", StringPool.BLANK, "color", "dynamicValue",
 				StringPool.BLANK),
 			_mockPIMFieldMappingObjectEntry(
-				"productType", StringPool.BLANK, StringPool.BLANK,
-				PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE, "simple"),
+				"productType", StringPool.BLANK, StringPool.BLANK, "fixedValue",
+				"simple"),
 			_mockPIMFieldMappingObjectEntry(
 				"skus[].sku", StringPool.BLANK, "sku", "dynamicValue",
 				StringPool.BLANK));
@@ -680,6 +953,144 @@ public class LiferayCommercePIMConnectorTest {
 		jsonArray = jsonObject.getJSONArray("log");
 
 		Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
+	}
+
+	private void _testExecuteWithCategories() throws Exception {
+		AssetVocabulary assetVocabulary = _mockAssetVocabulary(
+			RandomTestUtil.randomString(),
+			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC);
+
+		AssetCategory assetCategory1 = _mockAssetCategory(
+			assetVocabulary, RandomTestUtil.randomString());
+
+		AssetCategory assetCategory2 = _mockAssetCategory(
+			assetVocabulary, RandomTestUtil.randomString(), assetCategory1);
+
+		AssetCategory assetCategory3 = _mockAssetCategory(
+			assetVocabulary, RandomTestUtil.randomString(), assetCategory2,
+			assetCategory1);
+
+		ObjectEntry pimProductObjectEntry1 = _mockPIMProductObjectEntry(
+			"SKU-1", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetCategories(
+			pimProductObjectEntry1, assetCategory3,
+			_mockAssetCategory(
+				_mockAssetVocabulary(
+					RandomTestUtil.randomString(),
+					AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL),
+				RandomTestUtil.randomString()));
+
+		ObjectEntry pimProductObjectEntry2 = _mockPIMProductObjectEntry(
+			"SKU-2", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetCategories(
+			pimProductObjectEntry2,
+			_mockAssetCategory(assetVocabulary, RandomTestUtil.randomString()));
+
+		List<ObjectEntry> pimFieldMappingObjectEntries =
+			_getRequiredObjectEntries(
+				_mockPIMFieldMappingObjectEntry(
+					"categories", StringPool.BLANK, StringPool.BLANK,
+					"categories", StringPool.BLANK));
+
+		JSONObject jsonObject1 = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			Collections.<String, ObjectEntry>emptyMap(), pimProductObjectEntry1,
+			pimProductObjectEntry2);
+
+		JSONArray jsonArray = jsonObject1.getJSONArray("categories");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		jsonObject1 = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			assetCategory3.getExternalReferenceCode(),
+			jsonObject1.getString("externalReferenceCode"));
+
+		Assert.assertEquals(
+			Arrays.asList(
+				"PUT /taxonomy-vocabularies/by-external-reference-code/" +
+					assetVocabulary.getExternalReferenceCode(),
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					assetCategory1.getExternalReferenceCode(),
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					assetCategory2.getExternalReferenceCode(),
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					assetCategory3.getExternalReferenceCode()),
+			_getTaxonomyRequestPaths());
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-vocabularies/by-external-reference-code/" +
+				assetVocabulary.getExternalReferenceCode());
+
+		Assert.assertTrue(jsonObject1.getBoolean("multiValued"));
+		Assert.assertEquals(
+			assetVocabulary.getTitle(LocaleUtil.US),
+			jsonObject1.getString("name"));
+		Assert.assertEquals("Anyone", jsonObject1.getString("viewableBy"));
+		Assert.assertEquals("PUBLIC", jsonObject1.getString("visibilityType"));
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-categories/by-external-reference-code/" +
+				assetCategory1.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			assetCategory1.getTitle(LocaleUtil.US),
+			jsonObject1.getString("name"));
+
+		JSONObject jsonObject2 = jsonObject1.getJSONObject(
+			"parentTaxonomyCategory");
+
+		Assert.assertEquals(
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			jsonObject2.getLong("id"));
+
+		jsonObject2 = jsonObject1.getJSONObject("parentTaxonomyVocabulary");
+
+		Assert.assertEquals(
+			assetVocabulary.getExternalReferenceCode(),
+			jsonObject2.getString("externalReferenceCode"));
+
+		Assert.assertEquals("Anyone", jsonObject1.getString("viewableBy"));
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-categories/by-external-reference-code/" +
+				assetCategory2.getExternalReferenceCode());
+
+		jsonObject2 = jsonObject1.getJSONObject("parentTaxonomyCategory");
+
+		Assert.assertEquals(
+			assetCategory1.getExternalReferenceCode(),
+			jsonObject2.getString("externalReferenceCode"));
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-categories/by-external-reference-code/" +
+				assetCategory3.getExternalReferenceCode());
+
+		jsonObject2 = jsonObject1.getJSONObject("parentTaxonomyCategory");
+
+		Assert.assertEquals(
+			assetCategory2.getExternalReferenceCode(),
+			jsonObject2.getString("externalReferenceCode"));
+
+		pimProductObjectEntry1 = _mockPIMProductObjectEntry(
+			"SKU-1", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetCategories(pimProductObjectEntry1);
+
+		jsonObject1 = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			Collections.<String, ObjectEntry>emptyMap(),
+			pimProductObjectEntry1);
+
+		jsonArray = jsonObject1.getJSONArray("categories");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
+
+		Assert.assertEquals(
+			Collections.emptyList(), _getTaxonomyRequestPaths());
 	}
 
 	private void _testExecuteWithErrors() throws Exception {
@@ -813,6 +1224,44 @@ public class LiferayCommercePIMConnectorTest {
 
 		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
+		_mockHttp(
+			HashMapBuilder.put(
+				"/taxonomy-categories", 500
+			).build());
+
+		ObjectEntry pimProductObjectEntry = _mockPIMProductObjectEntry(
+			"SKU-1", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetCategories(
+			pimProductObjectEntry,
+			_mockAssetCategory(
+				_mockAssetVocabulary(
+					RandomTestUtil.randomString(),
+					AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC),
+				RandomTestUtil.randomString()));
+
+		_assertPIMConnectorException(
+			"the-remote-instance-returned-an-error",
+			() -> _execute(
+				_pimConnectorConfigurationValues,
+				_getRequiredObjectEntries(
+					_mockPIMFieldMappingObjectEntry(
+						"categories", StringPool.BLANK, StringPool.BLANK,
+						"categories", StringPool.BLANK)),
+				Collections.<String, ObjectEntry>emptyMap(),
+				HashMapBuilder.put(
+					"SKU-1", Arrays.asList(pimProductObjectEntry)
+				).build()));
+
+		Assert.assertFalse(
+			ListUtil.exists(
+				_options,
+				options -> {
+					String location = options.getLocation();
+
+					return location.contains("/import-task");
+				}));
+
 		_mockHttp(Collections.emptyMap());
 	}
 
@@ -839,12 +1288,10 @@ public class LiferayCommercePIMConnectorTest {
 					"productSpecifications", StringPool.BLANK, "material",
 					"dynamicValue", StringPool.BLANK),
 				_mockPIMFieldMappingObjectEntry(
-					"tags", StringPool.BLANK, StringPool.BLANK,
-					PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE,
+					"tags", StringPool.BLANK, StringPool.BLANK, "fixedValue",
 					"Home Office"),
 				_mockPIMFieldMappingObjectEntry(
-					"tags", StringPool.BLANK, StringPool.BLANK,
-					PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE,
+					"tags", StringPool.BLANK, StringPool.BLANK, "fixedValue",
 					"Summer Sale")),
 			HashMapBuilder.put(
 				"description",
@@ -962,8 +1409,7 @@ public class LiferayCommercePIMConnectorTest {
 			_getRequiredObjectEntries(
 				_mockPIMFieldMappingObjectEntry(
 					"description", RandomTestUtil.randomString(),
-					StringPool.BLANK,
-					PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE, "A shirt")),
+					StringPool.BLANK, "fixedValue", "A shirt")),
 			Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
 				"SKU-1", Collections.<String, Serializable>emptyMap()));
@@ -1251,7 +1697,7 @@ public class LiferayCommercePIMConnectorTest {
 					"dynamicValue", StringPool.BLANK),
 				_mockPIMFieldMappingObjectEntry(
 					"productSpecifications", StringPool.BLANK, StringPool.BLANK,
-					PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE, "Red")),
+					"fixedValue", "Red")),
 			Collections.<String, ObjectEntry>emptyMap(),
 			_mockPIMProductObjectEntry(
 				"SKU-1",
@@ -1275,6 +1721,447 @@ public class LiferayCommercePIMConnectorTest {
 			productSpecificationJSONObject.getJSONObject("label");
 
 		Assert.assertEquals("Color", labelJSONObject.getString("en_US"));
+	}
+
+	private void _testExecuteWithRepeatableGroupFieldMappings()
+		throws Exception {
+
+		Mockito.when(
+			_objectDefinition.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		ObjectFolder objectFolder = Mockito.mock(ObjectFolder.class);
+
+		Mockito.when(
+			objectFolder.getObjectFolderId()
+		).thenReturn(
+			_OBJECT_FOLDER_ID
+		);
+
+		_objectFolderLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectFolderLocalServiceUtil.
+					fetchObjectFolderByExternalReferenceCode(
+						ObjectFolderConstants.
+							EXTERNAL_REFERENCE_CODE_STRUCTURE_REPEATABLE_GROUPS,
+						_COMPANY_ID)
+		).thenReturn(
+			objectFolder
+		);
+
+		ObjectDefinition repeatableGroupObjectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			repeatableGroupObjectDefinition.getObjectDefinitionId()
+		).thenReturn(
+			_OBJECT_DEFINITION_ID_REPEATABLE_GROUP
+		);
+
+		Mockito.when(
+			repeatableGroupObjectDefinition.getObjectFolderId()
+		).thenReturn(
+			_OBJECT_FOLDER_ID
+		);
+
+		_objectDefinitionLocalServiceUtilMockedStatic.when(
+			() -> ObjectDefinitionLocalServiceUtil.fetchObjectDefinition(
+				_OBJECT_DEFINITION_ID_REPEATABLE_GROUP)
+		).thenReturn(
+			repeatableGroupObjectDefinition
+		);
+
+		ObjectField objectField = Mockito.mock(ObjectField.class);
+
+		_objectFieldLocalServiceUtilMockedStatic.when(
+			() -> ObjectFieldLocalServiceUtil.fetchObjectField(
+				_OBJECT_DEFINITION_ID_REPEATABLE_GROUP, "title")
+		).thenReturn(
+			objectField
+		);
+
+		ObjectRelationship objectRelationship = Mockito.mock(
+			ObjectRelationship.class);
+
+		Mockito.when(
+			objectRelationship.getObjectDefinitionId2()
+		).thenReturn(
+			_OBJECT_DEFINITION_ID_REPEATABLE_GROUP
+		);
+
+		Mockito.when(
+			objectRelationship.getObjectRelationshipId()
+		).thenReturn(
+			_OBJECT_RELATIONSHIP_ID
+		);
+
+		Mockito.when(
+			objectRelationship.getType()
+		).thenReturn(
+			ObjectRelationshipConstants.TYPE_ONE_TO_MANY
+		);
+
+		Mockito.when(
+			objectRelationship.isEdge()
+		).thenReturn(
+			true
+		);
+
+		_objectRelationshipLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectRelationshipLocalServiceUtil.
+					fetchObjectRelationshipByObjectDefinitionId1(
+						_OBJECT_DEFINITION_ID, "r_images")
+		).thenReturn(
+			objectRelationship
+		);
+
+		ObjectEntry pimProductObjectEntry = _mockPIMProductObjectEntry(
+			"SKU-1",
+			HashMapBuilder.<String, Serializable>put(
+				"description", StringPool.BLANK
+			).build());
+
+		long groupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			pimProductObjectEntry.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
+		long objectEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			pimProductObjectEntry.getObjectEntryId()
+		).thenReturn(
+			objectEntryId
+		);
+
+		List<ObjectEntry> repeatableGroupObjectEntries = Arrays.asList(
+			_mockRepeatableGroupObjectEntry("Front"),
+			_mockRepeatableGroupObjectEntry(StringPool.BLANK),
+			_mockRepeatableGroupObjectEntry("Back"));
+
+		_objectEntryLocalServiceUtilMockedStatic.when(
+			() -> ObjectEntryLocalServiceUtil.getRelatedObjectEntries(
+				groupId, _OBJECT_RELATIONSHIP_ID, null, false, objectEntryId,
+				true, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)
+		).thenReturn(
+			repeatableGroupObjectEntries
+		);
+
+		JSONObject jsonObject = _getProductJSONObject(
+			"SKU-1",
+			ListUtil.fromArray(
+				_mockPIMFieldMappingObjectEntry(
+					"catalogExternalReferenceCode", StringPool.BLANK,
+					StringPool.BLANK, "fixedValue",
+					_CATALOG_EXTERNAL_REFERENCE_CODE_1),
+				_mockPIMFieldMappingObjectEntry(
+					"name", StringPool.BLANK, "r_images/title", "dynamicValue",
+					StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"productOptions", StringPool.BLANK, "r_images/title",
+					"dynamicValue", StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"productType", StringPool.BLANK, StringPool.BLANK,
+					"fixedValue", "simple"),
+				_mockPIMFieldMappingObjectEntry(
+					"skus[].sku", StringPool.BLANK, "sku", "dynamicValue",
+					StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"tags", StringPool.BLANK, "description", "dynamicValue",
+					StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"tags", StringPool.BLANK, "r_deleted/title", "dynamicValue",
+					StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"tags", StringPool.BLANK, "r_images/deleted",
+					"dynamicValue", StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"tags", StringPool.BLANK, "r_images/title", "dynamicValue",
+					StringPool.BLANK)),
+			Collections.<String, ObjectEntry>emptyMap(), pimProductObjectEntry);
+
+		JSONObject nameJSONObject = jsonObject.getJSONObject("name");
+
+		Assert.assertEquals("Front Back", nameJSONObject.getString("en_US"));
+
+		JSONArray jsonArray = jsonObject.getJSONArray("productOptions");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		JSONObject productOptionJSONObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			"r_images-title", productOptionJSONObject.getString("key"));
+		Assert.assertEquals(
+			"r_images-title",
+			productOptionJSONObject.getString("optionExternalReferenceCode"));
+
+		jsonArray = productOptionJSONObject.getJSONArray("productOptionValues");
+
+		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
+
+		JSONObject productOptionValueJSONObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			"front", productOptionValueJSONObject.getString("key"));
+
+		productOptionValueJSONObject = jsonArray.getJSONObject(1);
+
+		Assert.assertEquals(
+			"back", productOptionValueJSONObject.getString("key"));
+
+		JSONObject skuJSONObject = _getSkuJSONObject(0, jsonObject);
+
+		jsonArray = skuJSONObject.getJSONArray("skuOptions");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		JSONObject skuOptionJSONObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			"r_images-title", skuOptionJSONObject.getString("key"));
+		Assert.assertEquals("front", skuOptionJSONObject.getString("value"));
+
+		Assert.assertEquals(
+			JSONUtil.putAll(
+				"Front", "Back"
+			).toString(),
+			String.valueOf(jsonObject.getJSONArray("tags")));
+	}
+
+	private void _testExecuteWithTags() throws Exception {
+		String assetTagName1 = RandomTestUtil.randomString();
+		String sourceFieldName = RandomTestUtil.randomString();
+
+		ObjectEntry pimProductObjectEntry1 = _mockPIMProductObjectEntry(
+			"SKU-1",
+			HashMapBuilder.<String, Serializable>put(
+				sourceFieldName, assetTagName1
+			).build());
+
+		String assetTagName2 = RandomTestUtil.randomString();
+
+		_mockAssetTags(pimProductObjectEntry1, assetTagName1, assetTagName2);
+
+		ObjectEntry pimProductObjectEntry2 = _mockPIMProductObjectEntry(
+			"SKU-2", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetTags(pimProductObjectEntry2, RandomTestUtil.randomString());
+
+		List<ObjectEntry> pimFieldMappingObjectEntries =
+			_getRequiredObjectEntries(
+				_mockPIMFieldMappingObjectEntry(
+					"tags", StringPool.BLANK, sourceFieldName, "dynamicValue",
+					StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"tags", StringPool.BLANK, StringPool.BLANK, "tags",
+					StringPool.BLANK));
+
+		JSONObject jsonObject = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			Collections.<String, ObjectEntry>emptyMap(), pimProductObjectEntry1,
+			pimProductObjectEntry2);
+
+		Assert.assertEquals(
+			Arrays.asList(assetTagName1, assetTagName2),
+			JSONUtil.toStringList(jsonObject.getJSONArray("tags")));
+
+		jsonObject = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			HashMapBuilder.put(
+				"tags",
+				_mockPIMFieldMappingRuleObjectEntry(
+					HashMapBuilder.<String, Serializable>put(
+						"useFirstNonemptySource", true
+					).build())
+			).build(),
+			pimProductObjectEntry1);
+
+		Assert.assertEquals(
+			Collections.singletonList(assetTagName1),
+			JSONUtil.toStringList(jsonObject.getJSONArray("tags")));
+
+		pimProductObjectEntry1 = _mockPIMProductObjectEntry(
+			"SKU-1", Collections.<String, Serializable>emptyMap());
+
+		_mockAssetTags(pimProductObjectEntry1);
+
+		jsonObject = _getProductJSONObject(
+			"SKU-1",
+			_getRequiredObjectEntries(
+				_mockPIMFieldMappingObjectEntry(
+					"tags", StringPool.BLANK, StringPool.BLANK, "tags",
+					StringPool.BLANK)),
+			Collections.<String, ObjectEntry>emptyMap(),
+			pimProductObjectEntry1);
+
+		JSONArray jsonArray = jsonObject.getJSONArray("tags");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
+	}
+
+	private void _testExecuteWithTopicVocabulary() throws Exception {
+		String sourceFieldName = RandomTestUtil.randomString();
+		String value1 = StringBundler.concat(
+			RandomTestUtil.randomString(), StringPool.SLASH,
+			RandomTestUtil.randomString());
+
+		ObjectEntry pimProductObjectEntry = _mockPIMProductObjectEntry(
+			"SKU-1",
+			HashMapBuilder.<String, Serializable>put(
+				sourceFieldName, value1
+			).build());
+
+		AssetVocabulary assetVocabulary = _mockAssetVocabulary(
+			AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC,
+			AssetVocabularyConstants.VISIBILITY_TYPE_PUBLIC);
+
+		AssetCategory assetCategory = _mockAssetCategory(
+			assetVocabulary, RandomTestUtil.randomString());
+
+		_mockAssetCategories(pimProductObjectEntry, assetCategory);
+
+		Group group = Mockito.mock(Group.class);
+		long groupId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			group.getGroupId()
+		).thenReturn(
+			groupId
+		);
+
+		Mockito.when(
+			_groupLocalService.getCompanyGroup(Mockito.anyLong())
+		).thenReturn(
+			group
+		);
+
+		Mockito.when(
+			_assetVocabularyLocalService.
+				getAssetVocabularyByExternalReferenceCode(
+					AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC,
+					groupId)
+		).thenReturn(
+			assetVocabulary
+		);
+
+		String value2 = StringUtil.toLowerCase(RandomTestUtil.randomString(76));
+
+		List<ObjectEntry> pimFieldMappingObjectEntries =
+			_getRequiredObjectEntries(
+				_mockPIMFieldMappingObjectEntry(
+					"categories", StringPool.BLANK, sourceFieldName,
+					"dynamicValue", StringPool.BLANK),
+				_mockPIMFieldMappingObjectEntry(
+					"categories", StringPool.BLANK, StringPool.BLANK,
+					"fixedValue", value2),
+				_mockPIMFieldMappingObjectEntry(
+					"categories", StringPool.BLANK, StringPool.BLANK,
+					"categories", StringPool.BLANK));
+
+		JSONObject jsonObject1 = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			HashMapBuilder.put(
+				"categories",
+				_mockPIMFieldMappingRuleObjectEntry(
+					HashMapBuilder.<String, Serializable>put(
+						"textCase", "upper"
+					).build())
+			).build(),
+			pimProductObjectEntry);
+
+		String externalReferenceCode1 = StringUtil.toLowerCase(
+			StringUtil.replace(value1, CharPool.SLASH, CharPool.DASH));
+		String externalReferenceCode2 = PortalUUIDUtil.generate(
+			value2.getBytes());
+
+		Assert.assertEquals(
+			Arrays.asList(
+				externalReferenceCode1, externalReferenceCode2,
+				assetCategory.getExternalReferenceCode()),
+			JSONUtil.toStringList(
+				jsonObject1.getJSONArray("categories"),
+				"externalReferenceCode"));
+
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				"GET /taxonomy-vocabularies/by-external-reference-code/L_TOPIC",
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					assetCategory.getExternalReferenceCode(),
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					externalReferenceCode1,
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					externalReferenceCode2),
+			SetUtil.fromList(_getTaxonomyRequestPaths()));
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-categories/by-external-reference-code/" +
+				assetCategory.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			assetCategory.getTitle(LocaleUtil.US),
+			jsonObject1.getString("name"));
+
+		jsonObject1 = _getRequestBodyJSONObject(
+			"/taxonomy-categories/by-external-reference-code/" +
+				externalReferenceCode1);
+
+		Assert.assertEquals(
+			StringUtil.toUpperCase(value1), jsonObject1.getString("name"));
+
+		JSONObject jsonObject2 = jsonObject1.getJSONObject(
+			"parentTaxonomyCategory");
+
+		Assert.assertEquals(
+			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
+			jsonObject2.getLong("id"));
+
+		jsonObject2 = jsonObject1.getJSONObject("parentTaxonomyVocabulary");
+
+		Assert.assertEquals(
+			AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC,
+			jsonObject2.getString("externalReferenceCode"));
+
+		Assert.assertEquals("Anyone", jsonObject1.getString("viewableBy"));
+
+		_mockHttp(
+			HashMapBuilder.put(
+				"GET https://example.com/o/headless-admin-taxonomy", 404
+			).build());
+
+		jsonObject1 = _getProductJSONObject(
+			"SKU-1", pimFieldMappingObjectEntries,
+			HashMapBuilder.put(
+				"categories",
+				_mockPIMFieldMappingRuleObjectEntry(
+					HashMapBuilder.<String, Serializable>put(
+						"useFirstNonemptySource", true
+					).build())
+			).build(),
+			_mockPIMProductObjectEntry(
+				"SKU-1", Collections.<String, Serializable>emptyMap()));
+
+		Assert.assertEquals(
+			Collections.singletonList(externalReferenceCode2),
+			JSONUtil.toStringList(
+				jsonObject1.getJSONArray("categories"),
+				"externalReferenceCode"));
+
+		Assert.assertEquals(
+			Arrays.asList(
+				"GET /taxonomy-vocabularies/by-external-reference-code/L_TOPIC",
+				"PUT /taxonomy-vocabularies/by-external-reference-code/L_TOPIC",
+				"PUT /taxonomy-categories/by-external-reference-code/" +
+					externalReferenceCode2),
+			_getTaxonomyRequestPaths());
+
+		_mockHttp(Collections.emptyMap());
 	}
 
 	private void _testExecuteWithTrailingSlashURL() throws Exception {
@@ -1353,10 +2240,20 @@ public class LiferayCommercePIMConnectorTest {
 	private static final String _CLASS_NAME =
 		"com.liferay.object.model.ObjectDefinition#PIMBasicProduct";
 
+	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
+
 	private static final long _LIST_TYPE_DEFINITION_ID =
 		RandomTestUtil.randomLong();
 
 	private static final long _OBJECT_DEFINITION_ID =
+		RandomTestUtil.randomLong();
+
+	private static final long _OBJECT_DEFINITION_ID_REPEATABLE_GROUP =
+		RandomTestUtil.randomLong();
+
+	private static final long _OBJECT_FOLDER_ID = RandomTestUtil.randomLong();
+
+	private static final long _OBJECT_RELATIONSHIP_ID =
 		RandomTestUtil.randomLong();
 
 	private static final Map<String, Serializable>
@@ -1369,8 +2266,16 @@ public class LiferayCommercePIMConnectorTest {
 				"url", "https://example.com"
 			).build();
 
+	private final AssetCategoryLocalService _assetCategoryLocalService =
+		Mockito.mock(AssetCategoryLocalService.class);
+	private final AssetTagLocalService _assetTagLocalService = Mockito.mock(
+		AssetTagLocalService.class);
+	private final AssetVocabularyLocalService _assetVocabularyLocalService =
+		Mockito.mock(AssetVocabularyLocalService.class);
 	private final FriendlyURLNormalizer _friendlyURLNormalizer = Mockito.mock(
 		FriendlyURLNormalizer.class);
+	private final GroupLocalService _groupLocalService = Mockito.mock(
+		GroupLocalService.class);
 	private final MockedStatic<HtmlParserUtil> _htmlParserUtilMockedStatic =
 		Mockito.mockStatic(HtmlParserUtil.class);
 	private final Http _http = Mockito.mock(Http.class);
@@ -1380,15 +2285,27 @@ public class LiferayCommercePIMConnectorTest {
 	private final MockedStatic<ListTypeEntryLocalServiceUtil>
 		_listTypeEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ListTypeEntryLocalServiceUtil.class);
+	private final MockedStatic<ModelHintsUtil> _modelHintsUtilMockedStatic =
+		Mockito.mockStatic(ModelHintsUtil.class);
 	private final ObjectDefinition _objectDefinition = Mockito.mock(
 		ObjectDefinition.class);
 	private final ObjectDefinitionLocalService _objectDefinitionLocalService =
 		Mockito.mock(ObjectDefinitionLocalService.class);
-	private final ObjectEntryLocalService _objectEntryLocalService =
-		Mockito.mock(ObjectEntryLocalService.class);
+	private final MockedStatic<ObjectDefinitionLocalServiceUtil>
+		_objectDefinitionLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			ObjectDefinitionLocalServiceUtil.class);
+	private final MockedStatic<ObjectEntryLocalServiceUtil>
+		_objectEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			ObjectEntryLocalServiceUtil.class);
 	private final MockedStatic<ObjectFieldLocalServiceUtil>
 		_objectFieldLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ObjectFieldLocalServiceUtil.class);
+	private final MockedStatic<ObjectFolderLocalServiceUtil>
+		_objectFolderLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			ObjectFolderLocalServiceUtil.class);
+	private final MockedStatic<ObjectRelationshipLocalServiceUtil>
+		_objectRelationshipLocalServiceUtilMockedStatic = Mockito.mockStatic(
+			ObjectRelationshipLocalServiceUtil.class);
 	private final List<Http.Options> _options = new ArrayList<>();
 	private final ObjectEntry _pimConnectorObjectEntry = Mockito.mock(
 		ObjectEntry.class);
