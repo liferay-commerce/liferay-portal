@@ -1454,6 +1454,7 @@
 		<exception>CommerceCatalogProducts</exception>
 		<exception>CommerceCatalogSystem</exception>
 		<exception>CommerceChannelAccountEntryRelType</exception>
+		<exception>CommerceChannelGuestCheckout</exception>
 		<exception>CommerceChannelName</exception>
 		<exception>CommerceChannelSiteGroupId</exception>
 		<exception>CommerceChannelType</exception>

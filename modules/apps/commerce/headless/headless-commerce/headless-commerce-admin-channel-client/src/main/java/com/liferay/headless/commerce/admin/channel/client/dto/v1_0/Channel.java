@@ -223,6 +223,48 @@ public class Channel implements Cloneable, Serializable {
 
 	protected String externalReferenceCode;
 
+	public Boolean getGuestBrowsingEnabled() {
+		return guestBrowsingEnabled;
+	}
+
+	public void setGuestBrowsingEnabled(Boolean guestBrowsingEnabled) {
+		this.guestBrowsingEnabled = guestBrowsingEnabled;
+	}
+
+	public void setGuestBrowsingEnabled(
+		UnsafeSupplier<Boolean, Exception> guestBrowsingEnabledUnsafeSupplier) {
+
+		try {
+			guestBrowsingEnabled = guestBrowsingEnabledUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean guestBrowsingEnabled;
+
+	public Boolean getGuestCheckoutEnabled() {
+		return guestCheckoutEnabled;
+	}
+
+	public void setGuestCheckoutEnabled(Boolean guestCheckoutEnabled) {
+		this.guestCheckoutEnabled = guestCheckoutEnabled;
+	}
+
+	public void setGuestCheckoutEnabled(
+		UnsafeSupplier<Boolean, Exception> guestCheckoutEnabledUnsafeSupplier) {
+
+		try {
+			guestCheckoutEnabled = guestCheckoutEnabledUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean guestCheckoutEnabled;
+
 	public Long getId() {
 		return id;
 	}
@@ -365,4 +407,4 @@ public class Channel implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:2063566551
+// LIFERAY-REST-BUILDER-HASH:1551884976
