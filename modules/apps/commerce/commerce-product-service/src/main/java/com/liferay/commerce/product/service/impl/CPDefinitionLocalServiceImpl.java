@@ -45,6 +45,7 @@ import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.model.CPDefinitionTable;
+import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.commerce.product.model.CPDisplayLayout;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceOptionValueRel;
@@ -60,6 +61,7 @@ import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLinkLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CPDisplayLayoutLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.service.CPInstanceOptionValueRelLocalService;
@@ -76,6 +78,7 @@ import com.liferay.commerce.product.service.persistence.CPDefinitionLinkPersiste
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionValueRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPDefinitionSpecificationOptionValuePersistence;
+import com.liferay.commerce.product.service.persistence.CPDefinitionVisibilityRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPDisplayLayoutPersistence;
 import com.liferay.commerce.product.service.persistence.CPInstanceOptionValueRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPInstancePersistence;
@@ -110,6 +113,7 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -880,6 +884,16 @@ public class CPDefinitionLocalServiceImpl
 				newCPDefinition.getModelClassName(), newCPDefinitionId);
 		}
 
+		for (CPDefinitionVisibilityRel cpDefinitionVisibilityRel :
+				_cpDefinitionVisibilityRelPersistence.findByCPDefinitionId(
+					cpDefinitionId)) {
+
+			_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+				null, userId, newCPDefinitionId,
+				cpDefinitionVisibilityRel.getClassName(),
+				cpDefinitionVisibilityRel.getClassPK());
+		}
+
 		List<CPVersionContributor> cpVersionContributors =
 			CPVersionContributorRegistryUtil.getCPVersionContributors();
 
@@ -1268,6 +1282,16 @@ public class CPDefinitionLocalServiceImpl
 			_accountGroupRelLocalService.addAccountGroupRel(
 				accountGroupRel.getAccountGroupId(),
 				targetCPDefinition.getModelClassName(), newCPDefinitionId);
+		}
+
+		for (CPDefinitionVisibilityRel cpDefinitionVisibilityRel :
+				_cpDefinitionVisibilityRelPersistence.findByCPDefinitionId(
+					sourceCPDefinitionId)) {
+
+			_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+				null, serviceContext.getUserId(), newCPDefinitionId,
+				cpDefinitionVisibilityRel.getClassName(),
+				cpDefinitionVisibilityRel.getClassPK());
 		}
 
 		List<CPVersionContributor> cpVersionContributors =
@@ -2495,6 +2519,20 @@ public class CPDefinitionLocalServiceImpl
 		return cpDefinitionPersistence.update(cpDefinition);
 	}
 
+	@Indexable(type = IndexableType.REINDEX)
+	@Override
+	public CPDefinition updateCPDefinitionRoleFilter(
+			long cpDefinitionId, boolean enable)
+		throws PortalException {
+
+		CPDefinition cpDefinition = cpDefinitionPersistence.findByPrimaryKey(
+			cpDefinitionId);
+
+		cpDefinition.setRoleFilterEnabled(enable);
+
+		return cpDefinitionPersistence.update(cpDefinition);
+	}
+
 	@Override
 	public void updateCPDefinitionsByCPTaxCategoryId(long cpTaxCategoryId)
 		throws PortalException {
@@ -3377,6 +3415,11 @@ public class CPDefinitionLocalServiceImpl
 					ArrayUtil.toArray(statuses)));
 		}
 
+		if (FeatureFlagManagerUtil.isEnabled(companyId, "LPD-112683")) {
+			predicate = predicate.and(
+				CPDefinitionTable.INSTANCE.roleFilterEnabled.eq(false));
+		}
+
 		predicate = predicate.and(
 			_getAccountGroupPredicate(accountGroupIds)
 		).and(
@@ -3865,6 +3908,14 @@ public class CPDefinitionLocalServiceImpl
 	@Reference
 	private CPDefinitionSpecificationOptionValuePersistence
 		_cpDefinitionSpecificationOptionValuePersistence;
+
+	@Reference
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
+
+	@Reference
+	private CPDefinitionVisibilityRelPersistence
+		_cpDefinitionVisibilityRelPersistence;
 
 	@Reference
 	private CPDisplayLayoutLocalService _cpDisplayLayoutLocalService;

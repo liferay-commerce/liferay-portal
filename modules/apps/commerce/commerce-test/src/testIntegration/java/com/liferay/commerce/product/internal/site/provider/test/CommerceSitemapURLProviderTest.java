@@ -618,6 +618,42 @@ public class CommerceSitemapURLProviderTest {
 		}
 	}
 
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testCPDefinitionSitemapURLProviderWithRoleFilterEnabled()
+		throws Exception {
+
+		CPDefinition cpDefinition1 = _addCPDefinition();
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition1.getCPDefinitionId(), true);
+
+		CPDefinition cpDefinition2 = _addCPDefinition();
+
+		Element element = _visitLayoutSet();
+
+		String xml = element.asXML();
+
+		Assert.assertFalse(xml.contains(_getURLTitle(cpDefinition1)));
+		Assert.assertTrue(xml.contains(_getURLTitle(cpDefinition2)));
+	}
+
+	@Test
+	public void testCPDefinitionSitemapURLProviderWithRoleFilterEnabledWhenFeatureFlagIsDisabled()
+		throws Exception {
+
+		CPDefinition cpDefinition = _addCPDefinition();
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition.getCPDefinitionId(), true);
+
+		Element element = _visitLayoutSet();
+
+		String xml = element.asXML();
+
+		Assert.assertTrue(xml.contains(_getURLTitle(cpDefinition)));
+	}
+
 	@Test
 	public void testCPDefinitionSitemapURLProviderWithVirtualHost()
 		throws Exception {

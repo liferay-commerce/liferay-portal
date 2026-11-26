@@ -9,6 +9,7 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
+import com.liferay.commerce.constants.CommerceConstants;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
 import com.liferay.commerce.constants.CommerceShipmentConstants;
@@ -19,6 +20,7 @@ import com.liferay.commerce.exception.CommerceOrderBillingAddressException;
 import com.liferay.commerce.exception.CommerceOrderShippingAddressException;
 import com.liferay.commerce.exception.CommerceOrderShippingMethodException;
 import com.liferay.commerce.exception.CommerceOrderStatusException;
+import com.liferay.commerce.exception.CommerceOrderValidatorException;
 import com.liferay.commerce.internal.order.status.CancelledCommerceOrderStatusImpl;
 import com.liferay.commerce.internal.order.status.CompletedCommerceOrderStatusImpl;
 import com.liferay.commerce.internal.order.status.InProgressCommerceOrderStatusImpl;
@@ -36,6 +38,8 @@ import com.liferay.commerce.order.status.CommerceOrderStatus;
 import com.liferay.commerce.payment.test.util.TestCommercePaymentMethod;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
@@ -54,7 +58,9 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.RandomUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -63,12 +69,18 @@ import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUti
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
+import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
+import com.liferay.portal.kernel.settings.ModifiableSettings;
+import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -585,6 +597,45 @@ public class CommerceOrderEngineTest {
 		Assert.assertEquals(
 			PendingCommerceOrderStatusImpl.KEY,
 			_commerceOrder.getOrderStatus());
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testCheckoutOrderWithRoleFilterEnabled() throws Exception {
+		List<CommerceOrderItem> commerceOrderItems =
+			_commerceOrder.getCommerceOrderItems();
+
+		CommerceOrderItem commerceOrderItem = commerceOrderItems.get(0);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			commerceOrderItem.getCPDefinitionId(), Role.class.getName(),
+			role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			commerceOrderItem.getCPDefinitionId(), true);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
+
+		PortalException portalException = Assert.assertThrows(
+			PortalException.class,
+			() -> _commerceOrderEngine.checkoutCommerceOrder(
+				_commerceOrder, _user.getUserId()));
+
+		Throwable throwable = portalException.getCause();
+
+		Assert.assertSame(
+			CommerceOrderValidatorException.class, throwable.getClass());
+
+		_userLocalService.addRoleUser(role.getRoleId(), _user);
+
+		_commerceOrder = _commerceOrderEngine.checkoutCommerceOrder(
+			_commerceOrder, _user.getUserId());
+
+		Assert.assertFalse(_commerceOrder.isOpen());
 	}
 
 	@Test
@@ -1265,6 +1316,64 @@ public class CommerceOrderEngineTest {
 		}
 	}
 
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testTransitionCommerceOrderWithRoleFilterEnabled()
+		throws Exception {
+
+		Settings settings = FallbackKeysSettingsUtil.getSettings(
+			new GroupServiceSettingsLocator(
+				_commerceChannel.getGroupId(),
+				CommerceConstants.SERVICE_NAME_COMMERCE_ORDER_FIELDS));
+
+		ModifiableSettings modifiableSettings =
+			settings.getModifiableSettings();
+
+		modifiableSettings.setValue("requestQuoteEnabled", "true");
+
+		modifiableSettings.store();
+
+		List<CommerceOrderItem> commerceOrderItems =
+			_commerceOrder.getCommerceOrderItems();
+
+		CommerceOrderItem commerceOrderItem = commerceOrderItems.get(0);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			commerceOrderItem.getCPDefinitionId(), Role.class.getName(),
+			role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			commerceOrderItem.getCPDefinitionId(), true);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
+
+		PortalException portalException = Assert.assertThrows(
+			PortalException.class,
+			() -> _commerceOrderEngine.transitionCommerceOrder(
+				_commerceOrder,
+				CommerceOrderConstants.ORDER_STATUS_QUOTE_REQUESTED,
+				_user.getUserId(), true));
+
+		Throwable throwable = portalException.getCause();
+
+		Assert.assertSame(
+			CommerceOrderStatusException.class, throwable.getClass());
+
+		_userLocalService.addRoleUser(role.getRoleId(), _user);
+
+		_commerceOrder = _commerceOrderEngine.transitionCommerceOrder(
+			_commerceOrder, CommerceOrderConstants.ORDER_STATUS_QUOTE_REQUESTED,
+			_user.getUserId(), true);
+
+		Assert.assertEquals(
+			CommerceOrderConstants.ORDER_STATUS_QUOTE_REQUESTED,
+			_commerceOrder.getOrderStatus());
+	}
+
 	@Test
 	public void testTransitionOrderWithNonshippableItemToCompleted()
 		throws Exception {
@@ -1396,6 +1505,14 @@ public class CommerceOrderEngineTest {
 	private CommerceShipmentLocalService _commerceShipmentLocalService;
 
 	private Company _company;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Inject
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
+
 	private Group _group;
 	private String _originalName;
 	private PermissionChecker _originalPermissionChecker;
@@ -1406,5 +1523,8 @@ public class CommerceOrderEngineTest {
 	private ServiceContext _serviceContext;
 	private ServiceRegistration<MessageListener> _serviceRegistration;
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

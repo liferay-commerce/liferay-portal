@@ -5,7 +5,12 @@
 
 package com.liferay.headless.commerce.delivery.catalog.resource.v1_0.test;
 
+import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.model.AccountGroup;
+import com.liferay.account.model.AccountRole;
+import com.liferay.account.service.AccountGroupRelLocalService;
+import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
@@ -18,6 +23,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
 import com.liferay.commerce.product.service.CPConfigurationListLocalService;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.expando.kernel.model.ExpandoColumn;
@@ -31,7 +37,9 @@ import com.liferay.headless.commerce.delivery.catalog.client.pagination.Page;
 import com.liferay.headless.commerce.delivery.catalog.client.pagination.Pagination;
 import com.liferay.headless.commerce.delivery.catalog.client.problem.Problem;
 import com.liferay.headless.commerce.delivery.catalog.client.resource.v1_0.ProductResource;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
@@ -41,8 +49,10 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -96,6 +106,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		super.testGetChannelProduct();
 
 		_testGetChannelProductByGuestWithGuestBrowsingDisabled();
+		_testGetChannelProductWithAccountEntryVisibilityRel();
+		_testGetChannelProductWithRoleFilterEnabled();
 	}
 
 	@Override
@@ -103,8 +115,10 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	public void testGetChannelProductsPage() throws Exception {
 		super.testGetChannelProductsPage();
 
+		_testGetChannelProductsPageWithAccountEntryVisibilityRel();
 		_testGetChannelProductsPageWithCustomFields();
 		_testGetChannelProductsPageWithProductConfiguration();
+		_testGetChannelProductsPageWithRoleFilterEnabled();
 		_testGetChannelProductsPageWithSearchByName();
 		_testGetChannelProductsPageWithSearchBySku();
 	}
@@ -356,6 +370,296 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			});
 	}
 
+	private void _testGetChannelProductWithAccountEntryVisibilityRel()
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			Product product = _addCPDefinition(randomProduct());
+
+			CPDefinition cpDefinition =
+				_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+					product.getProductId(), true);
+
+			_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+				null, TestPropsValues.getUserId(),
+				cpDefinition.getCPDefinitionId(), AccountEntry.class.getName(),
+				_accountEntry.getAccountEntryId());
+
+			AccountEntry accountEntry1 =
+				CommerceAccountTestUtil.addBusinessAccountEntry(
+					_user.getUserId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomString() + "@liferay.com",
+					RandomTestUtil.randomString(),
+					new long[] {_user.getUserId()}, null, _serviceContext);
+
+			AccountGroup accountGroup =
+				CommerceAccountTestUtil.addAccountGroupAndAccountRel(
+					RandomTestUtil.randomString(),
+					AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
+					accountEntry1.getAccountEntryId(), _serviceContext);
+
+			_accountGroupRelLocalService.addAccountGroupRel(
+				accountGroup.getAccountGroupId(), CPDefinition.class.getName(),
+				cpDefinition.getCPDefinitionId());
+
+			_cpDefinitionLocalService.updateCPDefinitionAccountGroupFilter(
+				cpDefinition.getCPDefinitionId(), true);
+
+			Product channelProduct = productResource.getChannelProduct(
+				_commerceChannel.getCommerceChannelId(), product.getProductId(),
+				_accountEntry.getAccountEntryId());
+
+			Assert.assertEquals(
+				product.getProductId(), channelProduct.getProductId());
+
+			channelProduct = productResource.getChannelProduct(
+				_commerceChannel.getCommerceChannelId(), product.getProductId(),
+				accountEntry1.getAccountEntryId());
+
+			Assert.assertEquals(
+				product.getProductId(), channelProduct.getProductId());
+
+			AccountEntry accountEntry2 =
+				CommerceAccountTestUtil.addBusinessAccountEntry(
+					_user.getUserId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomString() + "@liferay.com",
+					RandomTestUtil.randomString(),
+					new long[] {_user.getUserId()}, null, _serviceContext);
+
+			Problem.ProblemException problemException = Assert.assertThrows(
+				Problem.ProblemException.class,
+				() -> productResource.getChannelProduct(
+					_commerceChannel.getCommerceChannelId(),
+					product.getProductId(), accountEntry2.getAccountEntryId()));
+
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+
+			ProductResource guestProductResource = ProductResource.builder(
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+			problemException = Assert.assertThrows(
+				Problem.ProblemException.class,
+				() -> guestProductResource.getChannelProduct(
+					_commerceChannel.getCommerceChannelId(),
+					product.getProductId(), null));
+
+			problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+
+			try (SafeCloseable featureFlagSafeCloseable =
+					FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+						false, "LPD-112683")) {
+
+				problemException = Assert.assertThrows(
+					Problem.ProblemException.class,
+					() -> productResource.getChannelProduct(
+						_commerceChannel.getCommerceChannelId(),
+						product.getProductId(),
+						_accountEntry.getAccountEntryId()));
+
+				problem = problemException.getProblem();
+
+				Assert.assertEquals("NOT_FOUND", problem.getStatus());
+
+				channelProduct = productResource.getChannelProduct(
+					_commerceChannel.getCommerceChannelId(),
+					product.getProductId(), accountEntry1.getAccountEntryId());
+
+				Assert.assertEquals(
+					product.getProductId(), channelProduct.getProductId());
+			}
+		}
+	}
+
+	private void _testGetChannelProductWithRoleFilterEnabled()
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			Product product = _addCPDefinition(randomProduct());
+
+			CPDefinition cpDefinition =
+				_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+					product.getProductId(), true);
+
+			AccountEntry accountEntry1 =
+				CommerceAccountTestUtil.addBusinessAccountEntry(
+					_user.getUserId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomString() + "@liferay.com",
+					RandomTestUtil.randomString(),
+					new long[] {TestPropsValues.getUserId()}, null,
+					_serviceContext);
+
+			AccountRole accountRole = _accountRoleLocalService.addAccountRole(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+				RandomTestUtil.randomString(), null, null);
+
+			_accountRoleLocalService.associateUser(
+				accountEntry1.getAccountEntryId(),
+				accountRole.getAccountRoleId(), TestPropsValues.getUserId());
+
+			_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+				null, TestPropsValues.getUserId(),
+				cpDefinition.getCPDefinitionId(), Role.class.getName(),
+				accountRole.getRoleId());
+
+			_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+				cpDefinition.getCPDefinitionId(), true);
+
+			Product channelProduct = productResource.getChannelProduct(
+				_commerceChannel.getCommerceChannelId(), product.getProductId(),
+				accountEntry1.getAccountEntryId());
+
+			Assert.assertEquals(
+				product.getProductId(), channelProduct.getProductId());
+
+			AccountEntry accountEntry2 =
+				CommerceAccountTestUtil.addBusinessAccountEntry(
+					_user.getUserId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomString() + "@liferay.com",
+					RandomTestUtil.randomString(),
+					new long[] {TestPropsValues.getUserId()}, null,
+					_serviceContext);
+
+			Problem.ProblemException problemException = Assert.assertThrows(
+				Problem.ProblemException.class,
+				() -> productResource.getChannelProduct(
+					_commerceChannel.getCommerceChannelId(),
+					product.getProductId(), accountEntry2.getAccountEntryId()));
+
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("NOT_FOUND", problem.getStatus());
+		}
+	}
+
+	private void _testGetChannelProductsPageWithAccountEntryVisibilityRel()
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			Product randomProduct = randomProduct();
+
+			String name = RandomTestUtil.randomString();
+
+			randomProduct.setName(name);
+
+			Product product = _addCPDefinition(randomProduct);
+
+			CPDefinition cpDefinition =
+				_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+					product.getProductId(), true);
+
+			_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+				null, TestPropsValues.getUserId(),
+				cpDefinition.getCPDefinitionId(), AccountEntry.class.getName(),
+				_accountEntry.getAccountEntryId());
+
+			AccountEntry accountEntry1 =
+				CommerceAccountTestUtil.addBusinessAccountEntry(
+					_user.getUserId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomString() + "@liferay.com",
+					RandomTestUtil.randomString(),
+					new long[] {_user.getUserId()}, null, _serviceContext);
+
+			AccountGroup accountGroup =
+				CommerceAccountTestUtil.addAccountGroupAndAccountRel(
+					RandomTestUtil.randomString(),
+					AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
+					accountEntry1.getAccountEntryId(), _serviceContext);
+
+			_accountGroupRelLocalService.addAccountGroupRel(
+				accountGroup.getAccountGroupId(), CPDefinition.class.getName(),
+				cpDefinition.getCPDefinitionId());
+
+			_cpDefinitionLocalService.updateCPDefinitionAccountGroupFilter(
+				cpDefinition.getCPDefinitionId(), true);
+
+			Page<Product> page = productResource.getChannelProductsPage(
+				_commerceChannel.getCommerceChannelId(),
+				_accountEntry.getAccountEntryId(), name, null,
+				Pagination.of(1, 10), null);
+
+			assertEquals(
+				Collections.singletonList(product),
+				(List<Product>)page.getItems());
+
+			page = productResource.getChannelProductsPage(
+				_commerceChannel.getCommerceChannelId(),
+				accountEntry1.getAccountEntryId(), name, null,
+				Pagination.of(1, 10), null);
+
+			assertEquals(
+				Collections.singletonList(product),
+				(List<Product>)page.getItems());
+
+			AccountEntry accountEntry2 =
+				CommerceAccountTestUtil.addBusinessAccountEntry(
+					_user.getUserId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomString() + "@liferay.com",
+					RandomTestUtil.randomString(),
+					new long[] {_user.getUserId()}, null, _serviceContext);
+
+			page = productResource.getChannelProductsPage(
+				_commerceChannel.getCommerceChannelId(),
+				accountEntry2.getAccountEntryId(), name, null,
+				Pagination.of(1, 10), null);
+
+			Assert.assertEquals(0, page.getTotalCount());
+
+			ProductResource guestProductResource = ProductResource.builder(
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+			page = guestProductResource.getChannelProductsPage(
+				_commerceChannel.getCommerceChannelId(), null, name, null,
+				Pagination.of(1, 10), null);
+
+			Assert.assertEquals(0, page.getTotalCount());
+
+			try (SafeCloseable featureFlagSafeCloseable =
+					FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+						false, "LPD-112683")) {
+
+				page = productResource.getChannelProductsPage(
+					_commerceChannel.getCommerceChannelId(),
+					_accountEntry.getAccountEntryId(), name, null,
+					Pagination.of(1, 10), null);
+
+				Assert.assertEquals(0, page.getTotalCount());
+
+				page = productResource.getChannelProductsPage(
+					_commerceChannel.getCommerceChannelId(),
+					accountEntry1.getAccountEntryId(), name, null,
+					Pagination.of(1, 10), null);
+
+				assertEquals(
+					Collections.singletonList(product),
+					(List<Product>)page.getItems());
+			}
+		}
+	}
+
 	private void _testGetChannelProductsPageWithCustomFields()
 		throws Exception {
 
@@ -499,6 +803,76 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			productConfiguration2.getMultipleOrderQuantity());
 	}
 
+	private void _testGetChannelProductsPageWithRoleFilterEnabled()
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			Product randomProduct = randomProduct();
+
+			String name = RandomTestUtil.randomString();
+
+			randomProduct.setName(name);
+
+			Product product = _addCPDefinition(randomProduct);
+
+			CPDefinition cpDefinition =
+				_cpDefinitionLocalService.fetchCPDefinitionByCProductId(
+					product.getProductId(), true);
+
+			AccountEntry accountEntry1 =
+				CommerceAccountTestUtil.addBusinessAccountEntry(
+					_user.getUserId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomString() + "@liferay.com",
+					RandomTestUtil.randomString(),
+					new long[] {TestPropsValues.getUserId()}, null,
+					_serviceContext);
+
+			AccountRole accountRole = _accountRoleLocalService.addAccountRole(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+				RandomTestUtil.randomString(), null, null);
+
+			_accountRoleLocalService.associateUser(
+				accountEntry1.getAccountEntryId(),
+				accountRole.getAccountRoleId(), TestPropsValues.getUserId());
+
+			_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+				null, TestPropsValues.getUserId(),
+				cpDefinition.getCPDefinitionId(), Role.class.getName(),
+				accountRole.getRoleId());
+
+			_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+				cpDefinition.getCPDefinitionId(), true);
+
+			Page<Product> page = productResource.getChannelProductsPage(
+				_commerceChannel.getCommerceChannelId(),
+				accountEntry1.getAccountEntryId(), name, null,
+				Pagination.of(1, 10), null);
+
+			assertEquals(
+				Collections.singletonList(product),
+				(List<Product>)page.getItems());
+
+			AccountEntry accountEntry2 =
+				CommerceAccountTestUtil.addBusinessAccountEntry(
+					_user.getUserId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomString() + "@liferay.com",
+					RandomTestUtil.randomString(),
+					new long[] {TestPropsValues.getUserId()}, null,
+					_serviceContext);
+
+			page = productResource.getChannelProductsPage(
+				_commerceChannel.getCommerceChannelId(),
+				accountEntry2.getAccountEntryId(), name, null,
+				Pagination.of(1, 10), null);
+
+			Assert.assertEquals(0, page.getTotalCount());
+		}
+	}
+
 	private void _testGetChannelProductsPageWithSearchByName()
 		throws Exception {
 
@@ -603,6 +977,12 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	private AccountEntry _accountEntry;
 
 	@Inject
+	private AccountGroupRelLocalService _accountGroupRelLocalService;
+
+	@Inject
+	private AccountRoleLocalService _accountRoleLocalService;
+
+	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
 	@DeleteAfterTestRun
@@ -616,6 +996,10 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@Inject
 	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Inject
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
 
 	@DeleteAfterTestRun
 	private final List<CPDefinition> _cpDefinitions = new ArrayList<>();

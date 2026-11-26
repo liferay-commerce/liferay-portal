@@ -24,6 +24,8 @@ import com.liferay.commerce.price.list.model.CommercePriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.service.CommerceAddressLocalService;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
@@ -38,11 +40,14 @@ import com.liferay.headless.commerce.delivery.cart.client.pagination.Pagination;
 import com.liferay.headless.commerce.delivery.cart.client.problem.Problem;
 import com.liferay.headless.commerce.delivery.cart.client.resource.v1_0.CartItemResource;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -54,7 +59,9 @@ import com.liferay.portal.kernel.settings.ModifiableSettings;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CountryTestUtil;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -246,6 +253,7 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 		_testPostCartItemDefaultImage();
 		_testPostCartItemToGuestOrderWithGuestCheckoutDisabledOnB2BChannel();
 		_testPostCartItemWithGuestAccountEntry();
+		_testPostCartItemWithRoleFilterEnabled();
 	}
 
 	@Override
@@ -951,6 +959,56 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 				commerceOrder3.getCommerceOrderId(), postCartItem));
 	}
 
+	private void _testPostCartItemWithRoleFilterEnabled() throws Exception {
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				_user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com",
+				RandomTestUtil.randomString(), new long[] {_user.getUserId()},
+				null,
+				ServiceContextTestUtil.getServiceContext(
+					testCompany.getCompanyId(), testGroup.getGroupId(),
+					_user.getUserId()));
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		CPInstance cpInstance = _addCPInstance(false);
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, _user.getUserId(), cpInstance.getCPDefinitionId(),
+			Role.class.getName(), role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpInstance.getCPDefinitionId(), true);
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					true, "LPD-112683")) {
+
+			CartItemResource cartItemResource = _getCartItemResource();
+
+			_assertProblemException(
+				_randomCartItem(cpInstance), "BAD_REQUEST",
+				postCartItem -> cartItemResource.postCartItem(
+					commerceOrder.getCommerceOrderId(), postCartItem));
+
+			_userLocalService.addRoleUser(role.getRoleId(), _user);
+
+			CartItem cartItem = _randomCartItem(cpInstance);
+
+			assertEquals(
+				cartItem,
+				cartItemResource.postCartItem(
+					commerceOrder.getCommerceOrderId(), cartItem));
+		}
+	}
+
 	private void _testPutCartItemWithInvalidShippingAddress() throws Exception {
 		CartItemResource cartItemResource = _getCartItemResource();
 
@@ -1068,6 +1126,13 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 
 	@Inject
 	private CountryLocalService _countryLocalService;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Inject
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
 
 	@DeleteAfterTestRun
 	private final List<CPInstance> _cpInstances = new ArrayList<>();

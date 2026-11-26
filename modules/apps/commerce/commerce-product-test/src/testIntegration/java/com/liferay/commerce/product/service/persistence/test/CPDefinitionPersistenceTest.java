@@ -186,6 +186,8 @@ public class CPDefinitionPersistenceTest {
 
 		newCPDefinition.setPublished(RandomTestUtil.randomBoolean());
 
+		newCPDefinition.setRoleFilterEnabled(RandomTestUtil.randomBoolean());
+
 		newCPDefinition.setShipSeparately(RandomTestUtil.randomBoolean());
 
 		newCPDefinition.setShippable(RandomTestUtil.randomBoolean());
@@ -317,6 +319,9 @@ public class CPDefinitionPersistenceTest {
 			newCPDefinition.getProductTypeName());
 		Assert.assertEquals(
 			existingCPDefinition.isPublished(), newCPDefinition.isPublished());
+		Assert.assertEquals(
+			existingCPDefinition.isRoleFilterEnabled(),
+			newCPDefinition.isRoleFilterEnabled());
 		Assert.assertEquals(
 			existingCPDefinition.isShipSeparately(),
 			newCPDefinition.isShipSeparately());
@@ -514,13 +519,13 @@ public class CPDefinitionPersistenceTest {
 			"displayDate", true, "expirationDate", true, "freeShipping", true,
 			"height", true, "ignoreSKUCombinations", true,
 			"maxSubscriptionCycles", true, "productTypeName", true, "published",
-			true, "shipSeparately", true, "shippable", true,
-			"shippingExtraPrice", true, "subscriptionEnabled", true,
-			"subscriptionLength", true, "subscriptionType", true, "taxExempt",
-			true, "telcoOrElectronics", true, "version", true, "weight", true,
-			"width", true, "lastPublishDate", true, "status", true,
-			"statusByUserId", true, "statusByUserName", true, "statusDate",
-			true);
+			true, "roleFilterEnabled", true, "shipSeparately", true,
+			"shippable", true, "shippingExtraPrice", true,
+			"subscriptionEnabled", true, "subscriptionLength", true,
+			"subscriptionType", true, "taxExempt", true, "telcoOrElectronics",
+			true, "version", true, "weight", true, "width", true,
+			"lastPublishDate", true, "status", true, "statusByUserId", true,
+			"statusByUserName", true, "statusDate", true);
 	}
 
 	@Test
@@ -880,6 +885,8 @@ public class CPDefinitionPersistenceTest {
 
 		cpDefinition.setPublished(RandomTestUtil.randomBoolean());
 
+		cpDefinition.setRoleFilterEnabled(RandomTestUtil.randomBoolean());
+
 		cpDefinition.setShipSeparately(RandomTestUtil.randomBoolean());
 
 		cpDefinition.setShippable(RandomTestUtil.randomBoolean());
@@ -924,4 +931,4 @@ public class CPDefinitionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:540241002
+// LIFERAY-SERVICE-BUILDER-HASH:-1007708602
