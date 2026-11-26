@@ -10,6 +10,7 @@ import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
@@ -17,6 +18,8 @@ import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.exception.ObjectEntryValuesException;
+import com.liferay.object.exception.ObjectValidationRuleEngineException;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -27,9 +30,13 @@ import com.liferay.object.service.ObjectDefinitionSettingLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -56,6 +63,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -158,32 +166,38 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 		_objectEntryFolder = _addObjectEntryFolder(
 			_group, _parentObjectEntryFolder.getObjectEntryFolderId());
 
-		CMSDefaultValueUtil.addOrUpdateObjectEntry(
-			JSONUtil.putAll(
-				_createJSONObject(
-					"category", "Picklist", JSONUtil.put("key", "a")
-				).put(
-					"listTypeDefinitionERC",
-					_listTypeDefinition.getExternalReferenceCode()
-				),
-				_createJSONObject(
-					"code", "Text", RandomTestUtil.randomString(300)),
-				_createJSONObject(
-					"content", "RichText",
-					JSONUtil.put(
-						"en_US", "Space content"
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-112761")) {
+
+			CMSDefaultValueUtil.addOrUpdateObjectEntry(
+				JSONUtil.putAll(
+					_createJSONObject(
+						"category", "Picklist", JSONUtil.put("key", "a")
 					).put(
-						"it_IT", RandomTestUtil.randomString()
-					)),
-				_createJSONObject("count", "Integer", 1),
-				_createJSONObject(
-					"endDate", "Date", RandomTestUtil.randomString()),
-				_createJSONObject("flag", "Boolean", true),
-				_createJSONObject(
-					"price", "PrecisionDecimal", RandomTestUtil.randomString()),
-				_createJSONObject("publishDate", "Date", "2026-12-01"),
-				_createJSONObject("text", "Text", "Space text")),
-			_depotEntry, _filterFactory, TestPropsValues.getUserId());
+						"listTypeDefinitionERC",
+						_listTypeDefinition.getExternalReferenceCode()
+					),
+					_createJSONObject(
+						"code", "Text", RandomTestUtil.randomString(300)),
+					_createJSONObject(
+						"content", "RichText",
+						JSONUtil.put(
+							"en_US", "Space content"
+						).put(
+							"it_IT", RandomTestUtil.randomString()
+						)),
+					_createJSONObject("count", "Integer", 1),
+					_createJSONObject(
+						"endDate", "Date", RandomTestUtil.randomString()),
+					_createJSONObject("flag", "Boolean", true),
+					_createJSONObject(
+						"price", "PrecisionDecimal",
+						RandomTestUtil.randomString()),
+					_createJSONObject("publishDate", "Date", "2026-12-01"),
+					_createJSONObject("text", "Text", "Space text")),
+				_depotEntry, _filterFactory, TestPropsValues.getUserId());
+		}
 
 		CMSDefaultValueUtil.addOrUpdateObjectEntry(
 			JSONUtil.putAll(
@@ -264,7 +278,7 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 		objectDefinition = CMSDefaultValueUtil.fetchObjectDefinition(
 			_group.getCompanyId());
 
-		ObjectEntryFolder objectEntryFolder = _addObjectEntryFolder(
+		ObjectEntryFolder objectEntryFolder1 = _addObjectEntryFolder(
 			_group, _objectEntryFolder.getObjectEntryFolderId());
 
 		objectEntry = _objectEntryLocalService.addObjectEntry(
@@ -274,7 +288,7 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 			null,
 			HashMapBuilder.<String, Serializable>put(
 				"classExternalReferenceCode",
-				objectEntryFolder.getExternalReferenceCode()
+				objectEntryFolder1.getExternalReferenceCode()
 			).put(
 				"className", ObjectEntryFolder.class.getName()
 			).put(
@@ -284,7 +298,265 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 			).build(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
-		_assertTreePath(objectEntry, objectEntryFolder.getTreePath());
+		_assertTreePath(objectEntry, objectEntryFolder1.getTreePath());
+
+		try {
+			_addCMSDefaultValueObjectEntry(
+				_parentObjectEntryFolder.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(), "[]");
+
+			Assert.fail();
+		}
+		catch (ModelListenerException modelListenerException) {
+			Assert.assertTrue(
+				modelListenerException.getCause() instanceof
+					ObjectValidationRuleEngineException);
+		}
+
+		ObjectEntryFolder objectEntryFolder2 = _addObjectEntryFolder(
+			_group, _objectEntryFolder.getObjectEntryFolderId());
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				StringBundler.concat(
+					"Class name must be ", DepotEntry.class.getName(), " or ",
+					ObjectEntryFolder.class.getName()),
+				"className"),
+			() -> _addCMSDefaultValueObjectEntry(
+				objectEntryFolder2.getExternalReferenceCode(),
+				RandomTestUtil.randomString(), "[]"));
+
+		try (SafeCloseable safeCloseable =
+				BatchEngineThreadLocal.setBatchImportInProcessWithSafeCloseable(
+					true)) {
+
+			_assertFailure(
+				new ObjectEntryValuesException.InvalidValue(
+					StringBundler.concat(
+						"Class name must be ", DepotEntry.class.getName(),
+						" or ", ObjectEntryFolder.class.getName()),
+					"className"),
+				() -> _addCMSDefaultValueObjectEntry(
+					RandomTestUtil.randomString(),
+					RandomTestUtil.randomString(), "[]"));
+
+			objectEntry = _addCMSDefaultValueObjectEntry(
+				RandomTestUtil.randomString(),
+				ObjectEntryFolder.class.getName(), "[]");
+		}
+
+		_assertTreePath(objectEntry, StringPool.BLANK);
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				"Class external reference code must be the external " +
+					"reference code of the space",
+				"classExternalReferenceCode"),
+			() -> _addCMSDefaultValueObjectEntry(
+				RandomTestUtil.randomString(), DepotEntry.class.getName(),
+				"[]"));
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				StringBundler.concat(
+					"No folder exists with external reference code \"",
+					externalReferenceCode, "\" in the space"),
+				"classExternalReferenceCode"),
+			() -> _addCMSDefaultValueObjectEntry(
+				externalReferenceCode, ObjectEntryFolder.class.getName(),
+				"[]"));
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_SPACE,
+			ServiceContextTestUtil.getServiceContext());
+
+		Group group = depotEntry.getGroup();
+
+		ObjectEntryFolder rootObjectEntryFolder =
+			_objectEntryFolderLocalService.
+				getObjectEntryFolderByExternalReferenceCode(
+					ObjectEntryFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENTS,
+					group.getGroupId(), group.getCompanyId());
+
+		ObjectEntryFolder objectEntryFolder3 = _addObjectEntryFolder(
+			group, rootObjectEntryFolder.getObjectEntryFolderId());
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				StringBundler.concat(
+					"No folder exists with external reference code \"",
+					objectEntryFolder3.getExternalReferenceCode(),
+					"\" in the space"),
+				"classExternalReferenceCode"),
+			() -> _addCMSDefaultValueObjectEntry(
+				objectEntryFolder3.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(), "[]"));
+
+		ExportImportThreadLocal.setPortletImportInProcess(true);
+
+		try {
+			objectEntry = _addCMSDefaultValueObjectEntry(
+				RandomTestUtil.randomString(),
+				ObjectEntryFolder.class.getName(), "[]");
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+		}
+
+		_assertTreePath(objectEntry, StringPool.BLANK);
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				"Default values must be a JSON array serialized as a string",
+				"defaultValues"),
+			() -> _addCMSDefaultValueObjectEntry(
+				objectEntryFolder2.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(), "{"));
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				"Default values must be a JSON array serialized as a string",
+				"defaultValues"),
+			() -> _addCMSDefaultValueObjectEntry(
+				objectEntryFolder2.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(),
+				RandomTestUtil.randomString()));
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				"Default values must be a JSON array serialized as a string",
+				"defaultValues"),
+			() -> _addCMSDefaultValueObjectEntry(
+				objectEntryFolder2.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(), new ArrayList<>()));
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				"Each default value must be a JSON object", "defaultValues"),
+			() -> _addCMSDefaultValueObjectEntry(
+				objectEntryFolder2.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(), "[1]"));
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				"Each default value must have a name and a type",
+				"defaultValues"),
+			() -> _addCMSDefaultValueObjectEntry(
+				objectEntryFolder2.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(),
+				JSONUtil.put(
+					JSONUtil.put("type", "Text")
+				).toString()));
+
+		String name = RandomTestUtil.randomString();
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				StringBundler.concat(
+					"Default value \"", name,
+					"\" must have a list type definition external reference ",
+					"code"),
+				"defaultValues"),
+			() -> _addCMSDefaultValueObjectEntry(
+				objectEntryFolder2.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(),
+				JSONUtil.put(
+					_createJSONObject(
+						name, "Picklist", JSONUtil.put("key", "a"))
+				).toString()));
+
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "Boolean",
+			"true");
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "Date",
+			RandomTestUtil.randomString());
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "DateTime",
+			RandomTestUtil.randomString());
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "Decimal",
+			RandomTestUtil.randomString());
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "Integer",
+			1.5);
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "Integer",
+			Long.MAX_VALUE);
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "LongInteger",
+			RandomTestUtil.randomString());
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "LongText", 1);
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "Picklist",
+			true);
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name,
+			"PrecisionDecimal", RandomTestUtil.randomString());
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "RichText", 1);
+		_assertInvalidDefaultValue(
+			objectEntryFolder2.getExternalReferenceCode(), name, "Text",
+			JSONUtil.put("en_US", 1));
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidLanguageId(
+				"it_IT", "defaultValues"),
+			() -> _addCMSDefaultValueObjectEntry(
+				objectEntryFolder2.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(),
+				JSONUtil.put(
+					_createJSONObject(
+						name, "Text",
+						JSONUtil.put("it_IT", RandomTestUtil.randomString()))
+				).toString()));
+
+		Assert.assertNull(
+			CMSDefaultValueUtil.fetchObjectEntry(
+				objectEntryFolder2.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(), _group.getCompanyId(),
+				_filterFactory, _group.getGroupId()));
+
+		JSONArray jsonArray = JSONUtil.putAll(
+			_createJSONObject(
+				"category", "Picklist", JSONUtil.put("key", StringPool.BLANK)
+			).put(
+				"listTypeDefinitionERC", RandomTestUtil.randomString()
+			),
+			_createJSONObject("code", "Text", null),
+			_createJSONObject(
+				"content", "RichText",
+				JSONUtil.put(
+					"en_US", RandomTestUtil.randomString()
+				).put(
+					"es_ES", StringPool.BLANK
+				)),
+			_createJSONObject("count", "Integer", 1),
+			_createJSONObject("endDate", "Date", "2026-12-01"),
+			_createJSONObject("flag", "Boolean", false),
+			_createJSONObject(
+				"image", "Attachment",
+				JSONUtil.put(
+					"externalReferenceCode", RandomTestUtil.randomString())),
+			_createJSONObject("price", "PrecisionDecimal", "1.5"),
+			_createJSONObject("startDate", "DateTime", "2026-12-01T10:00:00Z"),
+			_createJSONObject("text", "Text", StringPool.BLANK));
+
+		objectEntry = _addCMSDefaultValueObjectEntry(
+			objectEntryFolder2.getExternalReferenceCode(),
+			ObjectEntryFolder.class.getName(), jsonArray.toString());
+
+		Assert.assertEquals(
+			jsonArray.toString(),
+			MapUtil.getString(
+				_objectEntryLocalService.getValues(
+					objectEntry.getObjectEntryId()),
+				"defaultValues"));
 	}
 
 	@Test
@@ -303,6 +575,39 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		_assertTreePath(objectEntry, _parentObjectEntryFolder.getTreePath());
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				StringBundler.concat(
+					"Class name must be ", DepotEntry.class.getName(), " or ",
+					ObjectEntryFolder.class.getName()),
+				"className"),
+			() -> _partialUpdateObjectEntry(
+				"className", objectEntry, RandomTestUtil.randomString()));
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				"Default values must be a JSON array serialized as a string",
+				"defaultValues"),
+			() -> _partialUpdateObjectEntry("defaultValues", objectEntry, "["));
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				StringBundler.concat(
+					"No folder exists with external reference code \"",
+					externalReferenceCode, "\" in the space"),
+				"classExternalReferenceCode"),
+			() -> _partialUpdateObjectEntry(
+				"classExternalReferenceCode", objectEntry,
+				externalReferenceCode));
+
+		Assert.assertEquals(
+			_parentObjectEntryFolder.getExternalReferenceCode(),
+			MapUtil.getString(
+				_objectEntryLocalService.getValues(
+					objectEntry.getObjectEntryId()),
+				"classExternalReferenceCode"));
 	}
 
 	@Test
@@ -326,6 +631,60 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		_assertTreePath(objectEntry, StringPool.BLANK);
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				"Class external reference code must be the external " +
+					"reference code of the space",
+				"classExternalReferenceCode"),
+			() -> _updateObjectEntry(
+				RandomTestUtil.randomString(), "[]", objectEntry));
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				"Default values must be a JSON array serialized as a string",
+				"defaultValues"),
+			() -> _updateObjectEntry(
+				_group.getExternalReferenceCode(), "{", objectEntry));
+
+		ExportImportThreadLocal.setPortletImportInProcess(true);
+
+		try {
+			_updateObjectEntry(
+				RandomTestUtil.randomString(), "[]", objectEntry);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+		}
+
+		Assert.assertEquals(
+			_group.getExternalReferenceCode(),
+			MapUtil.getString(
+				_objectEntryLocalService.getValues(
+					objectEntry.getObjectEntryId()),
+				"classExternalReferenceCode"));
+	}
+
+	private ObjectEntry _addCMSDefaultValueObjectEntry(
+			String classExternalReferenceCode, String className,
+			Serializable defaultValues)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			CMSDefaultValueUtil.fetchObjectDefinition(_group.getCompanyId());
+
+		return _objectEntryLocalService.addObjectEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(),
+			ObjectEntryFolderConstants.PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
+			null,
+			HashMapBuilder.<String, Serializable>put(
+				"classExternalReferenceCode", classExternalReferenceCode
+			).put(
+				"className", className
+			).put(
+				"defaultValues", defaultValues
+			).build(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	private ObjectEntryFolder _addObjectEntryFolder(
@@ -355,6 +714,42 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		return objectEntry.getValues();
+	}
+
+	private void _assertFailure(
+		Exception exception1, UnsafeRunnable<Exception> unsafeRunnable) {
+
+		try {
+			unsafeRunnable.run();
+
+			Assert.fail();
+		}
+		catch (Exception exception2) {
+			Assert.assertEquals(exception1.getClass(), exception2.getClass());
+			Assert.assertEquals(
+				exception1.getMessage(), exception2.getMessage());
+		}
+	}
+
+	private void _assertInvalidDefaultValue(
+		String classExternalReferenceCode, String name, String type,
+		Object value) {
+
+		_assertFailure(
+			new ObjectEntryValuesException.InvalidValue(
+				StringBundler.concat(
+					"Default value \"", name, "\" is not a valid ", type,
+					" value"),
+				"defaultValues"),
+			() -> _addCMSDefaultValueObjectEntry(
+				classExternalReferenceCode, ObjectEntryFolder.class.getName(),
+				JSONUtil.put(
+					_createJSONObject(
+						name, type, value
+					).put(
+						"listTypeDefinitionERC", RandomTestUtil.randomString()
+					)
+				).toString()));
 	}
 
 	private void _assertTreePath(ObjectEntry objectEntry, String treePath)
@@ -403,6 +798,37 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 		).put(
 			"value", value
 		);
+	}
+
+	private void _partialUpdateObjectEntry(
+			String name, ObjectEntry objectEntry, Serializable value)
+		throws Exception {
+
+		_objectEntryLocalService.partialUpdateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				name, value
+			).build(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
+	private void _updateObjectEntry(
+			String classExternalReferenceCode, String defaultValues,
+			ObjectEntry objectEntry)
+		throws Exception {
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>put(
+				"classExternalReferenceCode", classExternalReferenceCode
+			).put(
+				"className", DepotEntry.class.getName()
+			).put(
+				"defaultValues", defaultValues
+			).build(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	private DepotEntry _depotEntry;

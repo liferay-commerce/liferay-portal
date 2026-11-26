@@ -364,7 +364,7 @@ public class CMSDefaultValueUtilTest {
 					JSONUtil.put(
 						"en_US", RandomTestUtil.randomString()
 					).put(
-						"it_IT", RandomTestUtil.randomString()
+						"es_ES", RandomTestUtil.randomString()
 					)),
 				_createJSONObject("flag", "Boolean", true),
 				_createJSONObject("title", "Text", "Space title")),
@@ -399,7 +399,7 @@ public class CMSDefaultValueUtilTest {
 					JSONUtil.put(
 						"en_US", "Folder description"
 					).put(
-						"it_IT", StringPool.BLANK
+						"es_ES", StringPool.BLANK
 					)),
 				_createJSONObject("flag", "Boolean", null),
 				_createJSONObject("title", "Text", StringPool.BLANK)),
@@ -434,7 +434,7 @@ public class CMSDefaultValueUtilTest {
 
 		Assert.assertEquals(
 			"Folder description", valueJSONObject.getString("en_US"));
-		Assert.assertFalse(valueJSONObject.has("it_IT"));
+		Assert.assertFalse(valueJSONObject.has("es_ES"));
 
 		Assert.assertEquals(defaultValues.toString(), 6, defaultValues.size());
 
@@ -478,12 +478,14 @@ public class CMSDefaultValueUtilTest {
 
 	@Test
 	public void testUpdateClassExternalReferenceCode() throws Exception {
-		String externalReferenceCode = RandomTestUtil.randomString();
+		ObjectEntryFolder objectEntryFolder = _addObjectEntryFolder(
+			_group, _parentObjectEntryFolder.getObjectEntryFolderId());
 
 		Assert.assertNull(
 			CMSDefaultValueUtil.updateClassExternalReferenceCode(
-				externalReferenceCode, ObjectEntryFolder.class.getName(),
-				_group.getCompanyId(), _filterFactory, _group.getGroupId(),
+				objectEntryFolder.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(), _group.getCompanyId(),
+				_filterFactory, _group.getGroupId(),
 				_objectEntryFolder.getExternalReferenceCode(),
 				TestPropsValues.getUserId()));
 
@@ -492,15 +494,17 @@ public class CMSDefaultValueUtilTest {
 			_objectEntryFolder, TestPropsValues.getUserId());
 
 		CMSDefaultValueUtil.updateClassExternalReferenceCode(
-			externalReferenceCode, ObjectEntryFolder.class.getName(),
-			_group.getCompanyId(), _filterFactory, _group.getGroupId(),
+			objectEntryFolder.getExternalReferenceCode(),
+			ObjectEntryFolder.class.getName(), _group.getCompanyId(),
+			_filterFactory, _group.getGroupId(),
 			_objectEntryFolder.getExternalReferenceCode(),
 			TestPropsValues.getUserId());
 
 		Assert.assertNotNull(
 			CMSDefaultValueUtil.fetchObjectEntry(
-				externalReferenceCode, ObjectEntryFolder.class.getName(),
-				_group.getCompanyId(), _filterFactory, _group.getGroupId()));
+				objectEntryFolder.getExternalReferenceCode(),
+				ObjectEntryFolder.class.getName(), _group.getCompanyId(),
+				_filterFactory, _group.getGroupId()));
 		Assert.assertNull(
 			CMSDefaultValueUtil.fetchObjectEntry(
 				_objectEntryFolder.getExternalReferenceCode(),
