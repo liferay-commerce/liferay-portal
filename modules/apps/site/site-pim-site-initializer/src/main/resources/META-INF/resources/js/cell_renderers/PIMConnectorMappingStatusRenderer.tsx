@@ -17,7 +17,7 @@ const MAPPING_STATUSES = {
 	},
 } as const;
 
-export default function MappingStatusRenderer({
+export default function PIMConnectorMappingStatusRenderer({
 	value,
 }: {
 	value: keyof typeof MAPPING_STATUSES;

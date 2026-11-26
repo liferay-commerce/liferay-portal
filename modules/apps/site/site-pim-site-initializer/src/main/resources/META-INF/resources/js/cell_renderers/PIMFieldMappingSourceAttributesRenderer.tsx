@@ -8,7 +8,7 @@ import React from 'react';
 
 const MAX_VISIBLE_SOURCE_ATTRIBUTES = 3;
 
-export default function FieldMappingSourceAttributesRenderer({
+export default function PIMFieldMappingSourceAttributesRenderer({
 	itemData,
 	value,
 }: {

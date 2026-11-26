@@ -7,11 +7,11 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import MappingStatusRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/MappingStatusRenderer';
+import PIMConnectorMappingStatusRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/PIMConnectorMappingStatusRenderer';
 
-describe('MappingStatusRenderer', () => {
+describe('PIMConnectorMappingStatusRenderer', () => {
 	it('labels a complete mapping as complete', () => {
-		render(<MappingStatusRenderer value="complete" />);
+		render(<PIMConnectorMappingStatusRenderer value="complete" />);
 
 		expect(
 			screen.getByText('status-complete').closest('.label')
@@ -19,7 +19,7 @@ describe('MappingStatusRenderer', () => {
 	});
 
 	it('labels an incomplete mapping as incomplete', () => {
-		render(<MappingStatusRenderer value="incomplete" />);
+		render(<PIMConnectorMappingStatusRenderer value="incomplete" />);
 
 		expect(screen.getByText('incomplete').closest('.label')).toHaveClass(
 			'label-warning'

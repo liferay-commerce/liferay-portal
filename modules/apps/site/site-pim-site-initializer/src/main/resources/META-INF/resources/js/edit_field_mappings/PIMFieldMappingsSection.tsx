@@ -7,18 +7,20 @@ import ClayForm from '@clayui/form';
 import ClayPanel from '@clayui/panel';
 import React from 'react';
 
-import FieldMappingRow from './FieldMappingRow';
-import newFieldMapping from './newFieldMapping';
-import {IFieldMapping, IObjectDefinition} from './types';
+import PIMFieldMappingRow from './PIMFieldMappingRow';
+import newPIMFieldMapping from './newPIMFieldMapping';
+import {IObjectDefinition, IPIMFieldMapping} from './types';
 
 interface IProps {
-	fieldMappings: IFieldMapping[];
+	channelFieldAdditionalFieldMappingTypes: string[];
+	fieldMappings: IPIMFieldMapping[];
 	objectDefinitions: IObjectDefinition[];
-	setFieldMappings: React.Dispatch<React.SetStateAction<IFieldMapping[]>>;
+	setFieldMappings: React.Dispatch<React.SetStateAction<IPIMFieldMapping[]>>;
 	spritemap: string;
 }
 
-export default function FieldMappingsSection({
+export default function PIMFieldMappingsSection({
+	channelFieldAdditionalFieldMappingTypes,
 	fieldMappings,
 	objectDefinitions,
 	setFieldMappings,
@@ -27,10 +29,10 @@ export default function FieldMappingsSection({
 	const handleAdd = () =>
 		setFieldMappings((previousFieldMappings) => [
 			...previousFieldMappings,
-			newFieldMapping(),
+			newPIMFieldMapping(),
 		]);
 
-	const handleChange = (index: number, fieldMapping: IFieldMapping) =>
+	const handleChange = (index: number, fieldMapping: IPIMFieldMapping) =>
 		setFieldMappings((previousFieldMappings) =>
 			previousFieldMappings.map((previousFieldMapping, previousIndex) =>
 				previousIndex === index ? fieldMapping : previousFieldMapping
@@ -65,7 +67,10 @@ export default function FieldMappingsSection({
 					</div>
 
 					{fieldMappings.map((fieldMapping, index) => (
-						<FieldMappingRow
+						<PIMFieldMappingRow
+							channelFieldAdditionalFieldMappingTypes={
+								channelFieldAdditionalFieldMappingTypes
+							}
 							deletable={fieldMappings.length > 1}
 							fieldMapping={fieldMapping}
 							index={index}

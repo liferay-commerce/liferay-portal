@@ -7,7 +7,7 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import ConnectorNameRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/ConnectorNameRenderer';
+import PIMConnectorNameRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/PIMConnectorNameRenderer';
 
 jest.mock('@liferay/frontend-data-set-web', () => ({
 	getItemActionURL: (actions: any[], actionId: string, itemData: any) => {
@@ -36,10 +36,10 @@ const NAME = Math.random().toString(36);
 
 const OBJECT_ENTRY_ID = Math.random().toString(36);
 
-describe('ConnectorNameRenderer', () => {
+describe('PIMConnectorNameRenderer', () => {
 	it('links the connector name to the field mapping page when the user can update', () => {
 		render(
-			<ConnectorNameRenderer
+			<PIMConnectorNameRenderer
 				actions={ACTIONS}
 				itemData={{actions: {update: {}}, id: OBJECT_ENTRY_ID}}
 				value={NAME}
@@ -54,7 +54,7 @@ describe('ConnectorNameRenderer', () => {
 
 	it('renders the connector name as plain text when the user cannot update', () => {
 		render(
-			<ConnectorNameRenderer
+			<PIMConnectorNameRenderer
 				actions={ACTIONS}
 				itemData={{actions: {}, id: OBJECT_ENTRY_ID}}
 				value={NAME}

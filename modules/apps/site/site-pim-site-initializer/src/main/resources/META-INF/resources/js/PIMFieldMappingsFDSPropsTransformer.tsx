@@ -6,9 +6,9 @@
 import {openToast} from 'frontend-js-components-web';
 import {fetch} from 'frontend-js-web';
 
-import FieldMappingChannelFieldRenderer from './cell_renderers/FieldMappingChannelFieldRenderer';
-import FieldMappingSourceAttributesRenderer from './cell_renderers/FieldMappingSourceAttributesRenderer';
-import FieldMappingTransformationRulesRenderer from './cell_renderers/FieldMappingTransformationRulesRenderer';
+import PIMFieldMappingChannelFieldRenderer from './cell_renderers/PIMFieldMappingChannelFieldRenderer';
+import PIMFieldMappingSourceAttributesRenderer from './cell_renderers/PIMFieldMappingSourceAttributesRenderer';
+import PIMFieldMappingTransformationRulesRenderer from './cell_renderers/PIMFieldMappingTransformationRulesRenderer';
 
 export const EVENT_FIELD_MAPPINGS_CHANGE = 'pimConnectorFieldMappings:change';
 
@@ -18,17 +18,17 @@ export default function propsTransformer(props: {[key: string]: any}) {
 		customRenderers: {
 			tableCell: [
 				{
-					component: FieldMappingChannelFieldRenderer,
+					component: PIMFieldMappingChannelFieldRenderer,
 					name: 'channelFieldTableCellRenderer',
 					type: 'internal',
 				},
 				{
-					component: FieldMappingSourceAttributesRenderer,
+					component: PIMFieldMappingSourceAttributesRenderer,
 					name: 'sourceAttributesTableCellRenderer',
 					type: 'internal',
 				},
 				{
-					component: FieldMappingTransformationRulesRenderer,
+					component: PIMFieldMappingTransformationRulesRenderer,
 					name: 'transformationRulesTableCellRenderer',
 					type: 'internal',
 				},
@@ -43,9 +43,9 @@ export default function propsTransformer(props: {[key: string]: any}) {
 			clearFieldMappings(
 				action.data.apiURL,
 				itemData.fieldMappingIds,
+				action.data.fieldMappingRuleAPIURL,
+				itemData.fieldMappingRuleId,
 				loadData,
-				action.data.mappingRuleAPIURL,
-				itemData.mappingRuleId,
 				itemData.required
 			);
 		},
@@ -55,17 +55,17 @@ export default function propsTransformer(props: {[key: string]: any}) {
 function clearFieldMappings(
 	apiURL: string,
 	fieldMappingIds: number[],
+	fieldMappingRuleAPIURL: string,
+	fieldMappingRuleId: number,
 	loadData: Function,
-	mappingRuleAPIURL: string,
-	mappingRuleId: number,
 	required: boolean
 ) {
 	const urls = (fieldMappingIds ?? []).map(
 		(fieldMappingId) => `${apiURL}/${fieldMappingId}`
 	);
 
-	if (mappingRuleId) {
-		urls.push(`${mappingRuleAPIURL}/${mappingRuleId}`);
+	if (fieldMappingRuleId) {
+		urls.push(`${fieldMappingRuleAPIURL}/${fieldMappingRuleId}`);
 	}
 
 	if (!urls.length) {

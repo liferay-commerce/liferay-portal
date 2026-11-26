@@ -8,7 +8,7 @@ import React from 'react';
 
 const MAX_VISIBLE_TRANSFORMATION_RULES = 2;
 
-export default function FieldMappingTransformationRulesRenderer({
+export default function PIMFieldMappingTransformationRulesRenderer({
 	value,
 }: {
 	value: string[];

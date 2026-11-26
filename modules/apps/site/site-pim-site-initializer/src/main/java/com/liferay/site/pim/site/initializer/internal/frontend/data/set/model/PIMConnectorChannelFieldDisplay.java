@@ -17,17 +17,17 @@ public class PIMConnectorChannelFieldDisplay {
 
 	public PIMConnectorChannelFieldDisplay(
 		String apiURL, String channelField, List<Long> fieldMappingIds,
-		String href, Locale locale, String mappingRuleAPIURL,
-		long mappingRuleId, boolean required, List<String> sourceAttributes,
+		String fieldMappingRuleAPIURL, long fieldMappingRuleId, String href,
+		Locale locale, boolean required, List<String> sourceAttributes,
 		List<String> transformationRules, boolean useFirstNonemptySource) {
 
 		_apiURL = apiURL;
 		_channelField = channelField;
 		_fieldMappingIds = fieldMappingIds;
+		_fieldMappingRuleAPIURL = fieldMappingRuleAPIURL;
+		_fieldMappingRuleId = fieldMappingRuleId;
 		_href = href;
 		_locale = locale;
-		_mappingRuleAPIURL = mappingRuleAPIURL;
-		_mappingRuleId = mappingRuleId;
 		_required = required;
 		_sourceAttributes = sourceAttributes;
 		_transformationRules = transformationRules;
@@ -46,16 +46,16 @@ public class PIMConnectorChannelFieldDisplay {
 		return _fieldMappingIds;
 	}
 
+	public String getFieldMappingRuleAPIURL() {
+		return _fieldMappingRuleAPIURL;
+	}
+
+	public long getFieldMappingRuleId() {
+		return _fieldMappingRuleId;
+	}
+
 	public String getHref() {
 		return _href;
-	}
-
-	public String getMappingRuleAPIURL() {
-		return _mappingRuleAPIURL;
-	}
-
-	public long getMappingRuleId() {
-		return _mappingRuleId;
 	}
 
 	public List<String> getSourceAttributes() {
@@ -114,10 +114,10 @@ public class PIMConnectorChannelFieldDisplay {
 	private final String _apiURL;
 	private final String _channelField;
 	private final List<Long> _fieldMappingIds;
+	private final String _fieldMappingRuleAPIURL;
+	private final long _fieldMappingRuleId;
 	private final String _href;
 	private final Locale _locale;
-	private final String _mappingRuleAPIURL;
-	private final long _mappingRuleId;
 	private final boolean _required;
 	private final List<String> _sourceAttributes;
 	private final List<String> _transformationRules;

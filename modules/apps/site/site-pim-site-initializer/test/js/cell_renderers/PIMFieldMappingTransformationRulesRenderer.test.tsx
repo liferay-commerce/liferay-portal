@@ -7,12 +7,12 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import FieldMappingTransformationRulesRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingTransformationRulesRenderer';
+import PIMFieldMappingTransformationRulesRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/PIMFieldMappingTransformationRulesRenderer';
 
-describe('FieldMappingTransformationRulesRenderer', () => {
+describe('PIMFieldMappingTransformationRulesRenderer', () => {
 	it('shows two rules and counts the others', () => {
 		render(
-			<FieldMappingTransformationRulesRenderer
+			<PIMFieldMappingTransformationRulesRenderer
 				value={['Strip HTML Tags', 'Trim Whitespace', 'URL Encode']}
 			/>
 		);

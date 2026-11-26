@@ -8,18 +8,19 @@ import {Toolbar, VerticalNavLayout} from '@liferay/site-cms-site-initializer';
 import {fetch, navigate, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import FieldMappingsSection from './edit_field_mappings/FieldMappingsSection';
-import MappingRulesSection from './edit_field_mappings/MappingRulesSection';
+import PIMFieldMappingRulesSection from './edit_field_mappings/PIMFieldMappingRulesSection';
+import PIMFieldMappingsSection from './edit_field_mappings/PIMFieldMappingsSection';
 import getObjectFields from './edit_field_mappings/getObjectFields';
-import newFieldMapping from './edit_field_mappings/newFieldMapping';
+import newPIMFieldMapping from './edit_field_mappings/newPIMFieldMapping';
 import {
-	IFieldMapping,
-	IMappingRule,
 	IObjectDefinition,
+	IPIMFieldMapping,
+	IPIMFieldMappingRule,
+	TYPE_DYNAMIC_VALUE,
 	TYPE_FIXED_VALUE,
 } from './edit_field_mappings/types';
 
-const EMPTY_MAPPING_RULE = {
+const EMPTY_FIELD_MAPPING_RULE = {
 	id: 0,
 	stripHTMLTags: false,
 	textCase: '',
@@ -33,25 +34,30 @@ interface IProps {
 	apiURL: string;
 	backURL: string;
 	channelField: string;
+	channelFieldAdditionalFieldMappingTypes: string[];
 	channelFieldLabel: string;
-	channelFieldMultiple: boolean;
-	fieldMappings: IFieldMapping[];
-	mappingRule: IMappingRule | null;
-	mappingRuleAPIURL: string;
-	mappingRuleObjectRelationshipObjectFieldName: string;
+	fieldMappingRule: IPIMFieldMappingRule | null;
+	fieldMappingRuleAPIURL: string;
+	fieldMappingRuleObjectRelationshipObjectFieldName: string;
+	fieldMappings: IPIMFieldMapping[];
 	objectDefinitions: IObjectDefinition[];
 	objectEntryId: number;
 	objectRelationshipObjectFieldName: string;
 	spritemap: string;
 	title: string;
+	useFirstNonemptySourceSupported: boolean;
 }
 
-function isComplete({sourceFieldName, type, value}: IFieldMapping) {
+function isComplete({sourceFieldName, type, value}: IPIMFieldMapping) {
+	if (type === TYPE_DYNAMIC_VALUE) {
+		return Boolean(sourceFieldName);
+	}
+
 	if (type === TYPE_FIXED_VALUE) {
 		return Boolean(value);
 	}
 
-	return Boolean(sourceFieldName);
+	return true;
 }
 
 function isEmpty({
@@ -61,7 +67,7 @@ function isEmpty({
 	truncateLength,
 	urlEncode,
 	useFirstNonemptySource,
-}: IMappingRule) {
+}: IPIMFieldMappingRule) {
 	return (
 		!stripHTMLTags &&
 		!textCase &&
@@ -76,43 +82,49 @@ export default function EditPIMConnectorFieldMappings({
 	apiURL,
 	backURL,
 	channelField,
+	channelFieldAdditionalFieldMappingTypes = [],
 	channelFieldLabel,
-	channelFieldMultiple,
+	fieldMappingRule: initialFieldMappingRule,
+	fieldMappingRuleAPIURL,
+	fieldMappingRuleObjectRelationshipObjectFieldName,
 	fieldMappings: initialFieldMappings = [],
-	mappingRule: initialMappingRule,
-	mappingRuleAPIURL,
-	mappingRuleObjectRelationshipObjectFieldName,
 	objectDefinitions = [],
 	objectEntryId,
 	objectRelationshipObjectFieldName,
 	spritemap,
 	title,
+	useFirstNonemptySourceSupported,
 }: IProps) {
-	const [fieldMappings, setFieldMappings] = useState<IFieldMapping[]>(() => {
-		const currentFieldMappings = initialFieldMappings
-			.filter(
-				(fieldMapping) =>
-					fieldMapping.type === TYPE_FIXED_VALUE ||
-					getObjectFields(
-						objectDefinitions,
-						fieldMapping.sourceClassName
-					).some(({name}) => name === fieldMapping.sourceFieldName)
-			)
-			.map((fieldMapping) => ({
-				...fieldMapping,
-				key: `entry-${fieldMapping.id}`,
-			}));
+	const [fieldMappings, setFieldMappings] = useState<IPIMFieldMapping[]>(
+		() => {
+			const currentFieldMappings = initialFieldMappings
+				.filter(
+					(fieldMapping) =>
+						fieldMapping.type !== TYPE_DYNAMIC_VALUE ||
+						getObjectFields(
+							objectDefinitions,
+							fieldMapping.sourceClassName
+						).some(
+							({name}) => name === fieldMapping.sourceFieldName
+						)
+				)
+				.map((fieldMapping) => ({
+					...fieldMapping,
+					key: `entry-${fieldMapping.id}`,
+				}));
 
-		if (currentFieldMappings.length) {
-			return currentFieldMappings;
+			if (currentFieldMappings.length) {
+				return currentFieldMappings;
+			}
+
+			return [newPIMFieldMapping()];
 		}
-
-		return [newFieldMapping()];
-	});
-
-	const [mappingRule, setMappingRule] = useState<IMappingRule>(
-		initialMappingRule ?? EMPTY_MAPPING_RULE
 	);
+
+	const [fieldMappingRule, setFieldMappingRule] =
+		useState<IPIMFieldMappingRule>(
+			initialFieldMappingRule ?? EMPTY_FIELD_MAPPING_RULE
+		);
 
 	useEffect(() => {
 		if (!Number(objectEntryId) || !channelField) {
@@ -120,15 +132,15 @@ export default function EditPIMConnectorFieldMappings({
 		}
 	}, [backURL, channelField, objectEntryId]);
 
-	const saveMappingRule = () => {
-		const {id, ...values} = mappingRule;
+	const saveFieldMappingRule = () => {
+		const {id, ...values} = fieldMappingRule;
 
-		if (isEmpty(mappingRule)) {
+		if (isEmpty(fieldMappingRule)) {
 			if (!id) {
 				return null;
 			}
 
-			return fetch(`${mappingRuleAPIURL}/${id}`, {method: 'DELETE'});
+			return fetch(`${fieldMappingRuleAPIURL}/${id}`, {method: 'DELETE'});
 		}
 
 		const body: {[key: string]: unknown} = {
@@ -137,22 +149,26 @@ export default function EditPIMConnectorFieldMappings({
 		};
 
 		if (!id) {
-			body[mappingRuleObjectRelationshipObjectFieldName] = objectEntryId;
+			body[fieldMappingRuleObjectRelationshipObjectFieldName] =
+				objectEntryId;
 		}
 
-		return fetch(id ? `${mappingRuleAPIURL}/${id}` : mappingRuleAPIURL, {
-			body: JSON.stringify(body),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			method: id ? 'PATCH' : 'POST',
-		});
+		return fetch(
+			id ? `${fieldMappingRuleAPIURL}/${id}` : fieldMappingRuleAPIURL,
+			{
+				body: JSON.stringify(body),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				method: id ? 'PATCH' : 'POST',
+			}
+		);
 	};
 
 	const handleSave = async () => {
 		const nextFieldMappings = fieldMappings.filter(isComplete);
 
-		if (!nextFieldMappings.length && !isEmpty(mappingRule)) {
+		if (!nextFieldMappings.length && !isEmpty(fieldMappingRule)) {
 			Liferay.Util.openToast({
 				message: Liferay.Language.get(
 					'add-at-least-one-source-attribute-to-save-the-mapping-rules-or-turn-the-mapping-rules-off'
@@ -180,17 +196,19 @@ export default function EditPIMConnectorFieldMappings({
 
 			const saveResponses = await Promise.all(
 				nextFieldMappings.map((fieldMapping, index) => {
-					const fixedValue = fieldMapping.type === TYPE_FIXED_VALUE;
-
 					const body: {[key: string]: unknown} = {
 						channelFieldName: channelField,
 						priority: index,
 						sourceClassName: fieldMapping.sourceClassName,
-						sourceFieldName: fixedValue
-							? ''
-							: fieldMapping.sourceFieldName,
+						sourceFieldName:
+							fieldMapping.type === TYPE_DYNAMIC_VALUE
+								? fieldMapping.sourceFieldName
+								: '',
 						type: fieldMapping.type,
-						value: fixedValue ? fieldMapping.value : '',
+						value:
+							fieldMapping.type === TYPE_FIXED_VALUE
+								? fieldMapping.value
+								: '',
 					};
 
 					if (!fieldMapping.id) {
@@ -216,9 +234,9 @@ export default function EditPIMConnectorFieldMappings({
 				throw new Error();
 			}
 
-			const mappingRuleResponse = await saveMappingRule();
+			const fieldMappingRuleResponse = await saveFieldMappingRule();
 
-			if (mappingRuleResponse && !mappingRuleResponse.ok) {
+			if (fieldMappingRuleResponse && !fieldMappingRuleResponse.ok) {
 				throw new Error();
 			}
 
@@ -267,7 +285,10 @@ export default function EditPIMConnectorFieldMappings({
 				items={[
 					{
 						component: (
-							<FieldMappingsSection
+							<PIMFieldMappingsSection
+								channelFieldAdditionalFieldMappingTypes={
+									channelFieldAdditionalFieldMappingTypes
+								}
 								fieldMappings={fieldMappings}
 								objectDefinitions={objectDefinitions}
 								setFieldMappings={setFieldMappings}
@@ -279,11 +300,13 @@ export default function EditPIMConnectorFieldMappings({
 					},
 					{
 						component: (
-							<MappingRulesSection
-								channelFieldMultiple={channelFieldMultiple}
-								disabled={!initialMappingRule}
-								mappingRule={mappingRule}
-								onChange={setMappingRule}
+							<PIMFieldMappingRulesSection
+								disabled={!initialFieldMappingRule}
+								fieldMappingRule={fieldMappingRule}
+								onChange={setFieldMappingRule}
+								useFirstNonemptySourceSupported={
+									useFirstNonemptySourceSupported
+								}
 							/>
 						),
 						id: 'mappingRules',

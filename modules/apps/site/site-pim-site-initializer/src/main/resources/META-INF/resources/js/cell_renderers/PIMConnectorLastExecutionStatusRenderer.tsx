@@ -21,7 +21,7 @@ const LAST_EXECUTION_STATUSES = {
 	},
 } as const;
 
-export default function LastExecutionStatusRenderer({
+export default function PIMConnectorLastExecutionStatusRenderer({
 	value,
 }: {
 	value: keyof typeof LAST_EXECUTION_STATUSES;

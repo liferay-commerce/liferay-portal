@@ -8,9 +8,9 @@ import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import MappingRulesSection from '../../../src/main/resources/META-INF/resources/js/edit_field_mappings/MappingRulesSection';
+import PIMFieldMappingRulesSection from '../../../src/main/resources/META-INF/resources/js/edit_field_mappings/PIMFieldMappingRulesSection';
 
-const MAPPING_RULE = {
+const FIELD_MAPPING_RULE = {
 	id: 0,
 	stripHTMLTags: false,
 	textCase: '',
@@ -20,14 +20,14 @@ const MAPPING_RULE = {
 	useFirstNonemptySource: false,
 };
 
-describe('MappingRulesSection', () => {
+describe('PIMFieldMappingRulesSection', () => {
 	it('disables the rules of a channel field that is not text', () => {
 		render(
-			<MappingRulesSection
-				channelFieldMultiple={false}
+			<PIMFieldMappingRulesSection
 				disabled={true}
-				mappingRule={MAPPING_RULE}
+				fieldMappingRule={FIELD_MAPPING_RULE}
 				onChange={jest.fn()}
+				useFirstNonemptySourceSupported={true}
 			/>
 		);
 
@@ -45,12 +45,12 @@ describe('MappingRulesSection', () => {
 		expect(screen.getByLabelText('url-encode')).toBeDisabled();
 	});
 
-	it('hides the fallback of a channel field that takes many values', () => {
+	it('hides the fallback of a channel field that does not support it', () => {
 		render(
-			<MappingRulesSection
-				channelFieldMultiple={true}
-				mappingRule={MAPPING_RULE}
+			<PIMFieldMappingRulesSection
+				fieldMappingRule={FIELD_MAPPING_RULE}
 				onChange={jest.fn()}
+				useFirstNonemptySourceSupported={false}
 			/>
 		);
 
@@ -63,24 +63,24 @@ describe('MappingRulesSection', () => {
 		const onChange = jest.fn();
 
 		render(
-			<MappingRulesSection
-				channelFieldMultiple={false}
-				mappingRule={MAPPING_RULE}
+			<PIMFieldMappingRulesSection
+				fieldMappingRule={FIELD_MAPPING_RULE}
 				onChange={onChange}
+				useFirstNonemptySourceSupported={true}
 			/>
 		);
 
 		await userEvent.click(screen.getByLabelText('trim-whitespace'));
 
 		expect(onChange).toHaveBeenLastCalledWith({
-			...MAPPING_RULE,
+			...FIELD_MAPPING_RULE,
 			trimWhitespace: true,
 		});
 
 		await userEvent.click(screen.getByLabelText('url-encode'));
 
 		expect(onChange).toHaveBeenLastCalledWith({
-			...MAPPING_RULE,
+			...FIELD_MAPPING_RULE,
 			urlEncode: true,
 		});
 
@@ -90,7 +90,7 @@ describe('MappingRulesSection', () => {
 		);
 
 		expect(onChange).toHaveBeenLastCalledWith({
-			...MAPPING_RULE,
+			...FIELD_MAPPING_RULE,
 			useFirstNonemptySource: true,
 		});
 	});

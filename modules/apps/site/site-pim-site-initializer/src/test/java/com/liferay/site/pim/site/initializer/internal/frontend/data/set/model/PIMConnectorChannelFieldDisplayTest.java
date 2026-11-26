@@ -52,8 +52,8 @@ public class PIMConnectorChannelFieldDisplayTest {
 			new PIMConnectorChannelFieldDisplay(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				Collections.emptyList(), RandomTestUtil.randomString(),
-				LocaleUtil.US, RandomTestUtil.randomString(),
-				RandomTestUtil.randomLong(), false, Collections.emptyList(),
+				RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+				LocaleUtil.US, false, Collections.emptyList(),
 				Collections.emptyList(), RandomTestUtil.randomBoolean());
 
 		PIMConnectorChannelFieldDisplay.Status status =
@@ -65,8 +65,8 @@ public class PIMConnectorChannelFieldDisplayTest {
 		pimConnectorChannelFieldDisplay = new PIMConnectorChannelFieldDisplay(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			Collections.emptyList(), RandomTestUtil.randomString(),
-			LocaleUtil.US, RandomTestUtil.randomString(),
-			RandomTestUtil.randomLong(), true, Collections.emptyList(),
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			LocaleUtil.US, true, Collections.emptyList(),
 			Collections.emptyList(), RandomTestUtil.randomBoolean());
 
 		status = pimConnectorChannelFieldDisplay.getStatus();
@@ -77,10 +77,9 @@ public class PIMConnectorChannelFieldDisplayTest {
 		pimConnectorChannelFieldDisplay = new PIMConnectorChannelFieldDisplay(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			Collections.singletonList(1L), RandomTestUtil.randomString(),
-			LocaleUtil.US, RandomTestUtil.randomString(),
-			RandomTestUtil.randomLong(), false,
-			Collections.singletonList("Name"), Collections.emptyList(),
-			RandomTestUtil.randomBoolean());
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			LocaleUtil.US, false, Collections.singletonList("Name"),
+			Collections.emptyList(), RandomTestUtil.randomBoolean());
 
 		status = pimConnectorChannelFieldDisplay.getStatus();
 
@@ -90,10 +89,9 @@ public class PIMConnectorChannelFieldDisplayTest {
 		pimConnectorChannelFieldDisplay = new PIMConnectorChannelFieldDisplay(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			Collections.singletonList(1L), RandomTestUtil.randomString(),
-			LocaleUtil.US, RandomTestUtil.randomString(),
-			RandomTestUtil.randomLong(), true,
-			Collections.singletonList("Name"), Collections.emptyList(),
-			RandomTestUtil.randomBoolean());
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			LocaleUtil.US, true, Collections.singletonList("Name"),
+			Collections.emptyList(), RandomTestUtil.randomBoolean());
 
 		status = pimConnectorChannelFieldDisplay.getStatus();
 
@@ -107,8 +105,8 @@ public class PIMConnectorChannelFieldDisplayTest {
 			new PIMConnectorChannelFieldDisplay(
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				Collections.emptyList(), RandomTestUtil.randomString(),
-				LocaleUtil.US, RandomTestUtil.randomString(),
-				RandomTestUtil.randomLong(), false, Collections.emptyList(),
+				RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+				LocaleUtil.US, false, Collections.emptyList(),
 				Collections.emptyList(), RandomTestUtil.randomBoolean());
 
 		Assert.assertFalse(pimConnectorChannelFieldDisplay.isMapped());
@@ -116,10 +114,9 @@ public class PIMConnectorChannelFieldDisplayTest {
 		pimConnectorChannelFieldDisplay = new PIMConnectorChannelFieldDisplay(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			Collections.singletonList(1L), RandomTestUtil.randomString(),
-			LocaleUtil.US, RandomTestUtil.randomString(),
-			RandomTestUtil.randomLong(), false,
-			Collections.singletonList("Name"), Collections.emptyList(),
-			RandomTestUtil.randomBoolean());
+			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
+			LocaleUtil.US, false, Collections.singletonList("Name"),
+			Collections.emptyList(), RandomTestUtil.randomBoolean());
 
 		Assert.assertTrue(pimConnectorChannelFieldDisplay.isMapped());
 	}

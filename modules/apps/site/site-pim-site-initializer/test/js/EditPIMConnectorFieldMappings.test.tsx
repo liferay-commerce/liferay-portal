@@ -45,7 +45,7 @@ jest.mock('@liferay/site-cms-site-initializer', () => {
 	};
 });
 
-const MAPPING_RULE = {
+const FIELD_MAPPING_RULE = {
 	id: 0,
 	stripHTMLTags: false,
 	textCase: '',
@@ -62,13 +62,13 @@ const PROPS = {
 	apiURL: '/o/pim/connector-field-mappings',
 	backURL: '/web/cms/field-mappings?objectEntryId=42',
 	channelField: 'skus[].sku',
+	channelFieldAdditionalFieldMappingTypes: [],
 	channelFieldLabel: 'SKU',
-	channelFieldMultiple: false,
-	fieldMappings: [],
-	mappingRule: null,
-	mappingRuleAPIURL: '/o/pim/connector-field-mapping-rules',
-	mappingRuleObjectRelationshipObjectFieldName:
+	fieldMappingRule: null,
+	fieldMappingRuleAPIURL: '/o/pim/connector-field-mapping-rules',
+	fieldMappingRuleObjectRelationshipObjectFieldName:
 		'r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId',
+	fieldMappings: [],
 	objectDefinitions: [
 		{
 			className: PIM_BASIC_PRODUCT_CLASS_NAME,
@@ -86,6 +86,7 @@ const PROPS = {
 		'r_pimConnectorToPIMConnectorFieldMappings_l_pimConnectorId',
 	spritemap: '/icons.svg',
 	title: 'Edit SKU',
+	useFirstNonemptySourceSupported: true,
 };
 
 function getRequestBody(index: number) {
@@ -238,6 +239,28 @@ describe('EditPIMConnectorFieldMappings', () => {
 		expect(getRequestBody(0).sourceFieldName).toBe('');
 	});
 
+	it('saves the tags source without a source attribute', async () => {
+		render(
+			<EditPIMConnectorFieldMappings
+				{...PROPS}
+				channelFieldAdditionalFieldMappingTypes={['tags']}
+			/>
+		);
+
+		await userEvent.selectOptions(
+			screen.getByLabelText('source-attribute'),
+			'tags'
+		);
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+
+		expect(getRequestBody(0).sourceFieldName).toBe('');
+		expect(getRequestBody(0).type).toBe('tags');
+		expect(getRequestBody(0).value).toBe('');
+	});
+
 	it('stays on the page when a request fails', async () => {
 		mockFetch.mockResolvedValue({ok: false});
 
@@ -274,6 +297,37 @@ describe('EditPIMConnectorFieldMappings', () => {
 		expect(screen.getByLabelText('source-attribute')).toHaveValue('');
 	});
 
+	it('keeps a saved categories field mapping', async () => {
+		render(
+			<EditPIMConnectorFieldMappings
+				{...PROPS}
+				channelFieldAdditionalFieldMappingTypes={['categories']}
+				fieldMappings={[
+					{
+						id: 7,
+						sourceClassName: '',
+						sourceFieldName: '',
+						type: 'categories',
+						value: '',
+					},
+				]}
+			/>
+		);
+
+		expect(screen.getByLabelText('source-attribute')).toHaveValue(
+			'categories'
+		);
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+
+		expect(mockFetch.mock.calls[0][0]).toBe(
+			'/o/pim/connector-field-mappings/7'
+		);
+		expect(mockFetch.mock.calls[0][1].method).toBe('PATCH');
+	});
+
 	it('disables the mapping rules of a channel field that is not text', () => {
 		render(<EditPIMConnectorFieldMappings {...PROPS} />);
 
@@ -284,7 +338,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 		render(
 			<EditPIMConnectorFieldMappings
 				{...PROPS}
-				mappingRule={MAPPING_RULE}
+				fieldMappingRule={FIELD_MAPPING_RULE}
 			/>
 		);
 
@@ -323,7 +377,11 @@ describe('EditPIMConnectorFieldMappings', () => {
 		render(
 			<EditPIMConnectorFieldMappings
 				{...PROPS}
-				mappingRule={{...MAPPING_RULE, id: 9, stripHTMLTags: true}}
+				fieldMappingRule={{
+					...FIELD_MAPPING_RULE,
+					id: 9,
+					stripHTMLTags: true,
+				}}
 			/>
 		);
 
@@ -352,7 +410,11 @@ describe('EditPIMConnectorFieldMappings', () => {
 		render(
 			<EditPIMConnectorFieldMappings
 				{...PROPS}
-				mappingRule={{...MAPPING_RULE, id: 9, stripHTMLTags: true}}
+				fieldMappingRule={{
+					...FIELD_MAPPING_RULE,
+					id: 9,
+					stripHTMLTags: true,
+				}}
 			/>
 		);
 
@@ -372,7 +434,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 		render(
 			<EditPIMConnectorFieldMappings
 				{...PROPS}
-				mappingRule={MAPPING_RULE}
+				fieldMappingRule={FIELD_MAPPING_RULE}
 			/>
 		);
 
@@ -389,7 +451,7 @@ describe('EditPIMConnectorFieldMappings', () => {
 		render(
 			<EditPIMConnectorFieldMappings
 				{...PROPS}
-				mappingRule={MAPPING_RULE}
+				fieldMappingRule={FIELD_MAPPING_RULE}
 			/>
 		);
 

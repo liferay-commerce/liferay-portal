@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -232,13 +233,11 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		Assert.assertEquals(_CHANNEL_FIELD, reactData.get("channelField"));
 		Assert.assertEquals("SKU", reactData.get("channelFieldLabel"));
 		Assert.assertEquals(
-			Boolean.FALSE, reactData.get("channelFieldMultiple"));
-		Assert.assertEquals(
 			"/o/pim/connector-field-mapping-rules",
-			reactData.get("mappingRuleAPIURL"));
+			reactData.get("fieldMappingRuleAPIURL"));
 		Assert.assertEquals(
 			"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId",
-			reactData.get("mappingRuleObjectRelationshipObjectFieldName"));
+			reactData.get("fieldMappingRuleObjectRelationshipObjectFieldName"));
 		Assert.assertEquals(_OBJECT_ENTRY_ID, reactData.get("objectEntryId"));
 		Assert.assertEquals(
 			"r_pimConnectorToPIMConnectorFieldMappings_l_pimConnectorId",
@@ -246,17 +245,7 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		Assert.assertEquals("/icons.svg", reactData.get("spritemap"));
 		Assert.assertEquals("edit-x: SKU", reactData.get("title"));
 
-		JSONArray jsonArray = (JSONArray)reactData.get("fieldMappings");
-
-		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
-
-		JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-		Assert.assertEquals(1, jsonObject.getLong("id"));
-		Assert.assertEquals("dynamicValue", jsonObject.getString("type"));
-		Assert.assertEquals("sku", jsonObject.getString("sourceFieldName"));
-
-		jsonObject = (JSONObject)reactData.get("mappingRule");
+		JSONObject jsonObject = (JSONObject)reactData.get("fieldMappingRule");
 
 		Assert.assertEquals(4, jsonObject.getLong("id"));
 		Assert.assertTrue(jsonObject.getBoolean("stripHTMLTags"));
@@ -265,6 +254,16 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		Assert.assertEquals(80, jsonObject.getInt("truncateLength"));
 		Assert.assertTrue(jsonObject.getBoolean("urlEncode"));
 		Assert.assertTrue(jsonObject.getBoolean("useFirstNonemptySource"));
+
+		JSONArray jsonArray = (JSONArray)reactData.get("fieldMappings");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(1, jsonObject.getLong("id"));
+		Assert.assertEquals("sku", jsonObject.getString("sourceFieldName"));
+		Assert.assertEquals("dynamicValue", jsonObject.getString("type"));
 
 		jsonArray = (JSONArray)reactData.get("objectDefinitions");
 
@@ -315,14 +314,14 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 			StringPool.BLANK,
 			reactData.get("objectRelationshipObjectFieldName"));
 
-		jsonArray = (JSONArray)reactData.get("fieldMappings");
-
-		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
-
-		jsonObject = (JSONObject)reactData.get("mappingRule");
+		jsonObject = (JSONObject)reactData.get("fieldMappingRule");
 
 		Assert.assertEquals(0, jsonObject.getLong("id"));
 		Assert.assertFalse(jsonObject.getBoolean("stripHTMLTags"));
+
+		jsonArray = (JSONArray)reactData.get("fieldMappings");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
 
 		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
 
@@ -349,9 +348,33 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
+		Assert.assertNull(reactData.get("fieldMappingRule"));
 		Assert.assertEquals(
-			Boolean.TRUE, reactData.get("channelFieldMultiple"));
-		Assert.assertNull(reactData.get("mappingRule"));
+			Boolean.FALSE, reactData.get("useFirstNonemptySourceSupported"));
+
+		Mockito.when(
+			pimConnector.getPIMConnectorChannelFields()
+		).thenReturn(
+			Collections.singletonList(
+				new PIMConnectorChannelField(
+					Collections.singletonList("categories"),
+					RandomTestUtil.randomString(), true, _CHANNEL_FIELD, false,
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT))
+		);
+
+		editPIMConnectorFieldMappingsDisplayContext =
+			new EditPIMConnectorFieldMappingsDisplayContext(
+				_httpServletRequest, _objectDefinitionService,
+				_objectEntryLocalService, _objectFieldLocalService,
+				_pimConnectorRegistry);
+
+		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
+
+		Assert.assertEquals(
+			Collections.singletonList("categories"),
+			JSONUtil.toStringList(
+				(JSONArray)reactData.get(
+					"channelFieldAdditionalFieldMappingTypes")));
 
 		_objectDefinitionLocalServiceUtilMockedStatic.when(
 			() ->
@@ -388,6 +411,8 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
 
+		Assert.assertNull(
+			reactData.get("channelFieldAdditionalFieldMappingTypes"));
 		Assert.assertEquals(_CHANNEL_FIELD, reactData.get("channelFieldLabel"));
 		Assert.assertEquals(
 			StringPool.BLANK,

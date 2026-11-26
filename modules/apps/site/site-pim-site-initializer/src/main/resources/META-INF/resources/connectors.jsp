@@ -32,7 +32,7 @@ ViewPIMConnectorsDisplayContext viewPIMConnectorsDisplayContext = (ViewPIMConnec
 			fdsActionDropdownItems="<%= viewPIMConnectorsDisplayContext.getFDSActionDropdownItems() %>"
 			id="<%= PIMFDSNames.CONNECTORS %>"
 			itemsPerPage="<%= 20 %>"
-			propsTransformer="{ConnectorsFDSPropsTransformer} from site-pim-site-initializer"
+			propsTransformer="{PIMConnectorsFDSPropsTransformer} from site-pim-site-initializer"
 			selectedItemsKey="id"
 		/>
 	</div>

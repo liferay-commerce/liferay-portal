@@ -329,9 +329,9 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 
 		Assert.assertEquals(
 			"/o/pim/connector-field-mapping-rules",
-			pimConnectorChannelFieldDisplay.getMappingRuleAPIURL());
+			pimConnectorChannelFieldDisplay.getFieldMappingRuleAPIURL());
 		Assert.assertEquals(
-			4, pimConnectorChannelFieldDisplay.getMappingRuleId());
+			4, pimConnectorChannelFieldDisplay.getFieldMappingRuleId());
 		Assert.assertEquals(
 			Arrays.asList(
 				"strip-html-tags", "uppercase", "trim-whitespace",
@@ -373,6 +373,27 @@ public class PIMConnectorChannelFieldFDSDataProviderTest {
 
 		Assert.assertEquals(
 			Collections.singletonList("PIM Basic Product/ABC-1"),
+			pimConnectorChannelFieldDisplay.getSourceAttributes());
+
+		_mockPIMConnectorFieldMappingObjectEntries(
+			_mockPIMConnectorFieldMappingObjectEntry(
+				"skus[].sku", 1, 0, _OBJECT_DEFINITION_CLASS_NAME,
+				StringPool.BLANK, "categories", StringPool.BLANK),
+			_mockPIMConnectorFieldMappingObjectEntry(
+				"skus[].sku", 2, 1, StringPool.BLANK, StringPool.BLANK, "tags",
+				StringPool.BLANK));
+
+		pimConnectorChannelFieldDisplays =
+			_pimConnectorChannelFieldFDSDataProvider.getItems(
+				_mockFDSKeywords(StringPool.BLANK), _mockFDSPagination(0, 20),
+				_httpServletRequest, null);
+
+		pimConnectorChannelFieldDisplay = pimConnectorChannelFieldDisplays.get(
+			1);
+
+		Assert.assertTrue(pimConnectorChannelFieldDisplay.isMapped());
+		Assert.assertEquals(
+			Arrays.asList("PIM Basic Product/categories", "tags"),
 			pimConnectorChannelFieldDisplay.getSourceAttributes());
 
 		pimConnectorChannelFieldDisplays =

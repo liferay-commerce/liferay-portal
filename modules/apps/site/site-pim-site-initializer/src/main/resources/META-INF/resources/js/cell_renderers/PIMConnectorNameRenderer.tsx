@@ -4,18 +4,29 @@
  */
 
 import ClayLink from '@clayui/link';
+import {getItemActionURL} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
-export default function FieldMappingChannelFieldRenderer({
+export default function PIMConnectorNameRenderer({
+	actions,
 	itemData,
 	value,
 }: {
+	actions: any[];
 	itemData: any;
 	value: string;
 }) {
+	const href = itemData?.actions?.update
+		? getItemActionURL(actions, 'fieldMappings', itemData)
+		: null;
+
 	return (
 		<span className="table-list-title">
-			<ClayLink href={itemData?.href}>{value}</ClayLink>
+			{href ? (
+				<ClayLink href={href}>{value}</ClayLink>
+			) : (
+				<span>{value}</span>
+			)}
 		</span>
 	);
 }
