@@ -8,15 +8,25 @@ import {ClayInput, ClaySelect} from '@clayui/form';
 import {RequiredMark} from '@liferay/site-cms-site-initializer';
 import React from 'react';
 
+import RepeatableGroupPanel from './RepeatableGroupPanel';
 import getObjectFields from './getObjectFields';
+import {
+	getRepeatableGroups,
+	joinSourceFieldPath,
+	parseSourceFieldPath,
+	resolveSourceFieldPath,
+} from './sourceFieldPath';
 import {
 	IFieldMapping,
 	IObjectDefinition,
+	TYPE_CATEGORIES,
 	TYPE_DYNAMIC_VALUE,
 	TYPE_FIXED_VALUE,
+	TYPE_TAGS,
 } from './types';
 
 interface IProps {
+	channelFieldAdditionalFieldMappingTypes: string[];
 	deletable: boolean;
 	fieldMapping: IFieldMapping;
 	index: number;
@@ -27,7 +37,8 @@ interface IProps {
 	spritemap: string;
 }
 
-export default function FieldMappingRow({
+export default function PIMFieldMappingRow({
+	channelFieldAdditionalFieldMappingTypes,
 	deletable,
 	fieldMapping,
 	index,
@@ -44,14 +55,41 @@ export default function FieldMappingRow({
 		fieldMapping.sourceClassName
 	);
 
+	const repeatableGroups = getRepeatableGroups(
+		objectDefinitions,
+		fieldMapping.sourceClassName
+	);
+
+	const segments = parseSourceFieldPath(fieldMapping.sourceFieldName);
+
+	const resolvedSourceFieldPath = resolveSourceFieldPath(
+		objectDefinitions,
+		fieldMapping.sourceClassName,
+		fieldMapping.sourceFieldName
+	);
+
+	const handleRepeatableGroupChange = (level: number, value: string) =>
+		onChange(index, {
+			...fieldMapping,
+			sourceFieldName: joinSourceFieldPath(
+				value
+					? [...segments.slice(0, level + 1), value]
+					: segments.slice(0, level + 1)
+			),
+		});
+
 	const handleSourceFieldNameChange = (value: string) => {
-		const nextFixedValue = value === TYPE_FIXED_VALUE;
+		const type = [TYPE_CATEGORIES, TYPE_FIXED_VALUE, TYPE_TAGS].includes(
+			value
+		)
+			? value
+			: TYPE_DYNAMIC_VALUE;
 
 		onChange(index, {
 			...fieldMapping,
-			sourceFieldName: nextFixedValue ? '' : value,
-			type: nextFixedValue ? TYPE_FIXED_VALUE : TYPE_DYNAMIC_VALUE,
-			value: nextFixedValue ? fieldMapping.value : '',
+			sourceFieldName: type === TYPE_DYNAMIC_VALUE ? value : '',
+			type,
+			value: type === TYPE_FIXED_VALUE ? fieldMapping.value : '',
 		});
 	};
 
@@ -127,9 +165,9 @@ export default function FieldMappingRow({
 							handleSourceFieldNameChange(event.target.value)
 						}
 						value={
-							fixedValue
-								? TYPE_FIXED_VALUE
-								: fieldMapping.sourceFieldName
+							fieldMapping.type === TYPE_DYNAMIC_VALUE
+								? segments[0] ?? ''
+								: fieldMapping.type
 						}
 					>
 						<ClaySelect.Option
@@ -145,6 +183,40 @@ export default function FieldMappingRow({
 							/>
 						))}
 
+						{!!repeatableGroups.length && (
+							<ClaySelect.OptGroup
+								label={Liferay.Language.get(
+									'repeatable-groups'
+								)}
+							>
+								{repeatableGroups.map((repeatableGroup) => (
+									<ClaySelect.Option
+										key={repeatableGroup.name}
+										label={repeatableGroup.label}
+										value={repeatableGroup.name}
+									/>
+								))}
+							</ClaySelect.OptGroup>
+						)}
+
+						{channelFieldAdditionalFieldMappingTypes.includes(
+							TYPE_CATEGORIES
+						) && (
+							<ClaySelect.Option
+								label={Liferay.Language.get('categories')}
+								value={TYPE_CATEGORIES}
+							/>
+						)}
+
+						{channelFieldAdditionalFieldMappingTypes.includes(
+							TYPE_TAGS
+						) && (
+							<ClaySelect.Option
+								label={Liferay.Language.get('tags')}
+								value={TYPE_TAGS}
+							/>
+						)}
+
 						<ClaySelect.Option
 							label={Liferay.Language.get('fixed-value')}
 							value={TYPE_FIXED_VALUE}
@@ -152,6 +224,20 @@ export default function FieldMappingRow({
 					</ClaySelect>
 				</ClayInput.GroupItem>
 			</ClayInput.Group>
+
+			{fieldMapping.type === TYPE_DYNAMIC_VALUE &&
+				resolvedSourceFieldPath.repeatableGroups.map(
+					(repeatableGroup, level) => (
+						<RepeatableGroupPanel
+							key={`${level}-${repeatableGroup.name}`}
+							onChange={(value) =>
+								handleRepeatableGroupChange(level, value)
+							}
+							repeatableGroup={repeatableGroup}
+							value={segments[level + 1] ?? ''}
+						/>
+					)
+				)}
 
 			{fixedValue && (
 				<ClayInput.Group>

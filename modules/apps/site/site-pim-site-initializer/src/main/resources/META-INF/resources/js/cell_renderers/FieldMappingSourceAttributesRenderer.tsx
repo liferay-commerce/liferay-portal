@@ -29,8 +29,16 @@ export default function FieldMappingSourceAttributesRenderer({
 	return (
 		<span className="c-gap-1 d-inline-flex flex-wrap">
 			{visibleValue.map((sourceAttribute, index) => (
-				<ClayLabel className="label-inverse-secondary" key={index}>
-					{sourceAttribute}
+				<ClayLabel
+					className="label-inverse-secondary"
+					data-tooltip-align="top"
+					key={index}
+					style={{maxWidth: '16rem'}}
+					title={sourceAttribute}
+				>
+					<span className="d-block text-truncate">
+						{sourceAttribute}
+					</span>
 				</ClayLabel>
 			))}
 

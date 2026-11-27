@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {pimPagesTest} from './fixtures/pimPagesTest';
 
@@ -43,13 +44,16 @@ test(
 
 			await expect(
 				fieldMappingsPage.dataSetFragmentPage.table.bodyRows
-			).toHaveCount(15);
+			).toHaveCount(16);
 		});
 
 		await test.step('Every channel field of a new connector is unmapped', async () => {
 			await expect(
 				fieldMappingsPage.status('Catalog External Reference Code')
 			).toHaveText('Required - Not Mapped');
+			await expect(fieldMappingsPage.status('Categories[]')).toHaveText(
+				'Not Mapped'
+			);
 			await expect(fieldMappingsPage.status('Description')).toHaveText(
 				'Not Mapped'
 			);
@@ -87,7 +91,7 @@ test(
 
 test(
 	'Declare where a channel field takes its value from',
-	{tag: ['@LPD-106221']},
+	{tag: ['@LPD-106221', '@LPD-114544']},
 	async ({
 		connectorsPage,
 		editFieldMappingsPage,
@@ -179,6 +183,56 @@ test(
 			await expect(page).toHaveURL(/\/field-mappings\?/);
 			await expect(fieldMappingsPage.status('SKU')).toHaveText(
 				'Required - Not Mapped'
+			);
+		});
+
+		await test.step('Map the categories next to an attribute', async () => {
+			await fieldMappingsPage.channelField('Categories[]').click();
+
+			await editFieldMappingsPage.mapToSourceAttribute('Categories');
+
+			await editFieldMappingsPage.addRowButton.click();
+
+			await editFieldMappingsPage.mapToSourceAttribute('SKU (sku)', 1);
+
+			await editFieldMappingsPage.saveButton.click();
+
+			await expect(page).toHaveURL(/\/field-mappings\?/);
+			await expect(fieldMappingsPage.status('Categories[]')).toHaveText(
+				'Mapped'
+			);
+			await expect(
+				fieldMappingsPage.sourceAttributes('Categories[]')
+			).toHaveText('CategoriesSKU');
+		});
+
+		await test.step('Map the tags next to a fixed value', async () => {
+			await fieldMappingsPage.channelField('Tags[]').click();
+
+			await editFieldMappingsPage.mapToSourceAttribute('Tags');
+
+			await editFieldMappingsPage.addRowButton.click();
+
+			const value = getRandomString();
+
+			await editFieldMappingsPage.mapToValue(value, 1);
+
+			await editFieldMappingsPage.saveButton.click();
+
+			await expect(page).toHaveURL(/\/field-mappings\?/);
+			await expect(fieldMappingsPage.status('Tags[]')).toHaveText(
+				'Mapped'
+			);
+			await expect(
+				fieldMappingsPage.sourceAttributes('Tags[]')
+			).toHaveText(`Tags${value}`);
+		});
+
+		await test.step('The tags mapping comes back on reopening', async () => {
+			await fieldMappingsPage.channelField('Tags[]').click();
+
+			await expect(editFieldMappingsPage.sourceAttribute(0)).toHaveValue(
+				'tags'
 			);
 		});
 	}
@@ -365,5 +419,113 @@ test(
 				connectorsPage.getConnectorMappingStatus(connectorName)
 			).toHaveText('Incomplete');
 		});
+	}
+);
+
+test(
+	'Map a channel field to a field inside a repeatable group',
+	{tag: ['@LPD-114146']},
+	async ({
+		apiHelpers,
+		connectorsPage,
+		editFieldMappingsPage,
+		fieldMappingsPage,
+		page,
+	}) => {
+		const repeatableGroupLabel = `Images${getRandomInt()}`;
+		const structureLabel = `ProductType${getRandomInt()}`;
+
+		const structureObjectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				enableObjectEntryDraft: true,
+				objectDefinitionExternalReferenceCode: structureLabel,
+				objectFolderExternalReferenceCode: 'L_PIM_PRODUCT_TYPES',
+				scope: 'depot',
+				status: {code: 0},
+			});
+
+		const repeatableGroupObjectDefinition =
+			await apiHelpers.objectAdmin.postRandomObjectDefinition({
+				objectDefinitionExternalReferenceCode: repeatableGroupLabel,
+				objectFields: [
+					{
+						DBType: 'String',
+						businessType: 'Text',
+						indexed: false,
+						label: {en_US: 'Caption'},
+						name: 'caption',
+						required: false,
+						type: 'String',
+					},
+				],
+				objectFolderExternalReferenceCode:
+					'L_CMS_STRUCTURE_REPEATABLE_GROUPS',
+				scope: 'depot',
+				status: {code: 0},
+			});
+
+		try {
+			const objectRelationship =
+				await apiHelpers.objectAdmin.postObjectDefinitionInheritanceRelationship(
+					structureObjectDefinition,
+					repeatableGroupObjectDefinition
+				);
+
+			const connectorName = getRandomString();
+
+			await test.step('Create a connector', async () => {
+				await connectorsPage.createConnector({
+					connector: 'Liferay Commerce',
+					name: connectorName,
+				});
+			});
+
+			await test.step('Map a channel field to a repeatable group field', async () => {
+				await connectorsPage.getConnector(connectorName).click();
+
+				await fieldMappingsPage.channelField('Tags[]').click();
+
+				await expect(
+					editFieldMappingsPage.destinationHeading
+				).toBeVisible();
+
+				await editFieldMappingsPage.source(0).selectOption({
+					label: structureLabel,
+				});
+
+				await editFieldMappingsPage.mapToRepeatableGroupField({
+					objectFieldLabel: 'Caption (caption)',
+					repeatableGroupLabel,
+				});
+
+				await editFieldMappingsPage.saveButton.click();
+
+				await expect(page).toHaveURL(/\/field-mappings\?/);
+				await expect(fieldMappingsPage.status('Tags[]')).toHaveText(
+					'Mapped'
+				);
+				await expect(
+					fieldMappingsPage.sourceAttributes('Tags[]')
+				).toHaveText(
+					`${structureLabel}/${repeatableGroupLabel} \u203A Caption`
+				);
+			});
+
+			await test.step('The mapping comes back on reopening', async () => {
+				await fieldMappingsPage.channelField('Tags[]').click();
+
+				await expect(
+					editFieldMappingsPage.sourceAttribute(0)
+				).toHaveValue(objectRelationship.name!);
+				await expect(
+					editFieldMappingsPage.repeatableGroup(repeatableGroupLabel)
+				).toHaveValue('caption');
+			});
+		}
+		finally {
+			await apiHelpers.deleteObjectDefinition(
+				structureObjectDefinition.id!
+			);
+		}
 	}
 );

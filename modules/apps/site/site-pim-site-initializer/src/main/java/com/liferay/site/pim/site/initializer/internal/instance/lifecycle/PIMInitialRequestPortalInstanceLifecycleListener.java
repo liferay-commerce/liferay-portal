@@ -81,9 +81,10 @@ public class PIMInitialRequestPortalInstanceLifecycleListener
 			bundleContext.registerService(
 				FragmentRenderer.class,
 				new EditPIMConnectorFieldMappingsJSPSectionFragmentRenderer(
-					_language, _objectDefinitionService,
-					_objectEntryLocalService, _objectFieldLocalService,
-					_pimConnectorRegistry, _servletContext),
+					_language, _objectDefinitionLocalService,
+					_objectDefinitionService, _objectEntryLocalService,
+					_objectFieldLocalService, _pimConnectorRegistry,
+					_servletContext),
 				null));
 		_serviceRegistrations.add(
 			bundleContext.registerService(

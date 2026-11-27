@@ -44,15 +44,15 @@ public class LiferayCommercePIMClient {
 		options.addPart("client_secret", _clientSecret);
 		options.addPart("grant_type", "client_credentials");
 		options.setLocation(_url + "/o/oauth2/token");
-		options.setPost(true);
+		options.setMethod(Http.Method.POST);
 
 		String responseString = _invoke(
+			options,
 			JSONUtil.put(
 				"client_id", _clientId
 			).put(
 				"grant_type", "client_credentials"
-			),
-			options);
+			));
 
 		if (!_isSuccessfulResponse(options.getResponse())) {
 			throw new PIMConnectorException(
@@ -68,61 +68,137 @@ public class LiferayCommercePIMClient {
 		return _logJSONArray;
 	}
 
+	public boolean hasSiteTaxonomyVocabulary(String externalReferenceCode)
+		throws Exception {
+
+		Http.Options options = _createOptions(
+			Http.Method.GET,
+			StringBundler.concat(
+				"/o/headless-admin-taxonomy/v1.0/sites/L_GLOBAL",
+				"/taxonomy-vocabularies/by-external-reference-code/",
+				URLCodec.encodeURL(externalReferenceCode)),
+			null);
+
+		_invoke(options, null);
+
+		Http.Response response = options.getResponse();
+
+		if (response.getResponseCode() == HttpServletResponse.SC_NOT_FOUND) {
+			return false;
+		}
+
+		_validateResponse(response);
+
+		return true;
+	}
+
 	public JSONObject postImportTask(JSONArray jsonArray) throws Exception {
 		Http.Options options = _createOptions(
+			Http.Method.POST,
 			StringBundler.concat(
 				"/o/headless-batch-engine/v1.0/import-task",
 				"/com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
-				"?createStrategy=UPSERT&importStrategy=ON_ERROR_CONTINUE"));
+				"?createStrategy=UPSERT&importStrategy=ON_ERROR_CONTINUE"),
+			jsonArray);
 
-		options.addHeader(
-			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
-		options.setBody(
-			jsonArray.toString(), ContentTypes.APPLICATION_JSON,
-			StringPool.UTF8);
-		options.setPost(true);
-
-		String responseString = _invoke(jsonArray, options);
+		String responseString = _invoke(options, jsonArray);
 
 		_validateResponse(options.getResponse());
 
 		return _jsonFactory.createJSONObject(responseString);
 	}
 
-	public void putOptionByExternalReferenceCode(
+	public JSONObject putOptionByExternalReferenceCode(
 			String externalReferenceCode, JSONObject jsonObject)
 		throws Exception {
 
 		Http.Options options = _createOptions(
+			Http.Method.PUT,
 			StringBundler.concat(
 				"/o/headless-commerce-admin-catalog/v1.0/options",
 				"/by-externalReferenceCode/",
-				URLCodec.encodeURL(externalReferenceCode)));
+				URLCodec.encodeURL(externalReferenceCode)),
+			jsonObject);
 
-		options.addHeader(
-			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
-		options.setBody(
-			jsonObject.toString(), ContentTypes.APPLICATION_JSON,
-			StringPool.UTF8);
-		options.setMethod(Http.Method.PUT);
+		String responseString = _invoke(options, jsonObject);
 
-		_invoke(jsonObject, options);
+		_validateResponse(options.getResponse());
+
+		return _jsonFactory.createJSONObject(responseString);
+	}
+
+	public void putSiteTaxonomyCategoryByExternalReferenceCode(
+			String externalReferenceCode, JSONObject jsonObject)
+		throws Exception {
+
+		Http.Options options = _createOptions(
+			Http.Method.PUT,
+			StringBundler.concat(
+				"/o/headless-admin-taxonomy/v1.0/sites/L_GLOBAL",
+				"/taxonomy-categories/by-external-reference-code/",
+				URLCodec.encodeURL(externalReferenceCode)),
+			jsonObject);
+
+		_invoke(options, jsonObject);
 
 		_validateResponse(options.getResponse());
 	}
 
-	private Http.Options _createOptions(String path) {
+	public void putSiteTaxonomyVocabularyByExternalReferenceCode(
+			String externalReferenceCode, JSONObject jsonObject)
+		throws Exception {
+
+		Http.Options options = _createOptions(
+			Http.Method.PUT,
+			StringBundler.concat(
+				"/o/headless-admin-taxonomy/v1.0/sites/L_GLOBAL",
+				"/taxonomy-vocabularies/by-external-reference-code/",
+				URLCodec.encodeURL(externalReferenceCode)),
+			jsonObject);
+
+		_invoke(options, jsonObject);
+
+		_validateResponse(options.getResponse());
+	}
+
+	private Http.Options _createOptions(
+		Http.Method method, String path, Object requestBody) {
+
 		Http.Options options = new Http.Options();
 
 		options.addHeader(HttpHeaders.ACCEPT, ContentTypes.APPLICATION_JSON);
 		options.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + _accessToken);
+
+		if (requestBody != null) {
+			options.addHeader(
+				HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
+			options.setBody(
+				requestBody.toString(), ContentTypes.APPLICATION_JSON,
+				StringPool.UTF8);
+		}
+
 		options.setLocation(_url + path);
+		options.setMethod(method);
 
 		return options;
 	}
 
-	private String _invoke(Object requestBody, Http.Options options)
+	private String _invoke(Http.Options options, Object requestBody)
 		throws Exception {
+
+		if (requestBody instanceof JSONArray) {
+			JSONArray jsonArray = _jsonFactory.createJSONArray(
+				requestBody.toString());
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+				_stripAttachments(jsonObject.getJSONArray("attachments"));
+				_stripAttachments(jsonObject.getJSONArray("images"));
+			}
+
+			requestBody = jsonArray;
+		}
 
 		JSONObject jsonObject = JSONUtil.put(
 			"request",
@@ -169,6 +245,27 @@ public class LiferayCommercePIMClient {
 		}
 
 		return false;
+	}
+
+	private void _stripAttachments(JSONArray jsonArray) {
+		if (jsonArray == null) {
+			return;
+		}
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+			String attachment = jsonObject.getString("attachment");
+
+			if (attachment.isEmpty()) {
+				continue;
+			}
+
+			jsonObject.put(
+				"attachment",
+				StringBundler.concat(
+					"<Base64, ", attachment.length(), " characters>"));
+		}
 	}
 
 	private Object _toLogValue(String responseString) throws Exception {

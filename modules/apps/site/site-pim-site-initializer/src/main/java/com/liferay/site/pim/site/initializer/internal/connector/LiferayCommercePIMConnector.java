@@ -5,32 +5,60 @@
 
 package com.liferay.site.pim.site.initializer.internal.connector;
 
+import com.liferay.asset.kernel.model.AssetCategory;
+import com.liferay.asset.kernel.model.AssetCategoryConstants;
+import com.liferay.asset.kernel.model.AssetTag;
+import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.model.AssetVocabularyConstants;
+import com.liferay.asset.kernel.service.AssetCategoryLocalService;
+import com.liferay.asset.kernel.service.AssetTagLocalService;
+import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.function.UnsafeTriFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ModelHintsConstants;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.site.pim.site.initializer.connector.PIMConnector;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingRulesUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -58,10 +86,15 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 	@Override
 	public List<PIMConnectorChannelField> getPIMConnectorChannelFields() {
 		return ListUtil.fromArray(
+			_PIM_CONNECTOR_CHANNEL_FIELD_ATTACHMENT_SRC,
+			_PIM_CONNECTOR_CHANNEL_FIELD_ATTACHMENT_TITLE,
 			_PIM_CONNECTOR_CHANNEL_FIELD_CATALOG_EXTERNAL_REFERENCE_CODE,
+			_PIM_CONNECTOR_CHANNEL_FIELD_CATEGORIES,
 			_PIM_CONNECTOR_CHANNEL_FIELD_DEPTH,
 			_PIM_CONNECTOR_CHANNEL_FIELD_DESCRIPTION,
 			_PIM_CONNECTOR_CHANNEL_FIELD_HEIGHT,
+			_PIM_CONNECTOR_CHANNEL_FIELD_IMAGE_SRC,
+			_PIM_CONNECTOR_CHANNEL_FIELD_IMAGE_TITLE,
 			_PIM_CONNECTOR_CHANNEL_FIELD_NAME,
 			_PIM_CONNECTOR_CHANNEL_FIELD_PRECISION,
 			_PIM_CONNECTOR_CHANNEL_FIELD_PRODUCT_OPTIONS,
@@ -108,14 +141,18 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			throw new PIMConnectorException("enter-a-valid-url");
 		}
 
+		Map<String, AssetCategory> assetCategoriesMap = new TreeMap<>();
 		Map<String, JSONObject> optionJSONObjectsMap = new TreeMap<>();
+		Map<String, String> topicTaxonomyCategoryNamesMap = new TreeMap<>();
 
 		JSONArray jsonArray = JSONUtil.toJSONArray(
 			pimProductObjectEntriesMap.entrySet(),
 			entry -> {
 				JSONObject jsonObject = _createProductJSONObject(
-					entry.getKey(), pimFieldMappingObjectEntriesMap,
-					pimFieldMappingRuleObjectEntriesMap, entry.getValue());
+					entry.getKey(), assetCategoriesMap,
+					pimFieldMappingObjectEntriesMap,
+					pimFieldMappingRuleObjectEntriesMap, entry.getValue(),
+					topicTaxonomyCategoryNamesMap);
 
 				JSONArray productOptionsJSONArray = jsonObject.getJSONArray(
 					"productOptions");
@@ -156,12 +193,49 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		try {
 			liferayCommercePIMClient.authenticate();
 
+			Map<String, Long> optionIdsMap = new HashMap<>();
+
 			for (Map.Entry<String, JSONObject> entry :
 					optionJSONObjectsMap.entrySet()) {
 
-				liferayCommercePIMClient.putOptionByExternalReferenceCode(
-					entry.getKey(), entry.getValue());
+				JSONObject optionJSONObject =
+					liferayCommercePIMClient.putOptionByExternalReferenceCode(
+						entry.getKey(), entry.getValue());
+
+				optionIdsMap.put(
+					entry.getKey(), optionJSONObject.getLong("id"));
 			}
+
+			for (int i = 0; i < jsonArray.length(); i++) {
+				JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+				JSONArray productOptionsJSONArray = jsonObject.getJSONArray(
+					"productOptions");
+
+				if (productOptionsJSONArray == null) {
+					continue;
+				}
+
+				for (int j = 0; j < productOptionsJSONArray.length(); j++) {
+					JSONObject productOptionJSONObject =
+						productOptionsJSONArray.getJSONObject(j);
+
+					productOptionJSONObject.put(
+						"optionId",
+						optionIdsMap.get(
+							productOptionJSONObject.getString(
+								"optionExternalReferenceCode")));
+				}
+			}
+
+			_putSiteTaxonomyVocabularies(
+				assetCategoriesMap.values(),
+				pimConnectorObjectEntry.getCompanyId(),
+				liferayCommercePIMClient, topicTaxonomyCategoryNamesMap);
+
+			_putSiteTaxonomyCategories(
+				assetCategoriesMap.values(), liferayCommercePIMClient,
+				topicTaxonomyCategoryNamesMap);
 
 			JSONObject jsonObject = liferayCommercePIMClient.postImportTask(
 				jsonArray);
@@ -199,17 +273,273 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		}
 	}
 
+	private JSONObject _createAttachmentJSONObject(
+			String externalReferenceCode, long fileEntryId,
+			JSONObject optionsJSONObject, int priority, String title)
+		throws Exception {
+
+		if (fileEntryId <= 0) {
+			return null;
+		}
+
+		FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(fileEntryId);
+
+		if (fileEntry == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"No file entry exists with file entry ID " + fileEntryId);
+			}
+
+			return null;
+		}
+
+		if (Validator.isNull(title)) {
+			title = fileEntry.getFileName();
+		}
+
+		try (InputStream inputStream = fileEntry.getContentStream()) {
+			return JSONUtil.put(
+				"attachment", Base64.encode(inputStream.readAllBytes())
+			).put(
+				"contentType", fileEntry.getMimeType()
+			).put(
+				"externalReferenceCode", externalReferenceCode
+			).put(
+				"galleryEnabled", true
+			).put(
+				"neverExpire", true
+			).put(
+				"options", optionsJSONObject
+			).put(
+				"priority", priority
+			).put(
+				"title", JSONUtil.put("en_US", title)
+			);
+		}
+	}
+
+	private JSONArray _createAttachmentsJSONArray(
+			ObjectDefinition objectDefinition,
+			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
+			Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
+			List<ObjectEntry> pimProductObjectEntries,
+			String productExternalReferenceCode,
+			PIMConnectorChannelField srcPIMConnectorChannelField,
+			PIMConnectorChannelField titlePIMConnectorChannelField,
+			List<Map<String, Serializable>> valuesList)
+		throws Exception {
+
+		List<ObjectEntry> pimFieldMappingObjectEntries =
+			PIMConnectorFieldMappingsUtil.filterObjectEntries(
+				objectDefinition,
+				pimFieldMappingObjectEntriesMap.get(
+					srcPIMConnectorChannelField.getName()));
+
+		if (pimFieldMappingObjectEntries.isEmpty()) {
+			return null;
+		}
+
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		for (int index = 0; index < pimProductObjectEntries.size(); index++) {
+			ObjectEntry pimProductObjectEntry = pimProductObjectEntries.get(
+				index);
+			Map<String, Serializable> values = valuesList.get(index);
+
+			JSONObject optionsJSONObject = _createOptionsJSONObject(
+				objectDefinition, pimFieldMappingObjectEntriesMap,
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values);
+			List<String> titles = _getTitles(
+				objectDefinition, pimFieldMappingObjectEntriesMap,
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				titlePIMConnectorChannelField, values);
+
+			int position = 0;
+
+			for (ObjectEntry pimFieldMappingObjectEntry :
+					pimFieldMappingObjectEntries) {
+
+				if (PIMConnectorFieldMappingsUtil.isFixedValue(
+						pimFieldMappingObjectEntry)) {
+
+					continue;
+				}
+
+				List<String> sourceFieldPath =
+					PIMConnectorFieldMappingsUtil.getSourceFieldPath(
+						MapUtil.getString(
+							pimFieldMappingObjectEntry.getValues(),
+							"sourceFieldName"));
+
+				if (sourceFieldPath.isEmpty()) {
+					continue;
+				}
+
+				String objectFieldName = sourceFieldPath.get(
+					sourceFieldPath.size() - 1);
+				boolean repeatableGroupPath =
+					PIMConnectorFieldMappingsUtil.isRepeatableGroupPath(
+						pimFieldMappingObjectEntry);
+
+				for (ObjectEntry objectEntry :
+						PIMConnectorFieldMappingsUtil.getLeafObjectEntries(
+							objectDefinition, pimFieldMappingObjectEntry,
+							pimProductObjectEntry)) {
+
+					String title = null;
+
+					if (position < titles.size()) {
+						title = titles.get(position);
+					}
+
+					position++;
+
+					String externalReferenceCode =
+						objectEntry.getExternalReferenceCode();
+					Map<String, Serializable> objectEntryValues = values;
+
+					if (repeatableGroupPath) {
+						objectEntryValues =
+							PIMConnectorFieldMappingsUtil.getObjectEntryValues(
+								objectEntry);
+					}
+					else {
+						externalReferenceCode =
+							externalReferenceCode + StringPool.DASH +
+								objectFieldName;
+					}
+
+					externalReferenceCode =
+						productExternalReferenceCode + StringPool.DASH +
+							externalReferenceCode;
+
+					if (externalReferenceCode.length() > GetterUtil.getInteger(
+							ModelHintsConstants.TEXT_MAX_LENGTH)) {
+
+						externalReferenceCode = PortalUUIDUtil.generate(
+							externalReferenceCode.getBytes());
+					}
+
+					JSONObject jsonObject = _createAttachmentJSONObject(
+						externalReferenceCode,
+						MapUtil.getLong(objectEntryValues, objectFieldName),
+						optionsJSONObject, jsonArray.length(), title);
+
+					if (jsonObject == null) {
+						continue;
+					}
+
+					jsonArray.put(jsonObject);
+				}
+			}
+		}
+
+		if (jsonArray.length() == 0) {
+			return null;
+		}
+
+		return jsonArray;
+	}
+
+	private JSONArray _createCategoriesJSONArray(
+			Map<String, AssetCategory> assetCategoriesMap,
+			ObjectDefinition objectDefinition,
+			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
+			Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
+			ObjectEntry pimProductObjectEntry,
+			Map<String, String> topicTaxonomyCategoryNamesMap,
+			Map<String, Serializable> values)
+		throws Exception {
+
+		ObjectEntry pimFieldMappingRuleObjectEntry =
+			pimFieldMappingRuleObjectEntriesMap.get(
+				_PIM_CONNECTOR_CHANNEL_FIELD_CATEGORIES.getName());
+
+		return PIMConnectorFieldMappingsUtil.getChannelFieldValuesJSONArray(
+			objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_CATEGORIES,
+			pimFieldMappingObjectEntriesMap, pimFieldMappingRuleObjectEntry,
+			(pimFieldMappingObjectEntry, pimConnectorChannelFieldValuesMap) -> {
+				if (PIMConnectorFieldMappingsUtil.isCategories(
+						pimFieldMappingObjectEntry)) {
+
+					for (AssetCategory assetCategory :
+							_assetCategoryLocalService.getCategories(
+								objectDefinition.getClassName(),
+								pimProductObjectEntry.getObjectEntryId())) {
+
+						AssetVocabulary assetVocabulary =
+							_assetVocabularyLocalService.getVocabulary(
+								assetCategory.getVocabularyId());
+
+						if (assetVocabulary.getVisibilityType() ==
+								AssetVocabularyConstants.
+									VISIBILITY_TYPE_INTERNAL) {
+
+							continue;
+						}
+
+						assetCategoriesMap.putIfAbsent(
+							assetCategory.getExternalReferenceCode(),
+							assetCategory);
+						pimConnectorChannelFieldValuesMap.putIfAbsent(
+							assetCategory.getExternalReferenceCode(),
+							JSONUtil.put(
+								"externalReferenceCode",
+								assetCategory.getExternalReferenceCode()));
+					}
+
+					return;
+				}
+
+				for (String value :
+						PIMConnectorFieldMappingsUtil.getValues(
+							objectDefinition, pimFieldMappingObjectEntry,
+							pimProductObjectEntry, values)) {
+
+					String pimConnectorChannelFieldValue =
+						PIMConnectorFieldMappingRulesUtil.applyRules(
+							pimFieldMappingRuleObjectEntry, value);
+
+					if (Validator.isNull(pimConnectorChannelFieldValue)) {
+						continue;
+					}
+
+					String externalReferenceCode =
+						_friendlyURLNormalizer.normalizeWithPeriodsAndSlashes(
+							pimConnectorChannelFieldValue);
+
+					if (externalReferenceCode.length() >
+							ModelHintsUtil.getMaxLength(
+								AssetCategory.class.getName(),
+								"externalReferenceCode")) {
+
+						externalReferenceCode = PortalUUIDUtil.generate(
+							externalReferenceCode.getBytes());
+					}
+
+					pimConnectorChannelFieldValuesMap.putIfAbsent(
+						externalReferenceCode,
+						JSONUtil.put(
+							"externalReferenceCode", externalReferenceCode));
+					topicTaxonomyCategoryNamesMap.putIfAbsent(
+						externalReferenceCode, pimConnectorChannelFieldValue);
+				}
+			});
+	}
+
 	private JSONObject _createLocalizedJSONObject(
-		ObjectDefinition objectDefinition,
-		PIMConnectorChannelField pimConnectorChannelField,
-		Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
-		Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
-		Map<String, Serializable> values) {
+			ObjectDefinition objectDefinition,
+			PIMConnectorChannelField pimConnectorChannelField,
+			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
+			Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
+			ObjectEntry pimProductObjectEntry, Map<String, Serializable> values)
+		throws PortalException {
 
 		Object value = PIMConnectorFieldMappingsUtil.getChannelFieldValue(
 			objectDefinition, pimConnectorChannelField,
 			pimFieldMappingObjectEntriesMap,
-			pimFieldMappingRuleObjectEntriesMap, values);
+			pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry, values);
 
 		if (value == null) {
 			return null;
@@ -218,47 +548,103 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		return JSONUtil.put("en_US", value);
 	}
 
-	private JSONObject _createProductJSONObject(
-			String externalReferenceCode,
+	private JSONObject _createOptionsJSONObject(
+			ObjectDefinition objectDefinition,
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
 			Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
-			List<ObjectEntry> pimProductObjectEntries)
+			ObjectEntry pimProductObjectEntry, Map<String, Serializable> values)
+		throws Exception {
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject();
+
+		JSONArray jsonArray = _createSkuOptionsJSONArray(
+			objectDefinition, pimFieldMappingObjectEntriesMap,
+			pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry, values);
+
+		if (jsonArray == null) {
+			return jsonObject;
+		}
+
+		for (int i = 0; i < jsonArray.length(); i++) {
+			JSONObject skuOptionJSONObject = jsonArray.getJSONObject(i);
+
+			jsonObject.put(
+				skuOptionJSONObject.getString("key"),
+				skuOptionJSONObject.getString("value"));
+		}
+
+		return jsonObject;
+	}
+
+	private JSONObject _createProductJSONObject(
+			String externalReferenceCode,
+			Map<String, AssetCategory> assetCategoriesMap,
+			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
+			Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
+			List<ObjectEntry> pimProductObjectEntries,
+			Map<String, String> topicTaxonomyCategoryNamesMap)
 		throws PortalException {
 
-		ObjectEntry objectEntry = pimProductObjectEntries.get(0);
+		ObjectEntry pimProductObjectEntry = pimProductObjectEntries.get(0);
 
 		ObjectDefinition objectDefinition =
 			objectDefinitionLocalService.fetchObjectDefinition(
-				objectEntry.getObjectDefinitionId());
+				pimProductObjectEntry.getObjectDefinitionId());
 
 		List<Map<String, Serializable>> valuesList = TransformUtil.transform(
-			pimProductObjectEntries, objectEntryLocalService::getValues);
+			pimProductObjectEntries,
+			PIMConnectorFieldMappingsUtil::getObjectEntryValues);
 
 		Map<String, Serializable> values = valuesList.get(0);
 
 		return JSONUtil.put(
 			"active", true
 		).put(
+			"attachments",
+			() -> _createAttachmentsJSONArray(
+				objectDefinition, pimFieldMappingObjectEntriesMap,
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntries,
+				externalReferenceCode,
+				_PIM_CONNECTOR_CHANNEL_FIELD_ATTACHMENT_SRC,
+				_PIM_CONNECTOR_CHANNEL_FIELD_ATTACHMENT_TITLE, valuesList)
+		).put(
 			"catalogExternalReferenceCode",
 			() -> PIMConnectorFieldMappingsUtil.getChannelFieldValue(
 				objectDefinition,
 				_PIM_CONNECTOR_CHANNEL_FIELD_CATALOG_EXTERNAL_REFERENCE_CODE,
 				pimFieldMappingObjectEntriesMap,
-				pimFieldMappingRuleObjectEntriesMap, values)
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values)
+		).put(
+			"categories",
+			() -> _createCategoriesJSONArray(
+				assetCategoriesMap, objectDefinition,
+				pimFieldMappingObjectEntriesMap,
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				topicTaxonomyCategoryNamesMap, values)
 		).put(
 			"description",
 			() -> _createLocalizedJSONObject(
 				objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_DESCRIPTION,
 				pimFieldMappingObjectEntriesMap,
-				pimFieldMappingRuleObjectEntriesMap, values)
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values)
 		).put(
 			"externalReferenceCode", externalReferenceCode
+		).put(
+			"images",
+			() -> _createAttachmentsJSONArray(
+				objectDefinition, pimFieldMappingObjectEntriesMap,
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntries,
+				externalReferenceCode, _PIM_CONNECTOR_CHANNEL_FIELD_IMAGE_SRC,
+				_PIM_CONNECTOR_CHANNEL_FIELD_IMAGE_TITLE, valuesList)
 		).put(
 			"name",
 			() -> _createLocalizedJSONObject(
 				objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_NAME,
 				pimFieldMappingObjectEntriesMap,
-				pimFieldMappingRuleObjectEntriesMap, values)
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values)
 		).put(
 			"productOptions",
 			() -> _toJSONArray(
@@ -271,7 +657,8 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 						pimFieldMappingRuleObjectEntriesMap.get(
 							_PIM_CONNECTOR_CHANNEL_FIELD_PRODUCT_OPTIONS.
 								getName()),
-						priority, sourceFieldName, valuesList))
+						pimProductObjectEntries, priority, sourceFieldName,
+						valuesList))
 		).put(
 			"productSpecifications",
 			() -> _toJSONArray(
@@ -285,7 +672,8 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 						pimFieldMappingRuleObjectEntriesMap.get(
 							_PIM_CONNECTOR_CHANNEL_FIELD_PRODUCT_SPECIFICATIONS.
 								getName()),
-						priority, sourceFieldName, values))
+						pimProductObjectEntry, priority, sourceFieldName,
+						values))
 		).put(
 			"productType",
 			() -> {
@@ -294,7 +682,8 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 						objectDefinition,
 						_PIM_CONNECTOR_CHANNEL_FIELD_PRODUCT_TYPE,
 						pimFieldMappingObjectEntriesMap,
-						pimFieldMappingRuleObjectEntriesMap, values);
+						pimFieldMappingRuleObjectEntriesMap,
+						pimProductObjectEntry, values);
 
 				if (Objects.equals(productType, StringPool.FALSE)) {
 					return "simple";
@@ -310,68 +699,71 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			"skus",
 			() -> JSONUtil.toJSONArray(
 				pimProductObjectEntries,
-				pimProductObjectEntry -> _createSkuJSONObject(
-					pimProductObjectEntry.getExternalReferenceCode(),
+				skuPIMProductObjectEntry -> _createSkuJSONObject(
+					skuPIMProductObjectEntry.getExternalReferenceCode(),
 					objectDefinition, pimFieldMappingObjectEntriesMap,
-					pimFieldMappingRuleObjectEntriesMap,
+					pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
 					valuesList.get(
 						pimProductObjectEntries.indexOf(
-							pimProductObjectEntry))))
+							skuPIMProductObjectEntry))))
 		).put(
 			"tags",
-			() -> PIMConnectorFieldMappingsUtil.getChannelFieldValue(
-				objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_TAGS,
-				pimFieldMappingObjectEntriesMap,
-				pimFieldMappingRuleObjectEntriesMap, values)
+			() -> _createTagsJSONArray(
+				objectDefinition, pimFieldMappingObjectEntriesMap,
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values)
 		);
 	}
 
 	private JSONObject _createProductOptionJSONObject(
 			ObjectDefinition objectDefinition,
 			ObjectEntry pimFieldMappingObjectEntry,
-			ObjectEntry pimFieldMappingRuleObjectEntry, int priority,
+			ObjectEntry pimFieldMappingRuleObjectEntry,
+			List<ObjectEntry> pimProductObjectEntries, int priority,
 			String sourceFieldName, List<Map<String, Serializable>> valuesList)
 		throws Exception {
 
 		AtomicInteger atomicInteger = new AtomicInteger();
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
 		Set<String> valueKeys = new HashSet<>();
 
-		JSONArray jsonArray = JSONUtil.toJSONArray(
-			valuesList,
-			values -> {
+		for (int index = 0; index < pimProductObjectEntries.size(); index++) {
+			Map<String, Serializable> values = valuesList.get(index);
+
+			ListTypeEntry listTypeEntry =
+				PIMConnectorFieldMappingsUtil.fetchListTypeEntry(
+					objectDefinition, pimFieldMappingObjectEntry, values);
+
+			for (String curValue :
+					PIMConnectorFieldMappingsUtil.getValues(
+						objectDefinition, pimFieldMappingObjectEntry,
+						pimProductObjectEntries.get(index), values)) {
+
 				String value = PIMConnectorFieldMappingRulesUtil.applyRules(
-					pimFieldMappingRuleObjectEntry,
-					PIMConnectorFieldMappingsUtil.getValue(
-						objectDefinition, pimFieldMappingObjectEntry, values));
+					pimFieldMappingRuleObjectEntry, curValue);
 
 				if (Validator.isNull(value)) {
-					return null;
+					continue;
 				}
 
-				String valueKey = _friendlyURLNormalizer.normalize(value);
-
-				ListTypeEntry listTypeEntry =
-					PIMConnectorFieldMappingsUtil.fetchListTypeEntry(
-						objectDefinition, pimFieldMappingObjectEntry, values);
-
-				if (listTypeEntry != null) {
-					valueKey = listTypeEntry.getKey();
-				}
+				String valueKey = _getValueKey(listTypeEntry, value);
 
 				if (!valueKeys.add(valueKey)) {
-					return null;
+					continue;
 				}
 
-				return JSONUtil.put(
-					"key", valueKey
-				).put(
-					"name", JSONUtil.put("en_US", value)
-				).put(
-					"priority", atomicInteger.getAndIncrement()
-				).put(
-					"quantity", 0
-				);
-			});
+				jsonArray.put(
+					JSONUtil.put(
+						"key", valueKey
+					).put(
+						"name", JSONUtil.put("en_US", value)
+					).put(
+						"priority", atomicInteger.getAndIncrement()
+					).put(
+						"quantity", 0
+					));
+			}
+		}
 
 		if (jsonArray.length() == 0) {
 			return null;
@@ -390,8 +782,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		).put(
 			"optionExternalReferenceCode", sourceFieldName
 		).put(
-			"optionId", 0
-		).put(
 			"priority", priority
 		).put(
 			"productOptionValues", jsonArray
@@ -401,15 +791,18 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 	}
 
 	private JSONObject _createProductSpecificationJSONObject(
-		ObjectDefinition objectDefinition,
-		ObjectEntry pimFieldMappingObjectEntry,
-		ObjectEntry pimFieldMappingRuleObjectEntry, int priority,
-		String sourceFieldName, Map<String, Serializable> values) {
+			ObjectDefinition objectDefinition,
+			ObjectEntry pimFieldMappingObjectEntry,
+			ObjectEntry pimFieldMappingRuleObjectEntry,
+			ObjectEntry pimProductObjectEntry, int priority,
+			String sourceFieldName, Map<String, Serializable> values)
+		throws PortalException {
 
 		String value = PIMConnectorFieldMappingRulesUtil.applyRules(
 			pimFieldMappingRuleObjectEntry,
 			PIMConnectorFieldMappingsUtil.getValue(
-				objectDefinition, pimFieldMappingObjectEntry, values));
+				objectDefinition, pimFieldMappingObjectEntry,
+				pimProductObjectEntry, values));
 
 		if (Validator.isNull(value)) {
 			return null;
@@ -434,14 +827,15 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		String externalReferenceCode, ObjectDefinition objectDefinition,
 		Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
 		Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
-		Map<String, Serializable> values) {
+		ObjectEntry pimProductObjectEntry, Map<String, Serializable> values) {
 
 		return JSONUtil.put(
 			"depth",
 			() -> PIMConnectorFieldMappingsUtil.getChannelFieldValue(
 				objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_DEPTH,
 				pimFieldMappingObjectEntriesMap,
-				pimFieldMappingRuleObjectEntriesMap, values)
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values)
 		).put(
 			"externalReferenceCode", externalReferenceCode
 		).put(
@@ -449,7 +843,8 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			() -> PIMConnectorFieldMappingsUtil.getChannelFieldValue(
 				objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_HEIGHT,
 				pimFieldMappingObjectEntriesMap,
-				pimFieldMappingRuleObjectEntriesMap, values)
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values)
 		).put(
 			"published", true
 		).put(
@@ -459,20 +854,14 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			() -> PIMConnectorFieldMappingsUtil.getChannelFieldValue(
 				objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_SKU,
 				pimFieldMappingObjectEntriesMap,
-				pimFieldMappingRuleObjectEntriesMap, values)
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values)
 		).put(
 			"skuOptions",
-			() -> _toJSONArray(
-				objectDefinition,
-				pimFieldMappingObjectEntriesMap.get(
-					_PIM_CONNECTOR_CHANNEL_FIELD_PRODUCT_OPTIONS.getName()),
-				(objectEntry, sourceFieldName, priority) ->
-					_createSkuOptionJSONObject(
-						objectDefinition, objectEntry,
-						pimFieldMappingRuleObjectEntriesMap.get(
-							_PIM_CONNECTOR_CHANNEL_FIELD_PRODUCT_OPTIONS.
-								getName()),
-						sourceFieldName, values))
+			() -> _createSkuOptionsJSONArray(
+				objectDefinition, pimFieldMappingObjectEntriesMap,
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values)
 		).put(
 			"skuUnitOfMeasures",
 			() -> {
@@ -481,7 +870,8 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 						objectDefinition,
 						_PIM_CONNECTOR_CHANNEL_FIELD_UNIT_OF_MEASURE_KEY,
 						pimFieldMappingObjectEntriesMap,
-						pimFieldMappingRuleObjectEntriesMap, values);
+						pimFieldMappingRuleObjectEntriesMap,
+						pimProductObjectEntry, values);
 
 				if (unitOfMeasureKey == null) {
 					return null;
@@ -503,7 +893,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 										_PIM_CONNECTOR_CHANNEL_FIELD_UNIT_OF_MEASURE_NAME,
 										pimFieldMappingObjectEntriesMap,
 										pimFieldMappingRuleObjectEntriesMap,
-										values))
+										pimProductObjectEntry, values))
 					).put(
 						"precision",
 						() ->
@@ -511,7 +901,8 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 								objectDefinition,
 								_PIM_CONNECTOR_CHANNEL_FIELD_PRECISION,
 								pimFieldMappingObjectEntriesMap,
-								pimFieldMappingRuleObjectEntriesMap, values)
+								pimFieldMappingRuleObjectEntriesMap,
+								pimProductObjectEntry, values)
 					).put(
 						"primary", true
 					).put(
@@ -523,28 +914,31 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			() -> PIMConnectorFieldMappingsUtil.getChannelFieldValue(
 				objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_WEIGHT,
 				pimFieldMappingObjectEntriesMap,
-				pimFieldMappingRuleObjectEntriesMap, values)
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values)
 		).put(
 			"width",
 			() -> PIMConnectorFieldMappingsUtil.getChannelFieldValue(
 				objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_WIDTH,
 				pimFieldMappingObjectEntriesMap,
-				pimFieldMappingRuleObjectEntriesMap, values)
+				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntry,
+				values)
 		);
 	}
 
 	private JSONObject _createSkuOptionJSONObject(
-		ObjectDefinition objectDefinition,
-		ObjectEntry pimFieldMappingObjectEntry,
-		ObjectEntry pimFieldMappingRuleObjectEntry, String sourceFieldName,
-		Map<String, Serializable> values) {
+			ObjectDefinition objectDefinition,
+			ObjectEntry pimFieldMappingObjectEntry,
+			ObjectEntry pimFieldMappingRuleObjectEntry,
+			ObjectEntry pimProductObjectEntry, String sourceFieldName,
+			Map<String, Serializable> values)
+		throws PortalException {
 
-		String value = PIMConnectorFieldMappingRulesUtil.applyRules(
-			pimFieldMappingRuleObjectEntry,
-			PIMConnectorFieldMappingsUtil.getValue(
-				objectDefinition, pimFieldMappingObjectEntry, values));
+		String value = _getSkuOptionValue(
+			objectDefinition, pimFieldMappingObjectEntry,
+			pimFieldMappingRuleObjectEntry, pimProductObjectEntry, values);
 
-		if (Validator.isNull(value)) {
+		if (value == null) {
 			return null;
 		}
 
@@ -552,18 +946,288 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			"key", sourceFieldName
 		).put(
 			"value",
-			() -> {
-				ListTypeEntry listTypeEntry =
-					PIMConnectorFieldMappingsUtil.fetchListTypeEntry(
-						objectDefinition, pimFieldMappingObjectEntry, values);
+			_getValueKey(
+				PIMConnectorFieldMappingsUtil.fetchListTypeEntry(
+					objectDefinition, pimFieldMappingObjectEntry, values),
+				value)
+		);
+	}
 
-				if (listTypeEntry != null) {
-					return listTypeEntry.getKey();
+	private JSONArray _createSkuOptionsJSONArray(
+			ObjectDefinition objectDefinition,
+			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
+			Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
+			ObjectEntry pimProductObjectEntry, Map<String, Serializable> values)
+		throws Exception {
+
+		return _toJSONArray(
+			objectDefinition,
+			pimFieldMappingObjectEntriesMap.get(
+				_PIM_CONNECTOR_CHANNEL_FIELD_PRODUCT_OPTIONS.getName()),
+			(objectEntry, sourceFieldName, priority) ->
+				_createSkuOptionJSONObject(
+					objectDefinition, objectEntry,
+					pimFieldMappingRuleObjectEntriesMap.get(
+						_PIM_CONNECTOR_CHANNEL_FIELD_PRODUCT_OPTIONS.getName()),
+					pimProductObjectEntry, sourceFieldName, values));
+	}
+
+	private JSONArray _createTagsJSONArray(
+			ObjectDefinition objectDefinition,
+			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
+			Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
+			ObjectEntry pimProductObjectEntry, Map<String, Serializable> values)
+		throws Exception {
+
+		ObjectEntry pimFieldMappingRuleObjectEntry =
+			pimFieldMappingRuleObjectEntriesMap.get(
+				_PIM_CONNECTOR_CHANNEL_FIELD_TAGS.getName());
+
+		return PIMConnectorFieldMappingsUtil.getChannelFieldValuesJSONArray(
+			objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_TAGS,
+			pimFieldMappingObjectEntriesMap, pimFieldMappingRuleObjectEntry,
+			(pimFieldMappingObjectEntry, pimConnectorChannelFieldValuesMap) -> {
+				List<String> assetTagNames = null;
+
+				if (PIMConnectorFieldMappingsUtil.isTags(
+						pimFieldMappingObjectEntry)) {
+
+					assetTagNames = TransformUtil.transform(
+						_assetTagLocalService.getTags(
+							objectDefinition.getClassName(),
+							pimProductObjectEntry.getObjectEntryId()),
+						AssetTag::getName);
+				}
+				else {
+					assetTagNames = PIMConnectorFieldMappingsUtil.getValues(
+						objectDefinition, pimFieldMappingObjectEntry,
+						pimProductObjectEntry, values);
 				}
 
-				return _friendlyURLNormalizer.normalize(value);
+				for (String assetTagName : assetTagNames) {
+					String pimConnectorChannelFieldValue =
+						PIMConnectorFieldMappingRulesUtil.applyRules(
+							pimFieldMappingRuleObjectEntry, assetTagName);
+
+					if (Validator.isNull(pimConnectorChannelFieldValue)) {
+						continue;
+					}
+
+					pimConnectorChannelFieldValuesMap.putIfAbsent(
+						pimConnectorChannelFieldValue,
+						pimConnectorChannelFieldValue);
+				}
+			});
+	}
+
+	private String _getSkuOptionValue(
+			ObjectDefinition objectDefinition,
+			ObjectEntry pimFieldMappingObjectEntry,
+			ObjectEntry pimFieldMappingRuleObjectEntry,
+			ObjectEntry pimProductObjectEntry, Map<String, Serializable> values)
+		throws PortalException {
+
+		for (String curValue :
+				PIMConnectorFieldMappingsUtil.getValues(
+					objectDefinition, pimFieldMappingObjectEntry,
+					pimProductObjectEntry, values)) {
+
+			String value = PIMConnectorFieldMappingRulesUtil.applyRules(
+				pimFieldMappingRuleObjectEntry, curValue);
+
+			if (Validator.isNotNull(value)) {
+				return value;
 			}
-		);
+		}
+
+		return null;
+	}
+
+	private List<String> _getTitles(
+			ObjectDefinition objectDefinition,
+			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
+			Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
+			ObjectEntry pimProductObjectEntry,
+			PIMConnectorChannelField pimConnectorChannelField,
+			Map<String, Serializable> values)
+		throws Exception {
+
+		List<String> titles = new ArrayList<>();
+
+		ObjectEntry pimFieldMappingRuleObjectEntry =
+			pimFieldMappingRuleObjectEntriesMap.get(
+				pimConnectorChannelField.getName());
+
+		for (ObjectEntry pimFieldMappingObjectEntry :
+				PIMConnectorFieldMappingsUtil.filterObjectEntries(
+					objectDefinition,
+					pimFieldMappingObjectEntriesMap.get(
+						pimConnectorChannelField.getName()))) {
+
+			for (String value :
+					PIMConnectorFieldMappingsUtil.getValues(
+						objectDefinition, pimFieldMappingObjectEntry,
+						pimProductObjectEntry, values)) {
+
+				titles.add(
+					PIMConnectorFieldMappingRulesUtil.applyRules(
+						pimFieldMappingRuleObjectEntry, value));
+			}
+		}
+
+		return titles;
+	}
+
+	private String _getValueKey(ListTypeEntry listTypeEntry, String value) {
+		if (listTypeEntry != null) {
+			value = listTypeEntry.getKey();
+		}
+
+		return _friendlyURLNormalizer.normalize(value);
+	}
+
+	private void _putSiteTaxonomyCategories(
+			Collection<AssetCategory> assetCategories,
+			LiferayCommercePIMClient liferayCommercePIMClient,
+			Map<String, String> topicTaxonomyCategoryNamesMap)
+		throws Exception {
+
+		Map<String, AssetCategory> assetCategoriesMap = new LinkedHashMap<>();
+
+		for (AssetCategory assetCategory : assetCategories) {
+			List<AssetCategory> ancestorAssetCategories =
+				assetCategory.getAncestors();
+
+			for (int i = ancestorAssetCategories.size() - 1; i >= 0; i--) {
+				AssetCategory ancestorAssetCategory =
+					ancestorAssetCategories.get(i);
+
+				assetCategoriesMap.putIfAbsent(
+					ancestorAssetCategory.getExternalReferenceCode(),
+					ancestorAssetCategory);
+			}
+
+			assetCategoriesMap.putIfAbsent(
+				assetCategory.getExternalReferenceCode(), assetCategory);
+		}
+
+		for (AssetCategory assetCategory : assetCategoriesMap.values()) {
+			AssetVocabulary assetVocabulary =
+				_assetVocabularyLocalService.getVocabulary(
+					assetCategory.getVocabularyId());
+
+			liferayCommercePIMClient.
+				putSiteTaxonomyCategoryByExternalReferenceCode(
+					assetCategory.getExternalReferenceCode(),
+					JSONUtil.put(
+						"name", assetCategory.getTitle(LocaleUtil.US)
+					).put(
+						"parentTaxonomyCategory",
+						() -> {
+							if (assetCategory.isRootCategory()) {
+								return JSONUtil.put(
+									"id",
+									AssetCategoryConstants.
+										DEFAULT_PARENT_CATEGORY_ID);
+							}
+
+							AssetCategory parentAssetCategory =
+								assetCategory.getParentCategory();
+
+							return JSONUtil.put(
+								"externalReferenceCode",
+								parentAssetCategory.getExternalReferenceCode());
+						}
+					).put(
+						"parentTaxonomyVocabulary",
+						JSONUtil.put(
+							"externalReferenceCode",
+							assetVocabulary.getExternalReferenceCode())
+					).put(
+						"viewableBy", "Anyone"
+					));
+		}
+
+		for (Map.Entry<String, String> entry :
+				topicTaxonomyCategoryNamesMap.entrySet()) {
+
+			liferayCommercePIMClient.
+				putSiteTaxonomyCategoryByExternalReferenceCode(
+					entry.getKey(),
+					JSONUtil.put(
+						"name", entry.getValue()
+					).put(
+						"parentTaxonomyCategory",
+						JSONUtil.put(
+							"id",
+							AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID)
+					).put(
+						"parentTaxonomyVocabulary",
+						JSONUtil.put(
+							"externalReferenceCode",
+							AssetVocabularyConstants.
+								EXTERNAL_REFERENCE_CODE_TOPIC)
+					).put(
+						"viewableBy", "Anyone"
+					));
+		}
+	}
+
+	private void _putSiteTaxonomyVocabularies(
+			Collection<AssetCategory> assetCategories, long companyId,
+			LiferayCommercePIMClient liferayCommercePIMClient,
+			Map<String, String> topicTaxonomyCategoryNamesMap)
+		throws Exception {
+
+		Map<String, AssetVocabulary> assetVocabulariesMap = new TreeMap<>();
+
+		for (AssetCategory assetCategory : assetCategories) {
+			AssetVocabulary assetVocabulary =
+				_assetVocabularyLocalService.getVocabulary(
+					assetCategory.getVocabularyId());
+
+			assetVocabulariesMap.putIfAbsent(
+				assetVocabulary.getExternalReferenceCode(), assetVocabulary);
+		}
+
+		if (!topicTaxonomyCategoryNamesMap.isEmpty()) {
+			Group companyGroup = _groupLocalService.getCompanyGroup(companyId);
+
+			assetVocabulariesMap.putIfAbsent(
+				AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC,
+				_assetVocabularyLocalService.
+					getAssetVocabularyByExternalReferenceCode(
+						AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC,
+						companyGroup.getGroupId()));
+		}
+
+		for (Map.Entry<String, AssetVocabulary> entry :
+				assetVocabulariesMap.entrySet()) {
+
+			if (Objects.equals(
+					entry.getKey(),
+					AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC) &&
+				liferayCommercePIMClient.hasSiteTaxonomyVocabulary(
+					entry.getKey())) {
+
+				continue;
+			}
+
+			AssetVocabulary assetVocabulary = entry.getValue();
+
+			liferayCommercePIMClient.
+				putSiteTaxonomyVocabularyByExternalReferenceCode(
+					entry.getKey(),
+					JSONUtil.put(
+						"multiValued", assetVocabulary.isMultiValued()
+					).put(
+						"name", assetVocabulary.getTitle(LocaleUtil.US)
+					).put(
+						"viewableBy", "Anyone"
+					).put(
+						"visibilityType", "PUBLIC"
+					));
+		}
 	}
 
 	private JSONArray _toJSONArray(
@@ -585,8 +1249,10 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 				}
 
 				String sourceFieldName = _friendlyURLNormalizer.normalize(
-					MapUtil.getString(
-						objectEntry.getValues(), "sourceFieldName"));
+					StringUtil.replace(
+						MapUtil.getString(
+							objectEntry.getValues(), "sourceFieldName"),
+						CharPool.SLASH, CharPool.DASH));
 
 				if (!sourceFieldNames.add(sourceFieldName)) {
 					return null;
@@ -612,11 +1278,28 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 	}
 
 	private static final PIMConnectorChannelField
+		_PIM_CONNECTOR_CHANNEL_FIELD_ATTACHMENT_SRC =
+			new PIMConnectorChannelField(
+				"attachment", false, "attachments[].src", false,
+				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
+
+	private static final PIMConnectorChannelField
+		_PIM_CONNECTOR_CHANNEL_FIELD_ATTACHMENT_TITLE =
+			new PIMConnectorChannelField(
+				"attachment-title", false, "attachments[].title", false,
+				ObjectFieldConstants.BUSINESS_TYPE_TEXT);
+
+	private static final PIMConnectorChannelField
 		_PIM_CONNECTOR_CHANNEL_FIELD_CATALOG_EXTERNAL_REFERENCE_CODE =
 			new PIMConnectorChannelField(
 				"catalog-external-reference-code", false,
 				"catalogExternalReferenceCode", true,
 				ObjectFieldConstants.BUSINESS_TYPE_TEXT);
+
+	private static final PIMConnectorChannelField
+		_PIM_CONNECTOR_CHANNEL_FIELD_CATEGORIES = new PIMConnectorChannelField(
+			Collections.singletonList("categories"), "categories", true,
+			"categories", false, ObjectFieldConstants.BUSINESS_TYPE_TEXT);
 
 	private static final PIMConnectorChannelField
 		_PIM_CONNECTOR_CHANNEL_FIELD_DEPTH = new PIMConnectorChannelField(
@@ -632,6 +1315,16 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		_PIM_CONNECTOR_CHANNEL_FIELD_HEIGHT = new PIMConnectorChannelField(
 			"height", false, "skus[].height", false,
 			ObjectFieldConstants.BUSINESS_TYPE_DECIMAL);
+
+	private static final PIMConnectorChannelField
+		_PIM_CONNECTOR_CHANNEL_FIELD_IMAGE_SRC = new PIMConnectorChannelField(
+			"image", false, "images[].src", false,
+			ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
+
+	private static final PIMConnectorChannelField
+		_PIM_CONNECTOR_CHANNEL_FIELD_IMAGE_TITLE = new PIMConnectorChannelField(
+			"image-title", false, "images[].title", false,
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT);
 
 	private static final PIMConnectorChannelField
 		_PIM_CONNECTOR_CHANNEL_FIELD_NAME = new PIMConnectorChannelField(
@@ -668,7 +1361,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 
 	private static final PIMConnectorChannelField
 		_PIM_CONNECTOR_CHANNEL_FIELD_TAGS = new PIMConnectorChannelField(
-			"tags", true, "tags", false,
+			Collections.singletonList("tags"), "tags", true, "tags", false,
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT);
 
 	private static final PIMConnectorChannelField
@@ -694,8 +1387,26 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			"width", false, "skus[].width", false,
 			ObjectFieldConstants.BUSINESS_TYPE_DECIMAL);
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		LiferayCommercePIMConnector.class);
+
+	@Reference
+	private AssetCategoryLocalService _assetCategoryLocalService;
+
+	@Reference
+	private AssetTagLocalService _assetTagLocalService;
+
+	@Reference
+	private AssetVocabularyLocalService _assetVocabularyLocalService;
+
+	@Reference
+	private DLAppLocalService _dlAppLocalService;
+
 	@Reference
 	private FriendlyURLNormalizer _friendlyURLNormalizer;
+
+	@Reference
+	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private Http _http;

@@ -5,10 +5,11 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
-import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
+import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
@@ -48,12 +49,14 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 
 	public EditPIMConnectorFieldMappingsDisplayContext(
 		HttpServletRequest httpServletRequest,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectDefinitionService objectDefinitionService,
 		ObjectEntryLocalService objectEntryLocalService,
 		ObjectFieldLocalService objectFieldLocalService,
 		PIMConnectorRegistry pimConnectorRegistry) {
 
 		_httpServletRequest = httpServletRequest;
+		_objectDefinitionLocalService = objectDefinitionLocalService;
 		_objectDefinitionService = objectDefinitionService;
 		_objectEntryLocalService = objectEntryLocalService;
 		_objectFieldLocalService = objectFieldLocalService;
@@ -85,6 +88,20 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 		).put(
 			"channelField", _channelField
 		).put(
+			"channelFieldAdditionalFieldMappingTypes",
+			() -> {
+				if (pimConnectorChannelField == null) {
+					return null;
+				}
+
+				List<String> additionalPIMFieldMappingTypes =
+					pimConnectorChannelField.
+						getAdditionalPIMFieldMappingTypes();
+
+				return JSONUtil.putAll(
+					additionalPIMFieldMappingTypes.toArray());
+			}
+		).put(
 			"channelFieldLabel",
 			() -> {
 				if (pimConnectorChannelField != null) {
@@ -93,15 +110,6 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 				}
 
 				return _channelField;
-			}
-		).put(
-			"channelFieldMultiple",
-			() -> {
-				if (pimConnectorChannelField != null) {
-					return pimConnectorChannelField.isMultiple();
-				}
-
-				return false;
 			}
 		).put(
 			"fieldMappings", _getFieldMappingsJSONArray(objectEntry)
@@ -141,6 +149,10 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 				return LanguageUtil.format(
 					_httpServletRequest, "edit-x", _channelField, false);
 			}
+		).put(
+			"useFirstNonemptySourceSupported",
+			PIMConnectorFieldMappingRulesUtil.isUseFirstNonemptySourceSupported(
+				pimConnectorChannelField)
 		).build();
 	}
 
@@ -211,10 +223,8 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 			PIMConnectorChannelField pimConnectorChannelField)
 		throws Exception {
 
-		if ((pimConnectorChannelField == null) ||
-			!Objects.equals(
-				pimConnectorChannelField.getType(),
-				ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
+		if (!PIMConnectorFieldMappingRulesUtil.isFieldMappingRulesSupported(
+				pimConnectorChannelField)) {
 
 			return null;
 		}
@@ -278,14 +288,24 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 				"label", objectDefinition.getLabel(_themeDisplay.getLocale())
 			).put(
 				"objectFields",
-				JSONUtil.toJSONArray(
+				_getObjectFieldsJSONArray(
 					_objectFieldLocalService.getObjectFields(
-						objectDefinition.getObjectDefinitionId()),
-					objectField -> JSONUtil.put(
-						"label", objectField.getLabel(_themeDisplay.getLocale())
-					).put(
-						"name", objectField.getName()
-					))
+						objectDefinition.getObjectDefinitionId()))
+			).put(
+				"repeatableGroups",
+				_getRepeatableGroupsJSONArray(objectDefinition)
+			));
+	}
+
+	private JSONArray _getObjectFieldsJSONArray(List<ObjectField> objectFields)
+		throws Exception {
+
+		return JSONUtil.toJSONArray(
+			objectFields,
+			objectField -> JSONUtil.put(
+				"label", objectField.getLabel(_themeDisplay.getLocale())
+			).put(
+				"name", objectField.getName()
 			));
 	}
 
@@ -315,8 +335,45 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 		return objectField.getName();
 	}
 
+	private JSONArray _getRepeatableGroupsJSONArray(
+			ObjectDefinition objectDefinition)
+		throws Exception {
+
+		return JSONUtil.toJSONArray(
+			PIMConnectorFieldMappingsUtil.getRepeatableGroupObjectRelationships(
+				objectDefinition),
+			objectRelationship -> {
+				ObjectDefinition repeatableGroupObjectDefinition =
+					_objectDefinitionLocalService.fetchObjectDefinition(
+						objectRelationship.getObjectDefinitionId2());
+
+				return JSONUtil.put(
+					"label",
+					repeatableGroupObjectDefinition.getLabel(
+						_themeDisplay.getLocale())
+				).put(
+					"name", objectRelationship.getName()
+				).put(
+					"objectFields",
+					_getObjectFieldsJSONArray(
+						ListUtil.filter(
+							_objectFieldLocalService.getObjectFields(
+								repeatableGroupObjectDefinition.
+									getObjectDefinitionId()),
+							objectField ->
+								objectField.getObjectFieldId() !=
+									objectRelationship.getObjectFieldId2()))
+				).put(
+					"repeatableGroups",
+					_getRepeatableGroupsJSONArray(
+						repeatableGroupObjectDefinition)
+				);
+			});
+	}
+
 	private final String _channelField;
 	private final HttpServletRequest _httpServletRequest;
+	private final ObjectDefinitionLocalService _objectDefinitionLocalService;
 	private final ObjectDefinitionService _objectDefinitionService;
 	private final long _objectEntryId;
 	private final ObjectEntryLocalService _objectEntryLocalService;
