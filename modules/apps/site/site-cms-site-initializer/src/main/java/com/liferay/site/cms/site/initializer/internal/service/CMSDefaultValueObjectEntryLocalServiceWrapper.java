@@ -58,6 +58,7 @@ import java.io.Serializable;
 
 import java.math.BigDecimal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -421,8 +422,14 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 	}
 
 	private void _validateDefaultValues(
-			Serializable defaultValues, long groupId)
+			long groupId, Map<String, Serializable> values)
 		throws PortalException {
+
+		Serializable defaultValues = values.get("defaultValues");
+
+		if (defaultValues == null) {
+			return;
+		}
 
 		JSONArray jsonArray = null;
 
@@ -442,6 +449,8 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 				"Default values must be a JSON array serialized as a string",
 				"defaultValues");
 		}
+
+		boolean modified = false;
 
 		for (int i = 0; i < jsonArray.length(); i++) {
 			Object item = jsonArray.get(i);
@@ -501,10 +510,15 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 				continue;
 			}
 
-			for (String languageId : valueJSONObject.keySet()) {
+			for (String languageId :
+					new ArrayList<>(valueJSONObject.keySet())) {
+
 				if (!_language.isAvailableLocale(groupId, languageId)) {
-					throw new ObjectEntryValuesException.InvalidLanguageId(
-						languageId, "defaultValues");
+					valueJSONObject.remove(languageId);
+
+					modified = true;
+
+					continue;
 				}
 
 				if (valueJSONObject.isNull(languageId)) {
@@ -513,6 +527,10 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 
 				_validateValue(name, type, valueJSONObject.get(languageId));
 			}
+		}
+
+		if (modified) {
+			values.put("defaultValues", jsonArray.toString());
 		}
 	}
 
@@ -624,11 +642,7 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapper
 				"className");
 		}
 
-		Serializable defaultValues = values.get("defaultValues");
-
-		if (defaultValues != null) {
-			_validateDefaultValues(defaultValues, groupId);
-		}
+		_validateDefaultValues(groupId, values);
 	}
 
 	private static final String[] _BUSINESS_TYPES = {
