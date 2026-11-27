@@ -9,9 +9,13 @@ import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayouts
 
 export class ProductComparisonPage {
 	readonly compareBar: Locator;
+	readonly compareBarActiveItems: Locator;
 	readonly compareBarItemThumbnail: (imageId: string) => Locator;
+	readonly compareBarItems: Locator;
 	readonly compareBarLink: Locator;
+	readonly compareCheckbox: Locator;
 	readonly comparisonTableProductLink: (productName: string) => Locator;
+	readonly comparisonTableRowCells: (label: string) => Locator;
 	readonly layoutsPage: CommerceLayoutsPage;
 	readonly page: Page;
 
@@ -19,11 +23,19 @@ export class ProductComparisonPage {
 		this.compareBar = page
 			.locator('.mini-compare.active')
 			.filter({hasText: 'Compare'});
+		this.compareBarActiveItems = this.compareBar.locator(
+			'.mini-compare-item.active'
+		);
 		this.compareBarItemThumbnail = (imageId: string) =>
 			this.compareBar.locator(
 				`.mini-compare-item.active .mini-compare-thumbnail[style*="images/${imageId}"]`
 			);
+		this.compareBarItems = this.compareBar.locator('.mini-compare-item');
 		this.compareBarLink = this.compareBar.getByRole('link', {
+			exact: true,
+			name: 'Compare',
+		});
+		this.compareCheckbox = page.getByRole('checkbox', {
 			exact: true,
 			name: 'Compare',
 		});
@@ -32,6 +44,14 @@ export class ProductComparisonPage {
 				exact: true,
 				name: productName,
 			});
+		this.comparisonTableRowCells = (label: string) =>
+			page
+				.getByRole('table')
+				.getByRole('row')
+				.filter({
+					has: page.getByRole('cell', {exact: true, name: label}),
+				})
+				.getByRole('cell');
 		this.layoutsPage = new CommerceLayoutsPage(page);
 		this.page = page;
 	}
