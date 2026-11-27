@@ -1690,7 +1690,7 @@ public class LiferayCommercePIMConnectorTest {
 				"manual", fileEntryId4
 			).build());
 
-		String externalReferenceCode3 = RandomTestUtil.randomString();
+		String externalReferenceCode3 = RandomTestUtil.randomString(75);
 		long fileEntryId3 = RandomTestUtil.randomLong();
 
 		_setUpImageObjectEntries(
@@ -1712,8 +1712,10 @@ public class LiferayCommercePIMConnectorTest {
 		byte[] bytes4 = _mockFileEntry(
 			fileName4, fileEntryId4, "application/pdf");
 
+		String productExternalReferenceCode = RandomTestUtil.randomString();
+
 		JSONObject jsonObject = _getProductJSONObject(
-			RandomTestUtil.randomString(),
+			productExternalReferenceCode,
 			_getRequiredObjectEntries(
 				_mockPIMFieldMappingObjectEntry(
 					"attachments[].src", StringPool.BLANK, "manual",
@@ -1735,13 +1737,20 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
 
 		_assertAttachmentJSONObject(
-			bytes1, "image/png", externalReferenceCode1,
+			bytes1, "image/png",
+			productExternalReferenceCode + "-" + externalReferenceCode1,
 			jsonArray.getJSONObject(0), "red", 0, title1);
 		_assertAttachmentJSONObject(
-			bytes2, "image/jpeg", externalReferenceCode2,
+			bytes2, "image/jpeg",
+			productExternalReferenceCode + "-" + externalReferenceCode2,
 			jsonArray.getJSONObject(1), "red", 1, title2);
+
+		String longExternalReferenceCode =
+			productExternalReferenceCode + "-" + externalReferenceCode3;
+
 		_assertAttachmentJSONObject(
-			bytes3, "image/png", externalReferenceCode3,
+			bytes3, "image/png",
+			PortalUUIDUtil.generate(longExternalReferenceCode.getBytes()),
 			jsonArray.getJSONObject(2), "blue", 2, fileName3);
 
 		jsonArray = jsonObject.getJSONArray("attachments");
@@ -1749,7 +1758,9 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
 
 		_assertAttachmentJSONObject(
-			bytes4, "application/pdf", sku + "-manual",
+			bytes4, "application/pdf",
+			StringBundler.concat(
+				productExternalReferenceCode, "-", sku, "-manual"),
 			jsonArray.getJSONObject(0), "blue", 0, fileName4);
 	}
 
