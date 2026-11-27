@@ -1,52 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro createProductOption(key_optionName = null) {
-		Type(
-			key_title = "Add Options",
-			locator1 = "CommerceEntry#ADD_RELATION_FIELD",
-			value1 = ${key_optionName});
-
-		Button.click(button = "Create New");
-	}
-
-	@summary = "Default summary"
-	macro createProductOptionValue(key_name = null, key_position = null) {
-		Click(locator1 = "Button#PLUS");
-
-		SelectFrame.selectFrameTop();
-
-		SelectFrame.selectFrameNoLoading(locator1 = "IFrame#MODAL_BODY");
-
-		Type(
-			locator1 = "CommerceEntry#MODAL_NAME_FIELD",
-			value1 = ${key_name});
-
-		if (isSet(position)) {
-			Type(
-				locator1 = "CommerceEntry#PRIORITY_FIELD",
-				value1 = ${key_position});
-		}
-
-		Button.click(button = "Submit");
-	}
-
-	@summary = "Default summary"
-	macro deleteProductOptionValue(key_value = null) {
-		Click(
-			key_value = ${key_value},
-			locator1 = "CommerceEntry#BODY_VERTICAL_ELLIPSIS");
-
-		CommerceEntry.clickNoError(menuItem = "Delete");
-
-		Alert.viewSuccessMessage();
-
-		Button.clickSave();
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro editOptionValue(optionValue = null, priceType = null, sku = null) {
 		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
 
@@ -81,7 +35,7 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editProductOption(key_position = null, key_fieldType = null, productAddOptionCategoriesList = null, productOptionDefineExternally = null, collectionProvider = null, key_option = null, productOptionRequired = null, key_optionName = null, productOptionFacetable = null, productOptionSkuContributor = null, key_description = null, key_priceType = null, categoryNameList = null) {
+	macro editProductOption(key_position = null, key_option = null, productOptionRequired = null, key_optionName = null, productOptionFacetable = null, productOptionSkuContributor = null, key_description = null, key_priceType = null) {
 		Click(
 			key_index = ${key_option},
 			locator1 = "WorkflowMetrics#SEARCH_FIELD_MAPPINGS_METRICS_INDEXES");
@@ -146,68 +100,11 @@ definition {
 			}
 		}
 
-		if (isSet(productOptionFieldType)) {
-			Select(
-				key_fieldLabel = "Field Type",
-				locator1 = "Select#GENERIC_SELECT_FIELD",
-				value1 = ${key_fieldType});
-		}
-
 		if (isSet(productOptionPriceType)) {
 			Select(
 				key_fieldLabel = "Price Type",
 				locator1 = "Select#GENERIC_SELECT_FIELD",
 				value1 = ${key_priceType});
-		}
-
-		if (isSet(productOptionDefineExternally)) {
-			if (${productOptionDefineExternally} == "true") {
-				Check.checkNotVisible(
-					key_toggleSwitchLabel = "Define Externally",
-					locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
-
-				Button.clickSave();
-
-				Select(
-					key_selectFieldLabel = "Collection Provider",
-					locator1 = "CommerceEntry#ANY_SELECT",
-					value1 = ${collectionProvider});
-
-				Button.clickSave();
-			}
-			else {
-				Uncheck.uncheckNotVisible(
-					key_toggleSwitchLabel = "Define Externally",
-					locator1 = "ToggleSwitch#ANY_TOGGLE_SWITCH");
-			}
-		}
-
-		if (isSet(productAddOptionCategoriesList)) {
-			for (var categoryName : list ${productAddOptionCategoriesList}) {
-				Type(
-					locator1 = "CommerceEntry#MULTISELECT_INPUT",
-					value1 = ${categoryName});
-
-				KeyPress(
-					locator1 = "CommerceEntry#MULTISELECT_INPUT",
-					value1 = "\RETURN");
-
-				AssertElementPresent(
-					key_category = ${categoryName},
-					locator1 = "CommerceEntry#OPTION_CATEGORY");
-			}
-		}
-
-		if (isSet(productRemoveOptionCategories)) {
-			for (var categoryName : list ${categoryNameList}) {
-				Click(
-					key_category = ${categoryName},
-					locator1 = "CommerceEntry#REMOVE_OPTION_CATEGORY");
-
-				AssertElementNotPresent(
-					key_category = ${categoryName},
-					locator1 = "CommerceEntry#OPTION_CATEGORY");
-			}
 		}
 
 		Button.clickSave();

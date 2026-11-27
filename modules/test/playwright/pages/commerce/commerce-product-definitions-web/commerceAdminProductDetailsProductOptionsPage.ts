@@ -12,14 +12,27 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 	readonly createNewOptionsButton: Locator;
 	readonly deleteMenuItem: Locator;
 	readonly optionActionsButton: (optionName: string) => Locator;
+	readonly optionCategoryInput: Locator;
+	readonly optionCategoryMenuItem: (categoryName: string) => Locator;
+	readonly optionCategoryRemoveButton: (categoryName: string) => Locator;
+	readonly optionCollectionProviderSelect: Locator;
+	readonly optionDefineExternallyToggle: Locator;
+	readonly optionFieldTypeSelect: Locator;
 	readonly optionLink: (optionName: string) => Locator;
+	readonly optionPriceTypeSelect: Locator;
+	readonly optionRow: (optionName: string) => Locator;
+	readonly optionSaveButton: Locator;
 	readonly optionSidePanelCancelButton: Locator;
 	readonly optionSidePanelFrame: FrameLocator;
+	readonly optionValueDefaultToggle: Locator;
 	readonly optionValueDeltaPriceInput: Locator;
 	readonly optionValueLink: (optionValueName: string) => Locator;
 	readonly optionValueQuantityInput: Locator;
 	readonly optionValueRow: (optionValueName: string) => Locator;
+	readonly optionValueRowActionsButton: (optionValueName: string) => Locator;
+	readonly optionValueRowMenuItem: (action: string) => Locator;
 	readonly optionValueSaveButton: Locator;
+	readonly optionValueSearchInput: Locator;
 	readonly optionValueSidePanel: Locator;
 	readonly optionValueSidePanelCloseButton: Locator;
 	readonly optionValueSidePanelFrame: FrameLocator;
@@ -57,7 +70,36 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 				});
 		this.optionLink = (optionName: string) =>
 			page.getByRole('link', {exact: true, name: optionName});
+		this.optionRow = (optionName: string) =>
+			page
+				.locator('[data-testid="visualization-mode-table"]')
+				.getByRole('row')
+				.filter({has: this.optionLink(optionName)});
 		this.optionSidePanelFrame = page.frameLocator(sidePanelIframe);
+		this.optionCategoryInput =
+			this.optionSidePanelFrame.getByLabel('Category');
+		this.optionCategoryMenuItem = (categoryName: string) =>
+			this.optionSidePanelFrame.getByRole('option', {
+				exact: true,
+				name: categoryName,
+			});
+		this.optionCategoryRemoveButton = (categoryName: string) =>
+			this.optionSidePanelFrame.getByRole('button', {
+				exact: true,
+				name: `Remove ${categoryName}`,
+			});
+		this.optionCollectionProviderSelect =
+			this.optionSidePanelFrame.getByLabel('Collection Provider');
+		this.optionDefineExternallyToggle =
+			this.optionSidePanelFrame.getByLabel('Define Externally');
+		this.optionFieldTypeSelect =
+			this.optionSidePanelFrame.getByLabel('Field Type');
+		this.optionPriceTypeSelect =
+			this.optionSidePanelFrame.getByLabel('Price Type');
+		this.optionSaveButton = this.optionSidePanelFrame.getByRole('button', {
+			exact: true,
+			name: 'Save',
+		});
 		this.optionValueSidePanelFrame =
 			this.optionSidePanelFrame.frameLocator(sidePanelIframe);
 		this.optionSidePanelCancelButton = this.optionSidePanelFrame.getByRole(
@@ -67,6 +109,8 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 				name: 'Cancel',
 			}
 		);
+		this.optionValueDefaultToggle =
+			this.optionValueSidePanelFrame.getByLabel('Default', {exact: true});
 		this.optionValueDeltaPriceInput =
 			this.optionValueSidePanelFrame.getByLabel('Delta Price');
 		this.optionValueLink = (optionValueName: string) =>
@@ -81,12 +125,26 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 			this.optionSidePanelFrame
 				.getByRole('row')
 				.filter({hasText: optionValueName});
+		this.optionValueRowActionsButton = (optionValueName: string) =>
+			this.optionValueRow(optionValueName).getByRole('button', {
+				exact: true,
+				name: `${optionValueName} Actions`,
+			});
+		this.optionValueRowMenuItem = (action: string) =>
+			this.optionSidePanelFrame.getByRole('menuitem', {
+				exact: true,
+				name: action,
+			});
 		this.optionValueSaveButton = this.optionValueSidePanelFrame.getByRole(
 			'button',
 			{
 				exact: true,
 				name: 'Save',
 			}
+		);
+		this.optionValueSearchInput = this.optionSidePanelFrame.getByRole(
+			'searchbox',
+			{exact: true, name: 'Search'}
 		);
 		this.optionValueSidePanel =
 			this.optionSidePanelFrame.locator('.fds-side-panel');
@@ -181,5 +239,14 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 		await this.optionValueSkuInput.fill(sku);
 
 		await expect(this.optionValueSkuDropdownItems.first()).toBeVisible();
+	}
+
+	async setOptionValueDefault(optionValueName: string) {
+		await this.optionValueRowActionsButton(optionValueName).click();
+		await this.optionValueRowMenuItem('Toggle Default').click();
+
+		await expect(
+			this.optionValueRow(optionValueName).locator('.cell-preselected')
+		).toHaveText('Yes');
 	}
 }

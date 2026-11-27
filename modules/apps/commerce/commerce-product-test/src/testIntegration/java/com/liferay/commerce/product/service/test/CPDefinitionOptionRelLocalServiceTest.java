@@ -24,6 +24,7 @@ import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -574,6 +575,64 @@ public class CPDefinitionOptionRelLocalServiceTest {
 
 		Assert.assertTrue(
 			Validator.isNull(cpDefinitionOptionRel.getPriceType()));
+	}
+
+	@Test
+	public void testValidatePriceTypeDefinedExternally() throws Exception {
+		frutillaRule.scenario(
+			"Update the price type of a product option defined externally"
+		).given(
+			"A product and a product option"
+		).when(
+			"The option values are defined externally with any price type"
+		).then(
+			"Only the dynamic price type is valid"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			_commerceCatalog.getGroupId());
+
+		CPOption cpOption = CPTestUtil.addCPOption(
+			_commerceCatalog.getGroupId(),
+			CPTestUtil.getDefaultCommerceOptionTypeKey(false), false);
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			CPTestUtil.addCPDefinitionOptionRel(
+				_commerceCatalog.getGroupId(), cpDefinition.getCPDefinitionId(),
+				cpOption.getCPOptionId());
+
+		_cpDefinitionOptionRels.add(cpDefinitionOptionRel);
+
+		cpDefinitionOptionRel.setDefinedExternally(true);
+
+		for (String priceType :
+				new String[] {
+					StringPool.BLANK,
+					CPConstants.PRODUCT_OPTION_PRICE_TYPE_STATIC
+				}) {
+
+			try {
+				_updatePriceType(cpDefinitionOptionRel, priceType);
+
+				Assert.fail();
+			}
+			catch (CPDefinitionOptionRelPriceTypeException
+						cpDefinitionOptionRelPriceTypeException) {
+
+				Assert.assertEquals(
+					"Price type must be dynamic",
+					cpDefinitionOptionRelPriceTypeException.getMessage());
+			}
+		}
+
+		cpDefinitionOptionRel = _updatePriceType(
+			cpDefinitionOptionRel,
+			CPConstants.PRODUCT_OPTION_PRICE_TYPE_DYNAMIC);
+
+		Assert.assertTrue(cpDefinitionOptionRel.isDefinedExternally());
+		Assert.assertEquals(
+			CPConstants.PRODUCT_OPTION_PRICE_TYPE_DYNAMIC,
+			cpDefinitionOptionRel.getPriceType());
 	}
 
 	@Test
