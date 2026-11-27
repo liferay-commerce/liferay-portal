@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -153,11 +154,22 @@ public class CMSDefaultValueUtilTest {
 				_filterFactory, _objectEntryFolder, _parentObjectEntryFolder,
 				TestPropsValues.getUserId()));
 
-		ObjectEntry objectEntry = CMSDefaultValueUtil.addOrUpdateObjectEntry(
-			JSONUtil.put(
-				_createJSONObject(
-					"title", "Text", RandomTestUtil.randomString())),
-			_filterFactory, _objectEntryFolder, TestPropsValues.getUserId());
+		JSONObject jsonObject = JSONUtil.put(
+			"en_US", RandomTestUtil.randomString()
+		).put(
+			"es_ES", RandomTestUtil.randomString()
+		);
+
+		JSONArray jsonArray = JSONUtil.put(
+			_createJSONObject("title", "Text", jsonObject));
+
+		CMSDefaultValueUtil.addOrUpdateObjectEntry(
+			jsonArray, _filterFactory, _objectEntryFolder,
+			TestPropsValues.getUserId());
+
+		GroupTestUtil.updateDisplaySettings(
+			_group.getGroupId(), Collections.singletonList(LocaleUtil.US),
+			LocaleUtil.US);
 
 		ObjectEntry copyObjectEntry = CMSDefaultValueUtil.copyObjectEntry(
 			_filterFactory, _objectEntryFolder, _parentObjectEntryFolder,
@@ -168,8 +180,11 @@ public class CMSDefaultValueUtilTest {
 		Assert.assertEquals(
 			_parentObjectEntryFolder.getExternalReferenceCode(),
 			MapUtil.getString(copyValues, "classExternalReferenceCode"));
+
+		jsonObject.remove("es_ES");
+
 		Assert.assertEquals(
-			MapUtil.getString(objectEntry.getValues(), "defaultValues"),
+			jsonArray.toString(),
 			MapUtil.getString(copyValues, "defaultValues"));
 		Assert.assertEquals(
 			_parentObjectEntryFolder.getTreePath(),

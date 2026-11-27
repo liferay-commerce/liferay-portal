@@ -504,23 +504,19 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 			objectEntryFolder2.getExternalReferenceCode(), name, "Text",
 			JSONUtil.put("en_US", 1));
 
-		_assertFailure(
-			new ObjectEntryValuesException.InvalidLanguageId(
-				"it_IT", "defaultValues"),
-			() -> _addCMSDefaultValueObjectEntry(
-				objectEntryFolder2.getExternalReferenceCode(),
-				ObjectEntryFolder.class.getName(),
-				JSONUtil.put(
-					_createJSONObject(
-						name, "Text",
-						JSONUtil.put("it_IT", RandomTestUtil.randomString()))
-				).toString()));
-
 		Assert.assertNull(
 			CMSDefaultValueUtil.fetchObjectEntry(
 				objectEntryFolder2.getExternalReferenceCode(),
 				ObjectEntryFolder.class.getName(), _group.getCompanyId(),
 				_filterFactory, _group.getGroupId()));
+
+		JSONObject contentJSONObject = JSONUtil.put(
+			"en_US", RandomTestUtil.randomString()
+		).put(
+			"es_ES", StringPool.BLANK
+		).put(
+			"it_IT", RandomTestUtil.randomString()
+		);
 
 		JSONArray jsonArray = JSONUtil.putAll(
 			_createJSONObject(
@@ -529,13 +525,7 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 				"listTypeDefinitionERC", RandomTestUtil.randomString()
 			),
 			_createJSONObject("code", "Text", null),
-			_createJSONObject(
-				"content", "RichText",
-				JSONUtil.put(
-					"en_US", RandomTestUtil.randomString()
-				).put(
-					"es_ES", StringPool.BLANK
-				)),
+			_createJSONObject("content", "RichText", contentJSONObject),
 			_createJSONObject("count", "Integer", 1),
 			_createJSONObject("endDate", "Date", "2026-12-01"),
 			_createJSONObject("flag", "Boolean", false),
@@ -550,6 +540,8 @@ public class CMSDefaultValueObjectEntryLocalServiceWrapperTest {
 		objectEntry = _addCMSDefaultValueObjectEntry(
 			objectEntryFolder2.getExternalReferenceCode(),
 			ObjectEntryFolder.class.getName(), jsonArray.toString());
+
+		contentJSONObject.remove("it_IT");
 
 		Assert.assertEquals(
 			jsonArray.toString(),
