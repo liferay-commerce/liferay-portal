@@ -100,6 +100,10 @@ import java.util.function.Supplier;
 			value = ExpireObjectBulkSelectionAction.class
 		),
 		@JsonSubTypes.Type(
+			name = "GeneratePIMProductVariantsBulkSelectionAction",
+			value = GeneratePIMProductVariantsBulkSelectionAction.class
+		),
+		@JsonSubTypes.Type(
 			name = "MoveObjectBulkSelectionAction",
 			value = MoveObjectBulkSelectionAction.class
 		),
@@ -397,6 +401,8 @@ public abstract class BulkAction implements Serializable {
 		EXPIRE_OBJECT_BULK_SELECTION_ACTION("ExpireObjectBulkSelectionAction"),
 		EDIT_OBJECT_TAGS_BULK_SELECTION_ACTION(
 			"EditObjectTagsBulkSelectionAction"),
+		GENERATE_PIM_PRODUCT_VARIANTS_BULK_SELECTION_ACTION(
+			"GeneratePIMProductVariantsBulkSelectionAction"),
 		MOVE_OBJECT_BULK_SELECTION_ACTION("MoveObjectBulkSelectionAction"),
 		PERMISSION_OBJECT_BULK_SELECTION_ACTION(
 			"PermissionObjectBulkSelectionAction"),
@@ -557,4 +563,4 @@ public abstract class BulkAction implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1318117329
+// LIFERAY-REST-BUILDER-HASH:-634030740

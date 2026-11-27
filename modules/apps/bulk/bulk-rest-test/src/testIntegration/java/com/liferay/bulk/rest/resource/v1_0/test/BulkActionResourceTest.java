@@ -23,6 +23,7 @@ import com.liferay.bulk.rest.client.dto.v1_0.DuplicateObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.EditObjectCategoriesBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.EditObjectTagsBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.ExpireObjectBulkSelectionAction;
+import com.liferay.bulk.rest.client.dto.v1_0.GeneratePIMProductVariantsBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.PermissionObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.ResetPermissionObjectBulkSelectionAction;
 import com.liferay.bulk.rest.client.dto.v1_0.SelectionScope;
@@ -102,11 +103,14 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.site.cms.site.initializer.util.CMSDefaultPermissionUtil;
+import com.liferay.site.pim.site.initializer.test.util.PIMProductTypeTestUtil;
+import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
@@ -167,6 +171,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		_user = UserTestUtil.addUser();
 	}
 
+	@FeatureFlag("LPD-96666")
 	@Override
 	@Test
 	public void testPostBulkAction() throws Exception {
@@ -179,6 +184,7 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 		_testPostBulkActionWithTypeDeleteObjectEntry();
 		_testPostBulkActionWithTypeDuplicate();
 		_testPostBulkActionWithTypeExpire();
+		_testPostBulkActionWithTypeGeneratePIMProductVariants();
 		_testPostBulkActionWithTypeKeyword();
 		_testPostBulkActionWithTypePermission();
 		_testPostBulkActionWithTypePermissionSingleRole();
@@ -1476,6 +1482,89 @@ public class BulkActionResourceTest extends BaseBulkActionResourceTestCase {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, objectEntryFolder.getStatus());
+	}
+
+	private void _testPostBulkActionWithTypeGeneratePIMProductVariants()
+		throws Exception {
+
+		PIMTestUtil.getOrAddGroup();
+
+		String colorKey = RandomTestUtil.randomString();
+
+		ObjectDefinition objectDefinition =
+			PIMProductTypeTestUtil.addProductTypeObjectDefinition(
+				Arrays.asList(
+					PIMProductTypeTestUtil.createPicklistObjectField(
+						"color", colorKey, RandomTestUtil.randomString()),
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						RandomTestUtil.randomString(), "sku"),
+					ObjectFieldUtil.createObjectField(
+						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+						ObjectFieldConstants.DB_TYPE_STRING,
+						RandomTestUtil.randomString(), "title")));
+
+		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
+
+		Map<String, Serializable> values =
+			HashMapBuilder.<String, Serializable>put(
+				"color", colorKey
+			).put(
+				"sku", RandomTestUtil.randomString()
+			).put(
+				"title", RandomTestUtil.randomString()
+			).build();
+
+		ObjectEntry objectEntry1 = ObjectEntryTestUtil.addObjectEntry(
+			depotEntry.getGroupId(), objectDefinition, 0, values);
+		ObjectEntry objectEntry2 = ObjectEntryTestUtil.addObjectEntry(
+			depotEntry.getGroupId(), objectDefinition, 0, values);
+
+		GeneratePIMProductVariantsBulkSelectionAction
+			generatePIMProductVariantsBulkSelectionAction =
+				new GeneratePIMProductVariantsBulkSelectionAction() {
+					{
+						setBulkActionItems(
+							_toBulkActionItems(
+								objectDefinition, objectEntry1, objectEntry2));
+						setObjectFieldNames(new String[] {"color"});
+						setType(
+							BulkAction.Type.
+								GENERATE_PIM_PRODUCT_VARIANTS_BULK_SELECTION_ACTION);
+					}
+				};
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.ERROR)) {
+
+			assertHttpResponseStatusCode(
+				400,
+				bulkActionResource.postBulkActionHttpResponse(
+					null, null, null, null, null, null, null, null,
+					generatePIMProductVariantsBulkSelectionAction));
+		}
+
+		generatePIMProductVariantsBulkSelectionAction.setBulkActionItems(
+			_toBulkActionItems(objectDefinition, objectEntry1));
+
+		BulkActionTask bulkActionTask = bulkActionResource.postBulkAction(
+			null, null, null, null, null, null, null, null,
+			generatePIMProductVariantsBulkSelectionAction);
+
+		_waitForFinish(GetterUtil.getLong(bulkActionTask.getId()));
+
+		ObjectEntry objectEntry3 = _objectEntryLocalService.getObjectEntry(
+			bulkActionTask.getId());
+
+		values = objectEntry3.getValues();
+
+		Assert.assertEquals(
+			1, GetterUtil.getInteger(values.get("numberOfItems")));
+		Assert.assertEquals(
+			1, GetterUtil.getInteger(values.get("numberOfSuccessfulItems")));
 	}
 
 	private void _testPostBulkActionWithTypeKeyword() throws Exception {
