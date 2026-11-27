@@ -27,8 +27,6 @@ import com.liferay.commerce.product.helper.CPInstanceHelper;
 import com.liferay.commerce.product.type.CPTypeRegistry;
 import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.item.selector.ItemSelector;
-import com.liferay.item.selector.criteria.InfoItemItemSelectorReturnType;
-import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -40,7 +38,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
@@ -50,7 +47,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PrefsParamUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -225,31 +221,6 @@ public class CPPublisherConfigurationDisplayContext
 
 	public List<CPDataSource> getCPDataSources() {
 		return _cpDataSourceRegistry.getCPDataSources();
-	}
-
-	public String getCategorySelectorURL() {
-		HttpServletRequest httpServletRequest =
-			cpContentRequestHelper.getRequest();
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		InfoItemItemSelectorCriterion itemSelectorCriterion =
-			new InfoItemItemSelectorCriterion();
-
-		itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-			new InfoItemItemSelectorReturnType());
-		itemSelectorCriterion.setItemType(AssetCategory.class.getName());
-
-		return PortletURLBuilder.create(
-			_itemSelector.getItemSelectorURL(
-				RequestBackedPortletURLFactoryUtil.create(
-					cpContentRequestHelper.getLiferayPortletRequest()),
-				themeDisplay.getScopeGroup(), themeDisplay.getScopeGroupId(),
-				_getPortletNamespace() + "selectCategory",
-				itemSelectorCriterion)
-		).buildString();
 	}
 
 	public CPSku getDefaultCPSku(CPCatalogEntry cpCatalogEntry)

@@ -80,16 +80,20 @@ String layoutBreadcrumb = categoryCPDisplayLayoutDisplayContext.getLayoutBreadcr
 	</aui:form>
 </liferay-frontend:side-panel-content>
 
+<%
+CommerceChannel commerceChannel = categoryCPDisplayLayoutDisplayContext.getCommerceChannel();
+%>
+
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
 			"assetCategory", assetCategory
 		).put(
-			"categorySelectorUrl", categoryCPDisplayLayoutDisplayContext.getCategorySelectorURL(renderResponse)
-		).put(
 			"itemSelectorUrl", categoryCPDisplayLayoutDisplayContext.getItemSelectorUrl(renderRequest)
 		).put(
 			"portletNamespace", liferayPortletResponse.getNamespace()
+		).put(
+			"siteId", commerceChannel.getSiteGroupId()
 		).put(
 			"title", (assetCategory == null) ? null : assetCategory.getTitle(locale)
 		).build()
