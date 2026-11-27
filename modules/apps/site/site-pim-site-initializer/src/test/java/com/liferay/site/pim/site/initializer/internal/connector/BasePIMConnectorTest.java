@@ -486,8 +486,8 @@ public class BasePIMConnectorTest {
 
 		_mockRelatedObjectEntries(
 			ListUtil.fromArray(
-				namePIMFieldMappingObjectEntry, tag1PIMFieldMappingObjectEntry,
-				tag2PIMFieldMappingObjectEntry));
+				namePIMFieldMappingObjectEntry, tag2PIMFieldMappingObjectEntry,
+				tag1PIMFieldMappingObjectEntry));
 
 		Assert.assertEquals(
 			HashMapBuilder.put(

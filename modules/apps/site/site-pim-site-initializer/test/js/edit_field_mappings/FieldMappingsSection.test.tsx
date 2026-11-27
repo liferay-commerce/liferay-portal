@@ -53,6 +53,12 @@ function fixedValue(value = '') {
 	};
 }
 
+function getSourceAttributeValues() {
+	return screen
+		.getAllByLabelText('source-attribute')
+		.map((element) => (element as HTMLSelectElement).value);
+}
+
 function FieldMappingsSectionWrapper({
 	initialFieldMappings,
 }: {
@@ -190,5 +196,57 @@ describe('FieldMappingsSection', () => {
 		await userEvent.click(screen.getAllByLabelText('delete-row')[0]);
 
 		expect(screen.getAllByLabelText('source')).toHaveLength(1);
+	});
+
+	it('moves a field mapping row', async () => {
+		render(
+			<FieldMappingsSectionWrapper
+				initialFieldMappings={[
+					dynamicValue('sku'),
+					dynamicValue('title'),
+					fixedValue('ABC-1'),
+				]}
+			/>
+		);
+
+		const value = screen.getByLabelText('value');
+
+		screen.getAllByLabelText('drag-x')[2].focus();
+
+		await userEvent.keyboard('{Enter}{ArrowUp}');
+
+		expect(getSourceAttributeValues()).toEqual([
+			'sku',
+			'fixedValue',
+			'title',
+		]);
+		expect(screen.getByLabelText('value')).toBe(value);
+		expect(screen.getByLabelText('value')).toHaveValue('ABC-1');
+
+		await userEvent.keyboard('{ArrowUp}{ArrowUp}');
+
+		expect(getSourceAttributeValues()).toEqual([
+			'fixedValue',
+			'sku',
+			'title',
+		]);
+
+		await userEvent.keyboard('{Enter}{ArrowDown}');
+
+		expect(getSourceAttributeValues()).toEqual([
+			'fixedValue',
+			'sku',
+			'title',
+		]);
+
+		screen.getAllByLabelText('drag-x')[2].focus();
+
+		await userEvent.keyboard('{Enter}{ArrowDown}');
+
+		expect(getSourceAttributeValues()).toEqual([
+			'fixedValue',
+			'sku',
+			'title',
+		]);
 	});
 });

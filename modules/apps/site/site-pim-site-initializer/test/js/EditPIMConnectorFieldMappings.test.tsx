@@ -178,14 +178,18 @@ describe('EditPIMConnectorFieldMappings', () => {
 			'title'
 		);
 
+		screen.getAllByLabelText('drag-x')[1].focus();
+
+		await userEvent.keyboard('{Enter}{ArrowUp}{Enter}');
+
 		await userEvent.click(screen.getByText('save'));
 
 		await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(2));
 
 		expect(getRequestBody(0).priority).toBe(0);
-		expect(getRequestBody(0).sourceFieldName).toBe('sku');
+		expect(getRequestBody(0).sourceFieldName).toBe('title');
 		expect(getRequestBody(1).priority).toBe(1);
-		expect(getRequestBody(1).sourceFieldName).toBe('title');
+		expect(getRequestBody(1).sourceFieldName).toBe('sku');
 	});
 
 	it('deletes a field mapping the integrator unmapped', async () => {
