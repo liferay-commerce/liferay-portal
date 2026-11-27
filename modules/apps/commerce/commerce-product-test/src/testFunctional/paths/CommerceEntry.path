@@ -91,11 +91,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>LABEL_SELECT_BY_INDEX</td>
-	<td>xpath=(//label[contains(text(),'${key_fieldLabel}')]/..//select)[${key_index}]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>LABEL_GENERIC_SELECT_POSITION</td>
 	<td>//label[contains(text(),'${key_fieldLabel}')]/..//select/option['${row}']</td>
 	<td></td>
@@ -361,11 +356,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>OPTIONS_SELECT_LIST</td>
-	<td>//div[contains(@class,'dropdown-menu')]//button[contains(.,'${key_selectValue}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>OVERRIDE_DEFAULT_DISPLAY_PAGE</td>
 	<td>//div[contains(@class,'h4') and contains(.,'Override Default')]//..//tr[contains(.,'${key_entryName}') and contains(.,'${key_layout}')]</td>
 	<td></td>
@@ -526,11 +516,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>SKU_STATUS_PRODUCT_ADMIN_PAGE</td>
-	<td>//*[contains(@class, 'table-list-title')]/a[text()='${key_entryTitle}']/../../../td//span[text()='${key_label}']</td>
-	<td></td>
-</tr>
-<tr>
 	<td>TAGS_FIELD</td>
 	<td>//div/ul/li/span/span/input[contains(@id,'assetTagName')]</td>
 	<td></td>
@@ -546,11 +531,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>MODAL_NAME_FIELD</td>
-	<td>//div/input[contains(@id,'Name')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>MODAL_NAME_FIELD_SMALL</td>
 	<td>//input[contains(@name,'name')]</td>
 	<td></td>
@@ -563,16 +543,6 @@
 <tr>
 	<td>COMBOBOX_BUTTON</td>
 	<td>//div[normalize-space(text())='${key_objectName}']//button[@role='combobox']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>COMBOBOX_DROPDOWN_OPTION_NAME</td>
-	<td>//div[contains(@class, 'dropdown-menu-select')]//*[contains(text(),'${key_optionName}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>DROPDOWN_OPTION_NAME_WITH_WARNING_MESSAGE</td>
-	<td>//div[contains(@class, 'dropdown-menu-select')]//span[contains(text(),'${key_warning}')]/../../..//*[contains(text(),'${key_optionName}')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -896,11 +866,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>TABLE_ELIGIBILITY_ACCOUNT_GROUPS</td>
-	<td>//td[contains(text(),'${key_entryName}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>TABLE_ELIGIBILITY_ENTRY</td>
 	<td>//div[contains(@class,'h4') and contains(.,'${key_table}')]//..//td[contains(.,'${key_entryName}')]</td>
 	<td></td>
@@ -956,11 +921,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>HEADER_ID</td>
-	<td>//div[@class='header-info']//div//span[contains(.,'ID')]/following-sibling::strong</td>
-	<td></td>
-</tr>
-<tr>
 	<td>NOTIFICATION_DELIVERY_PANEL_CLOSED</td>
 	<td>//div[contains(@class,'content')]//a[contains(.,'${key_contentType}') and contains(@class,'collapsed')]//span[contains(@class,'closed')]//*[name()='svg']</td>
 	<td></td>
@@ -968,11 +928,6 @@
 <tr>
 	<td>FILE_ENTRY_ID_FROM_PRODUCT_MEDIA</td>
 	<td>//input[@id="_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fileEntryId"]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>ENTRY_MENU_DROPDOWN_BUTTON</td>
-	<td>//a[contains(.,'${key_entryName}')]/../../..//button[contains(@class, 'dropdown-toggle') and contains(@class, 'btn-unstyled') and contains(@class, 'component-action')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1125,11 +1080,6 @@
 <tr>
 	<td>ITEM_FINDER_ENTRY_NAME</td>
 	<td>//div[contains(@id,'item-finder')]//td[contains(.,'${key_entryName}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>OPTION_TABLE_CHECK</td>
-	<td>//td[(text() = '${key_table}')]//..//..//..//a[(text() = "${key_entryName}")]</td>
 	<td></td>
 </tr>
 
@@ -1417,16 +1367,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>OPTION_CATEGORY</td>
-	<td>//div[contains(@class,'form-group')]/label[contains(.,'Category')]/..//span[contains(@class,'label label-secondary')]/span[contains(.,'${key_category}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>REMOVE_OPTION_CATEGORY</td>
-	<td>//div[contains(@class,'form-group')]/label[contains(.,'Category')]/..//span[contains(@class,'label label-secondary')]/span[contains(.,'${key_category}')]/..//button</td>
-	<td></td>
-</tr>
-<tr>
 	<td>FILTER_DROPDOWN_MENU</td>
 	<td>//div[contains(@class,'filters')]/button</td>
 	<td></td>
@@ -1504,11 +1444,6 @@
 <tr>
 	<td>TABLE_SEARCH_BY_NAME_AND_CONTENT</td>
 	<td>//td[contains(.,'${key_productName}')]/following-sibling::td[contains(text(),'${key_value}')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>VALUE_PRODUCT_RELATIONS</td>
-	<td>//a[contains(text(),'${key_productName}')]/../../..//td[(text()='${key_value}')]</td>
 	<td></td>
 </tr>
 <tr>

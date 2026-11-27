@@ -466,20 +466,6 @@ definition {
 		return ${newItemCount};
 	}
 
-	@summary = "This macro goes to the edit section of an order item with options from the minicart"
-	macro gotoEditMiniCartItemProductOption(cartItemSku = null) {
-		if (!(isSet(index))) {
-			var index = 1;
-		}
-
-		Click(
-			key_cartItemSku = ${cartItemSku},
-			key_index = ${index},
-			locator1 = "CommerceAccelerators#MINI_CART_SPECIFIC_ITEM_BUNDLED_ITEM_BODY_VERTICAL_ELLIPSIS");
-
-		MenuItem.click(menuItem = "Edit");
-	}
-
 	@summary = "Default summary"
 	macro quickAddToCartSearchAndSelectItem(orderItemSku = null) {
 		Type(

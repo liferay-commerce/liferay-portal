@@ -79,6 +79,11 @@ export type TProduct = {
 	diagram?: TDiagram;
 	expirationDate?: string;
 	externalReferenceCode?: string;
+	groupedProducts?: {
+		entryProductId: number;
+		priority?: number;
+		quantity: number;
+	}[];
 	id?: number;
 	images?: Array<{
 		attachment?: string;
@@ -113,6 +118,7 @@ export type TProduct = {
 		[key: string]: string;
 	};
 	skus?: TSku[];
+	subscriptionConfiguration?: TProductSubscriptionConfiguration;
 	tags?: [string];
 	urls?: {
 		[key: string]: string;
@@ -168,6 +174,11 @@ type TProductSpecifications = {
 };
 
 export type TProductSubscriptionConfiguration = {
+	deliverySubscriptionEnable?: boolean;
+	deliverySubscriptionLength?: number;
+	deliverySubscriptionNumberOfLength?: number;
+	deliverySubscriptionType?: string;
+	deliverySubscriptionTypeSettings?: {[key: string]: number};
 	enable?: boolean;
 	length?: number;
 	numberOfLength?: number;
@@ -369,9 +380,9 @@ export class HeadlessCommerceAdminCatalogApiHelper {
 		);
 	}
 
-	async getOptions() {
+	async getOptions(search = '') {
 		return this.apiHelpers.get(
-			`${this.apiHelpers.baseUrl}${this.basePath}/options`
+			`${this.apiHelpers.baseUrl}${this.basePath}/options?search=${search}`
 		);
 	}
 

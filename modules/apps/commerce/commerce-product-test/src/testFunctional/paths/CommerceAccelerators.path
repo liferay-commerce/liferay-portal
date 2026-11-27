@@ -236,11 +236,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>MODAL_DESCRIPTION</td>
-	<td>//div[contains(@class,'modal-body')]//div[contains(.,'${key_text}')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>PORTLET_LOADED</td>
 	<td>//div[contains(@class,'portlet-title-default') and contains(.,'${key_portletName}')]/../../../div[@data-qa-id='app-loaded']/span</td>
 	<td></td>
@@ -308,11 +303,6 @@
 <tr>
 	<td>PRODUCT_DETAILS_DISCOUNT</td>
 	<td>//div[contains(@class,'price')]//span[contains(@class,'price-value-discount')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>MINI_CART_DISCOUNT_LEVELS</td>
-	<td>//div[contains(@class,'price')]//span[contains(@class,'price-value-discount')]/span[${key_index}]</td>
 	<td></td>
 </tr>
 <tr>
@@ -745,11 +735,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>MINI_CART_SPECIFIC_ITEM_BUNDLED_ITEM_BODY_VERTICAL_ELLIPSIS</td>
-	<td>xpath=(//p[@class='item-sku' and contains(.,'${key_cartItemSku}')]/../../../..//*[name()='svg'][contains(@class,'icon-ellipsis')])[${key_index}]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>MINI_CART_SPECIFIC_ITEM_BUNDLED_ITEM_HIDE_OPTIONS_PANEL_EXPANDED</td>
 	<td>xpath=(//p[@class='item-sku' and contains(.,'${key_cartItemSku}')]//../..//*[contains(@class,'panel')]//*[normalize-space()='Hide Options'][@aria-expanded='true'])[${key_index}]</td>
 	<td></td>
@@ -767,11 +752,6 @@
 <tr>
 	<td>MINI_CART_RESUME</td>
 	<td>//div[@class='mini-cart-header-resume']</td>
-	<td></td>
-</tr>
-<tr>
-	<td>MINI_CART_PRODUCT_OPTIONS_SELECT</td>
-	<td>//div[contains(@class,'mini-cart-edit-item')]//div/label[text()='${key_optionName}']/..//select | //div[contains(@class,'mini-cart-edit-item')]//div/label[text()='${key_optionName}']/..//button</td>
 	<td></td>
 </tr>
 <tr>
@@ -908,11 +888,6 @@
 <tr>
 	<td>ORDERS_SUBMIT_BUTTON</td>
 	<td>//input[@type='submit'][@value='Submit'] | //button[contains(text(),'Submit')] | //span[contains(text(),'Submit')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>SELECT_PRODUCT_RELATIONS</td>
-	<td>//div[contains(text(), '${productName}')]/../..//td//input[@type='checkbox']</td>
 	<td></td>
 </tr>
 <tr>
