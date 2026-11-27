@@ -51,6 +51,7 @@ import {ObjectEntryFolderApiHelper} from './ObjectEntryFolderApiHelper';
 import {SCIMApiHelper} from './SCIMApiHelper';
 import {SEOStudioApiHelper} from './SEOStudioApiHelper';
 import {SearchExperiencesApiHelper} from './SearchExperiencesApiHelper';
+import {JSONWebServicesAccountGroupApiHelper} from './json-web-services/JSONWebServicesAccountGroupApiHelper';
 import {JSONWebServicesAnnouncementsEntryApiHelper} from './json-web-services/JSONWebServicesAnnouncementsEntryApiHelper';
 import {JSONWebServicesAssetDisplayPageEntryApiHelper} from './json-web-services/JSONWebServicesAssetDisplayPageEntryApiHelper';
 import {JSONWebServicesAssetListEntryApiHelper} from './json-web-services/JSONWebServicesAssetListEntryApiHelper';
@@ -124,6 +125,7 @@ export class ApiHelpers extends BaseApiHelpers {
 	readonly headlessDelivery: HeadlessDeliveryApiHelper;
 	readonly headlessDigitalSalesRoom: HeadlessDigitalSalesRoomApiHelper;
 	readonly headlessPortalInstance: HeadlessPortalInstanceApiHelper;
+	readonly jsonWebServicesAccountGroup: JSONWebServicesAccountGroupApiHelper;
 	readonly jsonWebServicesAnnouncementsEntryApiHelper: JSONWebServicesAnnouncementsEntryApiHelper;
 	readonly jsonWebServicesAssetDisplayPageEntry: JSONWebServicesAssetDisplayPageEntryApiHelper;
 	readonly jsonWebServicesAssetListEntry: JSONWebServicesAssetListEntryApiHelper;
@@ -219,6 +221,8 @@ export class ApiHelpers extends BaseApiHelpers {
 			this
 		);
 		this.headlessPortalInstance = new HeadlessPortalInstanceApiHelper(this);
+		this.jsonWebServicesAccountGroup =
+			new JSONWebServicesAccountGroupApiHelper(this);
 		this.jsonWebServicesAnnouncementsEntryApiHelper =
 			new JSONWebServicesAnnouncementsEntryApiHelper(this);
 		this.jsonWebServicesAssetDisplayPageEntry =
