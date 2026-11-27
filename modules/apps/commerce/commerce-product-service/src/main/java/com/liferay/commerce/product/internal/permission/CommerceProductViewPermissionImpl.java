@@ -5,14 +5,18 @@
 
 package com.liferay.commerce.product.internal.permission;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
+import com.liferay.commerce.product.internal.util.CommerceRoleUtil;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPDefinitionVisibilityRel;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
@@ -21,6 +25,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -82,11 +87,14 @@ public class CommerceProductViewPermissionImpl
 		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpDefinitionId);
 
-		if (!_isGuestBrowsingEnabled(permissionChecker, cpDefinition)) {
+		if (!_isGuestBrowsingEnabled(permissionChecker, cpDefinition) ||
+			!_isAccountEnabled(commerceAccountId, cpDefinition)) {
+
 			return false;
 		}
 
-		return _isAccountEnabled(commerceAccountId, cpDefinition);
+		return _isRoleEnabled(
+			commerceAccountId, cpDefinition, permissionChecker);
 	}
 
 	@Override
@@ -104,11 +112,14 @@ public class CommerceProductViewPermissionImpl
 		CPDefinition cpDefinition = _cpDefinitionLocalService.getCPDefinition(
 			cpDefinitionId);
 
-		if (!_isChannelEnabled(groupId, cpDefinition)) {
+		if (!_isChannelEnabled(groupId, cpDefinition) ||
+			!_isAccountEnabled(commerceAccountId, cpDefinition)) {
+
 			return false;
 		}
 
-		return _isAccountEnabled(commerceAccountId, cpDefinition);
+		return _isRoleEnabled(
+			commerceAccountId, cpDefinition, permissionChecker);
 	}
 
 	private long _getCommerceChannelId(long groupId) {
@@ -153,6 +164,22 @@ public class CommerceProductViewPermissionImpl
 
 				return true;
 			}
+		}
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				cpDefinition.getCompanyId(), "LPD-112683")) {
+
+			return false;
+		}
+
+		CPDefinitionVisibilityRel cpDefinitionVisibilityRel =
+			_cpDefinitionVisibilityRelLocalService.
+				fetchCPDefinitionVisibilityRel(
+					cpDefinition.getCPDefinitionId(),
+					AccountEntry.class.getName(), commerceAccountId);
+
+		if (cpDefinitionVisibilityRel != null) {
+			return true;
 		}
 
 		return false;
@@ -223,6 +250,37 @@ public class CommerceProductViewPermissionImpl
 		return false;
 	}
 
+	private boolean _isRoleEnabled(
+			long commerceAccountId, CPDefinition cpDefinition,
+			PermissionChecker permissionChecker)
+		throws PortalException {
+
+		if (!cpDefinition.isRoleFilterEnabled() ||
+			!FeatureFlagManagerUtil.isEnabled(
+				cpDefinition.getCompanyId(), "LPD-112683")) {
+
+			return true;
+		}
+
+		long[] roleIds = CommerceRoleUtil.getRoleIds(
+			commerceAccountId, permissionChecker);
+
+		for (CPDefinitionVisibilityRel cpDefinitionVisibilityRel :
+				_cpDefinitionVisibilityRelLocalService.
+					getCPDefinitionVisibilityRels(
+						cpDefinition.getCPDefinitionId(), Role.class.getName(),
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
+
+			if (ArrayUtil.contains(
+					roleIds, cpDefinitionVisibilityRel.getClassPK())) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	@Reference
 	private AccountGroupLocalService _accountGroupLocalService;
 
@@ -237,6 +295,10 @@ public class CommerceProductViewPermissionImpl
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Reference
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

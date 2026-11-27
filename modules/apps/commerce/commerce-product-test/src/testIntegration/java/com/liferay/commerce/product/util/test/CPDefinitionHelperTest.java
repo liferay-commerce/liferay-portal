@@ -6,9 +6,17 @@
 package com.liferay.commerce.product.util.test;
 
 import com.liferay.account.constants.AccountConstants;
+import com.liferay.account.constants.AccountRoleConstants;
+import com.liferay.account.model.AccountEntry;
+import com.liferay.account.model.AccountGroup;
+import com.liferay.account.model.AccountRole;
+import com.liferay.account.service.AccountGroupLocalService;
+import com.liferay.account.service.AccountGroupRelLocalService;
+import com.liferay.account.service.AccountRoleLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
+import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.product.catalog.CPCatalogEntry;
@@ -21,32 +29,46 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.frutilla.FrutillaRule;
@@ -313,6 +335,129 @@ public class CPDefinitionHelperTest {
 			cpCatalogEntry.getCPDefinitionId());
 	}
 
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testSearchCPDefinitionsWhenAccountGroupFilterIsEnabled()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Search for CPDefinitions visible to specific accounts"
+		).given(
+			"A CPDefinition visible to an account group and to specific " +
+				"accounts"
+		).when(
+			"Accounts search for CPDefinitions"
+		).then(
+			"The results contain the CPDefinition only for the accounts of " +
+				"the account group and for the specific accounts"
+		);
+
+		User user = UserTestUtil.addCompanyAdminUser(_company);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_company.getGroupId(), user.getUserId());
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		AccountEntry accountEntry1 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com", serviceContext);
+
+		AccountGroup accountGroup1 =
+			CommerceAccountTestUtil.addAccountGroupAndAccountRel(
+				RandomTestUtil.randomString(),
+				AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
+				accountEntry1.getAccountEntryId(), serviceContext);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition.getCPDefinitionId(),
+			AccountEntry.class.getName(), accountEntry1.getAccountEntryId());
+
+		AccountEntry accountEntry2 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com", serviceContext);
+
+		AccountGroup accountGroup2 =
+			CommerceAccountTestUtil.addAccountGroupAndAccountRel(
+				RandomTestUtil.randomString(),
+				AccountConstants.ACCOUNT_GROUP_TYPE_STATIC,
+				accountEntry2.getAccountEntryId(), serviceContext);
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup2.getAccountGroupId(), CPDefinition.class.getName(),
+			cpDefinition.getCPDefinitionId());
+
+		_cpDefinitionLocalService.updateCPDefinitionAccountGroupFilter(
+			cpDefinition.getCPDefinitionId(), true);
+
+		List<Long> cpDefinitionIds = Collections.singletonList(
+			cpDefinition.getCPDefinitionId());
+
+		Assert.assertEquals(
+			cpDefinitionIds,
+			_getCPDefinitionIds(accountEntry1.getAccountEntryId()));
+		Assert.assertEquals(
+			cpDefinitionIds,
+			_getCPDefinitionIds(accountEntry2.getAccountEntryId()));
+
+		AccountEntry accountEntry3 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com", serviceContext);
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup1.getAccountGroupId(), AccountEntry.class.getName(),
+			accountEntry3.getAccountEntryId());
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_getCPDefinitionIds(accountEntry3.getAccountEntryId()));
+
+		AccountEntry accountEntry4 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com", serviceContext);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition.getCPDefinitionId(),
+			AccountEntry.class.getName(), accountEntry4.getAccountEntryId());
+
+		Assert.assertEquals(
+			cpDefinitionIds,
+			_getCPDefinitionIds(accountEntry4.getAccountEntryId()));
+
+		AccountEntry accountEntry5 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com", serviceContext);
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_getCPDefinitionIds(accountEntry5.getAccountEntryId()));
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_getCPDefinitionIds(AccountConstants.ACCOUNT_ENTRY_ID_GUEST));
+
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-112683")) {
+
+			Assert.assertEquals(
+				Collections.emptyList(),
+				_getCPDefinitionIds(accountEntry1.getAccountEntryId()));
+			Assert.assertEquals(
+				cpDefinitionIds,
+				_getCPDefinitionIds(accountEntry2.getAccountEntryId()));
+		}
+	}
+
 	@FeatureFlag("LPD-109588")
 	@Test
 	public void testSearchCPDefinitionsWhenGuestBrowsingIsDisabled()
@@ -373,6 +518,330 @@ public class CPDefinitionHelperTest {
 			});
 	}
 
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testSearchCPDefinitionsWhenRoleFilterIsDisabled()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Search for CPDefinitions with roles and the role filter disabled"
+		).given(
+			"A CPDefinition with a role and the role filter disabled"
+		).when(
+			"A person without the role searches for CPDefinitions"
+		).then(
+			"The results contain the CPDefinition"
+		);
+
+		User user = UserTestUtil.addUser(_company);
+
+		Role role = _roleLocalService.addRole(
+			RandomTestUtil.randomString(), user.getUserId(), null, 0,
+			RandomTestUtil.randomString(), null, null,
+			RoleConstants.TYPE_REGULAR, null,
+			ServiceContextTestUtil.getServiceContext(
+				_company.getGroupId(), user.getUserId()));
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition.getCPDefinitionId(),
+			Role.class.getName(), role.getRoleId());
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		Assert.assertEquals(
+			Collections.singletonList(cpDefinition.getCPDefinitionId()),
+			_getCPDefinitionIds(0));
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testSearchCPDefinitionsWhenRoleFilterIsEnabled()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Search for CPDefinitions visible to specific roles"
+		).given(
+			"A CPDefinition visible to an account role and to a regular role"
+		).when(
+			"People search for CPDefinitions"
+		).then(
+			"The results contain the CPDefinition only for people with the " +
+				"account role in their account or with the regular role"
+		);
+
+		User user1 = UserTestUtil.addCompanyAdminUser(_company);
+		User user2 = UserTestUtil.addUser(_company);
+		User user3 = UserTestUtil.addUser(_company);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_company.getGroupId(), user1.getUserId());
+
+		AccountEntry accountEntry1 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user1.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com",
+				RandomTestUtil.randomString(),
+				new long[] {user2.getUserId(), user3.getUserId()}, null,
+				serviceContext);
+
+		AccountRole accountRole1 = _accountRoleLocalService.addAccountRole(
+			RandomTestUtil.randomString(), user1.getUserId(),
+			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+			RandomTestUtil.randomString(), null, null);
+
+		_accountRoleLocalService.associateUser(
+			accountEntry1.getAccountEntryId(), accountRole1.getAccountRoleId(),
+			user2.getUserId());
+
+		Role role1 = _roleLocalService.getRole(
+			_company.getCompanyId(),
+			AccountRoleConstants.REQUIRED_ROLE_NAME_ACCOUNT_ADMINISTRATOR);
+
+		AccountRole accountRole2 =
+			_accountRoleLocalService.getAccountRoleByRoleId(role1.getRoleId());
+
+		_accountRoleLocalService.associateUser(
+			accountEntry1.getAccountEntryId(), accountRole2.getAccountRoleId(),
+			user3.getUserId());
+
+		AccountEntry accountEntry2 =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				user1.getUserId(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString() + "@liferay.com",
+				RandomTestUtil.randomString(), new long[] {user2.getUserId()},
+				null, serviceContext);
+
+		Role role2 = _roleLocalService.addRole(
+			RandomTestUtil.randomString(), user1.getUserId(), null, 0,
+			RandomTestUtil.randomString(), null, null,
+			RoleConstants.TYPE_REGULAR, null, serviceContext);
+
+		User user4 = UserTestUtil.addUser(_company);
+		UserGroup userGroup = UserGroupTestUtil.addUserGroup(
+			_company.getGroupId());
+
+		_userLocalService.addUserGroupUser(userGroup.getUserGroupId(), user4);
+
+		_roleLocalService.addGroupRole(userGroup.getGroupId(), role2);
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user1.getUserId(), cpDefinition.getCPDefinitionId(),
+			Role.class.getName(), accountRole1.getRoleId());
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user1.getUserId(), cpDefinition.getCPDefinitionId(),
+			Role.class.getName(), role2.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition.getCPDefinitionId(), true);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_company.getGuestUser()));
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_getCPDefinitionIds(AccountConstants.ACCOUNT_ENTRY_ID_GUEST));
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user2));
+
+		List<Long> cpDefinitionIds = Collections.singletonList(
+			cpDefinition.getCPDefinitionId());
+
+		Assert.assertEquals(
+			cpDefinitionIds,
+			_getCPDefinitionIds(accountEntry1.getAccountEntryId()));
+
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_getCPDefinitionIds(accountEntry2.getAccountEntryId()));
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user4));
+
+		Assert.assertEquals(cpDefinitionIds, _getCPDefinitionIds(0));
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user3));
+
+		Assert.assertEquals(Collections.emptyList(), _getCPDefinitionIds(0));
+		Assert.assertEquals(
+			Collections.emptyList(),
+			_getCPDefinitionIds(accountEntry1.getAccountEntryId()));
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testSearchCPDefinitionsWhenRoleFilterIsEnabledAndCommerceAccountGroupIsIgnored()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Search for CPDefinitions visible to specific roles ignoring the " +
+				"commerce account group"
+		).given(
+			"A CPDefinition visible to a role"
+		).when(
+			"A person without the role searches for CPDefinitions ignoring " +
+				"the commerce account group"
+		).then(
+			"The results contain the CPDefinition"
+		);
+
+		User user = UserTestUtil.addUser(_company);
+
+		Role role = _roleLocalService.addRole(
+			RandomTestUtil.randomString(), user.getUserId(), null, 0,
+			RandomTestUtil.randomString(), null, null,
+			RoleConstants.TYPE_REGULAR, null,
+			ServiceContextTestUtil.getServiceContext(
+				_company.getGroupId(), user.getUserId()));
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition.getCPDefinitionId(),
+			Role.class.getName(), role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition.getCPDefinitionId(), true);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		SearchContext searchContext = CPTestUtil.getSearchContext(
+			null, WorkflowConstants.STATUS_APPROVED,
+			_commerceCatalog.getGroup());
+
+		searchContext.setAttribute("ignoreCommerceAccountGroup", Boolean.TRUE);
+
+		Assert.assertEquals(
+			Collections.singletonList(cpDefinition.getCPDefinitionId()),
+			_getCPDefinitionIds(searchContext));
+	}
+
+	@Test
+	public void testSearchCPDefinitionsWhenRoleFilterIsEnabledAndFeatureFlagIsDisabled()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Search for CPDefinitions visible to specific roles when the " +
+				"feature flag is disabled"
+		).given(
+			"A CPDefinition visible to a role"
+		).when(
+			"A person without the role searches for CPDefinitions"
+		).then(
+			"The results contain the CPDefinition"
+		);
+
+		User user = UserTestUtil.addUser(_company);
+
+		Role role = _roleLocalService.addRole(
+			RandomTestUtil.randomString(), user.getUserId(), null, 0,
+			RandomTestUtil.randomString(), null, null,
+			RoleConstants.TYPE_REGULAR, null,
+			ServiceContextTestUtil.getServiceContext(
+				_company.getGroupId(), user.getUserId()));
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition.getCPDefinitionId(),
+			Role.class.getName(), role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition.getCPDefinitionId(), true);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		Assert.assertEquals(
+			Collections.singletonList(cpDefinition.getCPDefinitionId()),
+			_getCPDefinitionIds(0));
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testSearchCPDefinitionsWhenRoleFilterIsEnabledForGuestsAndSignedInUsers()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Search for CPDefinitions visible to guests or to signed in users"
+		).given(
+			"A CPDefinition visible to guests and a CPDefinition visible to " +
+				"signed in users"
+		).when(
+			"A guest and a signed in user search for CPDefinitions"
+		).then(
+			"The guest finds only the CPDefinition visible to guests, and " +
+				"the signed in user finds both"
+		);
+
+		CPInstance cpInstance1 = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition1 = cpInstance1.getCPDefinition();
+
+		Role role1 = _roleLocalService.getRole(
+			_company.getCompanyId(), RoleConstants.GUEST);
+		User user = UserTestUtil.addUser(_company);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition1.getCPDefinitionId(),
+			Role.class.getName(), role1.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition1.getCPDefinitionId(), true);
+
+		CPInstance cpInstance2 = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		CPDefinition cpDefinition2 = cpInstance2.getCPDefinition();
+
+		Role role2 = _roleLocalService.getRole(
+			_company.getCompanyId(), RoleConstants.USER);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, user.getUserId(), cpDefinition2.getCPDefinitionId(),
+			Role.class.getName(), role2.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			cpDefinition2.getCPDefinitionId(), true);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_company.getGuestUser()));
+
+		Assert.assertEquals(
+			Collections.singletonList(cpDefinition1.getCPDefinitionId()),
+			_getCPDefinitionIds(AccountConstants.ACCOUNT_ENTRY_ID_GUEST));
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		Assert.assertEquals(
+			SetUtil.fromArray(
+				cpDefinition1.getCPDefinitionId(),
+				cpDefinition2.getCPDefinitionId()),
+			SetUtil.fromList(_getCPDefinitionIds(0)));
+	}
+
 	@Rule
 	public final FrutillaRule frutillaRule = new FrutillaRule();
 
@@ -388,9 +857,45 @@ public class CPDefinitionHelperTest {
 		return cpInstances;
 	}
 
+	private List<Long> _getCPDefinitionIds(long accountEntryId)
+		throws PortalException {
+
+		SearchContext searchContext = CPTestUtil.getSearchContext(
+			null, WorkflowConstants.STATUS_APPROVED,
+			_commerceCatalog.getGroup());
+
+		searchContext.setAttribute("accountEntryId", accountEntryId);
+		searchContext.setAttribute(
+			"commerceAccountGroupIds",
+			_accountGroupLocalService.getAccountGroupIds(accountEntryId));
+
+		return _getCPDefinitionIds(searchContext);
+	}
+
+	private List<Long> _getCPDefinitionIds(SearchContext searchContext)
+		throws PortalException {
+
+		CPDataSourceResult cpDataSourceResult = _cpDefinitionHelper.search(
+			_commerceCatalog.getGroupId(), searchContext, new CPQuery(),
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		return TransformUtil.transform(
+			cpDataSourceResult.getCPCatalogEntries(),
+			CPCatalogEntry::getCPDefinitionId);
+	}
+
 	private static final int _CP_INSTANCES_COUNT = 10;
 
 	private static Company _company;
+
+	@Inject
+	private AccountGroupLocalService _accountGroupLocalService;
+
+	@Inject
+	private AccountGroupRelLocalService _accountGroupRelLocalService;
+
+	@Inject
+	private AccountRoleLocalService _accountRoleLocalService;
 
 	private CommerceCatalog _commerceCatalog;
 
@@ -407,6 +912,16 @@ public class CPDefinitionHelperTest {
 	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@Inject
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
+
+	@Inject
 	private IndexerRegistry _indexerRegistry;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }

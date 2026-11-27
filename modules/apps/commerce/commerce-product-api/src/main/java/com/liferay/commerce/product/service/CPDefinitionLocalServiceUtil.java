@@ -906,6 +906,14 @@ public class CPDefinitionLocalServiceUtil {
 			metaTitleMap, nameMap, shortDescriptionMap);
 	}
 
+	public static CPDefinition updateCPDefinitionRoleFilter(
+			long cpDefinitionId, boolean enable)
+		throws PortalException {
+
+		return getService().updateCPDefinitionRoleFilter(
+			cpDefinitionId, enable);
+	}
+
 	public static void updateCPDefinitionsByCPTaxCategoryId(
 			long cpTaxCategoryId)
 		throws PortalException {
@@ -982,4 +990,4 @@ public class CPDefinitionLocalServiceUtil {
 			CPDefinitionLocalServiceUtil.class, CPDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1829917283
+// LIFERAY-SERVICE-BUILDER-HASH:-2079838697

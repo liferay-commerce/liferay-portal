@@ -13,20 +13,33 @@ import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionVisibilityRelLocalService;
+import com.liferay.commerce.product.service.CPDisplayLayoutLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
+import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolver;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -94,6 +107,82 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolverTest {
 				_userLocalService.getGuestUser(_group.getCompanyId())));
 	}
 
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testGetActualURLWhenAccountGroupFilterIsEnabled()
+		throws Exception {
+
+		_cpDefinitionLocalService.updateCPDefinitionAccountGroupFilter(
+			_cpDefinition.getCPDefinitionId(), true);
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					_PID,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"promptEnabled", true
+					).build())) {
+
+			String actualURL = _getActualURL();
+
+			Assert.assertTrue(
+				actualURL, actualURL.startsWith("/c/portal/login?"));
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(UserTestUtil.addUser()));
+
+			Assert.assertThrows(
+				PrincipalException.class, () -> _getActualURL());
+		}
+	}
+
+	@Test
+	public void testGetActualURLWhenAccountGroupFilterIsEnabledAndFeatureFlagIsDisabled()
+		throws Exception {
+
+		_cpDefinitionLocalService.updateCPDefinitionAccountGroupFilter(
+			_cpDefinition.getCPDefinitionId(), true);
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					_PID,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"promptEnabled", true
+					).build());
+			SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-112683")) {
+
+			Assert.assertThrows(
+				PrincipalException.class, () -> _getActualURL());
+		}
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testGetActualURLWhenChannelFilterIsEnabled() throws Exception {
+		_cpDefinitionLocalService.updateCPDefinitionChannelFilter(
+			_cpDefinition.getCPDefinitionId(), true);
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					_PID,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"promptEnabled", true
+					).build())) {
+
+			String actualURL = _getActualURL();
+
+			Assert.assertTrue(
+				actualURL, actualURL.startsWith("/c/portal/login?"));
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(UserTestUtil.addUser()));
+
+			Assert.assertThrows(
+				PrincipalException.class, () -> _getActualURL());
+		}
+	}
+
 	@Test
 	public void testGetActualURLWhenGuestBrowsingIsDisabled() throws Exception {
 		CommerceTestUtil.runWithGuestBrowsingDisabled(
@@ -122,6 +211,137 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolverTest {
 			});
 	}
 
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testGetActualURLWhenRoleFilterIsEnabled() throws Exception {
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			_cpDefinition.getCPDefinitionId(), Role.class.getName(),
+			role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			_cpDefinition.getCPDefinitionId(), true);
+
+		Assert.assertThrows(PrincipalException.class, () -> _getActualURL());
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					_PID,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"promptEnabled", true
+					).build())) {
+
+			String actualURL = _getActualURL();
+
+			Assert.assertTrue(
+				actualURL, actualURL.startsWith("/c/portal/login?"));
+			Assert.assertEquals(
+				URLCodec.encodeURL(_getCurrentURL()),
+				HttpComponentsUtil.getParameter(actualURL, "redirect", false));
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(UserTestUtil.addUser()));
+
+			Assert.assertThrows(
+				PrincipalException.class, () -> _getActualURL());
+		}
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testGetActualURLWhenRoleFilterIsEnabledForGuests()
+		throws Exception {
+
+		Role role = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.GUEST);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			_cpDefinition.getCPDefinitionId(), Role.class.getName(),
+			role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			_cpDefinition.getCPDefinitionId(), true);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		_cpDisplayLayoutLocalService.addCPDisplayLayout(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			CPDefinition.class, _cpDefinition.getCPDefinitionId(), null,
+			layout.getUuid());
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					_PID,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"promptEnabled", true
+					).build())) {
+
+			String actualURL = _getActualURL();
+
+			Assert.assertTrue(
+				actualURL,
+				actualURL.startsWith(_portal.getLayoutActualURL(layout, "/c")));
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(UserTestUtil.addUser()));
+
+			actualURL = _getActualURL();
+
+			Assert.assertTrue(
+				actualURL,
+				actualURL.startsWith(_portal.getLayoutActualURL(layout, "/c")));
+		}
+	}
+
+	@FeatureFlag("LPD-112683")
+	@Test
+	public void testGetActualURLWhenRoleFilterIsEnabledForSignedInUsers()
+		throws Exception {
+
+		Role role = _roleLocalService.getRole(
+			_group.getCompanyId(), RoleConstants.USER);
+
+		_cpDefinitionVisibilityRelLocalService.addCPDefinitionVisibilityRel(
+			null, TestPropsValues.getUserId(),
+			_cpDefinition.getCPDefinitionId(), Role.class.getName(),
+			role.getRoleId());
+
+		_cpDefinitionLocalService.updateCPDefinitionRoleFilter(
+			_cpDefinition.getCPDefinitionId(), true);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		_cpDisplayLayoutLocalService.addCPDisplayLayout(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			CPDefinition.class, _cpDefinition.getCPDefinitionId(), null,
+			layout.getUuid());
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					_PID,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"promptEnabled", true
+					).build())) {
+
+			String actualURL = _getActualURL();
+
+			Assert.assertTrue(
+				actualURL, actualURL.startsWith("/c/portal/login?"));
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(UserTestUtil.addUser()));
+
+			actualURL = _getActualURL();
+
+			Assert.assertTrue(
+				actualURL,
+				actualURL.startsWith(_portal.getLayoutActualURL(layout, "/c")));
+		}
+	}
+
 	private String _getActualURL() throws Exception {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -145,6 +365,17 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolverTest {
 
 	private CommerceChannel _commerceChannel;
 	private CPDefinition _cpDefinition;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Inject
+	private CPDefinitionVisibilityRelLocalService
+		_cpDefinitionVisibilityRelLocalService;
+
+	@Inject
+	private CPDisplayLayoutLocalService _cpDisplayLayoutLocalService;
+
 	private String _friendlyURL;
 
 	@Inject
@@ -159,6 +390,9 @@ public class CPDefinitionAssetDisplayPageFriendlyURLResolverTest {
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

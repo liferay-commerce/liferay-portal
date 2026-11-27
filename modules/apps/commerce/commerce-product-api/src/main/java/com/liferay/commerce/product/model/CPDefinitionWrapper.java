@@ -78,6 +78,7 @@ public class CPDefinitionWrapper
 		attributes.put("maxSubscriptionCycles", getMaxSubscriptionCycles());
 		attributes.put("productTypeName", getProductTypeName());
 		attributes.put("published", isPublished());
+		attributes.put("roleFilterEnabled", isRoleFilterEnabled());
 		attributes.put("shipSeparately", isShipSeparately());
 		attributes.put("shippable", isShippable());
 		attributes.put("shippingExtraPrice", getShippingExtraPrice());
@@ -304,6 +305,13 @@ public class CPDefinitionWrapper
 
 		if (published != null) {
 			setPublished(published);
+		}
+
+		Boolean roleFilterEnabled = (Boolean)attributes.get(
+			"roleFilterEnabled");
+
+		if (roleFilterEnabled != null) {
+			setRoleFilterEnabled(roleFilterEnabled);
 		}
 
 		Boolean shipSeparately = (Boolean)attributes.get("shipSeparately");
@@ -984,6 +992,16 @@ public class CPDefinitionWrapper
 	}
 
 	/**
+	 * Returns the role filter enabled of this cp definition.
+	 *
+	 * @return the role filter enabled of this cp definition
+	 */
+	@Override
+	public boolean getRoleFilterEnabled() {
+		return model.getRoleFilterEnabled();
+	}
+
+	/**
 	 * Returns the shippable of this cp definition.
 	 *
 	 * @return the shippable of this cp definition
@@ -1378,6 +1396,16 @@ public class CPDefinitionWrapper
 	@Override
 	public boolean isPublished() {
 		return model.isPublished();
+	}
+
+	/**
+	 * Returns <code>true</code> if this cp definition is role filter enabled.
+	 *
+	 * @return <code>true</code> if this cp definition is role filter enabled; <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isRoleFilterEnabled() {
+		return model.isRoleFilterEnabled();
 	}
 
 	/**
@@ -1788,6 +1816,16 @@ public class CPDefinitionWrapper
 	}
 
 	/**
+	 * Sets whether this cp definition is role filter enabled.
+	 *
+	 * @param roleFilterEnabled the role filter enabled of this cp definition
+	 */
+	@Override
+	public void setRoleFilterEnabled(boolean roleFilterEnabled) {
+		model.setRoleFilterEnabled(roleFilterEnabled);
+	}
+
+	/**
 	 * Sets whether this cp definition is shippable.
 	 *
 	 * @param shippable the shippable of this cp definition
@@ -2048,4 +2086,4 @@ public class CPDefinitionWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1207467381
+// LIFERAY-SERVICE-BUILDER-HASH:-1048679750
