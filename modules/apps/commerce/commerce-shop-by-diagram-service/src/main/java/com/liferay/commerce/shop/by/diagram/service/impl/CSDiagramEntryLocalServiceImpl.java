@@ -198,7 +198,9 @@ public class CSDiagramEntryLocalServiceImpl
 		CSDiagramEntry csDiagramEntry = csDiagramEntryPersistence.fetchByCPDI_S(
 			cpDefinitionId, sequence);
 
-		if (!Objects.equals(oldCSDiagramEntry, csDiagramEntry)) {
+		if ((csDiagramEntry != null) &&
+			!Objects.equals(oldCSDiagramEntry, csDiagramEntry)) {
+
 			throw new DuplicateCSDiagramEntryException();
 		}
 	}
