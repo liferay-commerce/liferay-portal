@@ -745,7 +745,9 @@ public class CPDefinitionLocalServiceTest {
 
 	@Test
 	public void testDeleteCPDefinition() throws Exception {
+		_testDeleteCPDefinitionWithAccountGroupAndCommerceChannelRels();
 		_testDeleteCPDefinitionWithClonedCPDefinitions();
+		_testDeleteCPDefinitionWithCopiedAccountGroupAndCommerceChannelRels();
 		_testDeleteCPDefinitionWithExistingDraftCPDefinition();
 		_testDeleteCPDefinitionWithVersioningEnabled();
 	}
@@ -2072,6 +2074,55 @@ public class CPDefinitionLocalServiceTest {
 				cpDefinition1.getCProductId(), WorkflowConstants.STATUS_DRAFT));
 	}
 
+	private void _testDeleteCPDefinitionWithAccountGroupAndCommerceChannelRels()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Delete a product with account group and channel visibility"
+		).given(
+			"A product definition with an account group rel and a channel rel"
+		).when(
+			"the product definition is deleted"
+		).then(
+			"its account group rels are removed"
+		).and(
+			"its channel rels are removed"
+		);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		AccountGroup accountGroup = _accountGroupLocalService.addAccountGroup(
+			StringPool.BLANK, _serviceContext.getUserId(), null,
+			RandomTestUtil.randomString(), _serviceContext);
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup.getAccountGroupId(), CPDefinition.class.getName(),
+			cpDefinition.getCPDefinitionId());
+
+		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
+			_commerceCatalog.getGroupId(), null);
+
+		_commerceChannelRelLocalService.addCommerceChannelRel(
+			CPDefinition.class.getName(), cpDefinition.getCPDefinitionId(),
+			commerceChannel.getCommerceChannelId(), _serviceContext);
+
+		_cpDefinitionLocalService.deleteCPDefinition(
+			cpDefinition.getCPDefinitionId());
+
+		Assert.assertEquals(
+			0,
+			_accountGroupRelLocalService.getAccountGroupRelsCount(
+				CPDefinition.class.getName(),
+				cpDefinition.getCPDefinitionId()));
+		Assert.assertEquals(
+			0,
+			_commerceChannelRelLocalService.getCommerceChannelRelsCount(
+				CPDefinition.class.getName(),
+				cpDefinition.getCPDefinitionId()));
+	}
+
 	private void _testDeleteCPDefinitionWithClonedCPDefinitions()
 		throws Exception {
 
@@ -2138,6 +2189,83 @@ public class CPDefinitionLocalServiceTest {
 					clonedCPDefinition.getCProductId()));
 
 			_assertPublished(clonedClonedCPDefinition);
+		}
+	}
+
+	private void _testDeleteCPDefinitionWithCopiedAccountGroupAndCommerceChannelRels()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Delete a product definition whose visibility was copied"
+		).given(
+			"A product definition with an account group rel and a channel " +
+				"rel, and a draft copy of it, with versioning enabled"
+		).when(
+			"the original product definition is deleted"
+		).then(
+			"its account group and channel rels are removed"
+		).and(
+			"the account group and channel rels of the draft are kept"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		AccountGroup accountGroup = _accountGroupLocalService.addAccountGroup(
+			StringPool.BLANK, _serviceContext.getUserId(), null,
+			RandomTestUtil.randomString(), _serviceContext);
+
+		_accountGroupRelLocalService.addAccountGroupRel(
+			accountGroup.getAccountGroupId(), CPDefinition.class.getName(),
+			cpDefinition1.getCPDefinitionId());
+
+		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
+			_commerceCatalog.getGroupId(), null);
+
+		_commerceChannelRelLocalService.addCommerceChannelRel(
+			CPDefinition.class.getName(), cpDefinition1.getCPDefinitionId(),
+			commerceChannel.getCommerceChannelId(), _serviceContext);
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						CProductVersionConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"versionThreshold", 2
+						).build())) {
+
+			CPDefinition cpDefinition2 =
+				_cpDefinitionLocalService.copyCPDefinition(
+					cpDefinition1.getCPDefinitionId(),
+					cpDefinition1.getGroupId(), WorkflowConstants.STATUS_DRAFT);
+
+			_cpDefinitionLocalService.deleteCPDefinition(
+				cpDefinition1.getCPDefinitionId());
+
+			Assert.assertEquals(
+				0,
+				_accountGroupRelLocalService.getAccountGroupRelsCount(
+					CPDefinition.class.getName(),
+					cpDefinition1.getCPDefinitionId()));
+			Assert.assertEquals(
+				1,
+				_accountGroupRelLocalService.getAccountGroupRelsCount(
+					CPDefinition.class.getName(),
+					cpDefinition2.getCPDefinitionId()));
+			Assert.assertEquals(
+				0,
+				_commerceChannelRelLocalService.getCommerceChannelRelsCount(
+					CPDefinition.class.getName(),
+					cpDefinition1.getCPDefinitionId()));
+			Assert.assertEquals(
+				1,
+				_commerceChannelRelLocalService.getCommerceChannelRelsCount(
+					CPDefinition.class.getName(),
+					cpDefinition2.getCPDefinitionId()));
 		}
 	}
 
