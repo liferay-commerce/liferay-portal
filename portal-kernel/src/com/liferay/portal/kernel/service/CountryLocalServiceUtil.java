@@ -287,8 +287,26 @@ public class CountryLocalServiceUtil {
 		return getService().getCompanyCountries(companyId, active);
 	}
 
+	public static List<Country> getCompanyCountries(
+		long companyId, Boolean active, String keywords,
+		com.liferay.petra.sql.dsl.expression.Predicate predicate, int start,
+		int end, OrderByComparator<Country> orderByComparator) {
+
+		return getService().getCompanyCountries(
+			companyId, active, keywords, predicate, start, end,
+			orderByComparator);
+	}
+
 	public static int getCompanyCountriesCount(long companyId) {
 		return getService().getCompanyCountriesCount(companyId);
+	}
+
+	public static int getCompanyCountriesCount(
+		long companyId, Boolean active, String keywords,
+		com.liferay.petra.sql.dsl.expression.Predicate predicate) {
+
+		return getService().getCompanyCountriesCount(
+			companyId, active, keywords, predicate);
 	}
 
 	/**
@@ -491,4 +509,4 @@ public class CountryLocalServiceUtil {
 	private static volatile CountryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-207434744
+// LIFERAY-SERVICE-BUILDER-HASH:1894669122

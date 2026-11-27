@@ -404,6 +404,20 @@ public class RegionLocalServiceWrapper
 
 	@Override
 	public java.util.List<Region> getRegions(
+		long companyId, Boolean active, String keywords,
+		java.util.LinkedHashMap<String, Object> params,
+		com.liferay.petra.sql.dsl.expression.Predicate predicate, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Region>
+			orderByComparator) {
+
+		return _regionLocalService.getRegions(
+			companyId, active, keywords, params, predicate, start, end,
+			orderByComparator);
+	}
+
+	@Override
+	public java.util.List<Region> getRegions(
 		long countryId, int start, int end,
 		com.liferay.portal.kernel.util.OrderByComparator<Region>
 			orderByComparator) {
@@ -428,6 +442,16 @@ public class RegionLocalServiceWrapper
 	@Override
 	public int getRegionsCount() {
 		return _regionLocalService.getRegionsCount();
+	}
+
+	@Override
+	public int getRegionsCount(
+		long companyId, Boolean active, String keywords,
+		java.util.LinkedHashMap<String, Object> params,
+		com.liferay.petra.sql.dsl.expression.Predicate predicate) {
+
+		return _regionLocalService.getRegionsCount(
+			companyId, active, keywords, params, predicate);
 	}
 
 	@Override
@@ -533,4 +557,4 @@ public class RegionLocalServiceWrapper
 	private RegionLocalService _regionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-853251914
+// LIFERAY-SERVICE-BUILDER-HASH:-1753164870

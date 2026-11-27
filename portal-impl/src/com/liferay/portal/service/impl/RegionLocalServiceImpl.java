@@ -28,8 +28,6 @@ import com.liferay.portal.kernel.model.RegionTable;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
@@ -53,7 +51,6 @@ import java.util.List;
  */
 public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Region addRegion(
 			String externalReferenceCode, long countryId, boolean active,
@@ -108,7 +105,6 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 		return deleteRegion(region);
 	}
 
-	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public Region deleteRegion(Region region) {
@@ -161,6 +157,23 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 
 	@Override
 	public List<Region> getRegions(
+		long companyId, Boolean active, String keywords,
+		LinkedHashMap<String, Object> params, Predicate predicate, int start,
+		int end, OrderByComparator<Region> orderByComparator) {
+
+		return regionPersistence.dslQuery(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.selectDistinct(RegionTable.INSTANCE),
+				companyId, active, keywords, params, predicate
+			).orderBy(
+				RegionTable.INSTANCE, orderByComparator
+			).limit(
+				start, end
+			));
+	}
+
+	@Override
+	public List<Region> getRegions(
 		long countryId, int start, int end,
 		OrderByComparator<Region> orderByComparator) {
 
@@ -175,6 +188,18 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 		Country country = _countryPersistence.findByC_A2(companyId, a2);
 
 		return regionPersistence.findByC_A(country.getCountryId(), active);
+	}
+
+	@Override
+	public int getRegionsCount(
+		long companyId, Boolean active, String keywords,
+		LinkedHashMap<String, Object> params, Predicate predicate) {
+
+		return regionPersistence.dslQueryCount(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.countDistinct(
+					RegionTable.INSTANCE.regionId),
+				companyId, active, keywords, params, predicate));
 	}
 
 	@Override
@@ -202,7 +227,6 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 			start, end);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Region updateActive(long regionId, boolean active)
 		throws PortalException {
@@ -214,7 +238,6 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 		return regionPersistence.update(region);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Region updateRegion(
 			String externalReferenceCode, long regionId, boolean active,
@@ -244,6 +267,14 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 	private OrderByStep _getGroupByStep(
 		FromStep fromStep, long companyId, Boolean active, String keywords,
 		LinkedHashMap<String, Object> params) {
+
+		return _getGroupByStep(
+			fromStep, companyId, active, keywords, params, null);
+	}
+
+	private OrderByStep _getGroupByStep(
+		FromStep fromStep, long companyId, Boolean active, String keywords,
+		LinkedHashMap<String, Object> params, Predicate predicate) {
 
 		JoinStep joinStep = fromStep.from(
 			RegionTable.INSTANCE
@@ -308,6 +339,8 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 
 					return null;
 				}
+			).and(
+				Predicate.withParentheses(predicate)
 			));
 	}
 

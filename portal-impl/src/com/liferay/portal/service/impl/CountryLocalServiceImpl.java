@@ -34,8 +34,6 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
-import com.liferay.portal.kernel.search.Indexable;
-import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
@@ -60,7 +58,6 @@ import java.util.Map;
  */
 public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Country addCountry(
 			String externalReferenceCode, String a2, String a3, boolean active,
@@ -125,7 +122,6 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 		}
 	}
 
-	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public Country deleteCountry(Country country) throws PortalException {
@@ -192,8 +188,35 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 	}
 
 	@Override
+	public List<Country> getCompanyCountries(
+		long companyId, Boolean active, String keywords, Predicate predicate,
+		int start, int end, OrderByComparator<Country> orderByComparator) {
+
+		return countryPersistence.dslQuery(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.selectDistinct(CountryTable.INSTANCE),
+				companyId, active, keywords, predicate
+			).orderBy(
+				CountryTable.INSTANCE, orderByComparator
+			).limit(
+				start, end
+			));
+	}
+
+	@Override
 	public int getCompanyCountriesCount(long companyId) {
 		return countryPersistence.countByCompanyId(companyId);
+	}
+
+	@Override
+	public int getCompanyCountriesCount(
+		long companyId, Boolean active, String keywords, Predicate predicate) {
+
+		return countryPersistence.dslQueryCount(
+			_getGroupByStep(
+				DSLQueryFactoryUtil.countDistinct(
+					CountryTable.INSTANCE.countryId),
+				companyId, active, keywords, predicate));
 	}
 
 	@Override
@@ -241,7 +264,6 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 			start, end);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Country updateActive(long countryId, boolean active)
 		throws PortalException {
@@ -253,7 +275,6 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 		return countryPersistence.update(country);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Country updateCountry(
 			String externalReferenceCode, long countryId, String a2, String a3,
@@ -299,7 +320,6 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 		return super.updateCountryLocalizations(country, titleMap);
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public Country updateGroupFilterEnabled(
 			long countryId, boolean groupFilterEnabled)
@@ -314,6 +334,13 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 
 	private GroupByStep _getGroupByStep(
 		FromStep fromStep, long companyId, Boolean active, String keywords) {
+
+		return _getGroupByStep(fromStep, companyId, active, keywords, null);
+	}
+
+	private GroupByStep _getGroupByStep(
+		FromStep fromStep, long companyId, Boolean active, String keywords,
+		Predicate predicate) {
 
 		JoinStep joinStep = fromStep.from(
 			CountryTable.INSTANCE
@@ -366,6 +393,8 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 
 					return Predicate.withParentheses(keywordsPredicate);
 				}
+			).and(
+				Predicate.withParentheses(predicate)
 			));
 	}
 

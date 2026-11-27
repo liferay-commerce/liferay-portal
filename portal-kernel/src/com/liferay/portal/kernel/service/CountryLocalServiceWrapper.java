@@ -318,8 +318,30 @@ public class CountryLocalServiceWrapper
 	}
 
 	@Override
+	public java.util.List<Country> getCompanyCountries(
+		long companyId, Boolean active, String keywords,
+		com.liferay.petra.sql.dsl.expression.Predicate predicate, int start,
+		int end,
+		com.liferay.portal.kernel.util.OrderByComparator<Country>
+			orderByComparator) {
+
+		return _countryLocalService.getCompanyCountries(
+			companyId, active, keywords, predicate, start, end,
+			orderByComparator);
+	}
+
+	@Override
 	public int getCompanyCountriesCount(long companyId) {
 		return _countryLocalService.getCompanyCountriesCount(companyId);
+	}
+
+	@Override
+	public int getCompanyCountriesCount(
+		long companyId, Boolean active, String keywords,
+		com.liferay.petra.sql.dsl.expression.Predicate predicate) {
+
+		return _countryLocalService.getCompanyCountriesCount(
+			companyId, active, keywords, predicate);
 	}
 
 	/**
@@ -576,4 +598,4 @@ public class CountryLocalServiceWrapper
 	private CountryLocalService _countryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1758230882
+// LIFERAY-SERVICE-BUILDER-HASH:-1145361832

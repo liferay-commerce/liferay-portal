@@ -18,13 +18,11 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.search.index.IndexStatusManager;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Date;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Ignore;
@@ -54,17 +52,6 @@ public class RegionCompanyBatchEnginePortletDataHandlerTest
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getCompanyId(), TestPropsValues.getGroupId(),
 				TestPropsValues.getUserId()));
-
-		_originalIndexReadOnly = _indexStatusManager.isIndexReadOnly(
-			Region.class.getName());
-
-		_indexStatusManager.setIndexReadOnly(Region.class.getName(), true);
-	}
-
-	@After
-	public void tearDown() {
-		_indexStatusManager.setIndexReadOnly(
-			Region.class.getName(), _originalIndexReadOnly);
 	}
 
 	@Ignore("LPD-107066")
@@ -213,11 +200,6 @@ public class RegionCompanyBatchEnginePortletDataHandlerTest
 
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	@Inject
-	private IndexStatusManager _indexStatusManager;
-
-	private boolean _originalIndexReadOnly;
 
 	@Inject
 	private RegionLocalService _regionLocalService;

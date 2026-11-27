@@ -364,6 +364,17 @@ public class RegionLocalServiceUtil {
 	}
 
 	public static List<Region> getRegions(
+		long companyId, Boolean active, String keywords,
+		java.util.LinkedHashMap<String, Object> params,
+		com.liferay.petra.sql.dsl.expression.Predicate predicate, int start,
+		int end, OrderByComparator<Region> orderByComparator) {
+
+		return getService().getRegions(
+			companyId, active, keywords, params, predicate, start, end,
+			orderByComparator);
+	}
+
+	public static List<Region> getRegions(
 		long countryId, int start, int end,
 		OrderByComparator<Region> orderByComparator) {
 
@@ -385,6 +396,15 @@ public class RegionLocalServiceUtil {
 	 */
 	public static int getRegionsCount() {
 		return getService().getRegionsCount();
+	}
+
+	public static int getRegionsCount(
+		long companyId, Boolean active, String keywords,
+		java.util.LinkedHashMap<String, Object> params,
+		com.liferay.petra.sql.dsl.expression.Predicate predicate) {
+
+		return getService().getRegionsCount(
+			companyId, active, keywords, params, predicate);
 	}
 
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult<Region>
@@ -455,4 +475,4 @@ public class RegionLocalServiceUtil {
 	private static volatile RegionLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2085718220
+// LIFERAY-SERVICE-BUILDER-HASH:1846899798

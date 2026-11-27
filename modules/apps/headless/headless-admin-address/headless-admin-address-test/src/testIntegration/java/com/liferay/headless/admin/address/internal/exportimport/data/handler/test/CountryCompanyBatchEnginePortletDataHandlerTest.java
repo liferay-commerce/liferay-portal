@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.test.util.exportimport.data.handler.BaseCompanyBatchEnginePortletDataHandlerTestCase;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Region;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -18,14 +17,11 @@ import com.liferay.portal.kernel.test.util.CountryTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.search.index.IndexStatusManager;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Date;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -41,23 +37,6 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
-
-	@Before
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
-
-		_originalIndexReadOnly = _indexStatusManager.isIndexReadOnly(
-			Region.class.getName());
-
-		_indexStatusManager.setIndexReadOnly(Region.class.getName(), true);
-	}
-
-	@After
-	public void tearDown() {
-		_indexStatusManager.setIndexReadOnly(
-			Region.class.getName(), _originalIndexReadOnly);
-	}
 
 	@Override
 	protected void addEntry(String externalReferenceCode, long groupId)
@@ -201,10 +180,5 @@ public class CountryCompanyBatchEnginePortletDataHandlerTest
 
 	@Inject
 	private GroupLocalService _groupLocalService;
-
-	@Inject
-	private IndexStatusManager _indexStatusManager;
-
-	private boolean _originalIndexReadOnly;
 
 }

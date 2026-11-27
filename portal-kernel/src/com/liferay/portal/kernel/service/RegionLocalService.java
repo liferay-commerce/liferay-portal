@@ -7,6 +7,7 @@ package com.liferay.portal.kernel.service;
 
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
@@ -81,7 +82,6 @@ public interface RegionLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public Region addRegion(Region region);
 
-	@Indexable(type = IndexableType.REINDEX)
 	public Region addRegion(
 			String externalReferenceCode, long countryId, boolean active,
 			String name, double position, String regionCode,
@@ -323,6 +323,12 @@ public interface RegionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Region> getRegions(
+		long companyId, Boolean active, String keywords,
+		LinkedHashMap<String, Object> params, Predicate predicate, int start,
+		int end, OrderByComparator<Region> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Region> getRegions(
 		long countryId, int start, int end,
 		OrderByComparator<Region> orderByComparator);
 
@@ -339,13 +345,17 @@ public interface RegionLocalService
 	public int getRegionsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getRegionsCount(
+		long companyId, Boolean active, String keywords,
+		LinkedHashMap<String, Object> params, Predicate predicate);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<Region> searchRegions(
 			long companyId, Boolean active, String keywords,
 			LinkedHashMap<String, Object> params, int start, int end,
 			OrderByComparator<Region> orderByComparator)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.REINDEX)
 	public Region updateActive(long regionId, boolean active)
 		throws PortalException;
 
@@ -362,7 +372,6 @@ public interface RegionLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public Region updateRegion(Region region);
 
-	@Indexable(type = IndexableType.REINDEX)
 	public Region updateRegion(
 			String externalReferenceCode, long regionId, boolean active,
 			String name, double position, String regionCode)
@@ -391,4 +400,4 @@ public interface RegionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1744864861
+// LIFERAY-SERVICE-BUILDER-HASH:-1107106000
