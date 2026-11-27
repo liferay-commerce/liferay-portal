@@ -30,11 +30,13 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ModelHintsConstants;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -321,6 +323,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
 			Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap,
 			List<ObjectEntry> pimProductObjectEntries,
+			String productExternalReferenceCode,
 			PIMConnectorChannelField srcPIMConnectorChannelField,
 			PIMConnectorChannelField titlePIMConnectorChannelField,
 			List<Map<String, Serializable>> valuesList)
@@ -405,6 +408,17 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 						externalReferenceCode =
 							externalReferenceCode + StringPool.DASH +
 								objectFieldName;
+					}
+
+					externalReferenceCode =
+						productExternalReferenceCode + StringPool.DASH +
+							externalReferenceCode;
+
+					if (externalReferenceCode.length() > GetterUtil.getInteger(
+							ModelHintsConstants.TEXT_MAX_LENGTH)) {
+
+						externalReferenceCode = PortalUUIDUtil.generate(
+							externalReferenceCode.getBytes());
 					}
 
 					JSONObject jsonObject = _createAttachmentJSONObject(
@@ -590,6 +604,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			() -> _createAttachmentsJSONArray(
 				objectDefinition, pimFieldMappingObjectEntriesMap,
 				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntries,
+				externalReferenceCode,
 				_PIM_CONNECTOR_CHANNEL_FIELD_ATTACHMENT_SRC,
 				_PIM_CONNECTOR_CHANNEL_FIELD_ATTACHMENT_TITLE, valuesList)
 		).put(
@@ -621,7 +636,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			() -> _createAttachmentsJSONArray(
 				objectDefinition, pimFieldMappingObjectEntriesMap,
 				pimFieldMappingRuleObjectEntriesMap, pimProductObjectEntries,
-				_PIM_CONNECTOR_CHANNEL_FIELD_IMAGE_SRC,
+				externalReferenceCode, _PIM_CONNECTOR_CHANNEL_FIELD_IMAGE_SRC,
 				_PIM_CONNECTOR_CHANNEL_FIELD_IMAGE_TITLE, valuesList)
 		).put(
 			"name",
