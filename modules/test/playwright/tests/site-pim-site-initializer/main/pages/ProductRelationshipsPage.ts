@@ -44,15 +44,10 @@ export class ProductRelationshipsPage {
 	}
 
 	async addRelationships(names: string[]) {
-		await clickAndExpectToBeVisible({
-			target: this.selectorConfirmButton,
-			trigger: this.addRelationshipButton,
-		});
+		await this.openSelector();
 
 		for (const name of names) {
-			await this.selectorDialog
-				.getByRole('checkbox', {name: `Select ${name}`})
-				.check();
+			await this.getSelectorCheckbox(name).check();
 		}
 
 		await expect(
@@ -87,6 +82,13 @@ export class ProductRelationshipsPage {
 		});
 	}
 
+	async openSelector() {
+		await clickAndExpectToBeVisible({
+			target: this.selectorConfirmButton,
+			trigger: this.addRelationshipButton,
+		});
+	}
+
 	async removeRelationship(name: string) {
 		await this.clickItemAction('Remove', name);
 
@@ -104,6 +106,12 @@ export class ProductRelationshipsPage {
 
 	getRelatedProduct(name: string) {
 		return this.rows.filter({hasText: name});
+	}
+
+	getSelectorCheckbox(name: string) {
+		return this.selectorDialog.getByRole('checkbox', {
+			name: `Select ${name}`,
+		});
 	}
 
 	getViewingLabel(name: string) {

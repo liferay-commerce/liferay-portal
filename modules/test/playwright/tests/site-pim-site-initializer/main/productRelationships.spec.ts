@@ -126,6 +126,53 @@ test(
 );
 
 test(
+	'The relationship selector lists products but not product folders',
+	{tag: ['@LPD-118010']},
+	async ({
+		productFolderPage,
+		productPage,
+		productRelationshipsPage,
+		productsPage,
+	}) => {
+		const folderTitle = getRandomString();
+		const productTitle1 = getRandomString();
+		const productTitle2 = getRandomString();
+
+		try {
+			await productsPage.goto();
+
+			await productFolderPage.createFolder(folderTitle, 'Default');
+
+			await createProduct(productTitle1, productPage, productsPage);
+			await createProduct(productTitle2, productPage, productsPage);
+
+			await openRelationships(
+				productTitle1,
+				productPage,
+				productRelationshipsPage,
+				productsPage
+			);
+
+			await productRelationshipsPage.openSelector();
+
+			await expect(
+				productRelationshipsPage.getSelectorCheckbox(productTitle2)
+			).toBeVisible();
+			await expect(
+				productRelationshipsPage.getSelectorCheckbox(folderTitle)
+			).toBeHidden();
+		}
+		finally {
+			await productsPage.goto();
+
+			await productsPage.deleteProduct(productTitle1);
+			await productsPage.deleteProduct(productTitle2);
+			await productsPage.deleteProduct(folderTitle);
+		}
+	}
+);
+
+test(
 	'Relate a product to two others',
 	{tag: ['@LPD-105923']},
 	async ({productPage, productRelationshipsPage, productsPage}) => {
