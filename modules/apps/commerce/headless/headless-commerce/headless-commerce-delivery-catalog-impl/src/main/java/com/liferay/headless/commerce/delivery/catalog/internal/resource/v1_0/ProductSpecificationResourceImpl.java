@@ -5,17 +5,22 @@
 
 package com.liferay.headless.commerce.delivery.catalog.internal.resource.v1_0;
 
+import com.liferay.account.service.AccountEntryLocalService;
+import com.liferay.account.service.AccountEntryService;
+import com.liferay.commerce.helper.CommerceAccountHelper;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionSpecificationOptionValue;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceChannel;
+import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CPDefinitionSpecificationOptionValueLocalService;
 import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.Product;
 import com.liferay.headless.commerce.delivery.catalog.dto.v1_0.ProductSpecification;
+import com.liferay.headless.commerce.delivery.catalog.internal.util.v1_0.AccountUtil;
 import com.liferay.headless.commerce.delivery.catalog.resource.v1_0.ProductSpecificationResource;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
@@ -83,6 +88,16 @@ public class ProductSpecificationResourceImpl
 				"Unable to find product with ID " + productId);
 		}
 
+		CommerceChannel commerceChannel =
+			_commerceChannelLocalService.getCommerceChannel(channelId);
+
+		AccountUtil.checkProductViewPermission(
+			contextCompany.getCompanyId(), cpDefinition.getCPDefinitionId(),
+			commerceChannel.getGroupId(), contextUser.getUserId(),
+			_accountEntryLocalService, _accountEntryService,
+			_commerceAccountHelper, _commerceProductViewPermission,
+			contextUriInfo.getQueryParameters());
+
 		List<CPDefinitionSpecificationOptionValue>
 			cpDefinitionSpecificationOptionValues =
 				_cpDefinitionSpecificationOptionValueLocalService.
@@ -117,10 +132,22 @@ public class ProductSpecificationResourceImpl
 	}
 
 	@Reference
+	private AccountEntryLocalService _accountEntryLocalService;
+
+	@Reference
+	private AccountEntryService _accountEntryService;
+
+	@Reference
 	private CProductLocalService _cProductLocalService;
 
 	@Reference
+	private CommerceAccountHelper _commerceAccountHelper;
+
+	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
+
+	@Reference
+	private CommerceProductViewPermission _commerceProductViewPermission;
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;

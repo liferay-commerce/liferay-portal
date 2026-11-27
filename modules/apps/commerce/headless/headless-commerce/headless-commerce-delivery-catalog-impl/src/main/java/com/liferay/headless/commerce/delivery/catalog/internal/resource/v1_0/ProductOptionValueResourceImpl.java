@@ -10,14 +10,17 @@ import com.liferay.account.service.AccountEntryService;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.context.CommerceContextFactory;
 import com.liferay.commerce.helper.CommerceAccountHelper;
+import com.liferay.commerce.product.exception.NoSuchCPDefinitionOptionRelException;
 import com.liferay.commerce.product.exception.NoSuchCProductException;
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.permission.CommerceProductViewPermission;
 import com.liferay.commerce.product.service.CPDefinitionLocalService;
+import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalService;
 import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.CProductLocalService;
@@ -80,8 +83,8 @@ public class ProductOptionValueResourceImpl
 
 		return getChannelProductProductOptionProductOptionValuesPage(
 			commerceChannel.getCommerceChannelId(), cProduct.getCProductId(),
-			cpOption.getCPOptionId(), accountId, currencyCode,
-			productOptionValueId, skuId, pagination);
+			_getCPDefinitionOptionRelId(cpOption, cProduct), accountId,
+			currencyCode, productOptionValueId, skuId, pagination);
 	}
 
 	@Override
@@ -124,8 +127,8 @@ public class ProductOptionValueResourceImpl
 
 		return postChannelProductProductOptionProductOptionValuesPage(
 			commerceChannel.getCommerceChannelId(), cProduct.getCProductId(),
-			cpOption.getCPOptionId(), accountId, currencyCode,
-			productOptionValueId, skuId, pagination, skuOptions);
+			_getCPDefinitionOptionRelId(cpOption, cProduct), accountId,
+			currencyCode, productOptionValueId, skuId, pagination, skuOptions);
 	}
 
 	@Override
@@ -139,6 +142,22 @@ public class ProductOptionValueResourceImpl
 		return _getProductOptionValuePage(
 			channelId, productId, productOptionId, accountId, currencyCode,
 			productOptionValueId, skuId, pagination, skuOptions);
+	}
+
+	private long _getCPDefinitionOptionRelId(
+			CPOption cpOption, CProduct cProduct)
+		throws Exception {
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelLocalService.fetchCPDefinitionOptionRel(
+				cProduct.getPublishedCPDefinitionId(),
+				cpOption.getCPOptionId());
+
+		if (cpDefinitionOptionRel == null) {
+			throw new NoSuchCPDefinitionOptionRelException();
+		}
+
+		return cpDefinitionOptionRel.getCPDefinitionOptionRelId();
 	}
 
 	private Page<ProductOptionValue> _getProductOptionValuePage(
@@ -166,6 +185,24 @@ public class ProductOptionValueResourceImpl
 		_commerceProductViewPermission.check(
 			PermissionThreadLocal.getPermissionChecker(), accountId,
 			commerceChannel.getGroupId(), cpDefinition.getCPDefinitionId());
+
+		CPDefinitionOptionRel cpDefinitionOptionRel =
+			_cpDefinitionOptionRelLocalService.fetchCPDefinitionOptionRel(
+				productOptionId);
+
+		if (cpDefinitionOptionRel == null) {
+			throw new NoSuchCPDefinitionOptionRelException();
+		}
+
+		CPDefinition optionCPDefinition =
+			cpDefinitionOptionRel.getCPDefinition();
+
+		if ((optionCPDefinition.getCProductId() !=
+				cpDefinition.getCProductId()) ||
+			!optionCPDefinition.isApproved()) {
+
+			throw new NoSuchCPDefinitionOptionRelException();
+		}
 
 		ServiceContextThreadLocal.pushServiceContext(
 			_serviceContextHelper.getServiceContext(
@@ -237,6 +274,10 @@ public class ProductOptionValueResourceImpl
 
 	@Reference
 	private CPDefinitionLocalService _cpDefinitionLocalService;
+
+	@Reference
+	private CPDefinitionOptionRelLocalService
+		_cpDefinitionOptionRelLocalService;
 
 	@Reference
 	private CPDefinitionOptionValueRelLocalService
