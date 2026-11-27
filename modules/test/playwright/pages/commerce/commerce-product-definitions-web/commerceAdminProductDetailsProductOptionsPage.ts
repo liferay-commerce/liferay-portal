@@ -13,12 +13,16 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 	readonly deleteMenuItem: Locator;
 	readonly optionActionsButton: (optionName: string) => Locator;
 	readonly optionLink: (optionName: string) => Locator;
+	readonly optionPriceTypeSelect: Locator;
+	readonly optionSaveButton: Locator;
 	readonly optionSidePanelCancelButton: Locator;
 	readonly optionSidePanelFrame: FrameLocator;
 	readonly optionValueDeltaPriceInput: Locator;
 	readonly optionValueLink: (optionValueName: string) => Locator;
 	readonly optionValueQuantityInput: Locator;
 	readonly optionValueRow: (optionValueName: string) => Locator;
+	readonly optionValueRowActionsButton: (optionValueName: string) => Locator;
+	readonly optionValueRowMenuItem: (action: string) => Locator;
 	readonly optionValueSaveButton: Locator;
 	readonly optionValueSidePanel: Locator;
 	readonly optionValueSidePanelCloseButton: Locator;
@@ -58,6 +62,12 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 		this.optionLink = (optionName: string) =>
 			page.getByRole('link', {exact: true, name: optionName});
 		this.optionSidePanelFrame = page.frameLocator(sidePanelIframe);
+		this.optionPriceTypeSelect =
+			this.optionSidePanelFrame.getByLabel('Price Type');
+		this.optionSaveButton = this.optionSidePanelFrame.getByRole('button', {
+			exact: true,
+			name: 'Save',
+		});
 		this.optionValueSidePanelFrame =
 			this.optionSidePanelFrame.frameLocator(sidePanelIframe);
 		this.optionSidePanelCancelButton = this.optionSidePanelFrame.getByRole(
@@ -81,6 +91,16 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 			this.optionSidePanelFrame
 				.getByRole('row')
 				.filter({hasText: optionValueName});
+		this.optionValueRowActionsButton = (optionValueName: string) =>
+			this.optionValueRow(optionValueName).getByRole('button', {
+				exact: true,
+				name: `${optionValueName} Actions`,
+			});
+		this.optionValueRowMenuItem = (action: string) =>
+			this.optionSidePanelFrame.getByRole('menuitem', {
+				exact: true,
+				name: action,
+			});
 		this.optionValueSaveButton = this.optionValueSidePanelFrame.getByRole(
 			'button',
 			{
@@ -181,5 +201,14 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 		await this.optionValueSkuInput.fill(sku);
 
 		await expect(this.optionValueSkuDropdownItems.first()).toBeVisible();
+	}
+
+	async setOptionValueDefault(optionValueName: string) {
+		await this.optionValueRowActionsButton(optionValueName).click();
+		await this.optionValueRowMenuItem('Toggle Default').click();
+
+		await expect(
+			this.optionValueRow(optionValueName).locator('.cell-preselected')
+		).toHaveText('Yes');
 	}
 }

@@ -661,17 +661,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addSKUsEntry(productSku = null, noOption = null, optionValue = null) {
-		Type(
-			locator1 = "CommerceEntry#SKU_FIELD",
-			value1 = ${productSku});
-
-		CommerceEntry.selectAssociatedOptionsValue(
-			noOption = ${noOption},
-			optionValue = ${optionValue});
-	}
-
-	@summary = "Default summary"
 	macro addTaxCategory(keyDescription = null, keyName = null, keyReferenceCode = null) {
 		Click(locator1 = "Button#PLUS");
 
@@ -1198,28 +1187,6 @@ definition {
 		Type(
 			locator1 = "CommerceEntry#SHORT_DESCRIPTION_FIELD",
 			value1 = ${newEntryShortDescription});
-	}
-
-	@summary = "Default summary"
-	macro editPriceListsFromProductSKU(skuName = null, price = null, priceList = null) {
-		CommerceNavigator.gotoEntry(entryName = ${skuName});
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		CommerceEntry.gotoMenuTab(menuTab = "Price");
-
-		CommerceNavigator.gotoEntry(entryName = ${priceList});
-
-		SelectFrame.selectFrameNoLoading(locator1 = "CommerceEntry#IFRAME_SIDE_PANEL");
-
-		Type(
-			key_text = "Price List Price",
-			locator1 = "TextInput#ANY",
-			value1 = ${price});
-
-		Button.clickSave();
-
-		Click(locator1 = "Icon#CLOSE");
 	}
 
 	@summary = "Default summary"
