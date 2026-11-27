@@ -7,6 +7,7 @@ package com.liferay.digital.signature.internal.manager;
 
 import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
 import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
+import com.liferay.digital.signature.configuration.DigitalSignatureSystemConfiguration;
 import com.liferay.digital.signature.constants.DSObjectDefinitionConstants;
 import com.liferay.digital.signature.constants.DSRequestConstants;
 import com.liferay.digital.signature.exception.DSEnvelopeException;
@@ -42,6 +43,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -76,6 +78,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
@@ -534,6 +537,116 @@ public class DSRequestManagerImpl implements DSRequestManager {
 
 		_sendDSRequestNotifications(
 			dsRequest, dsRequest.getDSRequestRecipients());
+	}
+
+	@Override
+	public void sendDSRequestReminders(long companyId) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-69290")) {
+			return;
+		}
+
+		DigitalSignatureConfiguration digitalSignatureConfiguration =
+			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
+				companyId, 0);
+
+		if (!digitalSignatureConfiguration.remindersEnabled()) {
+			return;
+		}
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					DSObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_REQUEST_RECIPIENT,
+					companyId);
+
+		if (objectDefinition == null) {
+			return;
+		}
+
+		try {
+			Set<Long> dsRequestIds = new HashSet<>(
+				TransformUtil.transform(
+					_getValuesList(
+						companyId,
+						StringBundler.concat(
+							"(requestRecipientStatus eq '",
+							DSRequestConstants.STATUS_SENT, "')"),
+						objectDefinition, null),
+					values -> MapUtil.getLong(
+						values,
+						"r_dsRequestToDSRequestRecipients_l_dsRequestId")));
+
+			if (dsRequestIds.isEmpty()) {
+				return;
+			}
+
+			Map<Long, DSRequest> dsRequests = _getDSRequests(
+				companyId, dsRequestIds);
+
+			DigitalSignatureSystemConfiguration
+				digitalSignatureSystemConfiguration =
+					_configurationProvider.getSystemConfiguration(
+						DigitalSignatureSystemConfiguration.class);
+
+			int reminderInterval = Math.max(
+				1, digitalSignatureSystemConfiguration.reminderInterval());
+
+			for (DSRequest dsRequest : dsRequests.values()) {
+				if (!dsRequest.isSyncable() ||
+					!_isEnabled(companyId, dsRequest.getSiteGroupId())) {
+
+					continue;
+				}
+
+				ObjectEntry objectEntry =
+					_objectEntryLocalService.fetchObjectEntry(
+						dsRequest.getDSRequestId());
+
+				if (objectEntry == null) {
+					continue;
+				}
+
+				Set<Long> userIds = new HashSet<>(
+					TransformUtil.transform(
+						dsRequest.getDSRequestRecipients(),
+						dsRequestRecipient -> {
+							if (!Objects.equals(
+									DSRequestConstants.STATUS_CREATED,
+									dsRequestRecipient.getStatus())) {
+
+								return null;
+							}
+
+							return dsRequestRecipient.getUserId();
+						}));
+
+				DSRequest updatedDSRequest = _updateDSRequest(objectEntry);
+
+				if (updatedDSRequest == null) {
+					updatedDSRequest = dsRequest;
+				}
+
+				if (updatedDSRequest.isTerminal()) {
+					continue;
+				}
+
+				_sendDSRequestNotifications(
+					updatedDSRequest,
+					ListUtil.filter(
+						updatedDSRequest.getDSRequestRecipients(),
+						dsRequestRecipient ->
+							userIds.contains(dsRequestRecipient.getUserId()) ||
+							_isReminderDue(
+								dsRequestRecipient, reminderInterval)));
+			}
+		}
+		catch (Exception exception) {
+			_log.error(
+				"Unable to send digital signature request reminders for " +
+					"company " + companyId,
+				exception);
+		}
 	}
 
 	@Override
@@ -1202,6 +1315,25 @@ public class DSRequestManagerImpl implements DSRequestManager {
 		return false;
 	}
 
+	private boolean _isReminderDue(
+		DSRequestRecipient dsRequestRecipient, int reminderInterval) {
+
+		Date sentDate = dsRequestRecipient.getSentDate();
+
+		if (sentDate == null) {
+			return false;
+		}
+
+		long days =
+			(System.currentTimeMillis() - sentDate.getTime()) / Time.DAY;
+
+		if (((days % reminderInterval) == 0) && (days > 0)) {
+			return true;
+		}
+
+		return false;
+	}
+
 	private void _sendDSRequestNotification(
 		DSRequest dsRequest, DSRequestRecipient dsRequestRecipient) {
 
@@ -1570,6 +1702,9 @@ public class DSRequestManagerImpl implements DSRequestManager {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DSRequestManagerImpl.class);
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;

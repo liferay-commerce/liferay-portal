@@ -45,6 +45,9 @@ public interface DigitalSignatureConfiguration {
 	@Meta.AD(type = Meta.Type.Password)
 	public String integrationKey();
 
+	@Meta.AD(deflt = "false", required = false)
+	public boolean remindersEnabled();
+
 	@Meta.AD(type = Meta.Type.Password)
 	public String rsaPrivateKey();
 
