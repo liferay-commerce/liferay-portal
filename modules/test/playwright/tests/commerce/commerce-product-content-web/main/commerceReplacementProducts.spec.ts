@@ -17,6 +17,7 @@ import {
 	performLogout,
 	userData,
 } from '../../../../utils/performLogin';
+import {waitForAlert} from '../../../../utils/waitForAlert';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {
@@ -821,5 +822,219 @@ test(
 		await expect(
 			pendingOrdersPage.orderItemsTable.getByText('U-Joint')
 		).toHaveCount(0);
+	}
+);
+
+test(
+	'A discontinued SKU shows the Discontinued label on its product card',
+	{tag: ['@COMMERCE-9093', '@LPD-108838']},
+	async ({apiHelpers, page, productPublisherPage, site}) => {
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			siteGroupId: site.id,
+		});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const discontinuedProduct =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: `Discontinued ${getRandomString()}`},
+				productType: 'simple',
+				skus: [
+					{
+						cost: 0,
+						discontinued: true,
+						price: 0,
+						published: true,
+						purchasable: true,
+						sku: getRandomString(),
+					},
+				],
+			});
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: `Available ${getRandomString()}`},
+				productType: 'simple',
+				skus: [
+					{
+						cost: 0,
+						price: 0,
+						published: true,
+						purchasable: true,
+						sku: getRandomString(),
+					},
+				],
+			});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_product_content_web_internal_portlet_CPPublisherPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await page.goto(`/web/${site.name}/${layout.friendlyUrlPath}`);
+
+		await expect(
+			productPublisherPage.productCardDiscontinuedLabel(
+				discontinuedProduct.name.en_US
+			)
+		).toBeVisible();
+		await expect(
+			productPublisherPage.productCard(product.name.en_US)
+		).toBeVisible();
+		await expect(
+			productPublisherPage.productCardDiscontinuedLabel(
+				product.name.en_US
+			)
+		).toBeHidden();
+	}
+);
+
+test(
+	'A product specialist sets and removes the replacement of a discontinued SKU',
+	{tag: ['@COMMERCE-8160', '@LPD-108838']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductDetailsSkusPage,
+		commerceAdminProductPage,
+	}) => {
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const replacementSku = getRandomString();
+
+		await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+			catalogId: catalog.id,
+			productType: 'simple',
+			skus: [
+				{
+					cost: 0,
+					price: 0,
+					published: true,
+					purchasable: true,
+					sku: replacementSku,
+				},
+			],
+		});
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				productType: 'simple',
+			});
+
+		await commerceAdminProductPage.gotoProduct(product.name.en_US);
+
+		await commerceAdminProductDetailsPage.goToProductSkus();
+
+		await expect(
+			commerceAdminProductDetailsSkusPage.skuAddButton
+		).toHaveCount(1);
+
+		await commerceAdminProductDetailsSkusPage.skuAddButton.click();
+
+		const discontinuedSku = getRandomString();
+
+		await commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuFieldName.fill(
+			discontinuedSku
+		);
+
+		await test.step('The replacement and the end of life date are available only for a discontinued SKU', async () => {
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuReplacement
+			).toBeHidden();
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuEndOfLifeDateInput
+			).toBeDisabled();
+
+			await commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuDiscontinuedToggle.check();
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuReplacement
+			).toBeVisible();
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuEndOfLifeDateInput
+			).toBeEnabled();
+		});
+
+		await test.step('Create the discontinued SKU with a replacement', async () => {
+			await commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuReplacementInput.fill(
+				replacementSku
+			);
+			await commerceAdminProductDetailsSkusPage
+				.sidePanelDetailsSkuReplacementItem(replacementSku)
+				.click();
+
+			await commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuPublishButton.click();
+
+			await waitForAlert(
+				commerceAdminProductDetailsSkusPage.sidePanelFrame
+			);
+
+			await commerceAdminProductDetailsSkusPage.reopenSkuWithReplacement(
+				discontinuedSku,
+				replacementSku
+			);
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuDiscontinuedToggle
+			).toBeChecked();
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuReplacementInput
+			).toHaveValue(replacementSku);
+		});
+
+		await test.step('A SKU cannot be its own replacement', async () => {
+			await commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuReplacementInput.fill(
+				discontinuedSku
+			);
+			await commerceAdminProductDetailsSkusPage
+				.sidePanelDetailsSkuReplacementItem(discontinuedSku)
+				.click();
+
+			await commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuPublishButton.click();
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelFrame.getByText(
+					'Please enter a valid replacement.'
+				)
+			).toBeVisible();
+		});
+
+		await test.step('Remove the replacement', async () => {
+			await commerceAdminProductDetailsSkusPage.reopenSkuWithReplacement(
+				discontinuedSku,
+				replacementSku
+			);
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuReplacementInput
+			).toHaveValue(replacementSku);
+
+			await commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuReplacementDeleteButton.click();
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuReplacementInput
+			).toHaveValue('');
+
+			await commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuPublishButton.click();
+
+			await waitForAlert(
+				commerceAdminProductDetailsSkusPage.sidePanelFrame
+			);
+
+			await expect(
+				commerceAdminProductDetailsSkusPage.sidePanelDetailsSkuReplacementInput
+			).toHaveValue('');
+		});
 	}
 );

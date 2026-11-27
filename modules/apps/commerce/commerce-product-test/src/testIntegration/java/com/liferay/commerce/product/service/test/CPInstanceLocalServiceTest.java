@@ -799,6 +799,49 @@ public class CPInstanceLocalServiceTest {
 		}
 	}
 
+	@Test
+	public void testUpdateCPInstanceWithItselfAsReplacement() throws Exception {
+		frutillaRule.scenario(
+			"A product instance cannot be its own replacement"
+		).given(
+			"a discontinued product instance"
+		).when(
+			"the product instance is set as its own replacement"
+		).then(
+			"the update should fail"
+		);
+
+		CPInstance cpInstance = CPTestUtil.addCPInstanceFromCatalog(
+			_commerceCatalog.getGroupId());
+
+		try {
+			Calendar calendar = CalendarFactoryUtil.getCalendar();
+			CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+			_cpInstanceLocalService.updateCPInstance(
+				cpInstance.getExternalReferenceCode(),
+				cpInstance.getCPInstanceId(), cpInstance.getSku(), null, null,
+				false, 0, 0, 0, 0, BigDecimal.ZERO, BigDecimal.ZERO,
+				BigDecimal.ZERO, false, calendar.get(Calendar.MONTH),
+				calendar.get(Calendar.DATE), calendar.get(Calendar.YEAR),
+				calendar.get(Calendar.HOUR_OF_DAY),
+				calendar.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true, false,
+				false, 0, null, null, 0, false, 0, null, null, 0, null, true,
+				cpInstance.getCPInstanceUuid(), cpDefinition.getCProductId(),
+				calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE),
+				calendar.get(Calendar.YEAR),
+				ServiceContextTestUtil.getServiceContext(
+					cpInstance.getGroupId()));
+
+			Assert.fail();
+		}
+		catch (CPInstanceReplacementCPInstanceUuidException
+					cpInstanceReplacementCPInstanceUuidException) {
+
+			Assert.assertNotNull(cpInstanceReplacementCPInstanceUuidException);
+		}
+	}
+
 	@Rule
 	public final FrutillaRule frutillaRule = new FrutillaRule();
 

@@ -231,11 +231,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>PRODUCT_DETAILS_OPTION_VALUE</td>
-	<td>//div/label[text()='${key_optionName}']/..//select/option[@value][text()='${key_optionValue}']</td>
-	<td></td>
-</tr>
-<tr>
 	<td>PRODUCT_DETAILS_OPTION_VALUE_POSITION</td>
 	<td>//div/label[text()='${key_optionName}']/..//select/option[@value][${key_index}][text()='${key_optionValue}']</td>
 	<td></td>
@@ -338,11 +333,6 @@
 <tr>
 	<td>PRODUCT_CARD_BODY</td>
 	<td>//p[@class='card-title' and contains(@title,'${key_productName}')]/../../../div[contains(@class,'card-body')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>PRODUCT_CARD_STATUS_LABEL</td>
-	<td>//a[contains(@href,'${key_productName}')]//span[contains(@class,'m-0')]//*[text()='${key_status}']</td>
 	<td></td>
 </tr>
 <tr>

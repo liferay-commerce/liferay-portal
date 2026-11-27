@@ -22,18 +22,55 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 	readonly inventoryTableRowAction: (pageName: string) => Promise<Locator>;
 	readonly neverExpireCheckbox: Locator;
 	readonly page: Page;
+	readonly priceTierModal: FrameLocator;
+	readonly priceTierModalPriceInput: Locator;
+	readonly priceTierModalQuantityInput: Locator;
+	readonly priceTierModalSubmitButton: Locator;
 	readonly pricinQuantity: Locator;
+	readonly sidePanelDetailsSkuDiscontinuedToggle: Locator;
+	readonly sidePanelDetailsSkuEndOfLifeDateInput: Locator;
+	readonly sidePanelDetailsSkuExternalReferenceCodeInput: Locator;
 	readonly sidePanelDetailsSkuFieldName: Locator;
 	readonly sidePanelDetailsSkuPublishButton: Locator;
+	readonly sidePanelDetailsSkuReplacement: Locator;
+	readonly sidePanelDetailsSkuReplacementDeleteButton: Locator;
+	readonly sidePanelDetailsSkuReplacementInput: Locator;
+	readonly sidePanelDetailsSkuReplacementItem: (sku: string) => Locator;
 	readonly sidePanelFrame: FrameLocator;
 	readonly sidePanelInventoryTable: Locator;
+	readonly sidePanelNestedAddPriceTierButton: Locator;
+	readonly sidePanelNestedBulkPricingRadio: Locator;
 	readonly sidePanelNestedFrame: FrameLocator;
+	readonly sidePanelNestedMenuItem: (menuItemName: string) => Locator;
 	readonly sidePanelNestedPriceListPrice: Locator;
+	readonly sidePanelNestedPriceTierTableRow: (quantity: string) => Locator;
+	readonly sidePanelNestedPriceTierTableRowActionsButton: (
+		quantity: string
+	) => Locator;
 	readonly sidePanelNestedSaveButton: Locator;
+	readonly sidePanelNestedTieredPricingRadio: Locator;
 	readonly sidePanelSaveAsDraftButton: Locator;
 	readonly sidePanelSaveButton: Locator;
 	readonly sidePanelSkuInventoryQuantity: Locator;
+	readonly sidePanelSkuPriceTableRow: (priceListName: string) => Locator;
+	readonly sidePanelSkuPriceTableRowActionsButton: (
+		priceListName: string
+	) => Locator;
 	readonly sidePanelSkuPriceTableRowLink: (priceListName: string) => Locator;
+	readonly sidePanelSubscriptionEnableToggle: (
+		subscriptionName: string
+	) => Locator;
+	readonly sidePanelSubscriptionInput: (
+		subscriptionName: string,
+		inputLabel: string
+	) => Locator;
+	readonly sidePanelSubscriptionSection: (
+		subscriptionName: string
+	) => Locator;
+	readonly sidePanelSubscriptionSelect: (
+		subscriptionName: string,
+		selectLabel: string
+	) => Locator;
 	readonly skuAddButton: Locator;
 	readonly skuAddModal: FrameLocator;
 	readonly skuAddModalSkuInput: Locator;
@@ -43,18 +80,15 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 	readonly skuPriceAddButton: Locator;
 	readonly skuPriceAddModal: FrameLocator;
 	readonly skuPriceAddModalAddButton: Locator;
+	readonly skuPriceAddModalAddEntryButton: Locator;
+	readonly skuPriceAddModalCancelButton: Locator;
+	readonly skuPriceAddModalUnitOfMeasureSelect: Locator;
 	readonly skuPriceAddModalUnitPriceInput: Locator;
 	readonly skuPriceFrame: FrameLocator;
 	readonly skuPriceListSelect: Locator;
 	readonly skuTab: (tabName: string) => Locator;
 	readonly skusLink: Locator;
-	readonly skusTable: Locator;
-	readonly skusTableRowBasePrice: (price: string) => Promise<Locator>;
-	readonly skusTableRow: (
-		colPosition: number,
-		value: number | string,
-		strictEqual?: boolean
-	) => Promise<{column: Locator; row: Locator}>;
+	readonly skusTableRowActionsButton: (skuName: string) => Locator;
 	readonly skusTableRowLink: (skuName: string) => Locator;
 	readonly skuUOMFrame: FrameLocator;
 	readonly skuUOMModal: FrameLocator;
@@ -127,28 +161,88 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 		this.neverExpireCheckbox =
 			this.sidePanelFrame.getByLabel('Never Expire');
 		this.page = page;
+		this.priceTierModal = page.getByRole('dialog').frameLocator('iframe');
+		this.priceTierModalPriceInput = this.priceTierModal.getByLabel(
+			'Tier Price Required'
+		);
+		this.priceTierModalQuantityInput =
+			this.priceTierModal.getByLabel('Quantity Required');
+		this.priceTierModalSubmitButton = this.priceTierModal.getByRole(
+			'button',
+			{exact: true, name: 'Submit'}
+		);
 		this.pricinQuantity = page
 			.frameLocator('iframe')
 			.first()
 			.frameLocator('iframe')
 			.getByLabel('Pricing Quantity');
+		this.sidePanelDetailsSkuDiscontinuedToggle =
+			this.sidePanelFrame.getByLabel('Mark the SKU as Discontinued');
+		this.sidePanelDetailsSkuEndOfLifeDateInput =
+			this.sidePanelFrame.locator('input[id$="_discontinuedDate"]');
+		this.sidePanelDetailsSkuExternalReferenceCodeInput =
+			this.sidePanelFrame.getByLabel('External Reference Code', {
+				exact: true,
+			});
 		this.sidePanelDetailsSkuFieldName =
 			this.sidePanelFrame.getByLabel('SKU Required');
 		this.sidePanelDetailsSkuPublishButton = this.sidePanelFrame.getByRole(
 			'button',
 			{exact: true, name: 'Publish'}
 		);
+		this.sidePanelDetailsSkuReplacement = this.sidePanelFrame.locator(
+			'[id$="_replacementAutocompleteWrapper"]'
+		);
+		this.sidePanelDetailsSkuReplacementDeleteButton =
+			this.sidePanelDetailsSkuReplacement.getByRole('button');
+		this.sidePanelDetailsSkuReplacementInput =
+			this.sidePanelDetailsSkuReplacement.getByRole('textbox');
+		this.sidePanelDetailsSkuReplacementItem = (sku: string) =>
+			this.sidePanelFrame
+				.locator('.autocomplete-items')
+				.getByText(sku, {exact: true});
 		this.sidePanelInventoryTable = this.sidePanelFrame.locator(
 			'#p_p_id_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_ table'
 		);
 		this.sidePanelNestedFrame =
 			this.sidePanelFrame.frameLocator('.is-visible iframe');
+		this.sidePanelNestedAddPriceTierButton = this.sidePanelNestedFrame
+			.getByRole('button', {exact: true, name: 'Add New Price Tier'})
+			.first();
+		this.sidePanelNestedBulkPricingRadio =
+			this.sidePanelNestedFrame.getByRole('radio', {
+				exact: true,
+				name: 'Bulk Pricing',
+			});
+		this.sidePanelNestedMenuItem = (menuItemName: string) =>
+			this.sidePanelNestedFrame.getByRole('menuitem', {
+				exact: true,
+				name: menuItemName,
+			});
 		this.sidePanelNestedPriceListPrice =
 			this.sidePanelNestedFrame.getByLabel('Price List');
+		this.sidePanelNestedPriceTierTableRow = (quantity: string) =>
+			this.sidePanelNestedFrame.getByRole('row').filter({
+				has: this.sidePanelNestedPriceTierTableRowActionsButton(
+					quantity
+				),
+			});
+		this.sidePanelNestedPriceTierTableRowActionsButton = (
+			quantity: string
+		) =>
+			this.sidePanelNestedFrame.getByRole('button', {
+				exact: true,
+				name: `${quantity} Actions`,
+			});
 		this.sidePanelNestedSaveButton = this.sidePanelNestedFrame.getByRole(
 			'button',
 			{exact: true, name: 'Save'}
 		);
+		this.sidePanelNestedTieredPricingRadio =
+			this.sidePanelNestedFrame.getByRole('radio', {
+				exact: true,
+				name: 'Tiered Pricing',
+			});
 		this.sidePanelSaveAsDraftButton = this.sidePanelFrame.getByRole(
 			'button',
 			{exact: true, name: 'Save as Draft'}
@@ -161,11 +255,45 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 			'textbox',
 			{name: 'commerce-inventory-warehouse-'}
 		);
+		this.sidePanelSkuPriceTableRow = (priceListName: string) =>
+			this.sidePanelFrame.getByRole('row').filter({
+				has: this.sidePanelSkuPriceTableRowLink(priceListName),
+			});
+		this.sidePanelSkuPriceTableRowActionsButton = (priceListName: string) =>
+			this.sidePanelFrame.getByRole('button', {
+				exact: true,
+				name: `${priceListName} Actions`,
+			});
 		this.sidePanelSkuPriceTableRowLink = (priceListName: string) =>
 			this.sidePanelFrame.getByRole('link', {
 				exact: true,
 				name: priceListName,
 			});
+		this.sidePanelSubscriptionEnableToggle = (subscriptionName: string) =>
+			this.sidePanelSubscriptionSection(subscriptionName).getByText(
+				'Enable',
+				{exact: true}
+			);
+		this.sidePanelSubscriptionInput = (
+			subscriptionName: string,
+			inputLabel: string
+		) =>
+			this.sidePanelSubscriptionSection(subscriptionName).getByRole(
+				'textbox',
+				{exact: true, name: inputLabel}
+			);
+		this.sidePanelSubscriptionSection = (subscriptionName: string) =>
+			this.sidePanelFrame
+				.locator('.card .card')
+				.filter({hasText: subscriptionName});
+		this.sidePanelSubscriptionSelect = (
+			subscriptionName: string,
+			selectLabel: string
+		) =>
+			this.sidePanelSubscriptionSection(subscriptionName).getByRole(
+				'combobox',
+				{exact: true, name: selectLabel}
+			);
 		this.skusLink = page.getByRole('link', {
 			exact: true,
 			name: 'SKUs',
@@ -199,6 +327,16 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 			'button',
 			{exact: true, name: 'Add'}
 		);
+		this.skuPriceAddModalAddEntryButton = this.skuPriceAddModal.getByRole(
+			'button',
+			{exact: true, name: 'Add Entry'}
+		);
+		this.skuPriceAddModalCancelButton = this.skuPriceFrame.getByRole(
+			'button',
+			{exact: true, name: 'Cancel'}
+		);
+		this.skuPriceAddModalUnitOfMeasureSelect =
+			this.skuPriceAddModal.getByLabel('Unit of Measure');
 		this.skuPriceAddModalUnitPriceInput =
 			this.skuPriceAddModal.getByLabel('Unit Price');
 		this.skuPriceListSelect =
@@ -208,30 +346,11 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 				exact: true,
 				name: skuTab,
 			});
-		this.skusTable = page.locator(
-			'#_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fm .fds table'
-		);
-		this.skusTableRow = async (
-			colPosition: number,
-			value: number | string,
-			strictEqual: boolean = false
-		) => {
-			return await searchTableRowByValue(
-				this.skusTable,
-				colPosition,
-				String(value),
-				strictEqual
-			);
-		};
-		this.skusTableRowBasePrice = async (price: string) => {
-			const shipmentTableRow = await this.skusTableRow(2, price, true);
-
-			if (shipmentTableRow && shipmentTableRow.column) {
-				return shipmentTableRow.row.getByText(price, {exact: true});
-			}
-
-			throw new Error(`Cannot locate shipment row with value ${price}`);
-		};
+		this.skusTableRowActionsButton = (sku: string) =>
+			this.table
+				.getByRole('row')
+				.filter({has: this.skusTableRowLink(sku)})
+				.getByRole('button', {name: 'Actions'});
 		this.skusTableRowLink = (sku: string) =>
 			page.getByRole('link', {exact: true, name: sku});
 		this.skuUOMFrame = page.frameLocator('iframe').first();
@@ -279,6 +398,19 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 			.getByRole('button', {name: 'Cancel'});
 		this.uomTableRowLink = (uom: string) =>
 			this.sidePanelFrame.getByRole('link', {exact: true, name: uom});
+	}
+
+	async addPriceTier(quantity: string, price: string) {
+		await this.sidePanelNestedAddPriceTierButton.click();
+
+		await this.priceTierModalQuantityInput.fill(quantity);
+		await this.priceTierModalPriceInput.fill(price);
+
+		await this.priceTierModalSubmitButton.click();
+
+		await expect(
+			this.sidePanelNestedPriceTierTableRow(quantity)
+		).toContainText(`$ ${price}.00`);
 	}
 
 	async addUOMEntry({
@@ -338,5 +470,38 @@ export class CommerceAdminProductDetailsSkusPage extends CommerceDNDTablePage {
 
 	async goToSkuTab(skuTab: string) {
 		await this.skuTab(skuTab).click();
+	}
+
+	async openPriceEntry(priceListName: string) {
+		await this.sidePanelSkuPriceTableRowLink(priceListName).click();
+
+		await expect(this.sidePanelNestedSaveButton).toBeVisible();
+	}
+
+	async reopenPriceEntry(priceListName: string) {
+		await (await this.closeSidePanelFrame(true)).click();
+
+		await this.openPriceEntry(priceListName);
+	}
+
+	async reopenSkuWithReplacement(sku: string, replacementSku: string) {
+		await (await this.closeSidePanelFrame(false)).click();
+
+		await expect(await this.closeSidePanelFrame(false)).toBeHidden();
+
+		await Promise.all([
+			this.page.waitForResponse(
+				(response) =>
+					response.status() === 200 &&
+					response.url().includes('_cpInstanceId=')
+			),
+			this.skusTableRowLink(sku).click(),
+		]);
+
+		await this.page.waitForResponse(
+			(response) =>
+				response.status() === 200 &&
+				response.url().includes(`/skus?search=${replacementSku}`)
+		);
 	}
 }

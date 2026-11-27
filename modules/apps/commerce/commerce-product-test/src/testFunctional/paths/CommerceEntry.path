@@ -66,11 +66,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>VIEW_ITEM_FROM_LIST</td>
-	<td>//div[contains(@class,'table-list-title')]/a[contains(.,'${key_itemName}')]//following::td//a[contains(.,'View')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>WISH_LIST_NAME</td>
 	<td>//td[contains(@class,'lfr-name-column')]//*[contains(.,'${wishListName}')]</td>
 	<td></td>
@@ -88,11 +83,6 @@
 <tr>
 	<td>LABEL_GENERIC_SELECT</td>
 	<td>//label[contains(text(),'${key_fieldLabel}')]/..//select</td>
-	<td></td>
-</tr>
-<tr>
-	<td>LABEL_SELECT_BY_INDEX</td>
-	<td>xpath=(//label[contains(text(),'${key_fieldLabel}')]/..//select)[${key_index}]</td>
 	<td></td>
 </tr>
 <tr>
@@ -503,11 +493,6 @@
 <tr>
 	<td>SKU_FIELD</td>
 	<td>//div/input[contains(@id,'sku')]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>SKU_ERC_FIELD</td>
-	<td>//div/input[contains(@id,'externalReferenceCode')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1319,11 +1304,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>DELIVERY_SUBSCRIPTION_TOGGLE</td>
-	<td>//div[contains(@class,'h4') and contains(text(), 'Delivery Subscription')]//following-sibling::span[contains(@class,'toggle-switch-handle')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>SUBSCRIPTION_TOGGLE</td>
 	<td>//div[contains(@class,'h4') and contains(text(), '${key_subscriptionName}')]//following-sibling::span[contains(@class,'toggle-switch-handle')]</td>
 	<td></td>
@@ -1346,11 +1326,6 @@
 <tr>
 	<td>TOGGLE_SWITCH_BUTTON</td>
 	<td>xpath=(//label[(contains(.,'${key_buttonName}')) or (contains(@for,'${key_buttonName}'))])[${key_indexNumber}]//input</td>
-	<td></td>
-</tr>
-<tr>
-	<td>SKU_DISCONTINUED_TOGGLE</td>
-	<td>//label[contains(.,'Mark the SKU as Discontinued')]//span[contains(@class,'toggle-switch-handle')]</td>
 	<td></td>
 </tr>
 <tr>
@@ -1474,11 +1449,6 @@
 <tr>
 	<td>LAST_CURRENCY_PRIORITY_ELEMENT</td>
 	<td>xpath=(//tr[contains(@data-qa-id,'row') and not(contains(@class, 'd-none'))])[last()]//td//a[text()='${key_entryName}']//..//..//td[contains(@class,"lfr-priority-column")]</td>
-	<td></td>
-</tr>
-<tr>
-	<td>CHECK_PRICE_LIST_CURRENCY</td>
-	<td>//div[@class ="input-group-append input-group-item-shrink"]//span[contains(@class,'input-group-text') and contains(text(),'${key_currency}')]</td>
 	<td></td>
 </tr>
 <tr>

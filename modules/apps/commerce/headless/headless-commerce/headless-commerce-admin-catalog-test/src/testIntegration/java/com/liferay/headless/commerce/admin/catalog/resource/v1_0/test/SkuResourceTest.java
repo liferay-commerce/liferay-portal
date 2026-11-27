@@ -172,8 +172,9 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		super.testPatchSku();
 
 		_testPatchSkuExternalReferenceCode();
-		_testPatchSkuWithReplacementSku();
 		_testPatchSkuWithPricing();
+		_testPatchSkuWithReplacementSku();
+		_testPatchSkuWithReplacementSkuFromDifferentCatalog();
 		_testPatchSkuWithShipping();
 		_testPatchSkuWithUnitOfMeasure();
 	}
@@ -557,6 +558,20 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 	private void _testPatchSkuExternalReferenceCode() throws Exception {
 		Sku sku = testPatchSku_addSku();
 
+		for (String blankExternalReferenceCode : new String[] {"", " "}) {
+			Sku patchSku = skuResource.patchSku(
+				sku.getId(),
+				new Sku() {
+					{
+						externalReferenceCode = blankExternalReferenceCode;
+					}
+				});
+
+			Assert.assertEquals(
+				sku.getExternalReferenceCode(),
+				patchSku.getExternalReferenceCode());
+		}
+
 		Sku randomSku = new Sku() {
 			{
 				externalReferenceCode = RandomTestUtil.randomString();
@@ -638,6 +653,39 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 		Assert.assertNull(patchSku2.getReplacementSkuId());
 
 		assertValid(patchSku2);
+	}
+
+	private void _testPatchSkuWithReplacementSkuFromDifferentCatalog()
+		throws Exception {
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			testGroup.getGroupId(), _PRODUCT_TYPE_NAME, true, false);
+
+		CProduct cProduct = cpDefinition.getCProduct();
+
+		Sku sku1 = testPatchSku_addSku();
+		Sku sku2 = skuResource.postProductIdSku(
+			cProduct.getCProductId(), randomSku());
+
+		Sku patchSku = skuResource.patchSku(
+			sku1.getId(),
+			new Sku() {
+				{
+					discontinued = true;
+					replacementSkuId = sku2.getId();
+				}
+			});
+
+		Assert.assertTrue(patchSku.getDiscontinued());
+		Assert.assertEquals(
+			cProduct.getExternalReferenceCode(),
+			patchSku.getReplacementProductExternalReferenceCode());
+		Assert.assertEquals(
+			sku2.getExternalReferenceCode(),
+			patchSku.getReplacementSkuExternalReferenceCode());
+		Assert.assertEquals(sku2.getId(), patchSku.getReplacementSkuId());
+
+		assertValid(patchSku);
 	}
 
 	private void _testPatchSkuWithShipping() throws Exception {
