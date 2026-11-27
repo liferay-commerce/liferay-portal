@@ -12,6 +12,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryServiceUtil;
 import com.liferay.petra.string.StringBundler;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.pim.site.initializer.internal.constants.PIMFDSNames;
@@ -214,8 +216,10 @@ public class ProductRelationshipsDisplayContext {
 			"/o/search/v1.0/search?emptySearch=true&filter=",
 			URLCodec.encodeURL(
 				StringBundler.concat(
-					"cmsSection eq 'products' and groupIds/any(g:g eq ",
-					objectEntry.getGroupId(), ") and not (entryClassPK in (",
+					"cmsSection eq 'products' and classNameId ne ",
+					PortalUtil.getClassNameId(ObjectEntryFolder.class),
+					" and groupIds/any(g:g eq ", objectEntry.getGroupId(),
+					") and not (entryClassPK in (",
 					objectEntry.getObjectEntryId())),
 			"{relatedObjectEntryIds}", URLCodec.encodeURL("))"),
 			"&nestedFields=embedded,embedded.images,",

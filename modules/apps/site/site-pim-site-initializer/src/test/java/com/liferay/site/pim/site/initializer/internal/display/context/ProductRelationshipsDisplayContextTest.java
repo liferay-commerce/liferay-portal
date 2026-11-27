@@ -11,6 +11,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.info.constants.InfoDisplayWebKeys;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.object.model.ObjectEntryFolder;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryServiceUtil;
 import com.liferay.petra.string.StringBundler;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -130,7 +132,9 @@ public class ProductRelationshipsDisplayContextTest {
 					FeatureFlagManagerUtil.class);
 			MockedStatic<ObjectEntryServiceUtil>
 				objectEntryServiceUtilMockedStatic = Mockito.mockStatic(
-					ObjectEntryServiceUtil.class)) {
+					ObjectEntryServiceUtil.class);
+			MockedStatic<PortalUtil> portalUtilMockedStatic =
+				Mockito.mockStatic(PortalUtil.class)) {
 
 			featureFlagManagerUtilMockedStatic.when(
 				() -> FeatureFlagManagerUtil.isEnabled(
@@ -162,6 +166,14 @@ public class ProductRelationshipsDisplayContextTest {
 			_mockModelResourcePermission(
 				true, objectEntry, objectEntryServiceUtilMockedStatic);
 
+			long objectEntryFolderClassNameId = RandomTestUtil.randomLong();
+
+			portalUtilMockedStatic.when(
+				() -> PortalUtil.getClassNameId(ObjectEntryFolder.class)
+			).thenReturn(
+				objectEntryFolderClassNameId
+			);
+
 			dropdownItems = _getPrimaryDropdownItems(
 				productRelationshipsDisplayContext.getCreationMenu());
 
@@ -192,7 +204,9 @@ public class ProductRelationshipsDisplayContextTest {
 				searchAPIURL.contains(
 					URLCodec.encodeURL(
 						StringBundler.concat(
-							"cmsSection eq 'products' and groupIds/any(g:g eq ",
+							"cmsSection eq 'products' and classNameId ne ",
+							objectEntryFolderClassNameId,
+							" and groupIds/any(g:g eq ",
 							objectEntry.getGroupId(),
 							") and not (entryClassPK in (",
 							objectEntry.getObjectEntryId()))));
