@@ -57,6 +57,8 @@ public class PinResourceImpl extends BasePinResourceImpl {
 	public void deletePin(Long pinId) throws Exception {
 		CSDiagramPin csDiagramPin = _csDiagramPinService.getCSDiagramPin(pinId);
 
+		_csDiagramPinService.deleteCSDiagramPin(pinId);
+
 		CSDiagramEntry csDiagramEntry =
 			_csDiagramEntryService.fetchCSDiagramEntry(
 				csDiagramPin.getCPDefinitionId(), csDiagramPin.getSequence());
@@ -65,18 +67,13 @@ public class PinResourceImpl extends BasePinResourceImpl {
 			!ListUtil.exists(
 				_csDiagramPinService.getCSDiagramPins(
 					csDiagramPin.getCPDefinitionId(), -1, -1),
-				curCSDiagramPin ->
-					(csDiagramPin.getCSDiagramPinId() !=
-						curCSDiagramPin.getCSDiagramPinId()) &&
-					Objects.equals(
-						csDiagramPin.getSequence(),
-						curCSDiagramPin.getSequence()))) {
+				curCSDiagramPin -> Objects.equals(
+					csDiagramPin.getSequence(),
+					curCSDiagramPin.getSequence()))) {
 
 			_csDiagramEntryService.deleteCSDiagramEntry(
 				csDiagramEntry.getCSDiagramEntryId());
 		}
-
-		_csDiagramPinService.deleteCSDiagramPin(pinId);
 	}
 
 	@Override
