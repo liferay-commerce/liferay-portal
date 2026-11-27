@@ -21,6 +21,7 @@ import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.Creator;
 import com.liferay.headless.commerce.admin.channel.client.pagination.Page;
 import com.liferay.headless.commerce.admin.channel.client.pagination.Pagination;
 import com.liferay.headless.commerce.admin.channel.client.resource.v1_0.ChannelResource;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Group;
@@ -38,9 +39,9 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.test.rule.Inject;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -79,6 +80,30 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		super.testGetChannelsPage();
 
 		_testGetChannelsPageWithFilter();
+	}
+
+	@Override
+	@Test
+	public void testGetChannelsPageWithFilterDateTimeEquals() throws Exception {
+		List<EntityField> entityFields = getEntityFields(
+			EntityField.Type.DATE_TIME);
+
+		if (entityFields.isEmpty()) {
+			return;
+		}
+
+		Channel channel = testGetChannelsPage_addChannel(randomChannel());
+
+		for (EntityField entityField : entityFields) {
+			Page<Channel> channelsPage = channelResource.getChannelsPage(
+				null, getFilterString(entityField, "between", channel),
+				Pagination.of(1, 10), null);
+
+			List<Long> ids = TransformUtil.transform(
+				channelsPage.getItems(), Channel::getId);
+
+			Assert.assertTrue(ids.contains(channel.getId()));
+		}
 	}
 
 	@Ignore
@@ -359,9 +384,6 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		Channel channel = testGetChannelsPage_addChannel(randomChannel);
 
-		_commerceChannels.add(
-			_commerceChannelLocalService.getCommerceChannel(channel.getId()));
-
 		Page<Channel> channelsPage = channelResource.getChannelsPage(
 			null,
 			"externalReferenceCode eq '" + channel.getExternalReferenceCode() +
@@ -385,10 +407,6 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		Channel notFilteredChannel = testGetChannelsPage_addChannel(
 			randomChannel());
-
-		_commerceChannels.add(
-			_commerceChannelLocalService.getCommerceChannel(
-				notFilteredChannel.getId()));
 
 		channelsPage = channelResource.getChannelsPage(
 			null, null, Pagination.of(1, 10), null);
@@ -871,9 +889,6 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 	@Inject
 	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
-
-	@DeleteAfterTestRun
-	private final List<CommerceChannel> _commerceChannels = new ArrayList<>();
 
 	private CommerceCurrency _commerceCurrency;
 	private Group _group;
